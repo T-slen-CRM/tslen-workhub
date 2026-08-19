@@ -7,9 +7,9 @@
         <app-nav-collapse *ngIf="item.type=='collapse'" [item]="item"></app-nav-collapse>
         <app-nav-item *ngIf="item.type=='item'" [item]="item"></app-nav-item>
       </ng-container>
-<!--        <div class="dark-mode-button">-->
-<!--            <app-dark-mode-button class="mr-auto" [isDarkTheme]="isDarkTheme" [userId]="userId"></app-dark-mode-button>-->
-<!--        </div>-->
+        <li class="notification-bell-nav">
+            <app-notification-bell [userId]="userId"></app-notification-bell>
+        </li>
     </ul>
 <!--    <app-card *ngIf="role !== 'manager'" [hidHeader]="true" cardClass="text-center">-->
 <!--&lt;!&ndash;      <i class="feather icon-sunset f-40"></i>&ndash;&gt;-->

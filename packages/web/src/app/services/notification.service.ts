@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Notification} from "../interfaces/notifications";
+import {Notification, Notifications} from "../interfaces/notifications";
 import {BehaviorSubject} from "rxjs";
 
 
@@ -8,6 +8,13 @@ import {BehaviorSubject} from "rxjs";
 })
 export class NotificationService {
     public countUnreadNotifications: BehaviorSubject<number>;
+    public notifications: BehaviorSubject<Notifications> = new BehaviorSubject<Notifications>([]);
+    public initialLoadStarted = false;
+    // Guards against every mounted NotificationBellComponent instance independently
+    // subscribing to the single app-wide `notification$` socket stream — without this,
+    // a single live notification would be processed once per mounted instance and
+    // double-counted/duplicated across the shared state.
+    public liveNotificationsSubscribed = false;
 
     constructor() {
         this.countUnreadNotifications = new BehaviorSubject<number>(null);

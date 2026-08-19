@@ -1,9 +1,11 @@
-import { Body, Controller, Get, ParseArrayPipe, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, ParseArrayPipe, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { User } from '../users/decorators/user.decorator';
 import { Users } from '../users/entities/users.entity';
 import { Notification } from './entities/notification.entity';
+import { Roles } from '../../common/guards/roles/roles.decorator';
+import { Role } from '../../common/guards/roles/role.enum';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -56,6 +58,8 @@ export class NotificationsController {
     }
 
     @Post('create')
+    @Roles(Role.Admin, Role.Manager)
+    @HttpCode(HttpStatus.OK)
     createBroadcast (
         @Body(new ParseArrayPipe({ items: CreateNotificationDto })) dtos: CreateNotificationDto[],
     ): Promise<Notification[]> {

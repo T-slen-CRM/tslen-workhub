@@ -1,9 +1,12 @@
 import { TestBed } from '@automock/jest';
+import { HTTP_CODE_METADATA } from '@nestjs/common/constants';
 import { NotificationsController } from '../../../../src/resources/notifications/notifications.controller';
 import { NotificationsService } from '../../../../src/resources/notifications/notifications.service';
 import { Notification } from '../../../../src/resources/notifications/entities/notification.entity';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
 import { mockUser } from '../../../shared/users';
+import { ROLES_KEY } from '../../../../src/common/guards/roles/roles.decorator';
+import { Role } from '../../../../src/common/guards/roles/role.enum';
 
 describe('NotificationsController', () => {
     let controller: NotificationsController;
@@ -132,6 +135,18 @@ describe('NotificationsController', () => {
 
             expect(service.createBroadcast).toHaveBeenCalledWith(dtos);
             expect(result).toBe(created);
+        });
+
+        it('is restricted to Admin/Manager roles', () => {
+            const roles = Reflect.getMetadata(ROLES_KEY, NotificationsController.prototype.createBroadcast);
+
+            expect(roles).toEqual([Role.Admin, Role.Manager]);
+        });
+
+        it('responds with 200 OK instead of the default 201', () => {
+            const httpCode = Reflect.getMetadata(HTTP_CODE_METADATA, NotificationsController.prototype.createBroadcast);
+
+            expect(httpCode).toBe(200);
         });
     });
 });

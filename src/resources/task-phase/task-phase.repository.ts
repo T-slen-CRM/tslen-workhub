@@ -23,7 +23,4 @@ export class TaskPhaseRepository extends BaseAbstractRepository<TaskPhase>{
         });
 
     }
-    findByIdWithProject (id: number): Promise<TaskPhase> {
-        return this.taskPhaseRepository.findOne({ where: { id }, relations: ['taskProject'] });
-    }
 }

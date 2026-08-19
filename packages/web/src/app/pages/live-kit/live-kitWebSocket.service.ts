@@ -21,6 +21,8 @@ export class LiveKitWebSocketService {
 
   private incomingCall = new Subject<any>();
   public readonly incomingCall$ = this.incomingCall.asObservable();
+  private notification = new Subject<any>();
+  public readonly notification$ = this.notification.asObservable();
   private liveChatService = inject(LiveChatService);
 
   constructor(
@@ -107,6 +109,10 @@ export class LiveKitWebSocketService {
     this.socket.on(LiveKitEvents.CALL_REJECTED, () => {
       this.dialog.closeAll();
       // this.liveChatService.setActiveCallData(null);
+    });
+
+    this.socket.on(LiveKitEvents.NOTIFICATION, (data: any) => {
+      this.notification.next(data);
     });
   }
 

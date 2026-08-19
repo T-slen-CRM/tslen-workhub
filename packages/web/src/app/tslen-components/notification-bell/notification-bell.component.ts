@@ -24,7 +24,6 @@ export class NotificationBellComponent implements OnInit {
 
     public notifications: Notifications = [];
     public unreadNotiCount: number = null;
-    private today = new Date();
 
     private dataService = inject(DataService);
     private notificationService = inject(NotificationService);
@@ -33,19 +32,50 @@ export class NotificationBellComponent implements OnInit {
     private destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
-        this.getNotifications();
-        this.liveKitWebSocketService.notification$
+        // Mirror the shared, singleton service state into local fields so the template
+        // (whose *ngFor/matBadge bindings stay unchanged) stays in sync with whichever
+        // mounted bell instance (top nav / left nav) last changed something.
+        this.notificationService.notifications
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((notification: Notification) => {
-                this.notifications = [{
-                    id: notification.id,
-                    title: notification.title,
-                    message: notification.message,
-                    time: this.notificationService.timeSince(this.today, new Date(notification.createdAt)),
-                    isRead: notification.isRead,
-                }, ...this.notifications];
-                this.unreadNotiCount = (this.unreadNotiCount || 0) + 1;
+            .subscribe((notifications: Notifications) => {
+                this.notifications = notifications;
             });
+
+        this.notificationService.countUnreadNotifications
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((count: number) => {
+                this.unreadNotiCount = count;
+            });
+
+        // Only the first-mounted instance triggers the initial GET — both instances still
+        // receive the result through the subscriptions above once it resolves.
+        if (!this.notificationService.initialLoadStarted) {
+            this.notificationService.initialLoadStarted = true;
+            this.getNotifications();
+        }
+
+        // `notification$` is a single app-wide socket stream; if every mounted instance
+        // subscribed and pushed to shared state independently, one live event would be
+        // processed once per mounted instance and double-counted/duplicated. Only the
+        // first-mounted instance processes live arrivals; every instance still sees the
+        // result via the subscriptions above.
+        if (!this.notificationService.liveNotificationsSubscribed) {
+            this.notificationService.liveNotificationsSubscribed = true;
+            this.liveKitWebSocketService.notification$
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((notification: Notification) => {
+                    const updatedNotifications = [{
+                        id: notification.id,
+                        title: notification.title,
+                        message: notification.message,
+                        time: this.notificationService.timeSince(new Date(), new Date(notification.createdAt)),
+                        isRead: notification.isRead,
+                    }, ...this.notificationService.notifications.value];
+                    this.notificationService.notifications.next(updatedNotifications);
+                    const currentCount = this.notificationService.countUnreadNotifications.value;
+                    this.notificationService.countUnreadNotifications.next((currentCount || 0) + 1);
+                });
+        }
     }
 
     getNotifications(): void {
@@ -60,15 +90,15 @@ export class NotificationBellComponent implements OnInit {
                         id: item.id,
                         title: item.title,
                         message: item.message,
-                        time: this.notificationService.timeSince(this.today, new Date(item.createdAt)),
+                        time: this.notificationService.timeSince(new Date(), new Date(item.createdAt)),
                         isRead: item.isRead,
                     };
                 })),
                 take(1),
             )
             .subscribe((notifications: Notifications) => {
-                this.unreadNotiCount = unreadCount === 0 ? null : unreadCount;
-                this.notifications = notifications;
+                this.notificationService.countUnreadNotifications.next(unreadCount === 0 ? null : unreadCount);
+                this.notificationService.notifications.next(notifications);
             });
     }
 
@@ -77,17 +107,17 @@ export class NotificationBellComponent implements OnInit {
             this.dataService.updateData('/notifications/', notification.id, { isRead: 1 })
                 .pipe(take(1))
                 .subscribe(() => {
-                    this.notifications = this.notifications.map((item: Notification) => {
+                    const updatedNotifications = this.notificationService.notifications.value.map((item: Notification) => {
                         if (item.id === notification.id) {
-                            item.isRead = 1;
+                            return { ...item, isRead: 1 };
                         }
                         return item;
                     });
+                    this.notificationService.notifications.next(updatedNotifications);
                 });
-            this.unreadNotiCount = this.unreadNotiCount - 1;
-            if (this.unreadNotiCount === 0) {
-                this.unreadNotiCount = null;
-            }
+            const currentCount = this.notificationService.countUnreadNotifications.value;
+            const newCount = currentCount - 1;
+            this.notificationService.countUnreadNotifications.next(newCount === 0 ? null : newCount);
         }
         this.openDialog(notification);
     }
@@ -115,11 +145,11 @@ export class NotificationBellComponent implements OnInit {
             this.dataService.postData('/notifications/mark-as-read', notificationsIds)
                 .pipe(take(1))
                 .subscribe(() => {
-                    this.unreadNotiCount = null;
-                    this.notifications = this.notifications.map((item: Notification) => {
-                        item.isRead = 1;
-                        return item;
+                    const updatedNotifications = this.notificationService.notifications.value.map((item: Notification) => {
+                        return { ...item, isRead: 1 };
                     });
+                    this.notificationService.notifications.next(updatedNotifications);
+                    this.notificationService.countUnreadNotifications.next(null);
                 });
         }
     }
@@ -133,8 +163,8 @@ export class NotificationBellComponent implements OnInit {
             this.dataService.postData('/notifications/clear-all', notificationsIds)
                 .pipe(take(1))
                 .subscribe(() => {
-                    this.unreadNotiCount = null;
-                    this.notifications = [];
+                    this.notificationService.notifications.next([]);
+                    this.notificationService.countUnreadNotifications.next(null);
                 });
         }
     }

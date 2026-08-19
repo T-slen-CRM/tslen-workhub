@@ -56,16 +56,20 @@ describe('LiveKitGateway (e2e)', () => {
         await app.close();
     });
 
-    const createSocket = (userId: string) =>
+    // Production always sends numeric userIds (the Users entity's numeric `id` — see
+    // live-kitWebSocket.service.ts's `{ userId: authData.id }`). LiveKitGateway.register()
+    // coerces its registration key with Number(...), so these fixtures use numeric ids
+    // throughout to match real client behavior.
+    const createSocket = (userId: number) =>
         io.connect('http://localhost:3010/live-kit', {
             transports: ['websocket'],
             forceNew: true,
-            query: { userId },
+            query: { userId: String(userId) },
         });
 
     it('should connect and register two users, then emit online users', (done) => {
-        socket1 = createSocket('user1');
-        socket2 = createSocket('user2');
+        socket1 = createSocket(1);
+        socket2 = createSocket(2);
 
         let received1 = false;
         let received2 = false;
@@ -78,7 +82,7 @@ describe('LiveKitGateway (e2e)', () => {
 
         const handler1 = (msg: string) => {
             const parsed = JSON.parse(msg);
-            if (parsed.users.includes('user1') && parsed.users.includes('user2')) {
+            if (parsed.users.includes(1) && parsed.users.includes(2)) {
                 received1 = true;
                 socket1.off(LiveKitEvents.ONLINE_USERS, handler1);
                 checkDone();
@@ -86,7 +90,7 @@ describe('LiveKitGateway (e2e)', () => {
         };
         const handler2 = (msg: string) => {
             const parsed = JSON.parse(msg);
-            if (parsed.users.includes('user1') && parsed.users.includes('user2')) {
+            if (parsed.users.includes(1) && parsed.users.includes(2)) {
                 received2 = true;
                 socket2.off(LiveKitEvents.ONLINE_USERS, handler2);
                 checkDone();
@@ -94,29 +98,29 @@ describe('LiveKitGateway (e2e)', () => {
         };
         socket1.on('connect', () => {
             socket1.on(LiveKitEvents.ONLINE_USERS, handler1);
-            socket1.emit(LiveKitEvents.REGISTER, { userId: 'user1' });
+            socket1.emit(LiveKitEvents.REGISTER, { userId: 1 });
         });
         socket2.on('connect', () => {
             socket2.on(LiveKitEvents.ONLINE_USERS, handler2);
-            socket2.emit(LiveKitEvents.REGISTER, { userId: 'user2' });
+            socket2.emit(LiveKitEvents.REGISTER, { userId: 2 });
         });
     });
 
     it('should emit an incoming_call to callee', (done) => {
-        socket1 = createSocket('caller');
-        socket2 = createSocket('callee');
+        socket1 = createSocket(10);
+        socket2 = createSocket(20);
 
         socket1.on('connect', () => {
-            socket1.emit(LiveKitEvents.REGISTER, { userId: 'caller' });
+            socket1.emit(LiveKitEvents.REGISTER, { userId: 10 });
         });
 
         socket2.on('connect', () => {
-            socket2.emit(LiveKitEvents.REGISTER, { userId: 'callee' });
+            socket2.emit(LiveKitEvents.REGISTER, { userId: 20 });
 
             setTimeout(() => {
                 socket1.emit(LiveKitEvents.INCOMING_CALL, {
-                    calleeId: 'callee',
-                    callerId: 'caller',
+                    calleeId: 20,
+                    callerId: 10,
                     callerName: 'John',
                     callerLastName: 'Doe',
                     img: 'img-url',
@@ -125,37 +129,37 @@ describe('LiveKitGateway (e2e)', () => {
         });
         socket2.on(LiveKitEvents.INCOMING_CALL, (payload) => {
             expect(payload).toEqual({
-                callerId: 'caller',
+                callerId: 10,
                 callerName: 'John',
                 callerLastName: 'Doe',
-                calleeId: 'callee',
+                calleeId: 20,
                 img: 'img-url',
             });
             done();
         });
     });
     it('should emit call_accepted back to caller', (done) => {
-        socket1 = createSocket('caller');
-        socket2 = createSocket('callee');
+        socket1 = createSocket(10);
+        socket2 = createSocket(20);
 
         socket1.on('connect', () => {
-            socket1.emit(LiveKitEvents.REGISTER, { userId: 'caller' });
+            socket1.emit(LiveKitEvents.REGISTER, { userId: 10 });
         });
 
         socket2.on('connect', () => {
-            socket2.emit(LiveKitEvents.REGISTER, { userId: 'callee' });
+            socket2.emit(LiveKitEvents.REGISTER, { userId: 20 });
 
             setTimeout(() => {
                 socket2.emit(LiveKitEvents.CALL_ACCEPTED, {
-                    callerId: 'caller',
-                    calleeId: 'callee',
+                    callerId: 10,
+                    calleeId: 20,
                 });
             }, 200);
         });
         socket1.on(LiveKitEvents.CALL_ACCEPTED, (payload) => {
             expect(payload).toEqual({
-                callerId: 'caller',
-                calleeId: 'callee',
+                callerId: 10,
+                calleeId: 20,
             });
             done();
         });

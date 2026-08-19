@@ -1,0 +1,21 @@
+<br/>
+<div>
+    <form [formGroup]="form">
+        <div class="form-container">
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'people.user_group.label_name' | translate}}</mat-label>
+                <input matInput placeholder="Name" formControlName="name" required>
+                <mat-error *ngIf="form.controls['name'].hasError('required')">
+                    {{'people.user_group.form.name' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSubmit()">{{'people.user_group.button'| translate}}</button>
+        </div>
+
+    </form>
+</div>
+<app-ag-grid-table [setColumnDefs]="columnDefs"
+                   [setRowData]="rowData"
+                   [frameworkComponents]="frameworkComponents"
+                   [setSizeColumnsToFit]="true"
+></app-ag-grid-table>

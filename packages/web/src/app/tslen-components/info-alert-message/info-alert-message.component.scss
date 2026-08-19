@@ -1,0 +1,33 @@
+.info-alert {
+  padding: 10px;
+  background-color: #f9f9f7; /* Red */
+  color: black;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  // margin-bottom: 15px;
+}
+
+/* The close button */
+.info-alert-closebtn {
+  margin-left: 15px;
+  color: grey;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}
+.info-icon{
+  font-size: 20px;
+}
+.info-container{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

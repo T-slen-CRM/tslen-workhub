@@ -1,0 +1,11 @@
+<mat-card>
+    <angular-editor [placeholder]="('comment.text' | translate)"
+                    [ngModel]="value"
+                    (ngModelChange)="onChangeModel($event)"
+                    [config]="editorConfig"
+    ></angular-editor>
+    @if(!customEditorConfig()) {
+        <button mat-raised-button [color]="'primary'" (click)="addPost()">{{'posts.save'| translate}}</button>
+    }
+</mat-card>
+

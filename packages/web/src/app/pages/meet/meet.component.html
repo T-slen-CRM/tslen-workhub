@@ -1,0 +1,20 @@
+<br>
+<div class="make-request-btn-container">
+            <button mat-stroked-button
+                    class="make-request-btn"
+                    (click)="createMeeting()"
+                    [disabled]="!googlePermissions || !googlePermissions.meetingSpace"
+            >
+                {{'meet.button'| translate }}
+            </button>
+        </div>
+@if (googlePermissions && googlePermissions.meetingSpace
+    && meeting$ | async; as meeting
+        ) {
+    <a href="{{meeting.uri}}" target="_blank">{{meeting.uri}}</a>
+    <mat-icon class="copy-link-btn" appCopyText [copyText]="meeting.uri">content_copy</mat-icon>
+}
+<app-google-permissions
+                    [googlePermissions]="googlePermissions"
+                    [showGoogleCalendar]="false"
+></app-google-permissions>

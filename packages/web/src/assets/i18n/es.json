@@ -1,0 +1,576 @@
+{
+  "languages": {
+    "en": "Inglés",
+    "ua": "Ucraniano",
+    "ru": "Ruso",
+    "fr": "Francés",
+    "es": "Español"
+  },
+  "menu": {
+    "menu_item": {
+      "log_out": "Cerrar sesión",
+      "profile": "Perfil"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "no_notifications": "Aún no tienes notificaciones.",
+      "link": {
+        "mark_read": "marcar como leído",
+        "clear_all": "borrar todo"
+      }
+    }
+  },
+  "posts": {
+    "header": {
+      "news": "Noticias"
+    },
+    "editor": {
+      "hide": "ocultar editor",
+      "add": "añadir publicación"
+    },
+    "button": "Mostrar más",
+    "save": "Guardar la publicación"
+  },
+  "comment": {
+    "text": "Escribe tu comentario aquí..."
+  },
+  "tooltip": {
+    "like": "Me gusta",
+    "delete": "Eliminar"
+  },
+  "button": {
+    "showMore": "Mostrar más"
+  },
+  "absentUser": {
+    "header": {
+      "name": "¿Quién está ausente hoy?",
+      "type": "Tipo",
+      "day": "Inicio"
+    },
+    "column": "Todos los empleados están presentes hoy",
+    "monthEvent": "No hay eventos hasta el próximo mes",
+    "monthColumn": {
+      "name": "Eventos",
+      "type": "Tipo",
+      "day": "Inicio"
+    }
+  },
+  "makeRequest": {
+    "name": "Crear solicitud",
+    "meet": "Crear evento y reunión de Google",
+    "title": "Título",
+    "label": "Color de la etiqueta",
+    "form": {
+      "title": "Crear solicitud",
+      "hours": "usar horas",
+      "start": "Inicio",
+      "end": "Fin",
+      "comment": "Comentario",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    }
+  },
+  "navigation": {
+    "name": "Navegación",
+    "main_wall": "Muro principal",
+    "personal_schedule": "Horario personal",
+    "company_calendar": "Calendario de la empresa",
+    "tasks_manager": "Gestor de tareas",
+    "task_list": "Lista de tareas",
+    "people": "Personas",
+    "meet": "Google reuniones",
+    "ip_checker": "Verificador de IP",
+    "admin": "ADMIN",
+    "pending": "Pendiente",
+    "company_rules": "Normas de la empresa",
+    "tslen_meet": "T-slen reuniones"
+  },
+  "calendar": {
+    "header": {
+      "name": "Nombre"
+    },
+    "view": {
+      "list": "Lista",
+      "calendar": "Calendario"
+    }
+  },
+  "personals_chedule": {
+    "button": {
+      "today": "Hoy",
+      "day": "Día",
+      "week": "Semana",
+      "month": "Mes"
+    }
+  },
+  "weekdays": {
+    "sunday": "Dom",
+    "monday": "Lun",
+    "tuesday": "Mar",
+    "wednesday": "Mié",
+    "thursday": "Jue",
+    "friday": "Vie",
+    "saturday": "Sáb"
+  },
+  "task_project": {
+    "project_name": "Nombre del proyecto",
+    "private": "Privado",
+    "description": "Descripción",
+    "channel": "Canal de notificaciones en Slack",
+    "logo": "Logotipo"
+  },
+  "column": {
+    "name": "Nombre"
+  },
+  "task": {
+    "button": {
+      "edit": "Editar",
+      "members": "Miembros",
+      "delete": "Eliminar"
+    },
+    "form": {
+      "label": "Nombre",
+      "placeholder": "Nombre",
+      "description": "Descripción",
+      "estimate": "Estimación",
+      "priority": "Prioridad",
+      "move_card": "Mover tarjeta a la fase",
+      "users": "Usuarios",
+      "upload attachments": "Subir archivos adjuntos:",
+      "button": {
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "select": "Seleccionar"
+      }
+    },
+    "phase": {
+      "create": {
+        "name": "Fase de creación",
+        "label": "Nombre",
+        "placeholder": "Nombre",
+        "button": {
+            "save": "Guardar",
+            "cancel": "Cancelar"
+        }
+      },
+      "edit": "Editar fase",
+      "sort": {
+        "name": "Ordenar fases",
+        "button": {
+            "save": "Guardar",
+            "cancel": "Cancelar"
+        }
+      },
+      "delete": {
+        "name": "Eliminar fase",
+        "title_delete": "Eliminar",
+        "text_delete": "¿Deseas eliminar esta fase?"
+      }
+    }
+  },
+  "people": {
+    "profile": {
+      "name": "Configuración de perfil",
+      "update_profile": "Actualizar perfil"
+    },
+    "pending": {
+      "name": "Pendientes",
+      "update_pending": "Pendiente"
+    },
+    "loading": "Cargando período de prueba del usuario...",
+    "user_list": {
+      "name": "Lista de usuarios",
+      "name_list": "Usuario",
+      "button": "Cambiar usuario"
+    },
+    "add_user": {
+      "name": "Agregar usuario",
+      "info": "Información personal",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "role": "Rol del usuario",
+      "group": "Grupo de usuario",
+      "management": "Gerente/Supervisor",
+      "mentor": "Mentor",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "birthday": "Fecha de nacimiento",
+      "position": "Cargo",
+      "first_day": "Primer día en la empresa",
+      "last_day": "Último día en la empresa",
+      "probation": "Período de prueba",
+      "date":{
+           "start": "Comenzar",
+           "end": "Fin"
+      },
+      "button": "Guardar cambios",
+      "active": "Activo",
+      "form": {
+        "first": "¡El nombre es obligatorio!",
+        "last": "¡El apellido es obligatorio!",
+        "email": "¡El correo electrónico es obligatorio!",
+        "password": "¡La contraseña es obligatoria!"
+      }
+    },
+    "user_group": {
+      "name": "Grupo de usuarios",
+      "label_name": "Nombre",
+      "button": "Guardar cambios",
+      "form": {
+        "name": "¡El nombre es obligatorio!"
+      },
+      "data": {
+        "id": "ID",
+        "name": "Nombre",
+        "created": "Creado"
+      }
+    },
+    "job_position": {
+      "name": "Cargo",
+      "title": "Título",
+      "button": "Guardar cambios",
+      "form": {
+        "name": "¡El nombre es obligatorio!"
+      },
+      "data": {
+        "id": "ID",
+        "title": "Título"
+      }
+    },
+    "avatar": {
+      "text": "Cambiar avatar:",
+      "button": {
+        "select": "Seleccionar",
+        "submit": "Confirmar"
+      }
+    },
+    "google_calendar": {
+      "button_calendar": "Agregar calendario de Google"
+    },
+    "days_off": {
+      "name": "Días libres",
+      "current_day": "Días libres actuales",
+      "history_logs": "Registro histórico",
+      "button": "Guardar cambios",
+      "history": "Registro histórico",
+      "data": {
+        "title": "Título",
+        "status": "Estado",
+        "start": "Inicio",
+        "end": "Fin",
+        "comment": "Comentario"
+      }
+    },
+    "change_password": {
+      "name": "Cambiar contraseña",
+      "password": "Contraseña",
+      "repeat_password": "Repetir contraseña",
+      "button": "Cambiar usuario",
+      "error": {
+        "minimum": "¡La contraseña debe tener al menos 8 caracteres!",
+        "require_password": "¡La contraseña es obligatoria!",
+        "require_repeat_password": "¡Repetir contraseña es obligatorio!",
+        "mismatch": "¡Las contraseñas no coinciden!"
+      }
+    }
+  },
+  "meet": {
+    "button": "Crear reunión",
+    "call": {
+      "list_name_company": "Nombre",
+      "call_button": "Llamar"
+    },
+    "all_user_name": "Lista de usuarios para llamar"
+  },
+  "company_rules": {
+    "title": "Días libres típicos para cada nuevo usuario",
+    "use_scheduler": "Usar programador para agregar días",
+    "reset": "Reiniciar cada 1 de enero",
+    "button": "Guardar",
+    "header": "Planificación",
+    "text_amount": "Esta cantidad se sumará a los días libres del usuario mensualmente. Cada año se restablecerá al valor predeterminado."
+  },
+  "manage_users": {
+    "id": "ID",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "birthday": "Fecha de nacimiento",
+    "position": "Cargo",
+    "actions": "Acciones"
+  },
+  "pending": {
+    "data": {
+      "firs_name": "Nombre",
+      "last_name": "Apellido",
+      "type": "Tipo",
+      "start": "Inicio",
+      "end": "Fin",
+      "created": "Creado",
+      "actions": "Acciones"
+    }
+  },
+  "requestTypeStaticList": {
+    "hospital": "Baja médica",
+    "vocation": "Vacaciones",
+    "time_off": "Día libre",
+    "transfer": "Transferencia",
+    "home": "Trabajo desde casa"
+  },
+  "daysOffStaticList": {
+    "hospital": "Baja médica",
+    "vocation": "Vacaciones",
+    "timeOff": "Día libre",
+    "transfer": "Transferencia",
+    "home": "Trabajo desde casa"
+  },
+  "requestApprov": "Solicitud de aprobación",
+  "model_transltate": {
+    "Absent": "Ausente",
+    "Probation": "Período de prueba"
+  },
+  "auth_signin": {
+    "sign_google": "Iniciar sesión con Google",
+    "email": {
+      "name": "Correo electrónico",
+      "require_email": "¡El correo electrónico es obligatorio!"
+    },
+    "password": {
+      "name": "Contraseña",
+      "require_password": "¡La contraseña es obligatoria!"
+    },
+    "or": "O",
+    "text": "¿Quieres crear una nueva empresa?",
+    "sign_button": "Iniciar sesión",
+    "create_button": "Crear"
+  },
+  "auth_signup": {
+    "companyUserTitle": "Crear un usuario",
+    "createCompanyUserTitle": "Crear empresa",
+    "form": {
+      "company": {
+        "nameLabel": "Nombre",
+        "countryLabel": "País",
+        "nameRequired": "¡El nombre de la empresa es obligatorio!",
+        "countryRequired": "¡El país es obligatorio!",
+        "submitButton": "Crear una empresa"
+      },
+      "user": {
+        "firstNameLabel": "Nombre",
+        "firstNameRequired": "¡El nombre es obligatorio!",
+        "lastNameLabel": "Apellido",
+        "lastNameRequired": "¡El apellido es obligatorio!",
+        "emailLabel": "Correo electrónico",
+        "emailRequired": "¡El correo electrónico es obligatorio!",
+        "passwordLabel": "Contraseña",
+        "passwordRequired": "¡La contraseña es obligatoria!",
+        "passwordMinLength": "¡La contraseña debe tener al menos 8 caracteres!",
+        "confirmPasswordLabel": "Repite la contraseña",
+        "confirmPasswordRequired": "¡Es obligatorio repetir la contraseña!",
+        "passwordsDoNotMatch": "¡Las contraseñas no coinciden!",
+        "submitButton": "Crear un usuario"
+      }
+    },
+    "links": {
+      "alreadyHaveCompany": "¿Ya tienes una empresa?",
+      "sign": "Iniciar sesión",
+      "support": "¿Necesitas ayuda?"
+    }
+  },
+  "call_model": {
+    "outgoing_call": {
+      "title": "Llamar",
+      "text": "Esperando una llamada de",
+      "cancel": "Cancelar"
+    },
+    "incoming_call": {
+      "title": "Vocación",
+      "text": "Llamada entrante de",
+      "button": {
+        "yes": "Sí",
+        "no": "No"
+      }
+    }
+  },
+    "inventory": {
+        "list": {
+            "add_new": "Añadir nuevo",
+            "column_id": "ID",
+            "column_code": "Código",
+            "column_name": "Nombre",
+            "column_serial": "Serie",
+            "column_category": "Categoría",
+            "column_user": "Usuario"
+        },
+        "form": {
+            "name": "Nombre",
+            "code": "Código",
+            "category": "Categoría",
+            "category_placeholder": "Grupo de categoría",
+            "serial_number": "Número de serie",
+            "location": "Ubicación",
+            "department": "Departamento",
+            "subdivision": "Subdivisión",
+            "price": "Precio",
+            "warranty": "Garantía",
+            "user": "Usuario",
+            "description": "Descripción"
+        },
+        "button": {
+            "create": "Crear",
+            "update": "Actualizar",
+            "history": "Historial"
+        },
+        "history": {
+            "title": "Historial de inventario",
+            "took": "Tomado",
+            "returned": "Devuelto"
+        }
+    },
+    "auth_change_password": {
+        "title": "Cambia tu contraseña",
+        "current_password": "Contraseña actual",
+        "new_password": "Nueva contraseña",
+        "retype_new_password": "Vuelve a escribir la nueva contraseña",
+        "submit": "Cambiar contraseña"
+    },
+    "auth_reset_password": {
+        "title": "Restablece tu contraseña",
+        "email": "Correo electrónico",
+        "email_required": "¡El correo electrónico es obligatorio!",
+        "submit": "Restablecer contraseña",
+        "success_title": "¡Enviamos un enlace a tu correo electrónico!",
+        "success_text": "¡Revisa tu bandeja de entrada!",
+        "already_changed": "¿Ya lo cambiaste?",
+        "sign_in": "Iniciar sesión"
+    },
+    "reset_password": {
+        "title": "Cambia tu contraseña",
+        "new_password": "Nueva contraseña",
+        "retype_new_password": "Vuelve a escribir la nueva contraseña",
+        "password_required": "¡La contraseña es obligatoria!",
+        "password_min_length": "¡La longitud mínima de la contraseña es de 8 caracteres!",
+        "retype_required": "¡Debes repetir la contraseña!",
+        "submit": "Cambiar contraseña"
+    },
+    "manage_user_update": {
+        "first_name": "Nombre",
+        "first_name_required": "¡El nombre es obligatorio!",
+        "last_name": "Apellido",
+        "last_name_required": "¡El apellido es obligatorio!",
+        "email": "Correo electrónico",
+        "email_required": "¡El correo electrónico es obligatorio!",
+        "country": "País",
+        "company": "Empresa",
+        "address": "Dirección",
+        "phone": "Teléfono",
+        "skype": "Skype",
+        "email_spare": "Correo electrónico (alternativo)",
+        "save_changes": "Guardar cambios",
+        "upload_new_photo": "Subir nueva foto"
+    },
+    "delete_confirm_modal": {
+        "cancel": "Cancelar",
+        "ok": "Aceptar"
+    },
+    "preview_modal": {
+        "title": "Vista previa del archivo adjunto",
+        "close": "Cerrar"
+    },
+    "table_live_kit": {
+        "users": "Usuarios"
+    },
+    "chat": {
+        "status_connected": "Conectado",
+        "status_disconnected": "Desconectado",
+        "status_label": "Estado:",
+        "you": "Tú",
+        "message_placeholder": "Escribe tu mensaje...",
+        "send": "Enviar"
+    },
+    "user_card_info": {
+        "no_user_found": "usuario no encontrado"
+    },
+    "dark_mode_button": {
+        "change_mode": "Cambiar modo"
+    },
+    "notification_form": {
+        "title": "Crear notificación",
+        "title_placeholder": "Título",
+        "title_required": "¡El título es obligatorio!",
+        "message_placeholder": "Escribe una notificación para todos los usuarios.",
+        "message_required": "¡El mensaje es obligatorio!",
+        "submit": "Crear notificación"
+    },
+    "notification_modal": {
+        "close": "Cerrar"
+    },
+    "create_event_dialog": {
+        "add_new": "+ añadir nuevo",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "tab_create_event": "Crear evento",
+        "tab_create_request": "Crear solicitud"
+    },
+    "google_permissions": {
+        "add_permissions": "Añadir permisos de Google",
+        "title": "Permisos de Google",
+        "column_email": "Correo electrónico",
+        "column_calendar": "Calendario",
+        "column_meeting_space": "Espacio de reuniones",
+        "info_message": "Debes otorgar permisos para usar la API de Google. "
+    },
+    "task_project_members": {
+        "title": "Miembros del proyecto",
+        "no_data": "No tienes ningún permiso para este proyecto",
+        "users": "Usuarios",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "column_user_id": "ID de usuario",
+        "column_user_name": "Nombre de usuario",
+        "column_permission": "Permiso",
+        "column_delete": "Eliminar"
+    },
+    "upload_creative_modal": {
+        "title": "Subir nuevos archivos",
+        "select_folder": "Seleccionar carpeta",
+        "files_label": "Archivos:"
+    },
+    "nav_search": {
+        "placeholder": "Buscar . . ."
+    },
+    "call_room": {
+        "copy": "Copiar",
+        "no_video_available": "No hay video disponible",
+        "you": "Tú",
+        "room_link": "Enlace de la sala:",
+        "you_camera": "Tú (Cámara)",
+        "you_screen_share": "Tú (Pantalla compartida)",
+        "toggle_camera": "Alternar cámara",
+        "toggle_screen_share": "Alternar compartir pantalla",
+        "toggle_microphone": "Alternar micrófono",
+        "expand_window": "Ampliar ventana",
+        "leave_room": "Salir de la sala",
+        "leave": "Salir",
+        "toggle_fullscreen": "Alternar pantalla completa",
+        "switch_to_camera": "Cambiar a la cámara",
+        "turn_off_camera": "Apagar la cámara",
+        "exit_fullscreen": "Salir de pantalla completa",
+        "click_to_make_main_video": "Haz clic para poner como video principal"
+    },
+    "autocomplete": {
+        "item_selection": "Selección de elementos"
+    },
+    "alert": {
+        "close": "Cerrar"
+    },
+    "task_comments": {
+        "title": "Comentarios",
+        "post": "Publicar",
+        "placeholder": "Escribe un comentario..."
+    },
+    "common_schedule": {
+        "name_column": "Nombre"
+    }
+}

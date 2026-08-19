@@ -1,0 +1,133 @@
+@import "../../../node_modules/ag-grid-community/src/styles/ag-grid.scss";
+@import "../../../node_modules/ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material-mixin.scss";
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+
+.ag-theme-material {
+  @include ag-theme-material();
+  border: none;
+}
+
+.ag-theme-material .ag-header-group-cell:not(.ag-column-resizing) + .ag-header-group-cell:not(.ag-header-cell-moving):hover, .ag-theme-material .ag-header-group-cell:not(.ag-column-resizing) + .ag-header-group-cell.ag-column-resizing, .ag-theme-material .ag-header-cell:not(.ag-column-resizing) + .ag-header-cell:not(.ag-header-cell-moving):hover, .ag-theme-material .ag-header-cell:not(.ag-column-resizing) + .ag-header-cell.ag-column-resizing, .ag-theme-material .ag-header-group-cell:first-of-type:not(.ag-header-cell-moving):hover, .ag-theme-material .ag-header-group-cell:first-of-type.ag-column-resizing, .ag-theme-material .ag-header-cell:first-of-type:not(.ag-header-cell-moving):hover, .ag-theme-material .ag-header-cell:first-of-type.ag-column-resizing {
+  background-color: var(--ag-header-cell-hover-background-color, #d2d4e0);
+}
+
+.ag-theme-material input[class^=ag-]:focus:not([type]), .ag-theme-material input[class^=ag-][type=text]:focus, .ag-theme-material input[class^=ag-][type=number]:focus, .ag-theme-material input[class^=ag-][type=tel]:focus, .ag-theme-material input[class^=ag-][type=date]:focus, .ag-theme-material input[class^=ag-][type=datetime-local]:focus, .ag-theme-material textarea[class^=ag-]:focus {
+  border-bottom: 2px solid;
+  border-bottom-color:  #787da2;
+  border-bottom-color: var(--ag-material-primary-color,  #787da2);
+  outline: none;
+  box-shadow: none;
+}
+
+.ag-theme-material .ag-row {
+  height: 48px;
+  background-color: #fff;
+  background-color: var(--ag-background-color, #fff);
+  color: rgba(0, 0, 0, 0.87);
+  color: var(--ag-data-color, var(--ag-foreground-color, rgba(0, 0, 0, 0.87)));
+  border-width: 1px;
+  border-color: #e2e2e2;
+  border-color: var(--ag-row-border-color, var(--ag-secondary-border-color, var(--ag-border-color, #e2e2e2)));
+}
+
+.ag-cell-inline-editing .ag-cell-editor input::selection {
+  background: #afd1fa;
+}
+
+.ag-theme-alpine .ag-ltr .ag-header-select-all {
+  margin-right: 5px!important;
+}
+
+.ag-header-viewport {
+  border: none;
+  border-bottom: 0px;
+}
+//.ag-center-cols-viewport {
+//  border: #e2e2e2 solid 1px;
+//}
+//.ag-floating-bottom.ag-selectable{
+//  border: #e2e2e2 solid 1px;
+//}
+.ag-theme-material .ag-header-cell, .ag-theme-material .ag-header-group-cell {
+  transition: background-color 0.3s;
+  background: #f3f4fb;
+  //padding: 0;
+}
+.ag-row-hover {
+  /* putting in !important so it overrides the theme's styling as it hovers the row also */
+  background-color: #f1f2ff !important;
+}
+.ag-column-hover {
+  background-color: #f1f2ff ;
+}
+
+.ag-header-cell-text {
+  color: #787da2;
+}
+
+.ag-cell-value {
+  color: #797979;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+}
+
+.ag-theme-material .ag-icon {
+  color: #787da2;
+  font-size: 15px!important;
+}
+
+.ag-body-horizontal-scroll-viewport {
+  //border-bottom: 1px solid #e2e2e2;
+  //border-left: none;
+  //border-right: 1px solid #e2e2e2;
+}
+
+.ag-theme-material .ag-header-cell, .ag-theme-material .ag-header-group-cell {
+  //transition: background-color .3s;
+  background: #fafafa;
+}
+.ag-theme-material .ag-horizontal-left-spacer:not(.ag-scroller-corner){
+  border: none;
+}
+
+.ag-theme-material{
+  ::-webkit-scrollbar{
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb:horizontal{
+    background: #f3f4fb;
+    border-radius: 4px;
+  }
+}
+
+.ag-center-cols-viewport{
+  border: none;
+}
+.weekends-columns{
+  background: #fafafa;
+}
+.ag-test{
+  width: auto
+}
+#common-schedule{
+  .ag-theme-material .ag-cell{
+    padding-left: 0;
+    padding-right: 0;
+    //padding: 0!important;
+  }
+  .ag-theme-material .ag-header-cell{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    &.common-name-header{
+      padding: 10px;
+    }
+  }
+}
+.ag-header-cell:not(.ag-header-cell-auto-height) .ag-header-cell-comp-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

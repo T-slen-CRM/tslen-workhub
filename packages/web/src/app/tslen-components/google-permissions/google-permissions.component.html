@@ -1,0 +1,32 @@
+@if (!googlePermissions()
+    || googlePermissions() && (googlePermissions().email === 0
+        || googlePermissions().calendar === 0
+        || googlePermissions().meetingSpace === 0)
+        ) {
+    <app-info-alert-message [message]="infoAlertMessage"></app-info-alert-message>
+    <div class="make-request-btn-container">
+            <button mat-stroked-button
+                    class="make-request-btn"
+                    (click)="connectGoogle()"
+            >
+                {{'google_permissions.add_permissions' | translate}}
+            </button>
+    </div>
+}
+
+@if (showGoogleCalendar()
+    && googlePermissions()
+    && googlePermissions().email
+    && googlePermissions().calendar
+        ) {
+    <app-google-calendar [googleCalendarData$]="googleCalendarData()"></app-google-calendar>
+}
+<div >
+    <h6>{{'google_permissions.title' | translate}}</h6>
+    <app-ag-grid-table
+        [setRowData]="[googlePermissions()]"
+        [setColumnDefs]="googlePermissionsColumnDefs"
+    >
+    </app-ag-grid-table>
+</div>
+

@@ -1,0 +1,30 @@
+$linkDefaultColor: black;
+$linkHoverColor:  #3f51b5;
+.main-card-container{
+  flex-basis: 49%;
+  box-sizing: border-box;
+  mat-card-title a{
+    font-size: 16px;
+    color: $linkDefaultColor;
+    &:hover{
+      color: $linkHoverColor;
+    }
+  }
+  .card-header-image {
+    position: relative;
+    img{
+      border-radius: inherit;
+    }
+  }
+  .card-content-container{
+    display: flex;
+    flex-direction: column;
+    a{
+      font-size: 14px;
+      color: $linkDefaultColor;
+      &:hover{
+        color: $linkHoverColor;
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<div>
+    <app-modal-dialog-header
+            [tooltipText]="uploadTooltip"
+            [title]="'upload_creative_modal.title' | translate"
+            (closeDialog)="closeDialog()"
+    ></app-modal-dialog-header>
+
+    <mat-dialog-content class="mat-typography">
+        <div>
+                <mat-form-field>
+                    <mat-select [(ngModel)]="folderId" [placeholder]="'upload_creative_modal.select_folder' | translate" required>
+                        <mat-option *ngFor="let folderId of foldersKeys" [value]="folderId">
+                            {{folders[folderId].title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <app-upload-files
+                        [uploadLabel]="'upload_creative_modal.files_label' | translate"
+                        [params]="{id: folderId}"
+                        [multipleSelection]="true"
+                        [acceptedFileTypes]="acceptedFileTypes"
+                        [uploadLimit]="uploadLimit"
+                        (uploadComplete)="uploadComplete = $event"
+                        [disableSelect]="!folderId"
+                ></app-upload-files>
+        </div>
+    </mat-dialog-content>
+</div>
+

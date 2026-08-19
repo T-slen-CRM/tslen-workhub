@@ -1,0 +1,72 @@
+/* Tooltip container */
+.custom-tooltip {
+  position: relative;
+  display: inline-block;
+  /*border-bottom: 1px dotted black; !* If you want dots under the hoverable text *!*/
+}
+
+/* Tooltip text */
+.custom-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+  background-color: #999;
+  color: #fff;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -50px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.custom-tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #999 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.custom-tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.ask-server-action-button{
+  display: flex;
+  flex-direction: row;
+}
+@keyframes spinner-ask-server {
+  to {transform: rotate(360deg);}
+}
+
+.spinner-ask-server:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  /* margin-left: 20px; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* right: 10%; */
+  /* left: 10px; */
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+  margin-left: 2%;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: #1b73e7;
+  animation: spinner 0.8s linear infinite;
+}

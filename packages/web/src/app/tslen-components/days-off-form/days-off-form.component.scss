@@ -1,0 +1,21 @@
+.days-off-container{
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  .days-off-item{
+    width: 150px;
+    padding-right: 10px;
+    .days-off-item-input{
+      display: flex;
+      align-items: flex-end;
+    }
+
+  }
+  @media (max-width: 768px){
+  flex-direction: column;
+    .days-off-item{
+      width: 50px;
+    }
+  }
+}

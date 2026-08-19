@@ -1,0 +1,27 @@
+    <mat-dialog-content class="mat-typography">
+        <div class="task-phase-card">
+            <div class="description-column">
+                <div >
+                    <mat-form-field class="input-mat-select" appearance="outline">
+                        <mat-label>{{'task.phase.create.label'| translate}}</mat-label>
+                        <input matInput
+                               type="text"
+                               [placeholder]="'task.phase.create.placeholder'| translate"
+                               [formControl]="title"
+                        />
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions class="dialog-action-button">
+        <div class="save-cancel-btn-container">
+            <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'task.phase.create.button.cancel' | translate }}</button>
+            <button mat-button mat-raised-button color="primary"
+                    (click)="onSubmit()"
+                    [disabled]="!title.valid"
+            >{{'task.phase.create.button.save' | translate }}</button>
+        </div>
+    </mat-dialog-actions>
+

@@ -1,0 +1,576 @@
+{
+  "languages": {
+    "en": "Англійська",
+    "ua": "Українська",
+    "ru": "Російська",
+    "fr": "Французька",
+    "es": "Іспанська"
+  },
+  "menu": {
+    "menu_item": {
+      "log_out": "Вийти",
+      "profile": "Профіль"
+    },
+    "notifications": {
+      "title": "Сповіщення",
+      "no_notifications": "У вас ще немає сповіщень.",
+      "link": {
+        "mark_read": "позначити як прочитане",
+        "clear_all": "очистити все"
+      }
+    }
+  },
+  "posts": {
+    "header": {
+      "news": "Новини"
+    },
+    "editor": {
+      "hide": "сховати редактор",
+      "add": "додати пост"
+    },
+    "button": "Показати більше",
+    "save": "Зберегти пост"
+  },
+  "comment": {
+    "text": "Введіть текст тут..."
+  },
+  "tooltip": {
+    "like": "Подобається",
+    "delete": "Видалити"
+  },
+  "button": {
+    "showMore": "Показати більше"
+  },
+  "absentUser": {
+    "header": {
+      "name": "Хто сьогодні відсутній?",
+      "type": "Тип",
+      "day": "Початок"
+    },
+    "column": "Сьогодні всі працівники присутні",
+    "monthEvent": "Подій до наступного місяця немає",
+    "monthColumn": {
+      "name": "Події",
+      "type": "Тип",
+      "day": "Початок"
+    }
+  },
+  "makeRequest": {
+    "name": "Створити запит",
+    "meet": "Створити подію Google та зустріч",
+    "title": "Заголовок",
+    "label": "Колір мітки",
+    "form": {
+      "title": "Створити запит",
+      "hours": "використати години",
+      "start": "Початок",
+      "end": "Кінець",
+      "comment": "Коментар",
+      "save": "Зберегти",
+      "cancel": "Скасувати"
+    }
+  },
+  "navigation": {
+    "name": "Навігація",
+    "main_wall": "Головна сторінка",
+    "personal_schedule": "Особистий розклад",
+    "company_calendar": "Календар компанії",
+    "tasks_manager": "Менеджер завдань",
+    "task_list": "Список завдань",
+    "people": "Люди",
+    "meet": "Google зустрічі",
+    "ip_checker": "Перевірка IP",
+    "admin": "АДМІН",
+    "pending": "Очікує",
+    "company_rules": "Правила компанії",
+    "tslen_meet": "T-slen зустрічі"
+  },
+  "calendar": {
+    "header": {
+      "name": "Ім’я"
+    },
+    "view": {
+      "list": "Список",
+      "calendar": "Календар"
+    }
+  },
+  "personals_chedule": {
+    "button": {
+      "today": "Сьогодні",
+      "day": "День",
+      "week": "Тиждень",
+      "month": "Місяць"
+    }
+  },
+  "weekdays": {
+    "sunday": "Нд",
+    "monday": "Пн",
+    "tuesday": "Вт",
+    "wednesday": "Ср",
+    "thursday": "Чт",
+    "friday": "Пт",
+    "saturday": "Сб"
+  },
+  "task_project": {
+    "project_name": "Назва проєкту",
+    "private": "Приватний",
+    "description": "Опис",
+    "channel": "Канал сповіщень у Slack",
+    "logo": "Логотип"
+  },
+  "column": {
+    "name": "Ім’я"
+  },
+  "task": {
+    "button": {
+      "edit": "Редагувати",
+      "members": "Учасники",
+      "delete": "Видалити"
+    },
+    "form": {
+      "label": "Ім’я",
+      "placeholder": "Ім’я",
+      "description": "Опис",
+      "estimate": "Оцінка",
+      "priority": "Пріоритет",
+      "move_card": "Перемістити картку до фази",
+      "users": "Користувачі",
+      "upload attachments": "Завантажити вкладення:",
+      "button": {
+        "save": "Зберегти",
+        "cancel": "Скасувати",
+        "select": "Вибрати"
+      }
+    },
+    "phase": {
+      "create": {
+        "name": "Створити фазу",
+        "label": "Назва",
+        "placeholder": "Назва",
+        "button": {
+            "save": "Зберегти",
+            "cancel": "Скасувати"
+        }
+      },
+      "edit": "Редагувати фазу",
+      "sort": {
+        "name": "Сортувати фази",
+        "button": {
+            "save": "Зберегти",
+            "cancel": "Скасувати"
+        }
+      },
+      "delete": {
+        "name": "Видалити фазу",
+        "title_delete": "Видалити",
+        "text_delete": "Бажаєте видалити цю фазу?"
+      }
+    }
+  },
+  "people": {
+    "profile": {
+      "name": "Налаштування профілю",
+      "update_profile": "Оновити профіль"
+    },
+    "pending": {
+      "name": "Очікування",
+      "update_pending": "Очікується"
+    },
+    "loading": "Завантаження випробувального терміну користувача...",
+    "user_list": {
+      "name": "Список користувачів",
+      "name_list": "Користувач",
+      "button": "Змінити користувача"
+    },
+    "add_user": {
+      "name": "Додати користувача",
+      "info": "Особиста інформація",
+      "first_name": "Ім’я",
+      "last_name": "Прізвище",
+      "email": "Електронна пошта",
+      "password": "Пароль",
+      "role": "Роль користувача",
+      "group": "Група користувача",
+      "management": "Менеджер/начальник",
+      "mentor": "Наставник",
+      "address": "Адреса",
+      "phone": "Телефон",
+      "birthday": "День народження",
+      "position": "Посада",
+      "first_day": "Перший день у компанії",
+      "last_day": "Останній день у компанії",
+      "probation": "Випробувальний термін",
+      "date":{
+           "start": "Старт",
+           "end": "Кінець"
+      },
+      "button": "Зберегти зміни",
+      "active": "Активний",
+      "form": {
+        "first": "Ім’я є обов’язковим!",
+        "last": "Прізвище є обов’язковим!",
+        "email": "Електронна пошта є обов’язковою!",
+        "password": "Пароль є обов’язковим!"
+      }
+    },
+    "user_group": {
+      "name": "Група користувачів",
+      "label_name": "Назва",
+      "button": "Зберегти зміни",
+      "form": {
+        "name": "Назва є обов’язковою!"
+      },
+      "data": {
+        "id": "ID",
+        "name": "Назва",
+        "created": "Створено"
+      }
+    },
+    "job_position": {
+      "name": "Посада",
+      "title": "Назва",
+      "button": "Зберегти зміни",
+      "form": {
+        "name": "Назва є обов’язковою!"
+      },
+      "data": {
+        "id": "ID",
+        "title": "Назва"
+      }
+    },
+    "avatar": {
+      "text": "Змінити аватар:",
+      "button": {
+        "select": "Обрати",
+        "submit": "Підтвердити"
+      }
+    },
+    "google_calendar": {
+      "button_calendar": "Додати календар Google"
+    },
+    "days_off": {
+      "name": "Вихідні дні",
+      "current_day": "Поточні вихідні дні",
+      "history_logs": "Журнал історії",
+      "button": "Зберегти зміни",
+      "history": "Журнал історії",
+      "data": {
+        "title": "Назва",
+        "status": "Статус",
+        "start": "Початок",
+        "end": "Кінець",
+        "comment": "Коментар"
+      }
+    },
+    "change_password": {
+      "name": "Змінити пароль",
+      "password": "Пароль",
+      "repeat_password": "Повторіть пароль",
+      "button": "Змінити користувача",
+      "error": {
+        "minimum": "Мінімальна довжина пароля — 8 символів!",
+        "require_password": "Пароль є обов’язковим!",
+        "require_repeat_password": "Повторний пароль є обов’язковим!",
+        "mismatch": "Паролі не співпадають!"
+      }
+    }
+  },
+  "meet": {
+    "button": "Створити зустріч",
+    "call": {
+      "list_name_company": "Назва",
+      "call_button": "Подзвонити"
+    },
+    "all_user_name": "Список користувачів для дзвінка"
+  },
+  "company_rules": {
+    "title": "Типові вихідні дні для кожного нового користувача",
+    "use_scheduler": "Використовувати планувальник для додавання днів",
+    "reset": "Скидати щороку 1 січня",
+    "button": "Зберегти",
+    "header": "Планування",
+    "text_amount": "Ця кількість буде додаватися до вихідних користувача щомісяця. Щороку значення буде встановлено за замовчуванням."
+  },
+  "manage_users": {
+    "id": "ID",
+    "name": "Ім’я",
+    "email": "Електронна пошта",
+    "phone": "Телефон",
+    "birthday": "День народження",
+    "position": "Посада",
+    "actions": "Дії"
+  },
+  "pending": {
+    "data": {
+      "firs_name": "Ім’я",
+      "last_name": "Прізвище",
+      "type": "Тип",
+      "start": "Початок",
+      "end": "Кінець",
+      "created": "Створено",
+      "actions": "Дії"
+    }
+  },
+  "requestTypeStaticList": {
+    "hospital": "Лікарняний",
+    "vocation": "Відпустка",
+    "time_off": "Вихідний",
+    "transfer": "Перенесення",
+    "home": "Робота з дому"
+  },
+  "daysOffStaticList": {
+    "hospital": "Лікарняний",
+    "vocation": "Відпустка",
+    "timeOff": "Вихідний",
+    "transfer": "Перенесення",
+    "home": "Робота з дому"
+  },
+  "requestApprov": "Запит на затвердження",
+  "model_transltate": {
+      "Absent": "Відсутній",
+      "Probation": "Випробувальний термін"
+  },
+  "auth_signin": {
+    "sign_google": "Увійти через Google",
+    "email": {
+      "name": "Електронна пошта",
+      "require_email": "Електронна пошта є обов’язковою!"
+    },
+    "password": {
+      "name": "Пароль",
+      "require_password": "Пароль є обов’язковим!"
+    },
+    "or": "АБО",
+    "text": "Хочете створити нову компанію?",
+    "sign_button": "Увійти",
+    "create_button": "Створити"
+  },
+  "auth_signup": {
+    "companyUserTitle": "Створити користувача",
+    "createCompanyUserTitle": "Створити компанію",
+    "form": {
+      "company": {
+        "nameLabel": "Назва",
+        "countryLabel": "Країна",
+        "nameRequired": "Назва компанії є обов’язковою!",
+        "countryRequired": "Країна є обов’язковою!",
+        "submitButton": "Створити компанію"
+      },
+      "user": {
+        "firstNameLabel": "Ім’я",
+        "firstNameRequired": "Ім’я є обов’язковим!",
+        "lastNameLabel": "Прізвище",
+        "lastNameRequired": "Прізвище є обов’язковим!",
+        "emailLabel": "Електронна пошта",
+        "emailRequired": "Електронна пошта є обов’язковою!",
+        "passwordLabel": "Пароль",
+        "passwordRequired": "Пароль є обов’язковим!",
+        "passwordMinLength": "Пароль має містити щонайменше 8 символів!",
+        "confirmPasswordLabel": "Повторіть пароль",
+        "confirmPasswordRequired": "Повторне введення паролю є обов’язковим!",
+        "passwordsDoNotMatch": "Паролі не збігаються!",
+        "submitButton": "Створити користувача"
+      }
+    },
+    "links": {
+      "alreadyHaveCompany": "Вже маєте компанію?",
+      "sign": "Увійти",
+      "support": "Потрібна підтримка?"
+    }
+  },
+  "call_model": {
+    "outgoing_call": {
+      "title": "Дзвонимо",
+      "text": "Очікування дзвінка від",
+      "cancel": "Скасувати"
+    },
+    "incoming_call": {
+      "title": "Дзвонять",
+      "text": "Вхідний дзвінок від",
+      "button": {
+        "yes": "Так",
+        "no": "Ні"
+      }
+    }
+  },
+    "inventory": {
+        "list": {
+            "add_new": "Додати нове",
+            "column_id": "ID",
+            "column_code": "Код",
+            "column_name": "Ім'я",
+            "column_serial": "Серія",
+            "column_category": "Категорія",
+            "column_user": "Користувач"
+        },
+        "form": {
+            "name": "Ім'я",
+            "code": "Код",
+            "category": "Категорія",
+            "category_placeholder": "Група категорій",
+            "serial_number": "Серійний номер",
+            "location": "Місцезнаходження",
+            "department": "Відділ",
+            "subdivision": "Підрозділ",
+            "price": "Ціна",
+            "warranty": "Гарантія",
+            "user": "Користувач",
+            "description": "Опис"
+        },
+        "button": {
+            "create": "Створити",
+            "update": "Оновити",
+            "history": "Історія"
+        },
+        "history": {
+            "title": "Історія інвентарю",
+            "took": "Взято",
+            "returned": "Повернено"
+        }
+    },
+    "auth_change_password": {
+        "title": "Змініть ваш пароль",
+        "current_password": "Поточний пароль",
+        "new_password": "Новий пароль",
+        "retype_new_password": "Повторіть новий пароль",
+        "submit": "Змінити пароль"
+    },
+    "auth_reset_password": {
+        "title": "Скинути пароль",
+        "email": "Електронна пошта",
+        "email_required": "Електронна пошта є обов'язковою!",
+        "submit": "Скинути пароль",
+        "success_title": "Ми надіслали посилання на вашу електронну пошту!",
+        "success_text": "Перевірте свою поштову скриньку!",
+        "already_changed": "Вже змінили?",
+        "sign_in": "Увійти"
+    },
+    "reset_password": {
+        "title": "Змініть ваш пароль",
+        "new_password": "Новий пароль",
+        "retype_new_password": "Повторіть новий пароль",
+        "password_required": "Пароль є обов'язковим!",
+        "password_min_length": "Мінімальна довжина пароля - 8 символів!",
+        "retype_required": "Потрібно повторити пароль!",
+        "submit": "Змінити пароль"
+    },
+    "manage_user_update": {
+        "first_name": "Ім'я",
+        "first_name_required": "Ім'я обов'язкове!",
+        "last_name": "Прізвище",
+        "last_name_required": "Прізвище обов'язкове!",
+        "email": "Електронна пошта",
+        "email_required": "Електронна пошта є обов'язковою!",
+        "country": "Країна",
+        "company": "Компанія",
+        "address": "Адреса",
+        "phone": "Телефон",
+        "skype": "Skype",
+        "email_spare": "Електронна пошта (запасна)",
+        "save_changes": "Зберегти зміни",
+        "upload_new_photo": "Завантажити нове фото"
+    },
+    "delete_confirm_modal": {
+        "cancel": "Скасувати",
+        "ok": "Гаразд"
+    },
+    "preview_modal": {
+        "title": "Перегляд вкладення",
+        "close": "Закрити"
+    },
+    "table_live_kit": {
+        "users": "Користувачі"
+    },
+    "chat": {
+        "status_connected": "Підключено",
+        "status_disconnected": "Відключено",
+        "status_label": "Статус:",
+        "you": "Ви",
+        "message_placeholder": "Введіть повідомлення...",
+        "send": "Надіслати"
+    },
+    "user_card_info": {
+        "no_user_found": "користувача не знайдено"
+    },
+    "dark_mode_button": {
+        "change_mode": "Змінити режим"
+    },
+    "notification_form": {
+        "title": "Створити сповіщення",
+        "title_placeholder": "Заголовок",
+        "title_required": "Заголовок обов'язковий!",
+        "message_placeholder": "Напишіть сповіщення для всіх користувачів.",
+        "message_required": "Повідомлення обов'язкове!",
+        "submit": "Створити сповіщення"
+    },
+    "notification_modal": {
+        "close": "Закрити"
+    },
+    "create_event_dialog": {
+        "add_new": "+ додати нове",
+        "cancel": "Скасувати",
+        "save": "Зберегти",
+        "tab_create_event": "Створити подію",
+        "tab_create_request": "Створити запит"
+    },
+    "google_permissions": {
+        "add_permissions": "Додати дозволи Google",
+        "title": "Дозволи Google",
+        "column_email": "Електронна пошта",
+        "column_calendar": "Календар",
+        "column_meeting_space": "Простір для зустрічей",
+        "info_message": "Вам потрібно надати дозволи для використання Google API. "
+    },
+    "task_project_members": {
+        "title": "Учасники проєкту",
+        "no_data": "У вас немає дозволів для цього проєкту",
+        "users": "Користувачі",
+        "cancel": "Скасувати",
+        "save": "Зберегти",
+        "column_user_id": "ID користувача",
+        "column_user_name": "Ім'я користувача",
+        "column_permission": "Дозвіл",
+        "column_delete": "Видалити"
+    },
+    "upload_creative_modal": {
+        "title": "Завантажити нові файли",
+        "select_folder": "Обрати папку",
+        "files_label": "Файли:"
+    },
+    "nav_search": {
+        "placeholder": "Пошук . . ."
+    },
+    "call_room": {
+        "copy": "Копіювати",
+        "no_video_available": "Відео недоступне",
+        "you": "Ви",
+        "room_link": "Посилання на кімнату:",
+        "you_camera": "Ви (Камера)",
+        "you_screen_share": "Ви (Демонстрація екрана)",
+        "toggle_camera": "Увімкнути/вимкнути камеру",
+        "toggle_screen_share": "Увімкнути/вимкнути демонстрацію екрана",
+        "toggle_microphone": "Увімкнути/вимкнути мікрофон",
+        "expand_window": "Розгорнути вікно",
+        "leave_room": "Покинути кімнату",
+        "leave": "Покинути",
+        "toggle_fullscreen": "Повноекранний режим",
+        "switch_to_camera": "Перемкнутися на камеру",
+        "turn_off_camera": "Вимкнути камеру",
+        "exit_fullscreen": "Вийти з повноекранного режиму",
+        "click_to_make_main_video": "Натисніть, щоб зробити основним відео"
+    },
+    "autocomplete": {
+        "item_selection": "Вибір елемента"
+    },
+    "alert": {
+        "close": "Закрити"
+    },
+    "task_comments": {
+        "title": "Коментарі",
+        "post": "Опублікувати",
+        "placeholder": "Написати коментар..."
+    },
+    "common_schedule": {
+        "name_column": "Ім'я"
+    }
+}

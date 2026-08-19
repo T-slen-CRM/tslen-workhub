@@ -1,0 +1,20 @@
+.task-comments {
+  margin-top: 16px;
+}
+.task-comments-list {
+  list-style: none;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.task-comments-timestamp {
+  margin-left: 8px;
+  font-size: 0.8em;
+  opacity: 0.6;
+}
+.task-comments-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}

@@ -1,0 +1,38 @@
+.example-form {
+  min-width: 150px;
+  //max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+.mat-number-field{
+  width: 30%;
+}
+.mat-text-field{
+  width: 70%;
+}
+.user-settings{
+    margin-top: 2%;
+}
+
+
+.user-avatar-container{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .img-user-profile{
+    max-width: 300px;
+    max-height: 400px;
+    border-radius: 5px;
+  }
+  .user-upload-button{
+    max-width: 300px;
+    max-height: 400px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+  }
+}

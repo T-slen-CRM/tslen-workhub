@@ -1,0 +1,19 @@
+<div class="ag-grid-full-height">
+<!--    <ag-grid-angular-->
+<!--            class="ag-theme-material ag-grid-angular-style"-->
+<!--        [rowData]="rowData | async"-->
+<!--        [columnDefs]="columnDefs"-->
+<!--        [defaultColDef]="defaultColDef"-->
+<!--        [frameworkComponents]="frameworkComponents"-->
+<!--        (gridReady)="onGridReady($event)"-->
+<!--        [rowHeight]="38"-->
+<!--        [animateRows]="true"-->
+<!--        [headerHeight]="81"-->
+<!--        [enableCellTextSelection]="true">-->
+<!--    </ag-grid-angular>-->
+    <app-ag-grid-table
+            [setRowData]="rowData | async"
+            [setColumnDefs]="columnDefs"
+            [frameworkComponents]="frameworkComponents"
+    ></app-ag-grid-table>
+</div>

@@ -1,0 +1,21 @@
+<div class="upper-panel">
+    <div>
+        <button
+                class="inventory-button"
+                [routerLink]="['/admin/inventory-create']"
+
+                mat-stroked-button
+                color="primary">{{'inventory.list.add_new' | translate}}</button>
+    </div>
+</div>
+
+<div class="custom-table">
+    <app-ag-grid-table [setColumnDefs]="columnDefs"
+                       [setRowData]="rowData | async"
+                       [frameworkComponents]="frameworkComponents"
+                       [setSizeColumnsToFit]="true"
+                       [setRowHeight]="43"
+                       [setHeaderHeight]="50"
+    ></app-ag-grid-table>
+</div>
+

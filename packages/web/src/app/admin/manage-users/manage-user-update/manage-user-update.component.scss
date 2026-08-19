@@ -1,0 +1,25 @@
+.example-form {
+  min-width: 150px;
+  //max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+.mat-number-field{
+  width: 30%;
+}
+.mat-text-field{
+  width: 70%;
+}
+.user-settings{
+    margin-top: 2%;
+}
+
+.container-targeting{
+  display: flex;
+  flex-direction: row;
+  //justify-content: space-around;
+
+}

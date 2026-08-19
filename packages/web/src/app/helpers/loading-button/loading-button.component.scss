@@ -1,0 +1,14 @@
+:host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-button-content--hidden {
+  visibility: hidden;
+}
+
+.loading-button-spinner {
+  position: absolute;
+}

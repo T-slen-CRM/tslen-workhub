@@ -1,0 +1,26 @@
+<!--<br>-->
+<!--@if (calendarId){-->
+<!--    <p>Your current calendar ID: {{calendarId}}</p>-->
+<!--}-->
+
+<div class="google-auth-btn-container">
+    <!--if user already authorize show reset button and hide authorize button using ng template-->
+    <ng-container *ngIf="(googleCalendarData$ | async)?.calendarId; else authorizeBtn">
+        <button mat-button color="warn" (click)="resetAuth()">Stop fetching google calendar</button>
+    </ng-container>
+    <ng-template #authorizeBtn>
+        <div class="make-request-btn-container">
+            <button mat-stroked-button
+                    class="make-request-btn"
+                    (click)="googleAuth()"
+            >
+                {{'people.google_calendar.button_calendar' | translate}}
+            </button>
+        </div>
+<!--        <button  mat-raised-button (click)="googleAuth()">Fetch google calendar every 20 min</button>-->
+    </ng-template>
+
+</div>
+
+
+<!--<button mat-raised-button (click)="createCalendarEvent()">Create event</button>-->

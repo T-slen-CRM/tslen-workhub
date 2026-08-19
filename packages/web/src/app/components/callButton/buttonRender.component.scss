@@ -1,0 +1,23 @@
+.ag-btn-call {
+  color: #45a049;
+  font-size: 14px;
+  inline-size: auto;
+}
+
+//.ag-btn-call:hover {
+//  background-color: #45a049;
+//  transform: scale(1.05);
+//  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+//}
+
+.ag-btn-call:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+}
+
+.ag-btn-call:disabled {
+  //background-color: #cccccc;
+  cursor: not-allowed;
+  color: #666666;
+  box-shadow: none;
+}

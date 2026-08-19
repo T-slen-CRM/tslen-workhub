@@ -1,0 +1,42 @@
+<table mat-table [dataSource]="dataSource">
+    <ng-container *ngFor="let column of originObjectDisplayedColumns" [matColumnDef]="column.name">
+        <div [ngSwitch]="column.name">
+                <th mat-header-cell *matHeaderCellDef> {{column.display | translate}}</th>
+            <div *ngSwitchDefault>
+                <td  mat-cell *matCellDef="let element"> {{element[column.name] | translate}} </td>
+            </div>
+            <div *ngSwitchCase="'type'">
+                <td  mat-cell *matCellDef="let element">
+                    <mat-icon [style]="{color: eventsTypeList ? eventsTypeList[element.type]?.color : 'primary'}"
+                              matTooltip="{{eventsTypeList ? eventsTypeList[element.type]?.title : ''}}"
+                    >{{eventsTypeList ? eventsTypeList[element.type].icon : 'star'}}</mat-icon>
+                </td>
+            </div>
+            <div *ngSwitchCase="'day'">
+                <td  mat-cell *matCellDef="let element">
+                    {{element.day | date: 'MMM d'}}
+                </td>
+            </div>
+            <div *ngSwitchCase="'name'">
+                <td  mat-cell *matCellDef="let element">
+                    <img class="img-radius" *ngIf="element.avatar" [src]="element.avatar">
+                    {{element.name}}
+                </td>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <div *ngIf="!hideHeaders">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    </div>
+    <div *ngIf="tableName">
+        <tr mat-header-row *matHeaderRowDef="tableName"></tr>
+    </div>
+
+<!--    <tr mat-header-row >test</tr>-->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">{{noData}}</td>
+    </tr>
+</table>

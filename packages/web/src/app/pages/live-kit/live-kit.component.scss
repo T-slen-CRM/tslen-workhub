@@ -1,0 +1,18 @@
+.user_title{
+    padding-top: 60px;
+    padding-bottom: 35px;
+}
+.live-kit-main-container{
+    display: flex;
+    flex-direction: row;
+    height: 80vh;
+
+    .live-kit-user-list{
+        overflow: scroll;
+    }
+
+    .live-chat-container{
+    flex:1
+}
+}
+

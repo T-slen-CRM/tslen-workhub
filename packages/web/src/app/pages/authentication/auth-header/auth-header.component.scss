@@ -1,0 +1,10 @@
+$signin-button-color: #2784db;
+.logo-img-container{
+  margin: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.header-style{
+  color: $signin-button-color;
+  text-decoration: underline;
+}

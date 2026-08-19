@@ -1,0 +1,574 @@
+{
+    "languages": {
+      "en": "English",
+      "ua": "Ukrainian",
+      "ru": "Russian",
+      "fr": "French",
+      "es": "Spanish"
+    },
+    "menu":{
+      "menu_item":{
+         "log_out": "Log out",
+         "profile": "Profile"
+      },
+      "notifications":{
+          "title":"Notifications",
+          "no_notifications": "You don't have notifications yet.",
+          "link":{
+              "mark_read": "mark as read",
+              "clear_all":"clear all"
+          }
+        }
+    },
+    "posts":{
+      "header": {
+        "news": "News"
+      },
+      "editor": {
+        "hide": "hide editor",
+        "add": "add post"
+      },
+      "button": "Show more",
+      "save": "Save post"
+    },
+    "comment":{
+        "text": "Enter text here..."
+    },
+    "tooltip": {
+      "like": "Like",
+      "delete": "Delete"
+    },
+    "button": {
+      "showMore": "Show more"
+    },
+    "absentUser": {
+      "header": {
+        "name": "Who is absent today?",
+        "type": "Type",
+        "day": "Start"
+      },
+      "column": "All employees are present today",
+      "monthEvent": "No events by next month",
+      "monthColumn":{
+        "name": "Events",
+        "type": "Type",
+        "day": "Start"
+      }
+    },
+    "makeRequest":{
+        "name": "Make a request",
+        "meet": "Make a Google event & meet",
+        "title": "Title",
+        "label": "Label color",
+        "form": {
+           "title":"Make a request",
+           "hours": "use hours",
+           "start": "Start",
+           "end": "End",
+           "comment": "Comment",
+           "save":"Save",
+           "cancel": "Cancel"
+        }
+    },
+    "navigation": {
+        "name": "Navigation",
+        "main_wall": "Main wall",
+        "personal_schedule": "Personal schedule",
+        "company_calendar": "Company calendar",
+        "tasks_manager": "Tasks manager",
+        "task_list": "Task list",
+        "people": "People",
+        "meet": "Google meet",
+        "ip_checker": "IP checker",
+        "admin": "ADMIN",
+        "pending": "Pending",
+        "company_rules": "Company rules",
+        "tslen_meet": "T-slen Meet"
+    },
+    "calendar": {
+      "header":{
+        "name": "Name"
+      },
+      "view":{
+        "list": "List",
+        "calendar": "Calendar"
+      }
+    },
+    "personals_chedule":{
+      "button":{
+        "today": "Today",
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      }
+    },
+    "weekdays": {
+        "sunday": "Sun",
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat"
+    },
+    "task_project":{
+     "project_name": "Project name",
+     "private": "Private",
+     "description": "Description",
+     "channel": "Slack alert channel",
+     "logo": "Logo"
+    },
+    "column": {
+      "name":  "Name"
+    },
+    "task":{
+      "button":{
+        "edit": "Edit",
+        "members": "Members",
+        "delete": "Delete"
+      },
+      "form":{
+        "label": "Name",
+        "placeholder": "Name",
+        "description":"Description",
+        "estimate": "Estimate",
+        "priority": "Priority",
+        "move_card": "Move card to phase",
+        "users": "Users",
+        "upload attachments": "Upload attachments:",
+        "button": {
+          "save": "Save",
+          "cancel":"Cancel",
+          "select": "Select"
+        }
+      },
+      "phase": {
+        "create": {
+           "name": "Create phase",
+           "label": "Name",
+           "placeholder": "Name",
+           "button": {
+              "save":"Save",
+              "cancel":"Cancel"
+           }
+        },
+        "edit": "Edit phase",
+        "sort": {
+            "name": "Sort phases",
+            "button": {
+              "save":"Save",
+              "cancel":"Cancel"
+            }
+        },
+        "delete": {
+            "name": "Delete phase",
+            "title_delete": "Delete",
+            "text_delete": "Do you want to delete this phase?"
+        }
+      }
+    },
+    "people":{
+      "profile": {
+        "name": "Profile settings",
+        "update_profile": "Update profile"
+      },
+      "pending": {
+        "name":"Pending",
+        "update_pending": "Pending"
+      },
+      "loading": "User probation is loading...",
+      "user_list": {
+        "name": "Users list",
+        "name_list": "User",
+        "button": "Change user"
+      },
+      "add_user":{
+        "name": "Add user",
+        "info": "Personal info",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "password": "Password",
+        "role": "Use role",
+        "group": "Use group",
+        "management": "Manager/chief",
+        "mentor": "Mentor",
+        "address": "Address",
+        "phone": "Phone",
+        "birthday": "Birthday",
+        "position": "Job position",
+        "first_day": "First day in company",
+        "last_day": "Last day in company",
+        "probation": "Probation",
+        "date":{
+           "start": "Start",
+           "end": "End"
+        },
+        "button":"Save changes",
+        "active": "Active",
+        "form":{
+           "first": "First name is required!",
+           "last": "Last name is required!",
+           "email": "Email is required!",
+           "password": "Password is required!"
+        }
+      },
+      "user_group":{
+        "name": "User group",
+        "label_name": "Name",
+        "button": "Save changes",
+        "form":{
+          "name": "Name is required!"
+        },
+        "data":{
+          "id": "Id",
+          "name": "Name",
+          "created": "Created"
+        }
+      },
+      "job_position":{
+        "name": "Job position",
+         "title": "Title",
+         "button": "Save changes",
+         "form": {"name":"Title is required!"},
+         "data": {
+            "id": "Id",
+            "title": "Title"
+         }
+      },
+      "avatar": {
+         "text": "Change avatar:",
+         "button":{
+           "select": "Select",
+           "submit": "Submit"
+         }
+      },
+      "google_calendar": {
+         "button_calendar": "Add google calendar"
+      },
+      "days_off":{
+        "name": "Days off",
+        "current_day": "Current days off",
+         "history_logs": "History logs",
+         "button": "Save changes",
+         "history": "History logs",
+         "data":{
+            "title": "Title",
+            "status": "Status",
+            "start":  "Start",
+            "end": "End",
+            "comment": "Comment"
+         }
+      },
+      "change_password":{
+        "name": "Change password",
+        "password":"Password",
+        "repeat_password":"Re-type password",
+        "button":"Change user",
+        "error":{
+           "minimum": "Minimum password length is 8 characters!",
+           "require_password": "Password is required!",
+           "require_repeat_password": "Re-type password is required",
+           "mismatch": "Passwords are mismatched!"
+        }
+      }
+    },
+    "meet":{
+      "button": "Create meeting",
+       "call": {
+         "list_name_company": "Name",
+         "call_button": "Call"
+        },
+      "all_user_name": "User list call to"
+    },
+    "company_rules":{
+      "title": "Default days off for each new user",
+      "use_scheduler":"Use scheduler for adding days",
+      "reset": "Reset yearly on Jan 1",
+      "button": "Save",
+      "header": "Schedule",
+      "text_amount": "These amount will be added to users days off every month. Every year will be set default values."
+    },
+    "manage_users": {
+      "id": "Id",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "birthday": "Birthday",
+      "position": "Position",
+      "actions": "Actions"
+    },
+    "pending": {
+      "data": {
+        "firs_name": "First name",
+        "last_name": "Last name",
+        "type": "Type",
+        "start":"Start",
+        "end":"End",
+        "created": "Created",
+        "actions": "Actions"
+      }
+    },
+    "requestTypeStaticList":{
+      "hospital": "Hospital",
+      "vocation": "Vocation",
+      "time_off": "Time off",
+      "transfer": "Transfer",
+      "home": "Home"
+    },
+    "daysOffStaticList":{
+      "hospital": "Hospital",
+      "vocation": "Vocation",
+      "timeOff": "Time off",
+      "transfer": "Transfer",
+      "home": "Home"
+    },
+    "requestApprov":"Request for approving",
+    "model_transltate":{
+      "Absent": "Absent",
+      "Probation": "Probation"
+    },
+    "auth_signin":{
+      "sign_google": "Sign in with Google",
+      "email":{
+         "name": "Email",
+         "require_email": "Email is required!"
+      },
+      "password":{
+        "name": "Password",
+        "require_password": "Password is required!"
+      },
+      "or": "OR",
+      "text": "Want to create a new company?",
+      "sign_button": "Sign in",
+      "create_button": "Create"
+    },
+    "auth_signup":{
+      "companyUserTitle": "Create a user",
+      "createCompanyUserTitle": "Create company",
+      "form": {
+        "company": {
+          "nameLabel": "Name",
+          "countryLabel": "Country",
+          "nameRequired": "Company name is required!",
+          "countryRequired": "Country is required!",
+          "submitButton": "Create a company"
+        },
+        "user": {
+          "firstNameLabel": "First name1",
+          "firstNameRequired": "First name is required!",
+          "lastNameLabel": "Last name",
+          "lastNameRequired": "Last name is required!",
+          "emailLabel": "Email",
+          "emailRequired": "Email is required!",
+          "passwordLabel": "Password",
+          "passwordRequired": "Password is required!",
+          "passwordMinLength": "Password must be at least 8 characters long!",
+          "confirmPasswordLabel": "Re-type password",
+          "confirmPasswordRequired": "Re-type password is required!",
+          "passwordsDoNotMatch": "Passwords do not match!",
+          "submitButton": "Create a user"
+        }
+      },
+      "links": {
+        "alreadyHaveCompany": "Already have a company?",
+         "sign": "Sign in",
+        "support": "Need a support?"
+      }
+    },
+    "call_model":{
+      "outgoing_call":{
+        "title": "call",
+        "text": "Waiting for a call from",
+        "cancel": "Cancel"
+      },
+      "incoming_call":{
+        "title": "Calling",
+        "text": "Incoming call from",
+        "button": {
+            "yes": "Yes",
+            "no": "No"
+        }
+      }
+    },
+    "inventory": {
+        "list": {
+            "add_new": "Add new",
+            "column_id": "ID",
+            "column_code": "Code",
+            "column_name": "Name",
+            "column_serial": "Serial",
+            "column_category": "Category",
+            "column_user": "User"
+        },
+        "form": {
+            "name": "Name",
+            "code": "Code",
+            "category": "Category",
+            "category_placeholder": "Category group",
+            "serial_number": "Serial number",
+            "location": "Location",
+            "department": "Department",
+            "subdivision": "Subdivision",
+            "price": "Price",
+            "warranty": "Warranty",
+            "user": "User",
+            "description": "Description"
+        },
+        "button": {
+            "create": "Create",
+            "update": "Update",
+            "history": "History"
+        },
+        "history": {
+            "title": "Inventory History",
+            "took": "Took",
+            "returned": "Returned"
+        }
+    },
+    "auth_change_password": {
+        "title": "Change your password",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "retype_new_password": "Re-Type New Password",
+        "submit": "Change password"
+    },
+    "auth_reset_password": {
+        "title": "Reset your password",
+        "email": "Email",
+        "email_required": "Email is required!",
+        "submit": "Reset password",
+        "success_title": "We sent link on your email!",
+        "success_text": "Check your mailbox!",
+        "already_changed": "Have already changed?",
+        "sign_in": "Sign In"
+    },
+    "reset_password": {
+        "title": "Change your password",
+        "new_password": "New password",
+        "retype_new_password": "Re-type new password",
+        "password_required": "Password is required!",
+        "password_min_length": "Minimum password length is 8 characters!",
+        "retype_required": "Re-type password is required!",
+        "submit": "Change password"
+    },
+    "manage_user_update": {
+        "first_name": "First name",
+        "first_name_required": "First name is required!",
+        "last_name": "Last name",
+        "last_name_required": "Last name is required!",
+        "email": "Email",
+        "email_required": "Email is required!",
+        "country": "Country",
+        "company": "Company",
+        "address": "Address",
+        "phone": "Phone",
+        "skype": "Skype",
+        "email_spare": "Email (spare)",
+        "save_changes": "Save changes",
+        "upload_new_photo": "Upload new photo"
+    },
+    "delete_confirm_modal": {
+        "cancel": "Cancel",
+        "ok": "Ok"
+    },
+    "preview_modal": {
+        "title": "Preview attachment",
+        "close": "Close"
+    },
+    "table_live_kit": {
+        "users": "Users"
+    },
+    "chat": {
+        "status_connected": "Connected",
+        "status_disconnected": "Disconnected",
+        "status_label": "Status:",
+        "you": "You",
+        "message_placeholder": "Type your message...",
+        "send": "Send"
+    },
+    "user_card_info": {
+        "no_user_found": "no user found"
+    },
+    "dark_mode_button": {
+        "change_mode": "Change mode"
+    },
+    "notification_form": {
+        "title": "Create notification",
+        "title_placeholder": "Title",
+        "title_required": "Title is required!",
+        "message_placeholder": "Write notification for all users.",
+        "message_required": "Message is required!",
+        "submit": "Create notification"
+    },
+    "notification_modal": {
+        "close": "Close"
+    },
+    "create_event_dialog": {
+        "add_new": "+ add new",
+        "cancel": "Cancel",
+        "save": "Save",
+        "tab_create_event": "Create event",
+        "tab_create_request": "Create request"
+    },
+    "google_permissions": {
+        "add_permissions": "Add google permissions",
+        "title": "Google permissions",
+        "column_email": "Email",
+        "column_calendar": "Calendar",
+        "column_meeting_space": "Meeting Space",
+        "info_message": "You need to provide permissions to use Google API. "
+    },
+    "task_project_members": {
+        "title": "Project members",
+        "no_data": "You don't have any permissions for this project",
+        "users": "Users",
+        "cancel": "Cancel",
+        "save": "Save",
+        "column_user_id": "User ID",
+        "column_user_name": "User name",
+        "column_permission": "Permission",
+        "column_delete": "Delete"
+    },
+    "upload_creative_modal": {
+        "title": "Upload new files",
+        "select_folder": "Select folder",
+        "files_label": "Files:"
+    },
+    "nav_search": {
+        "placeholder": "Search . . ."
+    },
+    "call_room": {
+        "copy": "Copy",
+        "no_video_available": "No video available",
+        "you": "You",
+        "room_link": "Room Link:",
+        "you_camera": "You (Camera)",
+        "you_screen_share": "You (Screen Share)",
+        "toggle_camera": "Toggle Camera",
+        "toggle_screen_share": "Toggle Screen Share",
+        "toggle_microphone": "Toggle Microphone",
+        "expand_window": "Expand window",
+        "leave_room": "Leave Room",
+        "leave": "Leave",
+        "toggle_fullscreen": "Toggle Fullscreen",
+        "switch_to_camera": "Switch to camera",
+        "turn_off_camera": "Turn off camera",
+        "exit_fullscreen": "Exit Fullscreen",
+        "click_to_make_main_video": "Click to make main video"
+    },
+    "autocomplete": {
+        "item_selection": "Item selection"
+    },
+    "alert": {
+        "close": "Close"
+    },
+    "task_comments": {
+        "title": "Comments",
+        "post": "Post",
+        "placeholder": "Write a comment..."
+    },
+    "common_schedule": {
+        "name_column": "Name"
+    }
+}

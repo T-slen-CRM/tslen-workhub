@@ -1,0 +1,44 @@
+.post-card {
+  margin: 10px;
+  border-radius: 10px;
+  padding: 20px;
+  .post-card-header-container{
+    border-bottom: 1px solid #ccc;
+  }
+  .post-content-container{
+    margin: 20px 15px 0 56px;
+  }
+  //box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 10%), 0px 8px 10px 1px rgb(0 0 0 / 4%), 0px 3px 14px 2px rgb(0 0 0 / 2%);
+}
+
+.example-header-image {
+  background-size: cover;
+}
+.action-button{
+  cursor: pointer;
+  &:hover{
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+    //border-radius: 50%;
+    //box-shadow: 0 0 10px #999;
+  }
+}
+.actions-container{
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-left: 50px;
+  width: 100%;
+}
+.add-post-container{
+  margin: 0 10px 10px 20px;
+  display: flex;
+  align-items: center;
+}
+.add-post-button{
+  display: flex!important;
+  border-radius: 50%;
+}
+.add-post-header{
+  font-size: 20px;
+}

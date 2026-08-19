@@ -1,0 +1,9 @@
+<app-mat-table
+        [setDataSource]="rowData | async"
+        [setDisplayedColumns]="tableColumns"
+        [hideHeaders]="true"
+        [tableName]="['name']"
+        [noData]="'absentUser.monthEvent' | translate"
+        [eventsTypeList]="eventsTypeList"
+></app-mat-table>
+

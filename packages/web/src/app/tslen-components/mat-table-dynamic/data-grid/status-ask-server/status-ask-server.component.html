@@ -1,0 +1,10 @@
+<div class="custom-tooltip">
+    <span class="tooltiptext">{{inputParams}}</span>
+    <mat-icon [style]="oneStyle ? oneStyle : {}"
+    >
+        {{icon}}
+    </mat-icon>
+</div>
+<div #input [style]="{display: isVisibleInputParams}">
+    <ng-content></ng-content>
+</div>

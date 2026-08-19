@@ -1,0 +1,24 @@
+.main-inventory-create {
+  .mat-text-field {
+    width: 35%;
+  }
+  .mat-textarea-field {
+    width: 35%;
+  }
+  .mid-text-field {
+    display: flex;
+    gap: 10px;
+    width: 35%;
+  }
+  .mid-text-field-full {
+    width: 35%;
+    display: flex;
+    gap: 10px;
+  }
+  .price-mat-field {
+    width: 100%;
+  }
+  .half-text-field {
+    width: 50%;
+  }
+}

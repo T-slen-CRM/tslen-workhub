@@ -1,0 +1,576 @@
+{
+  "languages": {
+    "en": "Английский",
+    "ua": "Украинский",
+    "ru": "Русский",
+    "fr": "Французский",
+    "es": "Испанский"
+  },
+  "menu": {
+    "menu_item": {
+      "log_out": "Выйти",
+      "profile": "Профиль"
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "no_notifications": "У вас пока нет уведомлений.",
+      "link": {
+        "mark_read": "отметить как прочитанное",
+        "clear_all": "очистить всё"
+      }
+    }
+  },
+  "posts": {
+    "header": {
+      "news": "Новости"
+    },
+    "editor": {
+      "hide": "скрыть редактор",
+      "add": "добавить пост"
+    },
+    "button": "Показать больше",
+    "save": "Сохранить пост"
+  },
+  "comment": {
+    "text": "Введите текст здесь..."
+  },
+  "tooltip": {
+    "like": "Нравится",
+    "delete": "Удалить"
+  },
+  "button": {
+    "showMore": "Показать больше"
+  },
+  "absentUser": {
+    "header": {
+      "name": "Кто сегодня отсутствует?",
+      "type": "Тип",
+      "day": "Начало"
+    },
+    "column": "Сегодня все сотрудники присутствуют",
+    "monthEvent": "Событий до следующего месяца нет",
+    "monthColumn": {
+      "name": "События",
+      "type": "Тип",
+      "day": "Начало"
+    }
+  },
+  "makeRequest": {
+    "name": "Создать запрос",
+    "meet": "Создать событие Google и встречу",
+    "title": "Заголовок",
+    "label": "Цвет метки",
+    "form": {
+      "title": "Создать запрос",
+      "hours": "использовать часы",
+      "start": "Начало",
+      "end": "Конец",
+      "comment": "Комментарий",
+      "save": "Сохранить",
+      "cancel": "Отмена"
+    }
+  },
+  "navigation": {
+    "name": "Навигация",
+    "main_wall": "Главная страница",
+    "personal_schedule": "Личное расписание",
+    "company_calendar": "Календарь компании",
+    "tasks_manager": "Менеджер задач",
+    "task_list": "Список задач",
+    "people": "Люди",
+    "meet": "Google встречи",
+    "ip_checker": "Проверка IP",
+    "admin": "АДМИН",
+    "pending": "Ожидает",
+    "company_rules": "Правила компании",
+    "tslen_meet": "T-slen встречи"
+  },
+  "calendar": {
+    "header": {
+      "name": "Имя"
+    },
+    "view": {
+      "list": "Список",
+      "calendar": "Календарь"
+    }
+  },
+  "personals_chedule": {
+    "button": {
+      "today": "Сегодня",
+      "day": "День",
+      "week": "Неделя",
+      "month": "Месяц"
+    }
+  },
+  "weekdays": {
+    "sunday": "Вс",
+    "monday": "Пн",
+    "tuesday": "Вт",
+    "wednesday": "Ср",
+    "thursday": "Чт",
+    "friday": "Пт",
+    "saturday": "Сб"
+  },
+  "task_project": {
+    "project_name": "Название проекта",
+    "private": "Приватный",
+    "description": "Описание",
+    "channel": "Канал уведомлений в Slack",
+    "logo": "Логотип"
+  },
+  "column": {
+    "name": "Имя"
+  },
+  "task": {
+    "button": {
+      "edit": "Редактировать",
+      "members": "Участники",
+      "delete": "Удалить"
+    },
+    "form": {
+      "label": "Имя",
+      "placeholder": "Имя",
+      "description": "Описание",
+      "estimate": "Оценка",
+      "priority": "Приоритет",
+      "move_card": "Переместить карточку в фазу",
+      "users": "Пользователи",
+      "upload attachments": "Загрузить вложения:",
+      "button": {
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "select": "Выбрать"
+      }
+    },
+    "phase": {
+      "create": {
+        "name": "Создать фазу",
+        "label": "Название",
+        "placeholder": "Название",
+        "button": {
+            "save": "Сохранить",
+            "cancel": "Отмена"
+        }
+      },
+      "edit": "Редактировать фазу",
+      "sort": {
+        "name": "Сортировать фазы",
+        "button": {
+            "save": "Сохранить",
+            "cancel": "Отмена"
+        }
+      },
+      "delete": {
+        "name": "Удалить фазу",
+        "title_delete": "Удалить",
+        "text_delete": "Вы хотите удалить эту фазу?"
+      }
+    }
+  },
+  "people": {
+    "profile": {
+      "name": "Настройки профиля",
+      "update_profile": "Обновить профиль"
+    },
+    "pending": {
+      "name": "Ожидание",
+      "update_pending": "Ожидается"
+    },
+    "loading": "Загрузка испытательного срока пользователя...",
+    "user_list": {
+      "name": "Список пользователей",
+      "name_list": "Пользователь",
+      "button": "Изменить пользователя"
+    },
+    "add_user": {
+      "name": "Добавить пользователя",
+      "info": "Личная информация",
+      "first_name": "Имя",
+      "last_name": "Фамилия",
+      "email": "Электронная почта",
+      "password": "Пароль",
+      "role": "Роль пользователя",
+      "group": "Группа пользователя",
+      "management": "Менеджер/начальник",
+      "mentor": "Наставник",
+      "address": "Адрес",
+      "phone": "Телефон",
+      "birthday": "День рождения",
+      "position": "Должность",
+      "first_day": "Первый день в компании",
+      "last_day": "Последний день в компании",
+      "probation": "Испытательный срок",
+      "date":{
+           "start": "Старт",
+           "end": "Конец"
+      },
+      "button": "Сохранить изменения",
+      "active": "Активный",
+      "form": {
+        "first": "Имя обязательно!",
+        "last": "Фамилия обязательна!",
+        "email": "Электронная почта обязательна!",
+        "password": "Пароль обязателен!"
+      }
+    },
+    "user_group": {
+      "name": "Группа пользователей",
+      "label_name": "Название",
+      "button": "Сохранить изменения",
+      "form": {
+        "name": "Название обязательно!"
+      },
+      "data": {
+        "id": "ID",
+        "name": "Название",
+        "created": "Создано"
+      }
+    },
+    "job_position": {
+      "name": "Должность",
+      "title": "Название",
+      "button": "Сохранить изменения",
+      "form": {
+        "name": "Название обязательно!"
+      },
+      "data": {
+        "id": "ID",
+        "title": "Название"
+      }
+    },
+    "avatar": {
+      "text": "Изменить аватар:",
+      "button": {
+        "select": "Выбрать",
+        "submit": "Подтвердить"
+      }
+    },
+    "google_calendar": {
+      "button_calendar": "Добавить календарь Google"
+    },
+    "days_off": {
+      "name": "Выходные дни",
+      "current_day": "Текущие выходные дни",
+      "history_logs": "Журнал истории",
+      "button": "Сохранить изменения",
+      "history": "Журнал истории",
+      "data": {
+        "title": "Название",
+        "status": "Статус",
+        "start": "Начало",
+        "end": "Конец",
+        "comment": "Комментарий"
+      }
+    },
+    "change_password": {
+      "name": "Изменить пароль",
+      "password": "Пароль",
+      "repeat_password": "Повторите пароль",
+      "button": "Изменить пользователя",
+      "error": {
+        "minimum": "Минимальная длина пароля — 8 символов!",
+        "require_password": "Пароль обязателен!",
+        "require_repeat_password": "Повторный пароль обязателен!",
+        "mismatch": "Пароли не совпадают!"
+      }
+    }
+  },
+  "meet": {
+    "button": "Создать встречу",
+    "call": {
+      "list_name_company": "Название",
+      "call_button": "Позвонить"
+    },
+    "all_user_name": "Список пользователей для звонка"
+  },
+  "company_rules": {
+    "title": "Типичные выходные дни для каждого нового пользователя",
+    "use_scheduler": "Использовать планировщик для добавления дней",
+    "reset": "Сбрасывать каждый год 1 января",
+    "button": "Сохранить",
+    "header": "Планирование",
+    "text_amount": "Это количество будет добавляться к выходным пользователя ежемесячно. Каждый год значение будет установлено по умолчанию."
+  },
+  "manage_users": {
+    "id": "ID",
+    "name": "Имя",
+    "email": "Электронная почта",
+    "phone": "Телефон",
+    "birthday": "День рождения",
+    "position": "Должность",
+    "actions": "Действия"
+  },
+  "pending": {
+    "data": {
+      "firs_name": "Имя",
+      "last_name": "Фамилия",
+      "type": "Тип",
+      "start": "Начало",
+      "end": "Конец",
+      "created": "Создано",
+      "actions": "Действия"
+    }
+  },
+  "requestTypeStaticList": {
+    "hospital": "Больничный",
+    "vocation": "Отпуск",
+    "time_off": "Выходной",
+    "transfer": "Перенос",
+    "home": "Работа из дома"
+  },
+  "daysOffStaticList": {
+    "hospital": "Больничный",
+    "vocation": "Отпуск",
+    "timeOff": "Выходной",
+    "transfer": "Перенос",
+    "home": "Работа из дома"
+  },
+  "requestApprov": "Запрос на утверждение",
+  "model_transltate": {
+    "Absent": "Отсутствует",
+    "Probation": "Испытательный срок"
+  },
+  "auth_signin": {
+    "sign_google": "Войти через Google",
+    "email": {
+      "name": "Электронная почта",
+      "require_email": "Электронная почта обязательна!"
+    },
+    "password": {
+      "name": "Пароль",
+      "require_password": "Пароль обязателен!"
+    },
+    "or": "ИЛИ",
+    "text": "Хотите создать новую компанию?",
+    "sign_button": "Войти",
+    "create_button": "Создать"
+  },
+  "auth_signup": {
+    "companyUserTitle": "Создать пользователя",
+    "createCompanyUserTitle": "Создать компанию",
+    "form": {
+      "company": {
+        "nameLabel": "Название",
+        "countryLabel": "Страна",
+        "nameRequired": "Название компании обязательно!",
+        "countryRequired": "Страна обязательна!",
+        "submitButton": "Создать компанию"
+      },
+      "user": {
+        "firstNameLabel": "Имя",
+        "firstNameRequired": "Имя обязательно!",
+        "lastNameLabel": "Фамилия",
+        "lastNameRequired": "Фамилия обязательна!",
+        "emailLabel": "Электронная почта",
+        "emailRequired": "Электронная почта обязательна!",
+        "passwordLabel": "Пароль",
+        "passwordRequired": "Пароль обязателен!",
+        "passwordMinLength": "Пароль должен содержать минимум 8 символов!",
+        "confirmPasswordLabel": "Повторите пароль",
+        "confirmPasswordRequired": "Повторный ввод пароля обязателен!",
+        "passwordsDoNotMatch": "Пароли не совпадают!",
+        "submitButton": "Создать пользователя"
+      }
+    },
+    "links": {
+      "alreadyHaveCompany": "Уже есть компания?",
+      "sign": "Войти",
+      "support": "Нужна поддержка?"
+    }
+  },
+  "call_model": {
+    "outgoing_call": {
+      "title": "Вызов",
+      "text": "Ожидание звонка от",
+      "cancel": "Отмена"
+    },
+    "incoming_call": {
+      "title": "Звонят",
+      "text": "Входящий звонок от",
+      "button": {
+        "yes": "Да",
+        "no": "Нет"
+      }
+    }
+  },
+    "inventory": {
+        "list": {
+            "add_new": "Добавить новый",
+            "column_id": "ID",
+            "column_code": "Код",
+            "column_name": "Имя",
+            "column_serial": "Серия",
+            "column_category": "Категория",
+            "column_user": "Пользователь"
+        },
+        "form": {
+            "name": "Имя",
+            "code": "Код",
+            "category": "Категория",
+            "category_placeholder": "Группа категорий",
+            "serial_number": "Серийный номер",
+            "location": "Местоположение",
+            "department": "Отдел",
+            "subdivision": "Подразделение",
+            "price": "Цена",
+            "warranty": "Гарантия",
+            "user": "Пользователь",
+            "description": "Описание"
+        },
+        "button": {
+            "create": "Создать",
+            "update": "Обновить",
+            "history": "История"
+        },
+        "history": {
+            "title": "История инвентаря",
+            "took": "Взято",
+            "returned": "Возвращено"
+        }
+    },
+    "auth_change_password": {
+        "title": "Измените ваш пароль",
+        "current_password": "Текущий пароль",
+        "new_password": "Новый пароль",
+        "retype_new_password": "Повторите новый пароль",
+        "submit": "Изменить пароль"
+    },
+    "auth_reset_password": {
+        "title": "Сбросить пароль",
+        "email": "Электронная почта",
+        "email_required": "Электронная почта обязательна!",
+        "submit": "Сбросить пароль",
+        "success_title": "Мы отправили ссылку на вашу электронную почту!",
+        "success_text": "Проверьте свой почтовый ящик!",
+        "already_changed": "Уже изменили?",
+        "sign_in": "Войти"
+    },
+    "reset_password": {
+        "title": "Измените ваш пароль",
+        "new_password": "Новый пароль",
+        "retype_new_password": "Повторите новый пароль",
+        "password_required": "Пароль обязателен!",
+        "password_min_length": "Минимальная длина пароля - 8 символов!",
+        "retype_required": "Необходимо повторить пароль!",
+        "submit": "Изменить пароль"
+    },
+    "manage_user_update": {
+        "first_name": "Имя",
+        "first_name_required": "Имя обязательно!",
+        "last_name": "Фамилия",
+        "last_name_required": "Фамилия обязательна!",
+        "email": "Электронная почта",
+        "email_required": "Электронная почта обязательна!",
+        "country": "Страна",
+        "company": "Компания",
+        "address": "Адрес",
+        "phone": "Телефон",
+        "skype": "Skype",
+        "email_spare": "Электронная почта (запасная)",
+        "save_changes": "Сохранить изменения",
+        "upload_new_photo": "Загрузить новое фото"
+    },
+    "delete_confirm_modal": {
+        "cancel": "Отмена",
+        "ok": "Ок"
+    },
+    "preview_modal": {
+        "title": "Просмотр вложения",
+        "close": "Закрыть"
+    },
+    "table_live_kit": {
+        "users": "Пользователи"
+    },
+    "chat": {
+        "status_connected": "Подключено",
+        "status_disconnected": "Отключено",
+        "status_label": "Статус:",
+        "you": "Вы",
+        "message_placeholder": "Введите сообщение...",
+        "send": "Отправить"
+    },
+    "user_card_info": {
+        "no_user_found": "пользователь не найден"
+    },
+    "dark_mode_button": {
+        "change_mode": "Сменить режим"
+    },
+    "notification_form": {
+        "title": "Создать уведомление",
+        "title_placeholder": "Заголовок",
+        "title_required": "Заголовок обязателен!",
+        "message_placeholder": "Напишите уведомление для всех пользователей.",
+        "message_required": "Сообщение обязательно!",
+        "submit": "Создать уведомление"
+    },
+    "notification_modal": {
+        "close": "Закрыть"
+    },
+    "create_event_dialog": {
+        "add_new": "+ добавить новое",
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "tab_create_event": "Создать событие",
+        "tab_create_request": "Создать запрос"
+    },
+    "google_permissions": {
+        "add_permissions": "Добавить разрешения Google",
+        "title": "Разрешения Google",
+        "column_email": "Электронная почта",
+        "column_calendar": "Календарь",
+        "column_meeting_space": "Пространство для встреч",
+        "info_message": "Вам необходимо предоставить разрешения для использования Google API. "
+    },
+    "task_project_members": {
+        "title": "Участники проекта",
+        "no_data": "У вас нет разрешений для этого проекта",
+        "users": "Пользователи",
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "column_user_id": "ID пользователя",
+        "column_user_name": "Имя пользователя",
+        "column_permission": "Разрешение",
+        "column_delete": "Удалить"
+    },
+    "upload_creative_modal": {
+        "title": "Загрузить новые файлы",
+        "select_folder": "Выбрать папку",
+        "files_label": "Файлы:"
+    },
+    "nav_search": {
+        "placeholder": "Поиск . . ."
+    },
+    "call_room": {
+        "copy": "Копировать",
+        "no_video_available": "Видео недоступно",
+        "you": "Вы",
+        "room_link": "Ссылка на комнату:",
+        "you_camera": "Вы (Камера)",
+        "you_screen_share": "Вы (Демонстрация экрана)",
+        "toggle_camera": "Включить/выключить камеру",
+        "toggle_screen_share": "Включить/выключить демонстрацию экрана",
+        "toggle_microphone": "Включить/выключить микрофон",
+        "expand_window": "Развернуть окно",
+        "leave_room": "Покинуть комнату",
+        "leave": "Покинуть",
+        "toggle_fullscreen": "Полноэкранный режим",
+        "switch_to_camera": "Переключиться на камеру",
+        "turn_off_camera": "Выключить камеру",
+        "exit_fullscreen": "Выйти из полноэкранного режима",
+        "click_to_make_main_video": "Нажмите, чтобы сделать основным видео"
+    },
+    "autocomplete": {
+        "item_selection": "Выбор элемента"
+    },
+    "alert": {
+        "close": "Закрыть"
+    },
+    "task_comments": {
+        "title": "Комментарии",
+        "post": "Опубликовать",
+        "placeholder": "Написать комментарий..."
+    },
+    "common_schedule": {
+        "name_column": "Имя"
+    }
+}

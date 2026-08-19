@@ -1,0 +1,68 @@
+.calendar-event .cal-event-title {
+  color: #FFFFFF;
+}
+.calendar-event .fa-pencil-alt{
+  color: #FFFFFF;
+}
+.calendar-event .fa-trash-alt{
+  color: #FFFFFF;
+}
+.cal-week-view .cal-time-events {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.cal-day-headers {
+  margin-right: 0px;
+}
+
+.cal-day-columns {
+  height: 100%;
+}
+.cal-week-view .cal-time{
+  width: unset;
+  padding-top: 0;
+  font-size: 12px;
+}
+.calendar-menu-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+
+  .calendar-navigate-arrows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .navigate-arrow-btn{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .navigate-arrow{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // border-radius: 50%;
+      &:hover{
+        //box-shadow: 0 0 10px #999;
+        text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+      }
+      //&.left-margin{
+      //  margin-left: 10px;
+      //}
+    }
+
+  }
+
+  .view-select{
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.calendar-view-container{
+  margin-top: 10px;
+}
+.cal-day-badge {
+  display: none !important;
+}

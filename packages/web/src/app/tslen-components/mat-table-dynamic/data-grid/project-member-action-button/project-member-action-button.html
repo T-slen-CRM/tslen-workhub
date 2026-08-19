@@ -1,0 +1,23 @@
+<div [class.spinner-ask-server]="loading">
+    <div
+         class="ask-server-action-button"
+    >
+        <div class="custom-tooltip">
+            <span class="tooltiptext">{{'tooltip.delete' | translate}}</span>
+            <div>
+                <button  mat-icon-button
+                         color="primary"
+                         (click)="onDelete()"
+                         [disabled]="loading"
+                >
+                    <i class="fas fa-times icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div #input [style]="{display: isVisibleInputParams}">
+    <ng-content></ng-content>
+</div>

@@ -1,0 +1,44 @@
+.input-mat-select {
+  width: 100%;
+  .btn-remove-estimate{
+    display: contents;
+    cursor: pointer;
+    color: grey;
+  }
+  .btn-remove-estimate:hover{
+    color: red;
+  }
+}
+.dialog-action-button{
+  display: flex;
+  justify-content: space-between;
+}
+.mat-pseudo-checkbox  {
+  display: none !important;
+}
+.mat-pseudo-checkbox{
+  display: none !important;
+}
+.custom-icon-delete :hover {
+  color: darkred;
+}
+.mat-list-option .mat-pseudo-checkbox {
+  display: none !important;
+}
+.custom-checkbox .mat-checkbox-frame {
+  display: none;
+}
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  .description-column{
+    width: 58%;
+    textarea {
+      width: 100%;
+      height: 50vh;
+    }
+  }
+  .setting-column{
+    width: 39%;
+  }
+}

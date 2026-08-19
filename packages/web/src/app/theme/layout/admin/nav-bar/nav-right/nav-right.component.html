@@ -1,0 +1,98 @@
+<ul id="nav-right-container" class="navbar-nav ml-auto">
+<!--    <li>-->
+<!--            <app-timer></app-timer>-->
+<!--    </li>-->
+    <li>
+        <span>{{firstName}} {{lastName}}</span>
+    </li>
+    <li>
+        <select id="language-select" [(ngModel)]="selectedLanguage" (change)="changeLanguage($event.target.value)" class="custom-select">
+            <option value="en">En</option>
+            <option value="uk">Ук</option>
+            <option value="ru">Ру</option>
+            <option value="fr">Fr</option>
+            <option value="es">Es</option>
+          </select>
+    </li>
+<!--    <li>-->
+<!--        <div class="dark-mode-button">-->
+<!--            <app-dark-mode-button class="mr-auto" [userId]="userId"></app-dark-mode-button>-->
+<!--        </div>-->
+<!--    </li>-->
+    <li>
+        <div id="notifications">
+            <a href="javascript:">
+                <i class="icon feather icon-bell to-fix-jump-mat-badge"
+                   [matBadge]="unreadNotiCount"
+                   [matBadgeHidden]="!unreadNotiCount"
+                   matBadgeColor="accent"
+                   matBadgeSize="small"
+                   [matMenuTriggerFor]="menu"
+                ></i>
+            </a>
+            <div >
+                <mat-menu  #menu="matMenu" backdropClass="noti-mat-menu">
+
+                    <div class="noti-head-mat-menu">
+                        <h6 class="d-inline-block m-b-0">{{'menu.notifications.title'| translate}}</h6>
+                        <div class="float-right">
+                            <a href="javascript:" class="m-r-10" (click)="markAsRead()">{{'menu.notifications.link.mark_read'| translate}}</a>
+                            <a href="javascript:" class="m-r-10" (click)="clearAll()">{{'menu.notifications.link.clear_all'| translate}}</a>
+                        </div>
+                    </div>
+                    <div  *ngFor="let notification of notifications" >
+                        <div mat-menu-item class="one-notification" (click)="openNotification(notification)">
+                            <span [ngClass]="notification.isRead ? 'dot-none': 'dot'"></span>
+                            <div class="notification-body">
+                              <span class="notification-title">
+                                  <strong>{{notification.title}}</strong>
+                                  &nbsp;
+                                  <span class="text-muted">{{notification.time}}</span>
+                              </span>
+                                <span class="noti-message">{{notification.message}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="notifications && notifications.length === 0"
+                         mat-menu-item
+                         class="one-notification">
+                        <div >
+                            <div >
+                                <span>{{'menu.notifications.no_notifications'| translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </mat-menu>
+            </div>
+        </div>
+    </li>
+
+    <li>
+        <div >
+            <a href="javascript:" >
+                <i class="icon feather icon-user"
+                   [matMenuTriggerFor]="menuSettings"
+                ></i>
+                <!--          </ng-template>-->
+            </a>
+            <div >
+                <mat-menu  #menuSettings="matMenu" class="settings-mat-menu">
+                    <div mat-menu-item
+                         class="one-notification"
+                         [routerLink]="['/pages/user-profile/'+userId]">
+                        <i class="feather icon-user"></i>
+                        &nbsp;
+                        {{'menu.menu_item.profile' | translate}}
+                    </div>
+                    <div mat-menu-item
+                         class="one-notification"
+                         href="javascript:" (click)="logout()" title="Logout">
+                        <i class="feather icon-log-out" ></i>
+                        &nbsp;
+                        {{'menu.menu_item.log_out' | translate}}
+                    </div>
+                </mat-menu>
+            </div>
+        </div>
+    </li>
+</ul>

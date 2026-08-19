@@ -1,0 +1,125 @@
+# AGENTS.md
+
+Workflow rules for anyone (human or AI agent) working in this repo. This
+file is the source of truth for repo-specific conventions; `CLAUDE.md`
+just points here.
+
+See `README.md` for the product/feature overview and tech stack.
+
+## Repo layout
+
+- `src/` — NestJS backend (TypeORM + PostgreSQL, WebSockets).
+- `packages/web/` — Angular 17 frontend, its own `package.json`.
+- `test/` — backend Jest tests (`unit/`, `integration/`).
+- Frontend tests live next to the file they cover (`*.spec.ts`), run via Karma/Jasmine.
+
+Two separate npm projects: `npm install` at repo root **and** inside
+`packages/web/` are both required.
+
+## Environment
+
+- Backend requires **Node >= 22** (see `engines` in `package.json`,
+  `.nvmrc` pins `22.22.2`). The default shell `node` on this machine may
+  be older — check with `node -v` first. If it's not 22.x:
+  ```bash
+  export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use v22.2.0
+  ```
+  Running tests/build under an old Node version fails with cryptic
+  `ERR_UNKNOWN_BUILTIN_MODULE` errors from `npx jest` — that's the tell.
+
+## Git workflow
+
+- **Conventional Commits** for every commit message: `<type>(<scope>): <description>`
+  (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf`, `build`, `ci`, `style`, `revert`).
+  Imperative mood, no trailing period, subject under ~72 chars. Use `!` or
+  a `BREAKING CHANGE:` footer for breaking changes. Scope = the affected
+  module/directory when it's not obvious (`chat`, `google-calendar`, `web`, ...).
+- **No Jira integration for this repo** — do not prefix commits or branches
+  with a ticket key, and don't query Jira to pick work here. (This overrides
+  any global Jira-based commit/branch convention for this repo specifically.)
+- Branch naming: `<type>/<short-slug>` where `<type>` mirrors the commit
+  type family (`feature/`, `bugfix/`, `chore/`, ...), e.g.
+  `bugfix/fix-chat-duplicate-messages`.
+- **No `Co-Authored-By: Claude` trailer** on commits in this repo — leave
+  it off regardless of the default commit-message template.
+
+## Testing — required for new features and bug fixes
+
+Every new feature and every bug fix needs a test that would have failed
+before the change (TDD red/green). Don't hand-wave "manually verified" for
+things a test can cover — see `superpowers:test-driven-development` and
+`superpowers:systematic-debugging` skills for the full process.
+
+**Backend (Jest, from repo root, after `nvm use v22.2.0`):**
+```bash
+npm run test:unit   # unit tests only, --config test/jest-unit.json, matches *.unit.spec.ts
+npm run test:e2e    # integration tests, --config test/jest-e2e.json
+npm test            # everything, --config test/jest.json
+```
+Repository-layer logic that touches TypeORM (`EntityManager.transaction`,
+`find`, `save`) can be unit-tested without a real DB by handing the
+repository a small fake `EntityManager` that applies the same `where`
+clause shape (see `test/unit/resources/google-calendar/google-calendar.repository.unit.spec.ts`
+for the pattern) — no need to spin up Postgres for that.
+
+**Frontend (Karma/Jasmine, from `packages/web/`):**
+```bash
+npm test   # ng test — opens real Chrome, watches by default
+```
+The full `ng test` run type-checks *every* `*.spec.ts` in `src/`, including
+some pre-existing broken/unrelated spec files (e.g. `ag-grid-table`,
+`dash-analytics`, a couple of directive specs) — a failure there is not
+necessarily related to your change; check with `git stash` if unsure.
+To run a single component's specs in isolation without booting the whole
+app's DI graph, mock the service dependencies directly (`jasmine.createSpyObj`)
+rather than pulling in the real providers — see `chat.service.spec.ts` /
+`chat.component.spec.ts` for the pattern. For a one-off headless run
+(e.g. to avoid an interactive Chrome window), a temporary Karma config with
+a `ChromeHeadless` custom launcher (`--no-sandbox`) and `singleRun: true`
+works; `CHROME_BIN` may need to point at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS.
+
+## Angular conventions
+
+- **Use Signals**, not RxJS `Subject`/`BehaviorSubject`, for component
+  state and inputs: `input()`, `signal()`, `computed()`, `effect()`.
+  Existing RxJS `Subject`-based services (e.g. `ChatService`) are legacy —
+  don't copy that pattern into new code; new services exposing reactive
+  state should expose signals.
+- Standalone components (no `NgModule` declarations) — match the existing
+  style under `packages/web/src/app/pages/` and `tslen-components/`.
+- **Loading state: scope it to the button/card that triggered the
+  request, not the whole page.** `LoadingLogoComponent`
+  (`helpers/loading-logo/`) takes `isLoading`/`fixed` as signal inputs —
+  default (`fixed()` false) renders `position: absolute`, scoped to its
+  parent's `.loading-div` wrapper; only pass `[fixed]="true"` for
+  genuinely page-wide cases. `LoadingButtonComponent`
+  (`helpers/loading-button/`) is the reusable button-level spinner
+  (`[disabled]` stays on the real `<button>`, it only swaps content for a
+  `mat-spinner` without changing the button's width). The global
+  `LoaderService`/`LoaderInterceptor` full-page overlay
+  (`admin.component.html`'s single `[fixed]="true"` instance) is a
+  fallback for page-wide cases only — new features should default to
+  local loading state, not lean on the global request counter. See
+  `docs/superpowers/specs/2026-08-18-scoped-loading-indicators-design.md`
+  for the full rationale.
+- **Gotcha:** signal `input()` values are **not** set yet inside the
+  constructor — Angular applies input bindings *after* the constructor
+  runs, before `ngOnInit`. Don't read `input()` values in the constructor
+  expecting the real bound value; use `ngOnInit()` or an `effect()` (which
+  runs after inputs are applied) instead.
+- **Gotcha:** a singleton (`providedIn: 'root'`) service that opens an
+  external connection (WebSocket, SSE, etc.) must tear down the previous
+  connection before opening a new one, or repeated calls (room switches,
+  remounts) silently leak duplicate live connections that each deliver
+  every event once — see the fix in `chat.service.ts`'s `listenForEvents`.
+
+## Backend conventions
+
+- When syncing/deduping against an external system (e.g. Google Calendar),
+  match existing rows by the external system's **stable ID**
+  (`googleId`, etc.), never by a time-window filter on a mutable field —
+  a time window can drift a legitimate row out of view and cause a
+  duplicate insert on the next sync. See `google-calendar.repository.ts`.
+- Parse external date/time strings with their offset intact
+  (`new Date(isoStringWithOffset)`); stripping the offset before parsing
+  makes `Date` interpret it as server-local time, corrupting the instant.

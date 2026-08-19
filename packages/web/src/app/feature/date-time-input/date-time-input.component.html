@@ -1,0 +1,9 @@
+<div class="data-input-container">
+    <span class="date-input-border-title">
+        {{label}}
+    </span>
+    <input [type]="type"
+           [value]="currentValue"
+           (change)="changeCurrentValue($event)"
+    >
+</div>

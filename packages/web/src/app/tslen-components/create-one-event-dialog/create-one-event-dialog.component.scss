@@ -1,0 +1,75 @@
+.input-mat-select {
+  width: 100%;
+}
+.mat-text-field{
+  width: 70%;
+}
+.color-input-mat-select{
+  .mat-form-field-appearance-legacy .mat-form-field-underline{
+    visibility: hidden;
+  }
+}
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+  width: 20px;
+  height: 20px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 50%;
+}
+.margin-right-element{
+  margin-right: 1%;
+  //margin-top: 1%;
+}
+.request-menu{
+  display: flex;
+  justify-content: space-between;
+}
+.selected-trigger{
+  display: flex;
+  align-items: center;
+}
+.status-message{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  text-decoration: underline;
+  &.approved{
+    color: #87cc56;
+  }
+  &.disapproved{
+    color: #e25a5a;
+  }
+}
+.edit-dialog-actions{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 15px;
+}
+.days-off-container{
+  margin-bottom: 10px;
+}
+.google-meet-container{
+  display: flex;
+  flex-direction: column;
+  .meet-label{
+    font-size: 12px;
+  }
+  .copy-link-btn{
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .span-input{
+    border: none;
+    background-color: transparent;
+    display: inline;
+  }
+  .google-meet-link-container{
+    display: flex;
+    gap: 5px;
+  }
+}

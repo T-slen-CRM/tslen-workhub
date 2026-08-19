@@ -1,0 +1,261 @@
+<div>
+    <div *ngIf="this.routerId">
+        <app-custom-header-page
+                [mainHeader]="mainHeaderPage"
+                [headerRoutes]="headerRoutes"></app-custom-header-page>
+        <br/>
+    </div>
+
+    <app-mat-tabs-dynamic>
+        <ng-template appTab tabId="0" [name]="'people.add_user.info'| translate">
+            <br/>
+            <form [formGroup]='form' >
+                <div class="example-form">
+                    <div class=" mb-3 mainContent">
+                        <div class="row">
+                            <div class=" col-md-4 col-sm-4">
+                                <div class="user-avatar-container">
+                                    <img
+                                            [src]="userAvatar ? userAvatar : defaultUserAvatar"
+                                            alt="..."
+                                            class="img-fluid img-user-profile"
+                                    />
+                                    <div>
+                                        @if (routerId){
+                                            <app-upload-files
+                                                [uploadLabel]="'people.avatar.text'| translate"
+                                                [acceptedFileTypes]="acceptedFileTypes"
+                                                (uploadComplete)="completeUpload($event)"
+                                                [params]="userId"
+                                        ></app-upload-files>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 user-settings">
+                                <div>
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.first_name'| translate}}</mat-label>
+                                        <input matInput placeholder="First name" required formControlName="firstName">
+                                        <mat-error *ngIf="form.controls['firstName'].hasError('required')">
+                                            {{'people.add_user.form.first' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div>
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.last_name'| translate}}</mat-label>
+                                        <input matInput placeholder="Last name" required formControlName="lastName">
+                                        <mat-error *ngIf="form.controls['lastName'].hasError('required')">
+                                            {{'people.add_user.form.last' | translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                                @if (!routerId){
+                                    <div>
+                                        <mat-form-field class="mat-text-field" appearance="outline">
+                                            <mat-label>{{'people.add_user.email'| translate}}</mat-label>
+                                            <input matInput placeholder="Email" required formControlName="email">
+                                            <mat-error *ngIf="form.controls['email'].hasError('required')">
+                                                {{'people.add_user.form.email' | translate}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div>
+                                        <mat-form-field class="mat-text-field" appearance="outline">
+                                            <mat-label>{{'people.add_user.password'| translate}}</mat-label>
+                                            <input matInput placeholder="Password" formControlName="password" required >
+                                            <mat-error *ngIf="form.controls['password'].hasError('required')">
+                                                {{'people.add_user.form.password'| translate}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                }
+                                <div *appPermissionsVisualization="['admin', 'manager']">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.role'| translate}}</mat-label>
+                                        <mat-select  placeholder="User role" formControlName="role">
+                                            <mat-option *ngFor="let role of userRoles" [value]="role">{{role}}</mat-option>
+                                        </mat-select>
+<!--                                        <mat-error *ngIf="form.controls['password'].hasError('required')">-->
+<!--                                            Password is required!-->
+<!--                                        </mat-error>-->
+                                    </mat-form-field>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.group'| translate}}</mat-label>
+                                        <mat-select  placeholder="User group" formControlName="userGroups">
+                                            <mat-option *ngFor="let group of userGroups" [value]="group.id">{{group.name}}</mat-option>
+                                        </mat-select>
+<!--                                        <mat-error *ngIf="form.controls['password'].hasError('required')">-->
+<!--                                            Password is required!-->
+<!--                                        </mat-error>-->
+                                    </mat-form-field>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.management'| translate}}</mat-label>
+                                        <mat-select formControlName="chiefId">
+                                            <mat-option *ngFor="let user of usersByCompany" [value]="user.id">{{user.firstName + ' '+ user.lastName}}</mat-option>
+                                        </mat-select>
+
+                                    </mat-form-field>
+                                </div>
+                                <div >
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.mentor'| translate}}</mat-label>
+                                        <mat-select formControlName="mentorId">
+                                            <mat-option *ngFor="let user of usersByCompany" [value]="user.id">{{user.firstName + ' '+ user.lastName}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                @if (routerId){
+                                    <div>
+                                        <mat-checkbox color="primary" formControlName="isActive">{{'people.add_user.active'| translate}}</mat-checkbox>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4 col-sm-4 user-settings">
+                                <div>
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.address'| translate}}</mat-label>
+                                        <input matInput placeholder="Address" formControlName="address">
+                                    </mat-form-field>
+                                </div>
+                                <div>
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.phone'| translate}}</mat-label>
+                                        <input matInput placeholder="Phone" formControlName="phone">
+                                    </mat-form-field>
+                                </div>
+                                <div class="mat-text-field">
+                                    <app-date-time-input
+                                            type="date"
+                                            [label]="'people.add_user.birthday'| translate"
+                                            formControlName="birthDay"></app-date-time-input>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{'people.add_user.position'| translate}}</mat-label>
+                                        <mat-select placeholder="User group" formControlName="jobPosition">
+                                            @for (job of jobPositions; track job.id){
+                                                <mat-option [value]="job.id">{{job.title}}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']" class="mat-text-field">
+
+                                    <app-date-time-input
+                                                         type="date"
+                                                         [label]="'people.add_user.first_day'| translate"
+                                                         formControlName="firstDayInCompany"></app-date-time-input>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']" class="mat-text-field">
+
+                                    <app-date-time-input
+                                                         type="date"
+                                                         [label]="'people.add_user.last_day'| translate"
+                                                         formControlName="lastDayInCompany"
+                                    ></app-date-time-input>
+                                </div>
+                                <div *appPermissionsVisualization="['admin', 'manager']" formGroupName="userProbation">
+                                    <mat-checkbox color="primary" formControlName="isProbation">{{'people.add_user.probation'| translate}}</mat-checkbox>
+                                    <div *ngIf="form.value['userProbation']['isProbation']">
+                                        <div class="mat-text-field">
+                                            <app-date-time-input
+                                                    type="date"
+                                                    [label]="'people.add_user.date.start'| translate"
+                                                    formControlName="start"></app-date-time-input>
+                                        </div>
+                                        <div class="mat-text-field">
+                                            <app-date-time-input
+                                                    type="date"
+                                                    [label]="'people.add_user.date.end'| translate"
+                                                    formControlName="end"></app-date-time-input>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                @if (routerId){
+                                     <app-google-calendar [googleCalendarData$]="googleCalendarData$"></app-google-calendar>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <button mat-raised-button color="primary" (click)="onSubmit()">{{'people.add_user.button'| translate}}</button>
+            </form>
+        </ng-template>
+
+        @if (routerId){
+            <ng-template appTab tabId="1" [name]="'people.change_password.name'| translate">
+            <br/>
+            <form [formGroup]="changePasswordForm">
+                <div class="full-width">
+                                            <mat-form-field class="mat-text-field" appearance="outline" >
+                                                <input [type]="hidePassword ? 'password' : 'text'" matInput [placeholder]="'people.change_password.password'| translate" required formControlName="password">
+                                                <mat-icon class="custom-mat-icon" matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                                <mat-error *ngIf="changePasswordForm.controls['password'].hasError('required')">
+                                                    {{'people.change_password.error.require_password'| translate}}
+                                                </mat-error>
+                                                <mat-error *ngIf="changePasswordForm.controls['password'].hasError('minlength')">
+                                                    {{'people.change_password.error.minimum'| translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                <div class="full-width">
+                                            <mat-form-field class="mat-text-field" appearance="outline" >
+                                                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" [placeholder]="'people.change_password.repeat_password'| translate" required formControlName="confirmPassword">
+                                                <mat-icon class="custom-mat-icon" matSuffix (click)="hideConfirmPassword = !hideConfirmPassword">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+
+                                                <mat-error *ngIf="changePasswordForm.controls['confirmPassword'].hasError('required')">
+                                                    {{'people.change_password.error.require_repeat_password'| translate}}
+                                                </mat-error>
+                                                <mat-error *ngIf="changePasswordForm.controls['confirmPassword'].hasError('minlength')">
+                                                    {{'people.change_password.error.minimum'| translate}}
+                                                </mat-error>
+
+                                            </mat-form-field>
+                                        </div>
+                <div *ngIf="submitted && changePasswordForm.errors?.requireConfirmPassword" class="help-block">
+                    {{'people.change_password.error.mismatch'| translate}}
+                </div>
+                <button mat-raised-button color="primary" (click)="changePassword()">{{'people.change_password.button'| translate}}</button>
+            </form>
+
+        </ng-template>
+
+            <ng-template appTab tabId="2" name="Google settings">
+                <app-google-permissions
+                        [googlePermissions]="googlePermissions"
+                        [googleCalendarData]="googleCalendarData$"
+                ></app-google-permissions>
+            </ng-template>
+        }
+        @if(userDaysOff){
+            <ng-template appTab tabId="3" [name]="'people.days_off.name'| translate">
+                <ng-container *appPermissionsVisualization="['admin', 'manager']">
+                    <p>{{'people.days_off.current_day'| translate}}</p>
+                    <app-days-off-form
+                            [savedForm]="savedForm$"
+                            [dataForForm]="userDaysOff">
+                        <button mat-raised-button
+                                color="primary"
+                                (click)="onSubmit()"
+                                class="save-button"
+                        >{{'people.days_off.button'| translate}}</button>
+                    </app-days-off-form>
+                </ng-container>
+                @if(eventsByUserRequest){
+                    <app-user-dayoff-history [eventsByUserRequest]="eventsByUserRequest" />
+                }
+            </ng-template>
+        }
+
+    </app-mat-tabs-dynamic>
+</div>

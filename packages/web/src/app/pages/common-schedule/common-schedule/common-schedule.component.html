@@ -1,0 +1,85 @@
+<br/>
+
+<div class="calendar-menu-container">
+    <div>
+        <div class="calendar-navigate-arrows">
+
+            <div
+                 mwlCalendarPreviousView
+                 [view]="view"
+                 [(viewDate)]="viewDate"
+                 (click)="changeMonth(viewDate)"
+            >
+                <button mat-icon-button class="navigate-arrow-btn">
+                    <mat-icon class="navigate-arrow">keyboard_arrow_left</mat-icon>
+                </button>
+            </div>
+
+            <div >
+                <span>{{ viewDate | calendarDate:(view + 'ViewTitle'):translateService.calendarLocale }}</span>
+            </div>
+
+            <div
+                 mwlCalendarNextView
+                 [view]="view"
+                 [(viewDate)]="viewDate"
+                 (click)="changeMonth(viewDate)"
+            >
+                <button mat-icon-button class="navigate-arrow-btn">
+                    <mat-icon class="navigate-arrow" >keyboard_arrow_right</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<mat-button-toggle-group class="btn-toggle-control" [formControl]="employeeViewControl">
+    <mat-button-toggle [value]="0">{{'calendar.view.list'| translate}}</mat-button-toggle>
+    <mat-button-toggle [value]="1">{{'calendar.view.calendar'| translate}}</mat-button-toggle>
+</mat-button-toggle-group>
+
+<app-calendar-dayoff-window [(isOpenWindow)]="isOpenCalendarDayWindow"
+                            [setEvents]="eventsByDay"
+                            [clickedDate]="clickedDate"
+                            [totalStaticEventIconList]="totalStaticEventIconList"
+></app-calendar-dayoff-window>
+<ng-container [ngSwitch]="employeeViewControl.value">
+    <ng-container *ngSwitchCase="0">
+        <div class="calendar-view-container">
+            <app-ag-grid-table [setRowData]="rowData | async"
+                               [setColumnDefs]="columnDefs"
+                               [setFrameworkComponents]="frameworkComponents"
+                               [tableId]="'common-schedule'"
+            ></app-ag-grid-table>
+        </div>
+    </ng-container>
+        <ng-container *ngSwitchCase="1">
+
+                <mwl-calendar-month-view
+                        [viewDate]="viewDate"
+                        [events]="events$ | async"
+                        [refresh]="refresh"
+                        [activeDayIsOpen]="activeDayIsOpen"
+                        (dayClicked)="dayClicked($event.day)"
+                        (eventTimesChanged)="eventTimesChanged($event)"
+                        [cellTemplate]="customCellTemplate"
+                        [locale]="translateService.calendarLocale"
+                >
+                </mwl-calendar-month-view>
+        </ng-container>
+</ng-container>
+<ng-template #customCellTemplate let-day="day" let-locale="locale">
+    <div class="cal-cell-top">
+        <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+    </div>
+    <div class="event-icon-container">
+        <ng-container *ngFor="let event of day.events">
+            <ng-container *ngIf="totalStaticEventIconList[event.title]">
+                <mat-icon [matTooltip]="event.titleAlias"
+                          [ngStyle]="{color: totalStaticEventIconList[event.title].color, 'font-size': '20px'}">{{totalStaticEventIconList[event.title].icon}}</mat-icon>
+            </ng-container>
+
+        </ng-container>
+    </div>
+
+</ng-template>

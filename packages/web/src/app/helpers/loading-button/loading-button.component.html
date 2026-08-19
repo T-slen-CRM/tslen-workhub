@@ -1,0 +1,6 @@
+<span class="loading-button-content" [class.loading-button-content--hidden]="loading()">
+  <ng-content></ng-content>
+</span>
+@if (loading()) {
+  <mat-spinner class="loading-button-spinner" [diameter]="20"></mat-spinner>
+}

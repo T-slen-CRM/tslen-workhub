@@ -1,0 +1,127 @@
+<div cdkDropListGroup class="list-drop-group">
+    <div *ngFor="let list of phases; let first = first"
+         class="list-container"
+    >
+        <div class="list-container">
+            <div class="phase-title-container">
+                <div class="phase-title-first-section">
+                    <span class="phase-title-span">{{list.name}}</span>
+                    <button *ngIf="first"
+                            mat-icon-button
+                            color="primary"
+                            class="add-post-button"
+                            (click)="createEditTask('create', null, list.id)"
+                            matTooltip="Create a card"
+                    >
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <button mat-icon-button
+                        color="primary"
+                        class="phase-settings-button"
+                        [matMenuTriggerFor]="menu"
+                >
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item
+                            class="phase-mat-menu-item"
+                            (click)="createEditPhase()"
+                    >
+                        <mat-icon>add</mat-icon>
+                        <span>{{'task.phase.create.name'| translate}}</span>
+                    </button>
+                    <button mat-menu-item
+                            class="phase-mat-menu-item"
+                            (click)="createEditPhase(list)"
+                    >
+                        <mat-icon class="phase-mat-menu-icon">edit</mat-icon>
+                        <span>{{'task.phase.edit'| translate}}</span>
+                    </button>
+                    <button mat-menu-item
+                            class="phase-mat-menu-item"
+                            (click)="sortPhaseList(list)"
+                    >
+                        <mat-icon class="phase-mat-menu-icon">sort</mat-icon>
+                        <span>{{'task.phase.sort.name'| translate}}</span>
+                    </button>
+                    <button mat-menu-item
+                            class="phase-mat-menu-item"
+                            (click)="deletePhase(list.id)"
+                    >
+                        <mat-icon>delete</mat-icon>
+                        <span>{{'task.phase.delete.name'| translate}}</span>
+                    </button>
+                </mat-menu>
+
+            </div>
+
+            <div id="{{list.id}}"
+                    cdkDropList
+                    [cdkDropListData]="list.tasks"
+                    class="one-list"
+                    (cdkDropListDropped)="drop($event)">
+                <div>
+                    @for (item of list.tasks; track item.id){
+                        <div class="list-box" cdkDrag>
+                            <div *ngIf="item.priority" class="tags">
+                                <span id="{{item.priority}}"  class="tag">{{item.priority}}</span>
+                            </div>
+                            <a class="task-text" href="javascript:"
+                               [routerLink]="['/pages/tasks-list/', projectId, {title: projectTitle , task: item.id}]"
+                            (click)="openTask(item)">
+                                {{item.title}}
+                            </a>
+                            @if(item.estimate) {
+                                <div>
+                                    <span id="{{item.estimateColor}}" class="tag">estimate {{item.estimateViewDate}}</span>
+                                    <span class="estimate-span">{{item.estimateUntilDay}}</span>
+                                </div>
+                            }
+
+                            <div class="stats">
+                                <div class="left-icons">
+                                    <div class="super-customing">
+                                        <mat-icon matTooltip="{{item.tooltipCreate}}" class="created-icon">access_time</mat-icon>
+                                        <span class="created-span">{{item.viewDateCreate}}</span>
+                                    </div>
+                                    <!--                            <div class="super-customing">-->
+                                    <!--                                <mat-icon matTooltip="{{checkInterval(item.createdAt,'phase')}}" class="phase-icon">timelapse</mat-icon>-->
+                                    <!--                                <span class="phase-span">14d</span>-->
+                                    <!--                            </div>-->
+                                    <div class="super-customing">
+                                        <mat-icon matTooltip="{{item.tooltipUpdate}}" class="updated-icon">av_timer</mat-icon>
+                                        <span class="updated-span">{{item.viewDateUpdate}}</span>
+                                    </div>
+                                </div>
+                                <div class="viewer" *ngIf="item.taskUserAssignmentRelations.length">
+
+                                <span *ngFor="let assignedUser of item.taskUserAssignmentRelations">
+                                    @if (assignedUser.user) {
+                                        <img src="{{assignedUser.user.avatar}}" alt="Avatar">
+                                    }
+                                </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    if phases empty show like  -->
+    @if (!phases || !phases.length){
+        <div>
+
+                <mat-card [ngClass]="'mat-add-card-wrapper'"
+                           (click)="createEditPhase()"
+                >
+                    <mat-card-content>
+                        <mat-icon class="mat-icon-wrapper"
+                        >add</mat-icon>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+    }
+</div>

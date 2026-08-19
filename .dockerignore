@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+dist
+packages/web/node_modules
+packages/web/dist
+.git
+*.md
+credentials/*.json

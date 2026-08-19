@@ -1,0 +1,15 @@
+
+<div [class]="getContainerClasses()">
+    <video
+        #videoElement
+        [style.object-fit]="getObjectFit()"
+        [style.transform]="'scaleX(-1)'"
+        autoplay
+        muted
+        playsinline>
+    </video>
+
+    <div class="participant-data">
+        <p>{{ participantIdentity() }}</p>
+    </div>
+</div>

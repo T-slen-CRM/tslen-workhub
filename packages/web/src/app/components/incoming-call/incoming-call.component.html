@@ -1,0 +1,9 @@
+<div class="call-window">
+    <div class="call-title">{{'call_model.incoming_call.title' | translate}}</div>
+    <img class="avatar" [src]="data.img" alt="avatar">
+    <div class="call-text">{{'call_model.incoming_call.text' | translate}} {{ data.callerName }} {{data.callerLastName}} ...</div>
+    <div class="buttons">
+        <button class="btn-yes" (click)="accept()">{{'call_model.incoming_call.button.yes' | translate}}</button>
+        <button class="btn-no" (click)="reject()">{{'call_model.incoming_call.button.no' | translate}}</button>
+      </div>
+</div>

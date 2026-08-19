@@ -1,0 +1,16 @@
+
+.task-phase-card {
+  display: flex;
+  justify-content: space-between;
+
+  .input-mat-select {
+    width: 100%;
+  }
+
+  .dialog-action-button {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+

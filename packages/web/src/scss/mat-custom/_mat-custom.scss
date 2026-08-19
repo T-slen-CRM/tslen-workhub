@@ -1,0 +1,72 @@
+.split-columns-dropdown {
+  button.mat-menu-item {
+    width: 50%!important;
+    display: inline-table;
+  }
+  .dropdown-footer {
+    display: flex;
+    justify-content: center;
+  }
+}
+.mat-menu-panel {
+  max-width: 370px!important;
+}
+.project-settings-menu{
+  width: 150px;
+}
+.project-settings-menu-item{
+  line-height: 38px !important;
+  height: 38px !important;
+}
+.mat-stroked-button:not([class*=mat-elevation-z]){
+  width: 100%;
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+  height: 36px;
+}
+/* Tooltip container */
+.custom-tooltip {
+  position: relative;
+  display: inline-block;
+  /*border-bottom: 1px dotted black; !* If you want dots under the hoverable text *!*/
+}
+
+/* Tooltip text */
+.custom-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 100px;
+
+  background-color: #999;
+  color: #fff;
+  text-align: center;
+  padding: 3px;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  //bottom: 125%;
+  //left: 50%;
+  //margin-left: -50px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.custom-tooltip .tooltiptext::after {
+  content: "";
+  //position: absolute;
+  //top: 100%;
+  //left: 50%;
+  //margin-left: -5px;
+  //border-width: 5px;
+  border-style: solid;
+  border-color: #999 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.custom-tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

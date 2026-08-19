@@ -1,0 +1,6 @@
+<mat-tab-group (selectedTabChange)="setTemplate($event.index)">
+        <mat-tab id="{{tab.tabId}}" *ngFor="let tab of tabs"
+                [label]="tab.name">
+                    <ng-container *ngIf="+tab.tabId === index" [ngTemplateOutlet]="currentTab"></ng-container>
+        </mat-tab>
+</mat-tab-group>

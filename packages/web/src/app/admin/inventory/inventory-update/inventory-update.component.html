@@ -1,0 +1,116 @@
+<div class="main-inventory">
+    <br/>
+    <form [formGroup]="form">
+        <div>
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.name' | translate}}</mat-label>
+                <input matInput [placeholder]="'inventory.form.name' | translate" formControlName="name" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.code' | translate}}</mat-label>
+                <input matInput [placeholder]="'inventory.form.code' | translate" formControlName="code" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.category' | translate}}</mat-label>
+                <input matInput [placeholder]="'inventory.form.category_placeholder' | translate" formControlName="category" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.serial_number' | translate}}</mat-label>
+                <input matInput [placeholder]="'inventory.form.serial_number' | translate" formControlName="serialNumber">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.location' | translate}}</mat-label>
+                <input matInput [placeholder]="'inventory.form.location' | translate" formControlName="location">
+            </mat-form-field>
+        </div>
+        <div class="mid-text-field">
+            <div class="half-text-field">
+                <mat-form-field class="price-mat-field" appearance="outline">
+                    <mat-label>{{'inventory.form.department' | translate}}</mat-label>
+                    <input matInput [placeholder]="'inventory.form.department' | translate" formControlName="department">
+                </mat-form-field>
+            </div>
+            <div class="half-text-field">
+                <mat-form-field class="price-mat-field" appearance="outline">
+                    <mat-label>{{'inventory.form.subdivision' | translate}}</mat-label>
+                    <input matInput [placeholder]="'inventory.form.subdivision' | translate" formControlName="subDivision">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="mid-text-field-full">
+            <div class="half-text-field">
+                <mat-form-field class="price-mat-field" appearance="outline">
+                    <mat-label>{{'inventory.form.price' | translate}}</mat-label>
+                    <input matInput [placeholder]="'inventory.form.price' | translate" formControlName="price">
+                </mat-form-field>
+            </div>
+            <div class="half-text-field">
+                <app-date-time-input class="price-mat-field" type="date" [label]="'inventory.form.warranty' | translate" formControlName="warrantyDate"></app-date-time-input>
+            </div>
+        </div>
+        <div >
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'inventory.form.user' | translate}}</mat-label>
+                <mat-select  [placeholder]="'inventory.form.user' | translate" formControlName="userId">
+                    @for (user of usersList; track user.id){
+                        <mat-option [value]="user.id">{{user.firstName + ' '+ user.lastName}}</mat-option>
+                    }
+                </mat-select>
+
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field class="mat-textarea-field" appearance="outline">
+                <mat-label>{{'inventory.form.description' | translate}}</mat-label>
+                <textarea rows="5" matInput [placeholder]="'inventory.form.description' | translate" formControlName="description"></textarea>
+            </mat-form-field>
+        </div>
+    </form>
+    <div class="update-buttons">
+    <div class="save-button-inventory">
+        <button mat-button mat-raised-button color="primary"
+                [disabled]="!form.valid"
+                (click)="saveInventory()"
+        >{{'inventory.button.update' | translate}}</button>
+    </div>
+    <div>
+        <button (click)="openHistory()" class="inventory-button" mat-stroked-button color="primary">{{'inventory.button.history' | translate}}</button>
+    </div>
+    </div>
+    <div class="history-container">
+        <div class="history-wrapper scale-in-hor-right" *ngIf="showHistory">
+            <div class="history-header">
+                <div class="history-title">{{'inventory.history.title' | translate}}</div>
+                <button mat-icon-button class="close-button" (click)="showHistory = false">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <ng-container *ngFor="let item of historyData">
+                <div class="history-card">
+                    <div class="user-name">{{ item.userName }}</div>
+
+                    <div class="history-row">
+                        <mat-icon class="icon-green">arrow_forward</mat-icon>
+                        <span class="label">{{'inventory.history.took' | translate}}</span>
+                        <span class="date">{{ item.formattedStartDate }}</span>
+                    </div>
+
+                    <div class="history-row" *ngIf="item.endDate">
+                        <mat-icon class="icon-red">arrow_back</mat-icon>
+                        <span class="label">{{'inventory.history.returned' | translate}}</span>
+                        <span class="date">{{ item.formattedEndDate }}</span>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

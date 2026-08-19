@@ -14,6 +14,7 @@ export const enum LiveKitEvents  {
   CALL_ACCEPTED = 'call_accepted',
   CALL_REJECTED = 'call_rejected',
   ONLINE_USERS = 'online_users',
+  NOTIFICATION = 'notification',
 }
 
 @WebSocketGateway({
@@ -24,7 +25,7 @@ export const enum LiveKitEvents  {
 })
 
 export class LiveKitGateway {
-    public users: Map<string, Socket> = new Map();
+    public users: Map<number, Socket> = new Map();
     @WebSocketServer()
         server: Server;
 
@@ -95,6 +96,13 @@ export class LiveKitGateway {
 
         for (const ws of uniqueSockets) {
             ws.emit(LiveKitEvents.ONLINE_USERS, message);
+        }
+    }
+
+    public notifyUser (userId: number, payload: unknown): void {
+        const socket = this.users.get(userId);
+        if (socket) {
+            socket.emit(LiveKitEvents.NOTIFICATION, payload);
         }
     }
 

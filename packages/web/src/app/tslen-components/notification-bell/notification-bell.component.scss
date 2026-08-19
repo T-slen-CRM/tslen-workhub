@@ -1,0 +1,34 @@
+.to-fix-jump-mat-badge {
+  display: inline-block;
+}
+.one-notification {
+  height: auto;
+  line-height: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+.notification-body {
+  display: flex;
+  flex-direction: column;
+}
+.notification-title {
+}
+.noti-message {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 310px;
+}
+.noti-head-mat-menu {
+  padding: 15px 20px;
+
+  a {
+    text-decoration: underline;
+    font-size: 13px;
+  }
+}

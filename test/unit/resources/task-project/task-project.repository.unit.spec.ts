@@ -28,4 +28,17 @@ describe('TaskProjectRepository', () => {
         expect(repository.getByRole).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
+    it('should call findByPhaseId', async () => {
+        jest.spyOn(repository, 'findByPhaseId').mockResolvedValue(mockedTaskProject as TaskProject);
+        const result = await repository.findByPhaseId(5);
+        expect(repository.findByPhaseId).toHaveBeenCalledWith(5);
+        expect(result).toEqual(mockedTaskProject);
+    });
+    it('should call findAllWithPhases', async () => {
+        const mockResponse = [{ id: 1, name: 'test', phases: [{ id: 5, name: 'ToDo' }] }];
+        jest.spyOn(repository, 'findAllWithPhases').mockResolvedValue(mockResponse);
+        const result = await repository.findAllWithPhases();
+        expect(repository.findAllWithPhases).toHaveBeenCalled();
+        expect(result).toEqual(mockResponse);
+    });
 });

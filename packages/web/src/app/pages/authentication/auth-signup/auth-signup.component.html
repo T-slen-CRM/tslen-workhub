@@ -1,0 +1,150 @@
+
+<div class="main-auth-container">
+
+  <div class="auth-wrapper" id="auth-custom-mat-style">
+
+    <div class="auth-content">
+
+      <div class="card custom-card">
+
+        <div class="row align-items-center text-center">
+
+          <div class="col-md-12">
+
+            <div class="card-body">
+              <div class="main-brand-logo">
+                <img src="../../../../assets/images/tslen/T-SLEN_2.png" width="120"  alt="" class="img-fluid mb-4">
+
+              </div>
+                @if(companyId){
+                    <h4 class="mb-2 f-w-400">{{ pageTraslate['auth_signup.companyUserTitle'] }}</h4>
+                    <ng-container *ngTemplateOutlet="createUser"></ng-container>
+                } @else {
+                    <h4 class="mb-2 f-w-400">{{ pageTraslate['auth_signup.createCompanyUserTitle'] }}</h4>
+                        <ng-container *ngTemplateOutlet="createCompany"></ng-container>
+                }
+                <ng-template #createCompany>
+                    <form [formGroup]="companyForm">
+                    <div>
+                        <div class="full-width">
+                        <mat-form-field class="mat-text-field" appearance="outline">
+                            <mat-label>{{ pageTraslate['auth_signup.form.company.nameLabel'] }}</mat-label>
+                          <input matInput required formControlName="name">
+                          <mat-error *ngIf="companyForm.controls['name'].hasError('required')">
+                            {{ pageTraslate['auth_signup.form.company.nameRequired'] }}
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                        <div class="full-width">
+                        <mat-form-field class="mat-text-field" appearance="outline">
+                            <mat-label>{{ pageTraslate['auth_signup.form.company.countryLabel'] }}</mat-label>
+                          <input matInput [placeholder]="pageTraslate['auth_signup.form.company.countryLabel']" required formControlName="country">
+                          <mat-error *ngIf="companyForm.controls['country'].hasError('required')">
+                            {{ pageTraslate['auth_signup.form.company.countryRequired'] }}           
+                          </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                  <button class="main-btn"
+                          mat-stroked-button
+                          (click)="onSubmit()"
+                          [disabled]="companyForm.invalid || loading"
+                  >
+                      @if (loading){
+                            <mat-spinner style="width: 20px; height: 20px"></mat-spinner>
+                      } @else {
+                         {{ pageTraslate['auth_signup.form.company.submitButton'] }}
+                      }
+                  </button>
+
+                </div>
+                    </form>
+                </ng-template>
+                <ng-template #createUser>
+                    <form [formGroup]="userForm">
+                    <div>
+                            <div>
+                                <div class="full-width">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                        <mat-label>{{ pageTraslate['auth_signup.form.user.firstNameLabel'] }}</mat-label>
+                                        <input matInput required formControlName="firstName">
+                                        <mat-error *ngIf="userForm.controls['firstName'].hasError('required')">
+                                            {{ pageTraslate['auth_signup.form.user.firstNameRequired'] }}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="full-width">
+                                    <mat-form-field class="mat-text-field" appearance="outline">
+                                    <mat-label>{{ pageTraslate['auth_signup.form.user.lastNameLabel'] }}</mat-label>
+                                  <input matInput required formControlName="lastName">
+                                  <mat-error *ngIf="userForm.controls['lastName'].hasError('required')">
+                                    {{ pageTraslate['auth_signup.form.user.lastNameRequired'] }}
+                                  </mat-error>
+                                </mat-form-field>
+                                </div>
+                                <div class="full-width">
+                                <mat-form-field class="mat-text-field" appearance="outline">
+                                    <mat-label>{{ pageTraslate['auth_signup.form.user.emailLabel'] }}</mat-label>
+                                  <input matInput [placeholder]="pageTraslate['auth_signup.form.user.emailLabel']" required formControlName="email">
+                                  <mat-error *ngIf="userForm.controls['email'].hasError('required')">
+                                    {{ pageTraslate['auth_signup.form.user.emailRequired'] }}
+                                  </mat-error>
+                                </mat-form-field>
+                              </div>
+                              <div class="full-width">
+                                <mat-form-field class="mat-text-field" appearance="outline">
+                                    <mat-label>{{ pageTraslate['auth_signup.form.user.passwordLabel'] }}</mat-label>
+                                  <input [type]="hidePassword ? 'password' : 'text'" matInput [placeholder]="pageTraslate['auth_signup.form.user.passwordLabel']" required formControlName="password">
+                                  <mat-icon class="custom-mat-icon" matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                  <mat-error *ngIf="userForm.controls['password'].hasError('required')">
+                                    {{ pageTraslate['auth_signup.form.user.passwordRequired'] }}
+                                  </mat-error>
+                                    @if(userForm.controls['password'].hasError('minlength')){
+                                        <mat-error>{{ pageTraslate['auth_signup.form.user.passwordMinLength'] }}</mat-error>
+                                    }
+                                </mat-form-field>
+                              </div>
+                                <div class="full-width">
+                                <mat-form-field class="mat-text-field" appearance="outline">
+                                    <mat-label>{{ pageTraslate['auth_signup.form.user.confirmPasswordLabel'] }}</mat-label>
+                                      <input [type]="hidePassword ? 'password' : 'text'" matInput [placeholder]="pageTraslate['auth_signup.form.user.confirmPasswordLabel']" required formControlName="confirmPassword">
+                                      <mat-icon class="custom-mat-icon" matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                      <mat-error *ngIf="userForm.controls['confirmPassword'].hasError('required')">
+                                        {{ pageTraslate['auth_signup.form.user.confirmPasswordRequired'] }}
+                                      </mat-error>
+                                    @if (userForm.hasError('requireConfirmPassword')){
+                                        <mat-error> {{ pageTraslate['auth_signup.form.user.passwordsDoNotMatch'] }}</mat-error>
+                                    }
+                                    @if(userForm.controls['password'].hasError('minlength')){
+                                        <mat-error>{{ pageTraslate['auth_signup.form.user.passwordMinLength'] }}</mat-error>
+                                    }
+                                </mat-form-field>
+                              </div>
+                            </div>
+                    </div>
+                    <button class="main-btn"
+                            mat-stroked-button
+                            (click)="sendUserForm()"
+                            [disabled]="userForm.invalid"
+                    >
+                    {{ pageTraslate['auth_signup.form.user.submitButton'] }}
+                  </button>
+                </form>
+                </ng-template>
+
+                    <br>
+                    <p>{{ pageTraslate['auth_signup.links.alreadyHaveCompany'] }} <a [routerLink]="['/auth/login']" class=" header-style">{{ pageTraslate['auth_signup.links.sign'] }}</a></p>
+                  <p>{{ pageTraslate['auth_signup.links.support'] }} <b>support&#64;t-slen.com</b></p>
+                <div class='alert alert-danger' *ngIf='message'>
+                  <button class='close' data-close='alert'></button>
+                  <span>{{message}}</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

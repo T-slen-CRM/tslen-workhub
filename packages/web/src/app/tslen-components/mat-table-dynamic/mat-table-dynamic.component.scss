@@ -1,0 +1,51 @@
+table {
+  width: 100%;
+  height: 100%;
+}
+.mat-row {
+  height: auto;
+}
+
+.mat-cell {
+  padding: 8px 8px 8px 0;
+}
+.color-input{
+  border-radius: 50%;
+}
+.img-radius {
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+}
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+  line-height: 30px;
+}
+
+.mat-row:hover .mat-cell {
+  border-color: #f2f2f2;
+}
+.demo-table {
+  width: 100%;
+}
+
+.mat-column-id {
+  width: 10%;
+}
+
+.mat-column-status {
+  width: 22%;
+}
+
+.mat-column-action {
+  width: 22%;
+}
+.mat-column-count {
+  width: 22%;
+}
+
+.mat-column-created {
+  width: 22%;
+}

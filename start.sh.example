@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Copy this file to start.sh (gitignored) and customize for your deployment,
+# the same way you'd copy .env.example to .env. Then: chmod +x start.sh
+
+CONTAINER_NAME="${CONTAINER_NAME:-tslen-workhub}"
+DOMAIN="${DOMAIN:?Set DOMAIN to your public hostname, e.g. crm.example.com}"
+ROUTER_RULE="Host(\`${DOMAIN}\`)"
+ENV_FILE=".env"
+FULL_IMAGE="tslen-workhub:latest"
+PORT="${PORT:-4004}"
+DOCKER_NETWORK="${DOCKER_NETWORK:-tslen-net}"
+
+docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
+
+docker build --build-arg APP_PORT="${PORT}" -t "${FULL_IMAGE}" .
+
+docker run -d \
+    --name "${CONTAINER_NAME}" \
+    --restart unless-stopped \
+    --network "${DOCKER_NETWORK}" \
+    --add-host host.docker.internal:host-gateway \
+    --env-file "${ENV_FILE}" \
+    --label "traefik.enable=true" \
+    --label "traefik.http.routers.${CONTAINER_NAME}.rule=${ROUTER_RULE}" \
+    --label "traefik.http.routers.${CONTAINER_NAME}.entrypoints=websecure" \
+    --label "traefik.http.routers.${CONTAINER_NAME}.tls.certresolver=letsencrypt" \
+    --label "traefik.http.services.${CONTAINER_NAME}.loadbalancer.server.port=${PORT}" \
+    -v "./upload:/app/upload" \
+    -v "./credentials:/app/credentials" \
+    "${FULL_IMAGE}"

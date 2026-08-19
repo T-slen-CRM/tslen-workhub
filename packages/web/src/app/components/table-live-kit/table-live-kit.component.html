@@ -1,0 +1,23 @@
+
+<mat-list>
+  <div mat-subheader>{{'table_live_kit.users' | translate}}</div>
+  @for (user of rowData; track user) {
+    <mat-list-item
+      (click)="updateSelectedChatId(user)"
+      class="user-list-item"
+    >
+      <mat-icon matListItemIcon
+                [ngClass]="userStatuses?.[user.id] ? 'user-list-icon-status online': 'user-list-icon-status offline'"
+            >
+          @if (userStatuses?.[user.id]){
+              check_circle
+          } @else {
+          remove_circle
+          }
+      </mat-icon>
+      <div matListItemTitle
+      >{{user.firstName}} {{user.lastName}}</div>
+<!--      <div matListItemLine>{{userStatuses?.[user.id]}}</div>-->
+    </mat-list-item>
+  }
+</mat-list>

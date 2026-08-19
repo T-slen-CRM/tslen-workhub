@@ -1,0 +1,21 @@
+
+.chip{
+  cursor: pointer;
+  color: black !important;
+  width: 65px;
+  font-size: 13px;
+  &:hover{
+    cursor: pointer;
+  }
+  &.assigned-chip{
+    background-color: rgb(0 0 0 / 16%) !important;
+    //color: black !important;
+  }
+  &.not-assigned-chip{
+    background-color: #0000000a;
+  }
+}
+.request-type-chips{
+  display: flex;
+  justify-content: space-evenly;
+}

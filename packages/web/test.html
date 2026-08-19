@@ -1,0 +1,52 @@
+<br/>
+<div>
+    <form id="myForm">
+        <div class="form-container">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Name" required>
+            <span id="nameError" class="error-message" style="display: none; color: red;">Name is required!</span>
+            <button type="button" onclick="onSubmit()">Save changes</button>
+        </div>
+    </form>
+</div>
+
+<table id="dataTable" border="1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added dynamically -->
+    </tbody>
+</table>
+
+<script>
+    function onSubmit() {
+        var nameInput = document.getElementById('name');
+        var nameError = document.getElementById('nameError');
+        var tableBody = document.querySelector('#dataTable tbody');
+
+        if (!nameInput.value.trim()) {
+            nameError.style.display = 'block';
+            return;
+        } else {
+            nameError.style.display = 'none';
+        }
+
+        var newRow = tableBody.insertRow();
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        
+        cell1.textContent = nameInput.value;
+        cell2.innerHTML = '<button onclick="deleteRow(this)">Delete</button>';
+
+        nameInput.value = '';
+    }
+
+    function deleteRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+</script>

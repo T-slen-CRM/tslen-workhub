@@ -1,0 +1,27 @@
+<div class="file-input">
+    <mat-label>{{uploadLabel}}</mat-label>
+    <button mat-raised-button
+            (click)="fileInput.click()"
+            [disabled]="disableSelect"
+    >
+        {{'people.avatar.button.select'| translate}}
+    </button>
+    <input
+            hidden
+            type="file"
+            [multiple]="multipleSelection"
+            #fileInput
+            (change)="selectFiles($event)"
+            [accept]="acceptedFileTypes"
+    />
+    <button [disabled]="!selectedFiles"
+            type="submit"
+            mat-raised-button color="primary"
+            (click)="uploadFiles()">
+        {{'people.avatar.button.submit'| translate}}
+    </button>
+</div>
+
+<app-progressbar-bootstrap [progressInfos]="progressInfos"></app-progressbar-bootstrap>
+
+<app-messages-list [messages]="message"></app-messages-list>

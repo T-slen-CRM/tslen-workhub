@@ -1,0 +1,17 @@
+<mat-accordion [multi]="multiExpanded">
+    <mat-expansion-panel *ngFor="let panel of panels; let index = index" [expanded]="panel.expanded">
+
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{panel.panelTitle}}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{panel.description}}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+            <ng-container [ngTemplateOutlet]="templates.get(index)"></ng-container>
+
+    </mat-expansion-panel>
+
+</mat-accordion>

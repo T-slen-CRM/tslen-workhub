@@ -1,0 +1,30 @@
+<div class="main-company-rules-container">
+    <h6>{{'company_rules.title'| translate}}</h6>
+    <app-days-off-form [dataForForm]="companyDaysOff$ | async"
+                       [savedForm]="defaultDaysOff$">
+    </app-days-off-form>
+    <form [formGroup]="form">
+
+        <mat-checkbox class="company-rules-scheduler-checkbox" color="primary" formControlName="useScheduler">{{'company_rules.use_scheduler' | translate}}</mat-checkbox>
+        <mat-checkbox class="company-rules-scheduler-checkbox" color="primary" formControlName="resetYearly">{{'company_rules.reset' | translate}}</mat-checkbox>
+
+        <ng-container *ngIf="form.value.useScheduler">
+            <h6>{{'company_rules.header'| translate}}</h6>
+            <p>
+                {{'company_rules.text_amount'| translate}}
+            </p>
+            <div>
+                <app-days-off-form [dataForForm]="daysOffSchedulerRules"
+                                   [savedForm]="timeCoefficientScheduler$">
+                </app-days-off-form>
+            </div>
+        </ng-container>
+        <div>
+            <button class="save-button" mat-raised-button color="primary" (click)="saveDaysOff()">{{'company_rules.button'| translate}}</button>
+        </div>
+    </form>
+</div>
+
+
+
+

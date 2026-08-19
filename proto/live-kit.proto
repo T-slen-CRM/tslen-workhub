@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package livekit;
+
+service LiveKitMicroservice {
+  rpc LiveKitToken (TokenRequest) returns (TokenResponse);
+  rpc LivekitWebhook (WebhookRequest) returns (WebhookResponse);
+}
+
+message TokenRequest {
+  string roomName = 1;
+  string participantName = 2;
+}
+
+message TokenResponse {
+  string token = 1;
+}
+
+message WebhookRequest {
+  bytes body = 1;
+  string authorization = 2;
+}
+
+message WebhookResponse {
+  string success = 1;
+}

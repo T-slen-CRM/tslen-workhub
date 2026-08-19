@@ -1,0 +1,21 @@
+    <mat-dialog-content class="mat-typography">
+        <h4>{{'task.phase.sort.name' | translate}}</h4>
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             class="phase-order-list" (cdkDropListDropped)="dropPhase($event)">
+          @for (timePeriod of this.phasesOrder.value; track timePeriod) {
+            <div class="phase-order-item" cdkDrag>{{timePeriod.phase.name}}</div>
+          }
+</div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions class="dialog-action-button">
+        <div class="save-cancel-btn-container">
+            <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'task.phase.sort.button.cancel'| translate}}</button>
+            <button mat-button mat-raised-button color="primary"
+                    (click)="onSubmit()"
+                    [disabled]="false"
+            >{{'task.phase.sort.button.save' | translate}}</button>
+        </div>
+    </mat-dialog-actions>
+

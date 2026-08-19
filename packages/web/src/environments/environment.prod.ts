@@ -1,0 +1,10 @@
+export const environment = {
+  isDemo: false,
+  production: true,
+  protocol: 'https://',
+  urlSufix: '/api/v1',
+  serverPort: '4004',
+  apiHost: '',
+  ipCheckerUrl: '',
+  ftpDomain: '',
+};

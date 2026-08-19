@@ -1,0 +1,6 @@
+<div class="call-window">
+    <div class="call-title">{{'call_model.outgoing_call.title' | translate}}</div>
+    <img class="avatar" [src]="data.avatar" alt="avatar">
+    <div class="call-text">{{'call_model.outgoing_call.text' | translate}} {{data.firstName}} {{data.lastName}} ...</div>
+    <button class="cancel-btn" (click)='cancelCall()'>{{'call_model.outgoing_call.cancel' | translate}}</button>
+  </div>

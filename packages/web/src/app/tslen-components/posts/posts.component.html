@@ -1,0 +1,71 @@
+<div *ngIf="posts | async as posts$">
+    <div>
+        <div class="add-post-container">
+            <span class="add-post-header">{{ 'posts.header.news' | translate }}</span>
+            <button mat-icon-button
+                    *appPermissionsVisualization="['admin', 'manager']"
+                    (click)="showPostEditor()"
+                    matTooltip="{{showEditor() ? ('posts.editor.hide' | translate) : ('posts.editor.add' | translate)}}">
+                <mat-icon>{{showEditor() ? 'remove' : 'add'}}</mat-icon>
+            </button>
+        </div>
+        @if (showEditor()){
+            <div class="add-post-container">
+                <app-text-editor [authData]="authData"
+                                 (newPost)="addPost($event)"
+                ></app-text-editor>
+            </div>
+        }
+    </div>
+
+
+    <div *ngFor="let post of posts$ | slice:0:showCountOfPost; let i=index">
+        <mat-card class="post-card">
+            <div class="post-card-header-container">
+            <mat-card-header>
+                    <img  mat-card-avatar class="example-header-image" [src]="post.avatar">
+                    <mat-card-title style="font-size: 14px">
+                        <div>
+                            {{post.title | translate}}
+                        </div>
+                    </mat-card-title>
+                <mat-card-subtitle>{{post.subtitle | date}}</mat-card-subtitle>
+            </mat-card-header>
+            </div>
+            <mat-card-content>
+                <div class="post-content-container">
+                       <div [innerHTML]="safeHtml(post.text)"></div>
+                </div>
+
+                <div class="post-image-wrapper" *ngIf="post.image">
+                    <img mat-card-image [src]="post.image" alt="Photo">
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <div class="actions-container">
+<!--                    [ngClass]="post.likesOwners.split('|').indexOf(''+userId) !== -1 ? 'action-button like-icon-color active' : 'action-button like-icon-color'"-->
+
+                    <mat-icon class="action-button like-icon-color"
+                              matBadgeSize="small"
+                              [matBadge]="post.likes > 0 ? post.likes : ''"
+                              matBadgeColor="primary"
+                              matBadgePosition="above"
+                              (click)="addLike(post)"
+                              matTooltip="Like"
+                              aria-hidden="false"
+                    >favorite</mat-icon>
+                    <mat-icon *appPermissionsVisualization="['admin', 'manager']"
+                            class="action-button low-red-text-color"
+                            matTooltip="Delete"
+                            (click)="confirmDeleteDialog(post)"
+                    >
+                        delete
+                    </mat-icon>
+                </div>
+
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <button mat-button *ngIf="showCountOfPost < posts$.length" (click)="showMore()">{{'posts.button'| translate}}</button>
+
+</div>

@@ -1,0 +1,101 @@
+@use "sass:color";
+
+.main-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+//.card-wrapper{
+//  width: 200px;
+//  height: 200px;
+//}
+.add-card-wrapper{
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+}
+.mat-add-card-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  background-color: #f4f5fa;
+  &:hover{
+    cursor: pointer;
+    background-color: color.adjust(#f4f5fa, $lightness: -2%, $space: hsl);
+  }
+  &.dark-mode{
+    background-color: color.adjust(#122442, $lightness: -2%, $space: hsl);
+    &:hover{
+      cursor: pointer;
+      background-color: #122442;
+    }
+  }
+
+}
+
+.mat-item-card-wrapper{
+  width: 200px;
+  height: 200px;
+  //padding: 20px;
+  margin: 10px;
+  &:hover{
+    cursor: pointer;
+     background-color: #f4f5fa;
+  }
+}
+.mat-icon-wrapper{
+  height: 100px;
+  width: 100px;
+  font-size: 100px;
+  color: #b5b5b5;
+}
+//.mat-form-field-item{
+//  width: 60%;
+//}
+//.save-action-button{
+//  width: 100px;
+//}
+//.delete-action-button{
+//  margin-right: 10px;
+//}
+//#ededed
+.loading-div {
+  //margin-top: 27%;
+  //margin-left: 43%;
+  position: absolute;
+  width:100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.1);
+  z-index: 10000
+}
+@media only screen and (max-width: 599px) {
+  .main-container{
+    flex-direction: column;
+  }
+  //.card-wrapper{
+  //  width: 100%;
+  //  margin-bottom: 30px
+  //}
+  .add-card-wrapper {
+    width: 100%;
+  }
+  //.mat-item-card-wrapper{
+  //  height: 420px;
+  //}
+}
+
+.project-actions-button{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.project-card-body{
+
+}

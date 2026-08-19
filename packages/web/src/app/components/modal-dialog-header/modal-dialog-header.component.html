@@ -1,0 +1,18 @@
+<div class="header-container">
+    <div class="header-left">
+        <h5 mat-dialog-title>{{ titleDate | date: 'EEEE, MMMM d, y': undefined: translateService.calendarLocale | titlecase }}</h5>
+        <mat-icon *ngIf="tooltipText"
+                  matTooltipPosition="right"
+                  class="header-icon"
+                  [matTooltip]="tooltipText"
+        >info_outline</mat-icon>
+    </div>
+    <div>
+        <button mat-icon-button
+                color="primary"
+                (click)="closeDialog.emit(true)"
+        >
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</div>

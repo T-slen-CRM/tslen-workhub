@@ -1,0 +1,160 @@
+<form [formGroup]="form">
+    <mat-dialog-content class="mat-typography">
+        <div>
+            <div>
+                <div *ngIf="approvingStatus; else makeRequest">
+                    <h3 [ngClass]="'status-message '+ approveStatusObject[approvingStatus].class">
+                        {{approveStatusObject[approvingStatus].title}}
+                    </h3>
+                </div>
+
+                <ng-template #makeRequest>
+                    <div >
+                        <mat-checkbox [color]="'primary'"
+                                      class="margin-element"
+                                      formControlName="isRequest">{{'makeRequest.form.title'| translate}}</mat-checkbox>
+                    </div>
+                </ng-template>
+            </div>
+
+            <div *ngIf="form.value['isRequest']"
+                 @fadeIn
+                 class="days-off-container"
+            >
+                    <app-days-off-items formControlName="requestType"
+                                        [daysOffList]="daysOffList"
+                                        [disabledChips]="!!approvingStatus"
+                    ></app-days-off-items>
+                                <mat-error *ngIf="form.controls['requestType'].hasError('positiveTotal')">
+                                    You don't have enough days!
+                                </mat-error>
+            </div>
+        </div>
+
+<div *ngIf="!form.value['isRequest']"
+     @fadeIn
+>
+    <div >
+        <mat-checkbox [color]="'primary'"
+                      class="margin-element"
+                      formControlName="isGoogleEvent"
+                      [matTooltip]="googleCalendarId ? '' : 'Please, set your Google calendar id in settings' "
+        >
+            {{'makeRequest.meet'| translate}}
+        </mat-checkbox>
+    </div>
+    <div>
+            <!--  googleMeetLink link with copy button-->
+            <ng-container *ngIf="form.value['googleMeetLink']">
+                <div class="google-meet-container">
+                    <mat-label class="meet-label">Google meet link</mat-label>
+                        <a [href]="form.value['googleMeetLink']" target="_blank">{{form.value['googleMeetLink']}}</a>
+                            <mat-icon class="copy-link-btn"
+                                      appCopyText [copyText]="form.value['googleMeetLink']"
+                            >content_copy</mat-icon>
+                </div>
+
+            </ng-container>
+        </div>
+    @if (form.value['isGoogleEvent']){
+        <div>
+            <app-autocomplete (selectedItemsForParent)="getSelectedAttendees($event)"
+                              [allData]="allPossibleAttendees"
+                              [nameOfList]="'Users'"
+                              [selectedData]="selectedAttendees">
+            </app-autocomplete>
+        </div>
+<!--        <div >-->
+<!--            <mat-checkbox [color]="'primary'"-->
+<!--                          class="margin-element"-->
+<!--                          formControlName="createMeetingSpace"-->
+<!--            >-->
+<!--                Create a Google meet-->
+<!--            </mat-checkbox>-->
+<!--        </div>-->
+    }
+
+    <mat-form-field class="input-mat-select" appearance="outline">
+        <mat-label>{{'makeRequest.title' | translate}}</mat-label>
+        <input matInput
+                type="text"
+                placeholder="Event title"
+                formControlName="title"
+                (keyup)="refresh.next()"
+        />
+    </mat-form-field>
+</div>
+        <div *ngIf="form.value['showDateWithHours'] && form.value['isRequest']"
+              @fadeInOut>
+            <mat-checkbox [color]="'primary'"
+                          class="margin-element"
+                          formControlName="dateWithHours">{{'makeRequest.form.hours'| translate}}</mat-checkbox>
+        </div>
+
+<div >
+    <div
+         appHideItem [hide]="!(!form.value['isRequest']
+                || (form.value['isRequest'] && form.value['dateWithHours'])
+                || approvingStatus
+                )"
+    >
+        <app-date-time-input type="datetime-local" [label]="'makeRequest.form.start'| translate" formControlName="start"></app-date-time-input>
+        <app-date-time-input type="datetime-local" [label]="'makeRequest.form.end' | translate" formControlName="end"></app-date-time-input>
+
+    </div>
+    <div appHideItem [hide]="!(!form.value['dateWithHours']
+                                && form.value['isRequest']
+                                && !approvingStatus
+                                ) ">
+
+        <app-date-time-input type="date" [label]="'makeRequest.form.start'| translate" formControlName="start"></app-date-time-input>
+        <app-date-time-input type="date" [label]="'makeRequest.form.end'| translate" formControlName="end"></app-date-time-input>
+
+    </div>
+    <mat-error *ngIf="form.controls['start'].hasError('requireStartBeforeEnd')">
+        Your start after end!
+    </mat-error>
+
+    <div *ngIf="!form.value['isRequest']"
+         @fadeIn
+         formGroupName="color">
+        <mat-form-field class="color-input-mat-select" appearance="outline">
+            <mat-label>{{'makeRequest.label' | translate}}</mat-label>
+            <input matInput
+                   type="color"
+                   formControlName="primary"
+                   (change)="refresh.next()"
+            />
+        </mat-form-field>
+
+    </div >
+</div>
+        <div>
+            <mat-form-field appearance="fill" class="input-mat-select">
+                <mat-label>{{'makeRequest.form.comment'| translate}}</mat-label>
+                <textarea matInput rows="5" cols="160"
+                          formControlName="comment"
+                ></textarea>
+            </mat-form-field>
+        </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions class="edit-dialog-actions">
+            <div class="save-cancel-btn-container">
+                <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'makeRequest.form.cancel'| translate}}</button>
+                <button mat-button mat-raised-button color="primary"
+                        (click)="onSubmit()"
+                        [disabled]="form.invalid || !!approvingStatus"
+                         >{{'makeRequest.form.save'| translate}}</button>
+            </div>
+            <div>
+                <button mat-icon-button color="accent"
+                        (click)="onDelete()"
+                        [disabled]="incomingEvent.length === 0"
+                         >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+    </mat-dialog-actions>
+</form>
+

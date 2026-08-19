@@ -1,0 +1,14 @@
+<div id="{{tableId}}" class="ag-grid-full-height">
+    <ag-grid-angular
+            class="ag-theme-material ag-grid-angular-style ag-test"
+            #agGrid
+            [rowData]="_rowData"
+            [animateRows]="true"
+            [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef"
+            [rowHeight]="38"
+            [frameworkComponents]="frameworkComponents"
+            [headerHeight]="81"
+            [enableCellTextSelection]="true">
+    </ag-grid-angular>
+</div>

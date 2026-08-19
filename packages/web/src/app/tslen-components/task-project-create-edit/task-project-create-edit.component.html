@@ -1,0 +1,63 @@
+<form [formGroup]="form">
+    <mat-dialog-content class="mat-typography">
+        <div>
+            <div>
+            </div>
+        </div>
+        <div>
+            <mat-form-field class="input-mat-select" appearance="outline">
+                <input matInput
+                       type="text"
+                       [placeholder]="'task_project.project_name' | translate"
+                       formControlName="name"
+                />
+            </mat-form-field>
+        </div>
+        <div >
+                <mat-checkbox color="primary" formControlName="isPrivate">{{'task_project.private'| translate}}</mat-checkbox>
+        </div >
+        <div>
+            <mat-form-field appearance="outline" class="input-mat-select">
+                <mat-label>{{'task_project.description'| translate}}</mat-label>
+                <textarea matInput rows="5" cols="160"
+                          formControlName="description"
+                ></textarea>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="input-mat-select">
+                <input matInput
+                       type="text"
+                       [placeholder]="'task_project.channel' | translate"
+                       formControlName="slackChannel"
+                />
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-label>{{'task_project.logo'| translate}}</mat-label>
+            <app-image-selection
+                    formControlName="logo"
+            ></app-image-selection>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="dialog-action-button">
+        <div class="save-cancel-btn-container">
+            <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">Cancel</button>
+            <button mat-button mat-raised-button color="primary"
+                    (click)="onSubmit()"
+                    [disabled]="form.invalid"
+            >Save</button>
+        </div>
+        <div>
+<!--            <button mat-icon-button color="accent"-->
+<!--                    (click)="onDelete()"-->
+<!--                    [disabled]="deleteDisabled"-->
+<!--                    matTooltip="delete"-->
+<!--            >-->
+<!--                <mat-icon>delete</mat-icon>-->
+<!--            </button>-->
+        </div>
+    </mat-dialog-actions>
+</form>
+
+

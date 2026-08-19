@@ -1,0 +1,268 @@
+<!--@if (!room()) {-->
+<!--<div id="join">-->
+<!--    <div id="join-dialog">-->
+<!--        <form [formGroup]="roomForm" (ngSubmit)="joinRoom()">-->
+<!--            <div class="form-group">-->
+<!--                <label for="participant-name">Your name and lastname</label>-->
+<!--                <input formControlName="participantName" id="participant-name" class="form-control" type="text" />-->
+<!--            </div>-->
+<!--&lt;!&ndash;            @if (!id()) {&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <label for="room-name">Room name</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <input formControlName="roomName" id="room-name" class="form-control" type="text" />&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            }&ndash;&gt;-->
+<!--            <button mat-stroked-button-->
+<!--                    class="make-request-btn"-->
+<!--                    type="submit"-->
+<!--                    [disabled]="!roomForm.valid"-->
+<!--            >-->
+<!--                Join!-->
+<!--            </button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+<!--} @else {-->
+<div class="call-window" id="room"
+     [ngClass]="{ 'call-small': minimized, 'call-fullscreen': !minimized }">
+<!--     [ngClass]="{'fullscreen-mode': isFullscreen()}"-->
+    <!-- Room Header -->
+    <div id="room-header" [class.hidden]="isFullscreen()">
+        <div class="room-info">
+            <span class="room-link">{{'call_room.room_link' | translate}}
+                <input type="text" [value]="currentRoomLink()" readonly class="link-input" />
+                <button class="btn btn-sm btn-outline-secondary" (click)="copyLink()">{{'call_room.copy' | translate}}</button>
+            </span>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="video-controls">
+            <button
+                class="btn btn-sm"
+                [ngClass]="cameraIsEnable() ? 'btn-success' : 'btn-danger'"
+                (click)="setCameraEnabled(!cameraIsEnable())"
+                [title]="'call_room.toggle_camera' | translate">
+                <i class="fas" [ngClass]="cameraIsEnable() ? 'fa-video' : 'fa-video-slash'"></i>
+            </button>
+
+            <button
+                class="btn btn-sm"
+                [ngClass]="screenShareEnabled() ? 'btn-warning' : 'btn-info'"
+                (click)="setScreenShareEnabled(!screenShareEnabled())"
+                [title]="'call_room.toggle_screen_share' | translate">
+                <i class="fas" [ngClass]="screenShareEnabled() ? 'fa-stop' : 'fa-desktop'"></i>
+            </button>
+
+            <button
+                class="btn btn-sm"
+                [ngClass]="microphoneEnabled() ? 'btn-success' : 'btn-danger'"
+                (click)="setMicrophoneEnabled(!microphoneEnabled())"
+                [title]="'call_room.toggle_microphone' | translate">
+                <i class="fas" [ngClass]="microphoneEnabled() ? 'fa-microphone' : 'fa-microphone-slash'"></i>
+            </button>
+            <button
+                class="btn btn-sm"
+                (click)="minimized = !minimized"
+                [title]="'call_room.expand_window' | translate">
+                🔍
+            </button>
+
+            <!-- Main Video Selection Dropdown -->
+<!--            <div class="dropdown">-->
+<!--                <button class="btn btn-sm btn-secondary dropdown-toggle"-->
+<!--                        type="button"-->
+<!--                        id="mainVideoDropdown"-->
+<!--                        data-bs-toggle="dropdown"-->
+<!--                        aria-expanded="false"-->
+<!--                        title="Select Main Video">-->
+<!--                    <i class="fas fa-expand-arrows-alt"></i> Main Video-->
+<!--                </button>-->
+<!--                <ul class="dropdown-menu" aria-labelledby="mainVideoDropdown">-->
+<!--                    &lt;!&ndash; Auto selection option &ndash;&gt;-->
+<!--                    <li>-->
+<!--                        <a  href="#" class="dropdown-item"-->
+<!--                           [class.active]="!mainVideoTrack()"-->
+<!--                           (click)="resetMainVideoSelection()">-->
+<!--                            <i class="fas fa-magic"></i> Auto Select-->
+<!--                        </a>-->
+<!--                    </li>-->
+
+<!--                    <li><hr class="dropdown-divider"></li>-->
+
+<!--                    &lt;!&ndash; Local camera option &ndash;&gt;-->
+<!--                    @if (localCameraTrack()) {-->
+<!--                        <li>-->
+<!--                            <a href="#" class="dropdown-item"-->
+<!--                               [class.active]="mainVideoTrack() === localCameraTrack()"-->
+<!--                               (click)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)">-->
+<!--                                <i class="fas fa-video"></i> Your Camera-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    }-->
+
+<!--                    &lt;!&ndash; Screen share option &ndash;&gt;-->
+<!--                    @if (screenShareEnabled() && localTrack()) {-->
+<!--                        <li>-->
+<!--                            <a href="#" class="dropdown-item"-->
+<!--                               [class.active]="mainVideoTrack() === localTrack()"-->
+<!--                               (click)="setMainVideo(localTrack()!, 'You (Screen Share)', true)">-->
+<!--                                <i class="fas fa-desktop"></i> Your Screen-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    }-->
+
+<!--                    &lt;!&ndash; Remote participants &ndash;&gt;-->
+<!--                    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {-->
+<!--                        @if (remoteTrack.trackPublication.kind === 'video') {-->
+<!--                            <li>-->
+<!--                                <a href="#" class="dropdown-item"-->
+<!--                                   [class.active]="mainVideoTrack() === remoteTrack.trackPublication.videoTrack"-->
+<!--                                   (click)="setMainVideo(remoteTrack.trackPublication.videoTrack!, remoteTrack.participantIdentity, false)">-->
+<!--                                    <i class="fas fa-user"></i> {{ remoteTrack.participantIdentity }}-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        }-->
+<!--                    }-->
+<!--                </ul>-->
+<!--            </div>-->
+
+            <button class="btn btn-sm btn-danger" (click)="leaveRoom()" [title]="'call_room.leave_room' | translate">
+                <i class="fas fa-sign-out-alt"></i>
+                {{'call_room.leave' | translate}}
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Layout -->
+    <div id="layout-container" [ngClass]="getVideoSizeClass()">
+        <!-- Main Video Section -->
+        <div class="main-video-section">
+            @if (getCurrentMainVideoTrack()) {
+                <div class="main-video-container" [ngClass]="getVideoSizeClass()">
+                    <!-- Main video header with participant name and fullscreen button -->
+                    <div class="main-video-header" [class.hidden]="isFullscreen()">
+                        <span class="main-video-label">
+                            <i class="fas fa-star"></i> {{ getCurrentMainVideoLabel() }}
+                        </span>
+                        <button class="btn btn-sm btn-outline-light fullscreen-btn"
+                                (click)="toggleMainVideoFullscreen()"
+                                [title]="'call_room.toggle_fullscreen' | translate">
+                            <i class="fas" [ngClass]="isFullscreen() ? 'fa-compress' : 'fa-expand'"></i>
+                        </button>
+                    </div>
+
+                    <!-- Main video component -->
+                    <video-component
+                        [track]="getCurrentMainVideoTrack()!"
+                        [participantIdentity]="getCurrentMainVideoLabel()"
+                        [local]="isCurrentMainVideoLocal()"
+                        [isMainVideo]="true">
+                    </video-component>
+
+                    <!-- Camera preview overlay when screen sharing (Picture-in-Picture) -->
+                    @if (screenShareEnabled() && localCameraTrack() && getCurrentMainVideoTrack() !== localCameraTrack()) {
+                        <div class="camera-pip-overlay" [class.fullscreen-pip]="isFullscreen()">
+                            <video-component
+                                [track]="localCameraTrack()!"
+                                [participantIdentity]="'call_room.you' | translate"
+                                [local]="true"
+                                [isPreview]="true">
+                            </video-component>
+                            <!-- PiP controls -->
+                            <div class="pip-controls">
+                                <button class="pip-btn"
+                                        (click)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
+                                        [title]="'call_room.switch_to_camera' | translate">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                                <button class="pip-btn"
+                                        (click)="setCameraEnabled(false)"
+                                        [title]="'call_room.turn_off_camera' | translate">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Fullscreen exit button (only visible in fullscreen) -->
+                    @if (isFullscreen()) {
+                        <button class="fullscreen-exit-btn btn btn-sm btn-dark" (click)="exitFullscreen()">
+                            <i class="fas fa-times"></i> {{'call_room.exit_fullscreen' | translate}}
+                        </button>
+                    }
+                </div>
+            } @else {
+                <!-- Placeholder when no video is available -->
+                <div class="no-main-video">
+                    <i class="fas fa-video-slash fa-3x"></i>
+                    <p>{{'call_room.no_video_available' | translate}}</p>
+                </div>
+            }
+        </div>
+
+        <!-- Thumbnail Videos Grid -->
+        <div class="thumbnail-videos-section" [ngClass]="{'fullscreen-hidden': isFullscreen()}">
+            <!-- Local camera thumbnail (when not main video) -->
+            @if (localCameraTrack() && getCurrentMainVideoTrack() !== localCameraTrack()) {
+                <div  class="thumbnail-video-wrapper"
+                     tabindex="0"
+                     (click)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
+                     (keydown.enter)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
+                     [title]="'call_room.click_to_make_main_video' | translate">
+                    <video-component
+                        [track]="localCameraTrack()!"
+                        [participantIdentity]="'call_room.you_camera' | translate"
+                        [local]="true"
+                        [isThumbnail]="true">
+                    </video-component>
+                    <div class="thumbnail-overlay">
+                        <i class="fas fa-thumbtack"></i>
+                    </div>
+                </div>
+            }
+
+            <!-- Screen share thumbnail (when not main video) -->
+            @if (screenShareEnabled() && localTrack() && getCurrentMainVideoTrack() !== localTrack()) {
+                <div class="thumbnail-video-wrapper"
+                    tabindex="0"
+                     (click)="setMainVideo(localTrack()!, 'You (Screen Share)', true)"
+                     (keydown.enter)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
+                     [title]="'call_room.click_to_make_main_video' | translate">
+                    <video-component
+                        [track]="localTrack()!"
+                        [participantIdentity]="'call_room.you_screen_share' | translate"
+                        [local]="true"
+                        [isThumbnail]="true">
+                    </video-component>
+                    <div class="thumbnail-overlay">
+                        <i class="fas fa-thumbtack"></i>
+                    </div>
+                </div>
+            }
+
+            <!-- Remote video thumbnails -->
+            @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
+                @if (remoteTrack.trackPublication.kind === 'video' && getCurrentMainVideoTrack() !== remoteTrack.trackPublication.videoTrack) {
+                    <div class="thumbnail-video-wrapper"
+                         tabindex="0"
+                         (click)="setMainVideo(remoteTrack.trackPublication.videoTrack!, remoteTrack.participantIdentity, false)"
+                         (keydown.enter)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
+                         [title]="'call_room.click_to_make_main_video' | translate">
+                        <video-component
+                            [track]="remoteTrack.trackPublication.videoTrack!"
+                            [participantIdentity]="remoteTrack.participantIdentity"
+                            [local]="false"
+                            [isThumbnail]="true">
+                        </video-component>
+                        <div class="thumbnail-overlay">
+                            <i class="fas fa-thumbtack"></i>
+                        </div>
+                    </div>
+                } @else if (remoteTrack.trackPublication.kind === 'audio') {
+                    <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+                }
+            }
+        </div>
+    </div>
+</div>
+<!--}-->

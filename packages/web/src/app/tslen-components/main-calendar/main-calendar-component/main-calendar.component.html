@@ -1,0 +1,107 @@
+<div class="calendar-menu-container">
+    <div>
+        <button mat-stroked-button
+                class="make-request-btn"
+                (click)="openCreateOneEventDialog(1)"
+        >
+        {{'makeRequest.name' | translate}}
+        </button>
+    </div>
+
+    <div >
+        <div class="calendar-navigate-arrows">
+
+            <div
+                    mwlCalendarPreviousView
+                    [view]="view"
+                    [(viewDate)]="viewDate"
+                    (viewDateChange)="closeOpenMonthViewDay()"
+            >
+                <button mat-icon-button class="navigate-arrow-btn">
+                    <mat-icon class="navigate-arrow left-margin">keyboard_arrow_left</mat-icon>
+                </button>
+            </div>
+
+            <div>
+                <span>{{ viewDate | calendarDate:(view + 'ViewTitle'):translateService.calendarLocale }}</span>
+            </div>
+
+            <div
+                    mwlCalendarNextView
+                    [view]="view"
+                    [(viewDate)]="viewDate"
+                    (viewDateChange)="closeOpenMonthViewDay()"
+            >
+                <button mat-icon-button class="navigate-arrow-btn">
+                    <mat-icon class="navigate-arrow">keyboard_arrow_right</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="view-select">
+        <div>
+            <button mat-stroked-button
+                    class="make-request-btn"
+                    mwlCalendarToday
+                    [(viewDate)]="viewDate"
+            >
+                {{"personals_chedule.button.today" | translate}}
+            </button>
+        </div>
+        <div >
+            <button mat-stroked-button class="make-request-btn"
+            >
+                <mat-select value="{{CalendarView.Week}}" (selectionChange)="onChangedViewSelect($event.value)">
+                    <ng-container *ngFor="let view of calendarViews">
+                        <mat-option [value]="view.view">{{view.title | translate }}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div [ngSwitch]="view" class="calendar-view-container">
+    <mwl-calendar-month-view
+            *ngSwitchCase="CalendarView.Month"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            [activeDayIsOpen]="activeDayIsOpen"
+            (dayClicked)="dayClicked($event.day)"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
+            [locale]="translateService.calendarLocale"
+    >
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view
+            *ngSwitchCase="CalendarView.Week"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
+            (hourSegmentClicked)="hourClicked($event.date)"
+            [hourSegmentHeight]="20"
+            [eventTitleTemplate]="customEventsStyle"
+            [locale]="translateService.calendarLocale"
+    >
+    </mwl-calendar-week-view>
+    <ng-template #customEventsStyle let-event="event">
+        <div class="event-view-template">
+            <span>{{event.title}}</span>
+        </div>
+    </ng-template>
+    <mwl-calendar-day-view
+            *ngSwitchCase="CalendarView.Day"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)"
+            (hourSegmentClicked)="hourClicked($event.date)"
+            [locale]="translateService.calendarLocale"
+    >
+    </mwl-calendar-day-view>
+</div>

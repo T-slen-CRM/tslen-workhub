@@ -1,0 +1,5 @@
+<div *ngIf="messages.length" class="alert alert-secondary my-3" role="alert">
+    <ul *ngFor="let msg of messages; let i = index">
+        <li>{{ msg }}</li>
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+.form-control.date-input {
+  max-width: 120px;
+}
+button {
+  width: 105px;
+  border-radius: 4px;
+  //&.fa-chart-bar{
+  //  width: 60px;
+  //}
+}
+.mr-2, .mx-2 {
+  margin: 0rem 0.5rem 0.5rem 0rem!important;
+}
+.date-input.invalid {
+  border: solid 2px #f89eb7;
+}
+.btn-after-focus{
+    background-color: #1a73e8;
+    color: #fff;
+}
+
+.date-range-container{
+  display: flex;
+  justify-content: space-between;
+}

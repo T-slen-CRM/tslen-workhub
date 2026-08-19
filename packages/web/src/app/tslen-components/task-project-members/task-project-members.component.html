@@ -1,0 +1,33 @@
+
+    <mat-dialog-content class="mat-typography">
+        <h2>{{'task_project_members.title' | translate}}</h2>
+        <app-mat-table-dynamic
+                [setDisplayedColumns]="tableColumns"
+                [setDataSource]="projectPermissions"
+                [hideHeaders]="false"
+                [noData]="'task_project_members.no_data' | translate"
+                [addItem]="addedPermission"
+        >
+
+        </app-mat-table-dynamic>
+
+        <div *ngIf="preparedUsersData$ | async">
+            <app-autocomplete (selectedItemsForParent)="getSelectedValues($event)"
+                              [allData]="preparedUsersData"
+                              [nameOfList]="'task_project_members.users' | translate"
+            ></app-autocomplete>
+        </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions >
+        <div class="save-cancel-btn-container">
+            <button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'task_project_members.cancel' | translate}}</button>
+            <button mat-raised-button color="primary"
+                    [disabled]="selectedUserPermission.length === 0"
+                    (click)="onSubmit()"
+                    [mat-dialog-close]="true"
+            >{{'task_project_members.save' | translate}}</button>
+        </div>
+    </mat-dialog-actions>
+
+

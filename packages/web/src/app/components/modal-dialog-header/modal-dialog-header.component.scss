@@ -1,0 +1,14 @@
+.header-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-icon {
+    font-size: 14px;
+  }
+  .header-left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}

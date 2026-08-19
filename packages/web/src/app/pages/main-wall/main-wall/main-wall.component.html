@@ -1,0 +1,27 @@
+<br>
+
+<div class="main-wall-container">
+    <div class="posts-container">
+        <app-posts [authData]="authData"></app-posts>
+    </div>
+    <div class="wall-right-side-panel">
+        <div class="make-request-btn-container">
+            <button mat-stroked-button
+                    class="make-request-btn"
+                    (click)="openCreateOneEventDialog(1)"
+            >
+                {{'makeRequest.name' | translate}}
+            </button>
+        </div>
+        <div class="absent-birthday-container">
+            <app-absent-user></app-absent-user>
+            <app-birthday-list></app-birthday-list>
+        </div>
+    </div>
+    <div>
+
+    </div>
+</div>
+
+
+

@@ -1,0 +1,105 @@
+<div>
+<!--    <div>-->
+<!--        <app-custom-header-page [mainHeader]="mainHeaderPage" [headerRoutes]="headerRoutes"></app-custom-header-page>-->
+<!--    </div>-->
+    <br/>
+    <ng-container *appPermissionsVisualization="['user']">
+        <ng-template #usersAgGrid></ng-template>
+    </ng-container>
+
+    <ng-container *appPermissionsVisualization="['admin', 'manager']">
+        <mat-tab-group>
+
+            <mat-tab [label]="'people.user_list.name' | translate">
+                <app-card [hidHeader]="true">
+                    <div>
+                        <div *ngIf="preparedUsersData">
+                            <app-single-autocomplete (selectedItemsForParent)="getSelectedValues($event)"
+                                                     [allData]="preparedUsersData"
+                                                     [nameOfList]="'people.user_list.name_list'| translate"
+                                                     [selectedData]="selectedUser"
+                            ></app-single-autocomplete>
+                        </div>
+                        <div>
+                            <button mat-raised-button color="primary" (click)="changeUser()" >{{'people.user_list.button' | translate}}</button> &nbsp; &nbsp;
+                        </div>
+                        <br/>
+                        <div>
+                            <ng-template #usersAgGrid></ng-template>
+    <!--                        <app-manage-users-aggrid></app-manage-users-aggrid>-->
+                        </div>
+                    </div>
+                </app-card>
+            </mat-tab>
+
+
+            @if (usersOnBoarding?.length > 0){
+                <mat-tab [label]="'On boarding (' + usersOnBoarding?.length + ')'">
+                    @defer (on viewport){
+                        <app-user-on-stage class="users-card-specific-selection"
+                                           [users]="usersOnBoarding"
+                                           stageType="onBoarding"
+                        />
+                    } @placeholder {
+                        <div>User probation is loading...</div>
+                    }
+                </mat-tab>
+            }
+
+            @if (usersOnProbation?.length > 0){
+                <mat-tab [label]="'On probation (' + usersOnProbation?.length + ')'">
+                    @defer (on viewport){
+                        <app-user-on-stage class="users-card-specific-selection"
+                                           [users]="usersOnProbation"
+                                           stageType="onProbation"
+                        />
+                    } @placeholder {
+                        <div>User probation is loading...</div>
+                    }
+                </mat-tab>
+            }
+
+            @if (usersOnLayOff?.length > 0){
+                <mat-tab [label]="'On layoff (' + usersOnLayOff?.length + ')'">
+                    @defer (on viewport){
+                        <app-user-on-stage class="users-card-specific-selection"
+                                           [users]="usersOnLayOff"
+                                           stageType="onLayOff"
+                        />
+                    } @placeholder {
+                        <div>User layoff is loading...</div>
+                    }
+                </mat-tab>
+            }
+
+            <mat-tab [label]="'people.add_user.name' | translate">
+                @defer (on viewport){
+                        <app-user-profile
+                                [inputUserGroups]="userGroups"
+                                [inputJobPositions]="jobPositions"
+                                (userChanges)="actionAfterSavingUser()"></app-user-profile>
+                } @placeholder {
+                        <div>User profile is loading...</div>
+                }
+            </mat-tab>
+            <mat-tab [label]="'people.user_group.name'| translate">
+                <div>
+                    <!--                <ng-template #groupsAgGrid></ng-template>-->
+                    @defer (on viewport){
+                        <app-user-group (addedGroup) = addedUserGroup($event) />
+                    } @placeholder {
+                        <div>Job position is loading...</div>
+                    }
+
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'people.job_position.name'| translate">
+                @defer (on viewport){
+                    <app-user-job-position (addedJobPosition)="addedJobPosition($event)"  />
+                } @placeholder {
+                    <div>Job position is loading...</div>
+                }
+            </mat-tab>
+        </mat-tab-group>
+    </ng-container>
+</div>

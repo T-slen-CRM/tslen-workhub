@@ -1,0 +1,122 @@
+
+<form [formGroup]="form">
+    <mat-dialog-content class="mat-typography">
+        <div class="task-card">
+            <div class="description-column">
+                <div >
+                    <mat-form-field class="input-mat-select" appearance="outline">
+                <mat-label>{{'task.form.placeholder'| translate}}</mat-label>
+                <input matInput
+                       type="text"
+                       [placeholder]="'task.form.placeholder'| translate"
+                       formControlName="title"
+                />
+            </mat-form-field>
+                </div>
+                <div >
+                    <mat-label>{{'task.form.description' | translate}}</mat-label>
+                    <app-text-editor formControlName="description" [customEditorConfig]="textEditorConfig"></app-text-editor>
+                </div>
+            </div>
+            <div class="setting-column">
+                <div>
+                    <mat-form-field  class="input-mat-select"  appearance="outline">
+                        <mat-label>{{"task.form.estimate" | translate}}</mat-label>
+                        <input matInput [matDatepicker]="picker1" formControlName="estimate">
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            @if (form.get('estimate').value) {
+                                <mat-icon matSuffix
+                                          (click)="resetEstimate()"
+                                          class="btn-remove-estimate"
+                                >remove</mat-icon>
+                            }
+                            <mat-datepicker #picker1></mat-datepicker>
+
+                    </mat-form-field>
+        <!--            <mat-form-field appearance="outline" class="input-mat-select">-->
+        <!--                <mat-label>Estimate</mat-label>-->
+        <!--                <input matInput-->
+        <!--                       type="number"-->
+        <!--                       placeholder="Estimate"-->
+        <!--                       formControlName="estimate"-->
+        <!--                />-->
+        <!--            </mat-form-field>-->
+                </div>
+                <div>
+                    <mat-form-field class="input-mat-select" appearance="outline">
+                        <mat-label>{{'task.form.priority'| translate}}</mat-label>
+                        <mat-select formControlName="priority">
+                            <mat-option *ngFor="let priority of priorityList" [value]="priority.value">
+                                {{priority.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="input-mat-select" appearance="outline">
+                        <mat-label>{{'task.form.move_card'| translate}}</mat-label>
+                        <mat-select formControlName="phaseId">
+                            <mat-option *ngFor="let phase of data.phaseList" [value]="phase.id">
+                                {{phase.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <app-autocomplete (selectedItemsForParent)="getSelectedValues($event)"
+                                      [allData]="projectMembers"
+                                      [nameOfList]="'task.form.move_card'| translate"
+                                      [selectedData]="selectedAssignee">
+                    </app-autocomplete>
+                </div>
+                <div>
+                    <app-upload-files
+                            formControlName="taskAttachments"
+                            [uploadLabel]="'task.form.upload attachments'| translate"
+                            [params]="{id: null}"
+                            [multipleSelection]="true"
+                            [acceptedFileTypes]="acceptedFileTypes"
+                            [uploadLimit]="uploadLimit"
+                    ></app-upload-files>
+                </div>
+                @if(attachments && attachments?.length > 0) {
+                    <div>
+                        <mat-selection-list [multiple]="false">
+                            <mat-list-option *ngFor="let files of attachments" [value]="[files.url, files.originName]">
+                                        <span class="d-flex">
+                                            <span (click)="openPreview(files.url)" class="mr-auto p-2">{{files.originName}}</span>
+                                            <span (click)="deleteAttachment(files.id)" class="p-2 custom-icon-delete"><mat-icon>delete_forever</mat-icon></span>
+                                        </span>
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </div>
+                }
+                @if (taskId) {
+                    <div>
+                        <app-task-comments [taskId]="taskId"></app-task-comments>
+                    </div>
+                }
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="dialog-action-button">
+        <div class="save-cancel-btn-container">
+            <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'task.form.button.cancel' | translate}}</button>
+            <button mat-button mat-raised-button color="primary"
+                    (click)="onSubmit()"
+                    [disabled]="!form.valid"
+            >{{'task.form.button.save' | translate}}</button>
+        </div>
+        <div>
+            <button mat-icon-button color="accent"
+                    (click)="onDelete()"
+                    [disabled]="deleteDisabled"
+                    matTooltip="delete"
+            >
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </mat-dialog-actions>
+</form>
+
+

@@ -1,0 +1,235 @@
+@use "sass:color";
+
+
+.list-container {
+  width: 250px;
+  // max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.one-list {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background-color: #f2f2f2;
+  padding: 6px;
+  border-radius: 4px;
+  overflow: scroll;
+  display: block;
+  height: 85vh;
+  position: relative;
+
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+//.list-box{
+//  border: 1px solid grey;
+//  border-radius: 4px;
+//}
+
+.one-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+div.list-drop-group {
+  // background-color: #333;
+  overflow: auto;
+  white-space: nowrap;
+}
+.phase-title-container{
+  line-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .phase-title-first-section{
+    display: flex;
+  }
+  .phase-title-span{
+    font-size: 15px;
+  }
+  button{
+    display: flex;
+  }
+  .phase-settings-button{
+    display: none;
+  }
+  &:hover{
+    .phase-settings-button{
+      display: flex;
+    }
+  }
+}
+.task-text {
+  color: #101820;
+  font-weight: 600;
+  font-size: 14px;
+  //font-line-height-base: 20px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+
+
+}
+
+.list-box {
+  padding: 20px 10px; /* Уменьшил верхний и нижний внутренний отступ */
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: column; /* Изменил направление flex на вертикальное */
+  justify-content: space-between;
+  align-items: flex-start;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 10%), 0px 8px 10px 1px rgb(0 0 0 / 4%), 0px 3px 14px 2px rgb(0 0 0 / 2%);
+  border-radius: 4px;
+  margin-bottom: 5px;
+  white-space: normal;
+  position: relative;
+  a:hover {
+    cursor: pointer;
+  }
+}
+
+.created-icon {
+  color: #28bb04;
+  transform: scale(0.8);
+}
+.phase-icon {
+  color: #0448c7;
+  transform: scale(0.8);
+}
+.updated-icon {
+  color: #e73a3a;
+  transform: scale(0.8);
+}
+
+.left-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.created-span , .updated-span , .phase-span{
+  font-size: 10px;
+}
+.super-customing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.stats {
+  margin-top: 10px;
+  margin-bottom: -13px;
+  position: relative;
+  width: 97%;
+  color: #9fa4aa;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stats div {
+  height: 20px;
+  display: flex;
+  cursor: pointer;
+}
+.stats img {
+  margin-right: 5px;
+  height: 18px;
+  width: 18px;
+  stroke: #9fa4aa;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.viewer span {
+  height: 18px;
+  width: 18px;
+  background-color: #dadada;
+  margin-right: -10px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  display: grid;
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+}
+
+.viewer span img {
+  stroke: #fff;
+}
+.tag {
+  border-radius: 100px;
+  padding: 2px 5px;
+  font-size: 10px;
+  color: #ffffff;
+  //background-color: #1389eb;
+}
+.estimate-span {
+  margin-left: 3px;
+  font-size: 12px;
+
+}
+#high {
+  background-color: #e73a3a;
+}
+#medium {
+  background-color: #f7b500;
+}
+#low {
+  background-color: #28bb04;
+}
+#success {
+  background-color: #6d7c87;;
+}
+#warning {
+  background-color: #e00101;
+}
+
+.tags {
+  margin-top: -10px;
+  padding-bottom: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mat-add-card-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  background-color: #f4f5fa;
+  &:hover{
+    cursor: pointer;
+    background-color: color.adjust(#f4f5fa, $lightness: -2%, $space: hsl);
+  }
+  &.dark-mode{
+    background-color: color.adjust(#122442, $lightness: -2%, $space: hsl);
+    &:hover{
+      cursor: pointer;
+      background-color: #122442;
+    }
+  }
+}

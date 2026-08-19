@@ -1,0 +1,19 @@
+<br/>
+<div>
+        <div class="form-container">
+            <mat-form-field class="mat-text-field" appearance="outline">
+                <mat-label>{{'people.job_position.title'| translate}}</mat-label>
+                <input matInput [formControl]="titleControl" required>
+                @if (titleControl.hasError('required')){
+                    <mat-error>
+                        {{'people.job_position.form.name'| translate}}
+                    </mat-error>
+                }
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSubmit()">{{'people.job_position.button'| translate}}</button>
+        </div>
+</div>
+<app-ag-grid-table [setColumnDefs]="columnDefs"
+                   [setRowData]="rowData$ | async"
+                   [setSizeColumnsToFit]="true"
+></app-ag-grid-table>

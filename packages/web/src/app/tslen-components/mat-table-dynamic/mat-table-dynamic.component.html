@@ -1,0 +1,31 @@
+<div >
+    <table mat-table *ngIf="dataSource" @blub [dataSource]="dataSource">
+        <ng-container *ngFor="let column of originObjectDisplayedColumns" [matColumnDef]="column.field">
+            <div [ngSwitch]="column.field">
+                <th mat-header-cell *matHeaderCellDef> {{column.headerName}}</th>
+                <div *ngSwitchDefault>
+                    <td  mat-cell *matCellDef="let element"> {{element[column.field]}} </td>
+                </div>
+
+
+                <div *ngIf="column.component">
+                    <div *ngSwitchCase="column.field" >
+                        <td  mat-cell *matCellDef="let element">
+                            <ng-container *ngComponentOutlet="column.component;content: element.content"></ng-container>
+                        </td>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+
+        <div *ngIf="!hideHeaders">
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        </div>
+        <tr mat-row @fadeOut *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">{{noData}}</td>
+        </tr>
+    </table>
+</div>
+

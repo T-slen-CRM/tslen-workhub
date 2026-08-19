@@ -10,10 +10,26 @@
   z-index: 9999;
 }
 
-.overlay--fixed {
+.top-bar {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #005bba, #fed500, transparent);
+  background-size: 200% 100%;
+  animation: top-bar-sweep 1.2s ease-in-out infinite;
+}
+
+@keyframes top-bar-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .spinner {

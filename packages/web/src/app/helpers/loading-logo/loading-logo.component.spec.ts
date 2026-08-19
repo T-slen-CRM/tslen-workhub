@@ -25,17 +25,23 @@ describe('LoadingLogoComponent', () => {
     fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
-    const overlay = fixture.nativeElement.querySelector('.overlay');
-    expect(overlay).not.toBeNull();
-    expect(overlay.classList.contains('overlay--fixed')).toBe(false);
+    expect(fixture.nativeElement.querySelector('.overlay')).not.toBeNull();
   });
 
-  it('renders the overlay viewport-wide when fixed is true', () => {
+  it('renders a non-blocking top bar instead of the overlay when bar is true', () => {
     fixture.componentRef.setInput('isLoading', true);
-    fixture.componentRef.setInput('fixed', true);
+    fixture.componentRef.setInput('bar', true);
     fixture.detectChanges();
 
-    const overlay = fixture.nativeElement.querySelector('.overlay');
-    expect(overlay.classList.contains('overlay--fixed')).toBe(true);
+    expect(fixture.nativeElement.querySelector('.overlay')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.top-bar')).not.toBeNull();
+  });
+
+  it('does not render the top bar when isLoading is false', () => {
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.componentRef.setInput('bar', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.top-bar')).toBeNull();
   });
 });

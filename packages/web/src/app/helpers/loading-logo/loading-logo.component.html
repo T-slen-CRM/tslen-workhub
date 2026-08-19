@@ -10,6 +10,7 @@
 <!--    </div>-->
 <!--</section>-->
 
-<div *ngIf="isLoading()" class="overlay" [class.overlay--fixed]="fixed()">
+<div *ngIf="isLoading() && bar()" class="top-bar"></div>
+<div *ngIf="isLoading() && !bar()" class="overlay">
     <div class="spinner"></div>
 </div>

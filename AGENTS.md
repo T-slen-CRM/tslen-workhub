@@ -89,17 +89,20 @@ works; `CHROME_BIN` may need to point at `/Applications/Google Chrome.app/Conten
   style under `packages/web/src/app/pages/` and `tslen-components/`.
 - **Loading state: scope it to the button/card that triggered the
   request, not the whole page.** `LoadingLogoComponent`
-  (`helpers/loading-logo/`) takes `isLoading`/`fixed` as signal inputs —
-  default (`fixed()` false) renders `position: absolute`, scoped to its
-  parent's `.loading-div` wrapper; only pass `[fixed]="true"` for
-  genuinely page-wide cases. `LoadingButtonComponent`
+  (`helpers/loading-logo/`) takes `isLoading`/`bar` as signal inputs —
+  default (`bar()` false) renders a dimmed, click-blocking `position:
+  absolute` overlay scoped to its parent's `.loading-div` wrapper, for
+  local per-card/page loading. `LoadingButtonComponent`
   (`helpers/loading-button/`) is the reusable button-level spinner
   (`[disabled]` stays on the real `<button>`, it only swaps content for a
   `mat-spinner` without changing the button's width). The global
-  `LoaderService`/`LoaderInterceptor` full-page overlay
-  (`admin.component.html`'s single `[fixed]="true"` instance) is a
-  fallback for page-wide cases only — new features should default to
-  local loading state, not lean on the global request counter. See
+  `LoaderService`/`LoaderInterceptor` fallback
+  (`admin.component.html`'s single `[bar]="true"` instance) renders a
+  thin, non-blocking top progress bar instead — `pointer-events: none`,
+  so the nav bar and the rest of the app stay usable during a long
+  global load. `[bar]="true"` is reserved for that one page-wide
+  fallback; new features should default to local loading state
+  (`bar()` false), not lean on the global request counter. See
   `docs/superpowers/specs/2026-08-18-scoped-loading-indicators-design.md`
   for the full rationale.
 - **Gotcha:** signal `input()` values are **not** set yet inside the

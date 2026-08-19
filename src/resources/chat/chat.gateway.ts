@@ -97,10 +97,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           .split('_')
           .map(Number)
           .find((id) => id !== Number(senderId));
+      // A failed notification shouldn't stop the message from being
+      // acknowledged; the chat feature must not degrade because this
+      // side-effect failed.
       if (recipientId) {
-          const truncated = content.length > 100 ? content.slice(0, 100) + '…' : content;
-          const notification = await this.notificationsService.createForUser(recipientId, 'New message', truncated);
-          this.liveKitGateway.notifyUser(recipientId, notification);
+          try {
+              const truncated = content.length > 100 ? content.slice(0, 100) + '…' : content;
+              const notification = await this.notificationsService.createForUser(recipientId, 'New message', truncated);
+              this.liveKitGateway.notifyUser(recipientId, notification);
+          } catch (error) {
+              this.logger.error(`Failed to create/push notification: ${error.message}`);
+          }
       }
 
       // Acknowledge message received (optional, can be used for client-side optimistic UI updates)

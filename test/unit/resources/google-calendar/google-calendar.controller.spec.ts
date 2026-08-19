@@ -31,11 +31,12 @@ describe('GoogleCalendarController', () => {
         expect(googleCalendarService.authorize).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
-    it('should call remove', async () => {
+    it('should call remove with the parsed id and requesting user', async () => {
         const mockResponse = { raw: [], affected: 1 };
-        jest.spyOn(googleCalendarService, 'delete').mockResolvedValue(mockResponse);
-        const result = await controller.remove('1');
-        expect(googleCalendarService.delete).toHaveBeenCalled();
+        const requestingUser = { id: 7 } as Users;
+        jest.spyOn(googleCalendarService, 'remove').mockResolvedValue(mockResponse);
+        const result = await controller.remove(1, requestingUser);
+        expect(googleCalendarService.remove).toHaveBeenCalledWith(1, requestingUser);
         expect(result).toEqual(mockResponse);
     });
     it('should call createMeetingSpace', async () => {

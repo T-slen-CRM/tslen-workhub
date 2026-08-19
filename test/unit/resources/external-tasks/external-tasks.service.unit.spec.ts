@@ -4,6 +4,7 @@ import { ExternalTasksService } from '../../../../src/resources/external-tasks/e
 import { TasksService } from '../../../../src/resources/tasks/tasks.service';
 import { TasksRepository } from '../../../../src/resources/tasks/tasks.repository';
 import { TaskPhaseRepository } from '../../../../src/resources/task-phase/task-phase.repository';
+import { TaskProjectRepository } from '../../../../src/resources/task-project/task-project.repository';
 import { Tasks } from '../../../../src/resources/tasks/entities/task.entity';
 import { TaskPhase } from '../../../../src/resources/task-phase/entities/task-phase.entity';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
@@ -14,6 +15,7 @@ describe('ExternalTasksService', () => {
     let tasksService: jest.Mocked<TasksService>;
     let tasksRepository: jest.Mocked<TasksRepository>;
     let taskPhaseRepository: jest.Mocked<TaskPhaseRepository>;
+    let taskProjectRepository: jest.Mocked<TaskProjectRepository>;
 
     beforeEach(() => {
         const { unit, unitRef } = TestBed.create(ExternalTasksService).compile();
@@ -21,6 +23,7 @@ describe('ExternalTasksService', () => {
         tasksService = unitRef.get(TasksService);
         tasksRepository = unitRef.get(TasksRepository);
         taskPhaseRepository = unitRef.get(TaskPhaseRepository);
+        taskProjectRepository = unitRef.get(TaskProjectRepository);
     });
 
     describe('list', () => {
@@ -35,10 +38,23 @@ describe('ExternalTasksService', () => {
         });
     });
 
+    describe('listProjects', () => {
+        it('delegates to TaskProjectRepository.findAllWithPhases', async () => {
+            const projects = [{ id: 7, name: 'Marketing', phases: [{ id: 14, name: 'ToDo' }] }];
+            taskProjectRepository.findAllWithPhases.mockResolvedValue(projects);
+
+            const result = await service.listProjects();
+
+            expect(taskProjectRepository.findAllWithPhases).toHaveBeenCalled();
+            expect(result).toBe(projects);
+        });
+    });
+
     describe('create', () => {
-        it('derives projectId from the phase and ignores any client-supplied projectId', async () => {
-            const phase = { id: 5, taskProject: { id: 9 } as TaskProject } as TaskPhase;
-            taskPhaseRepository.findByIdWithProject.mockResolvedValue(phase);
+        it('derives projectId from the phase (via ProjectPhasesRelation) and ignores any client-supplied projectId', async () => {
+            const phase = { id: 5 } as TaskPhase;
+            taskPhaseRepository.findOne.mockResolvedValue(phase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
             const user = { id: 7, firstName: 'Jane', lastName: 'Doe' } as Users;
             const created = { id: 1 } as Tasks;
             tasksService.create.mockResolvedValue(created);
@@ -50,22 +66,37 @@ describe('ExternalTasksService', () => {
                 phaseId: 5,
                 projectId: 9,
                 createdByName: 'Jane Doe',
+                priority: '',
             }));
             expect(result).toBe(created);
         });
 
+        it('passes through an explicit priority instead of defaulting it', async () => {
+            const phase = { id: 5 } as TaskPhase;
+            taskPhaseRepository.findOne.mockResolvedValue(phase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
+            const user = { id: 7, firstName: 'Jane', lastName: 'Doe' } as Users;
+            tasksService.create.mockResolvedValue({ id: 1 } as Tasks);
+
+            await service.create({ title: 'New task', phaseId: 5, priority: 'high' } as never, user);
+
+            expect(tasksService.create).toHaveBeenCalledWith(expect.objectContaining({ priority: 'high' }));
+        });
+
         it('throws NotFoundException for an unknown phaseId', async () => {
-            taskPhaseRepository.findByIdWithProject.mockResolvedValue(null);
+            taskPhaseRepository.findOne.mockResolvedValue(null);
             const user = { id: 7 } as Users;
 
             await expect(service.create({ title: 'New task', phaseId: 999 } as never, user))
                 .rejects.toThrow(NotFoundException);
+            expect(taskProjectRepository.findByPhaseId).not.toHaveBeenCalled();
             expect(tasksService.create).not.toHaveBeenCalled();
         });
 
         it('throws NotFoundException for a phase with no associated project, instead of crashing', async () => {
-            const phase = { id: 31, taskProject: null } as TaskPhase;
-            taskPhaseRepository.findByIdWithProject.mockResolvedValue(phase);
+            const phase = { id: 31 } as TaskPhase;
+            taskPhaseRepository.findOne.mockResolvedValue(phase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue(null);
             const user = { id: 7 } as Users;
 
             await expect(service.create({ title: 'New task', phaseId: 31 } as never, user))

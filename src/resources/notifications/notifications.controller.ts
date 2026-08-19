@@ -18,24 +18,41 @@ export class NotificationsController {
     async markOneAsRead (
         @Param('id', ParseIntPipe) id: number,
         @Body() body: { isRead: number },
+        @User() user: Users,
     ): Promise<void> {
         if (body.isRead) {
-            await this.notificationsService.markManyAsRead([id]);
+            const userNotifications = await this.notificationsService.findAllForUser(user.id);
+            const userNotificationIds = userNotifications.map(n => n.id);
+            if (userNotificationIds.includes(id)) {
+                await this.notificationsService.markManyAsRead([id]);
+            }
         }
     }
 
     @Post('mark-as-read')
     async markAsRead (
         @Body(new ParseArrayPipe({ items: Number })) ids: number[],
+        @User() user: Users,
     ): Promise<void> {
-        await this.notificationsService.markManyAsRead(ids);
+        const userNotifications = await this.notificationsService.findAllForUser(user.id);
+        const userNotificationIds = userNotifications.map(n => n.id);
+        const filteredIds = ids.filter(id => userNotificationIds.includes(id));
+        if (filteredIds.length > 0) {
+            await this.notificationsService.markManyAsRead(filteredIds);
+        }
     }
 
     @Post('clear-all')
     async clearAll (
         @Body(new ParseArrayPipe({ items: Number })) ids: number[],
+        @User() user: Users,
     ): Promise<void> {
-        await this.notificationsService.clearMany(ids);
+        const userNotifications = await this.notificationsService.findAllForUser(user.id);
+        const userNotificationIds = userNotifications.map(n => n.id);
+        const filteredIds = ids.filter(id => userNotificationIds.includes(id));
+        if (filteredIds.length > 0) {
+            await this.notificationsService.clearMany(filteredIds);
+        }
     }
 
     @Post('create')

@@ -10,6 +10,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { MessagesService } from '../messages/messages.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { LiveKitGateway } from '../live-kit/gateway/live-kit.gateway';
 
 interface ChatMessage {
   senderId: string;
@@ -30,6 +32,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor (
     private readonly messagesService: MessagesService,
+    private readonly notificationsService: NotificationsService,
+    private readonly liveKitGateway: LiveKitGateway,
   ) {}
 
   async handleConnection (@ConnectedSocket() client: Socket, ...args: any[]) {
@@ -86,6 +90,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           await this.messagesService.saveMessage({ senderId, chatRoomId, content, timestamp });
       } catch (error) {
           this.logger.error(`Failed to persist chat message: ${error.message}`);
+      }
+
+      // Create and push a notification for whichever participant isn't the sender.
+      const recipientId = chatRoomId
+          .split('_')
+          .map(Number)
+          .find((id) => id !== Number(senderId));
+      if (recipientId) {
+          const truncated = content.length > 100 ? content.slice(0, 100) + '…' : content;
+          const notification = await this.notificationsService.createForUser(recipientId, 'New message', truncated);
+          this.liveKitGateway.notifyUser(recipientId, notification);
       }
 
       // Acknowledge message received (optional, can be used for client-side optimistic UI updates)

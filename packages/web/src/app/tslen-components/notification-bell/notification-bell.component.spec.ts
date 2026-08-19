@@ -60,6 +60,21 @@ describe('NotificationBellComponent', () => {
     expect(component.unreadNotiCount).toBe(2);
   });
 
+  it('stops applying live notifications after the component is destroyed', () => {
+    fixture.detectChanges();
+
+    const notificationsBefore = component.notifications;
+    const unreadCountBefore = component.unreadNotiCount;
+
+    fixture.destroy();
+
+    const live = { id: 3, title: 'New message', message: 'after destroy', isRead: 0, createdAt: new Date().toISOString() };
+    notificationSubject.next(live);
+
+    expect(component.notifications).toBe(notificationsBefore);
+    expect(component.unreadNotiCount).toBe(unreadCountBefore);
+  });
+
   it('marks all as read and clears the unread count', () => {
     dataServiceSpy.postData.and.returnValue(of({}) as never);
     fixture.detectChanges();

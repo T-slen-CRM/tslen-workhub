@@ -28,7 +28,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
     signIn (@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
-        return this.authService.signIn(signInDto);
+        return this.authService.signInWithPassword(signInDto.email, signInDto.password);
     }
 
   @Get('session-data')
@@ -61,14 +61,12 @@ export class AuthController {
       const googlePermissions = await this.authService.getGooglePermissions(scope);
 
       const { email, refreshToken, accessToken } = await this.authService.getAuthClientData(code);
-      const jwtToken: SignInResponseDto = await this.authService.signIn({
+      const jwtToken: SignInResponseDto = await this.authService.signInWithGoogle(
           email,
-          password: '',
-          skipPasswordCheck: true,
-          googleAccessToken: accessToken,
-          googleRefreshToken: refreshToken,
-          googlePermissions: googlePermissions
-      });
+          accessToken,
+          refreshToken,
+          googlePermissions
+      );
       // set header authorization
       if (jwtToken.accessToken){
           return { url: process.env.REDIRECT_TO_LOGIN + '?token=' + jwtToken.accessToken };

@@ -91,6 +91,18 @@ describe('ChatGateway', () => {
             expect(liveKitGateway.notifyUser).toHaveBeenCalledWith(15, created);
         });
 
+        it('still broadcasts the message and acknowledges it even if notification creation fails', async () => {
+            notificationsService.createForUser.mockRejectedValueOnce(new Error('notifications db down'));
+            const client = fakeClient('9');
+
+            await expect(gateway.handleMessage({ chatRoomId: '9_15', content: 'hello there' }, client))
+                .resolves.not.toThrow();
+
+            expect(emittedToRoom).toHaveLength(1);
+            expect(emittedToRoom[0].event).toBe('message');
+            expect(client.emit).toHaveBeenCalledWith('messageAcknowledged', expect.objectContaining({ content: 'hello there' }));
+        });
+
         it('truncates a long message to 100 chars for the notification body', async () => {
             const client = fakeClient('9');
             const longContent = 'a'.repeat(150);

@@ -1,4 +1,5 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, input, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,19 +30,22 @@ export class NotificationBellComponent implements OnInit {
     private notificationService = inject(NotificationService);
     private liveKitWebSocketService = inject(LiveKitWebSocketService);
     private dialog = inject(MatDialog);
+    private destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
         this.getNotifications();
-        this.liveKitWebSocketService.notification$.subscribe((notification: Notification) => {
-            this.notifications = [{
-                id: notification.id,
-                title: notification.title,
-                message: notification.message,
-                time: this.notificationService.timeSince(this.today, new Date(notification.createdAt)),
-                isRead: notification.isRead,
-            }, ...this.notifications];
-            this.unreadNotiCount = (this.unreadNotiCount || 0) + 1;
-        });
+        this.liveKitWebSocketService.notification$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((notification: Notification) => {
+                this.notifications = [{
+                    id: notification.id,
+                    title: notification.title,
+                    message: notification.message,
+                    time: this.notificationService.timeSince(this.today, new Date(notification.createdAt)),
+                    isRead: notification.isRead,
+                }, ...this.notifications];
+                this.unreadNotiCount = (this.unreadNotiCount || 0) + 1;
+            });
     }
 
     getNotifications(): void {

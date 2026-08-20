@@ -48,8 +48,8 @@ describe('AuthController', () => {
     });
     it('should call changeUser', async () => {
         const accessToken = 'sampleToken';
-        jest.spyOn(authService, 'changeUser').mockResolvedValue({ user: mockUser, accessToken } as { user: Users; accessToken: string });
-        const result = await controller.changeUser(mockUser as Users, mockUser.id);
+        jest.spyOn(authService, 'changeUser').mockResolvedValue({ user: mockUser, accessToken } as unknown as { user: Users; accessToken: string });
+        const result = await controller.changeUser(mockUser as unknown as Users, mockUser.id);
         expect(authService.changeUser).toHaveBeenCalledWith(mockUser.id, mockUser);
         expect(result).toEqual({ user: mockUser, accessToken });
     });

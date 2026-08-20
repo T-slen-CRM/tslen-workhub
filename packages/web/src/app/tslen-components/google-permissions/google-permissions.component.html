@@ -24,8 +24,8 @@
 <div >
     <h6>{{'google_permissions.title' | translate}}</h6>
     <app-ag-grid-table
-        [setRowData]="[googlePermissions()]"
-        [setColumnDefs]="googlePermissionsColumnDefs"
+        [rowData]="[googlePermissions()]"
+        [columnDefs]="googlePermissionsColumnDefs"
     >
     </app-ag-grid-table>
 </div>

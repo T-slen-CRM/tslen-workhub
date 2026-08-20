@@ -24,5 +24,6 @@ import { JwtService } from '@nestjs/jwt';
     ],
     controllers: [LiveKitTokenController, LiveKitGrpcController, LiveKitWebhookController],
     providers: [LiveKitGrpcService, LiveKitGateway, JwtService],
+    exports: [LiveKitGateway],
 })
 export class LiveKitModule {}

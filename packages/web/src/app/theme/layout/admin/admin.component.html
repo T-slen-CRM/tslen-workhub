@@ -15,7 +15,7 @@
   </div>
 </div>
 <app-configuration></app-configuration>
-<app-loading-logo [isLoading]="loaderService.isLoading()" [fixed]="true"></app-loading-logo>
+<app-loading-logo [isLoading]="loaderService.isLoading()" [bar]="true"></app-loading-logo>
 @if (activeCallData()){
         <app-live-kit-call
           [callerId]="activeCallData()?.callerId"

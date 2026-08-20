@@ -33,7 +33,7 @@ describe('ExternalTasksController', () => {
             service.create.mockResolvedValue(created);
             const dto = { title: 'New task', phaseId: 5 };
 
-            const result = await controller.create(dto as never, mockUser as Users);
+            const result = await controller.create(dto as never, mockUser as unknown as Users);
 
             expect(service.create).toHaveBeenCalledWith(dto, mockUser);
             expect(result).toBe(created);

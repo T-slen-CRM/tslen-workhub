@@ -14,7 +14,7 @@ describe('TaskRepository', () => {
     });
     it('should call multiReordering', async () => {
         const mockResponse = [mockedTask];
-        jest.spyOn(repository, 'multiReordering').mockResolvedValue(mockResponse as Tasks[]);
+        jest.spyOn(repository, 'multiReordering').mockResolvedValue(mockResponse as unknown as Tasks[]);
         const result = await repository.multiReordering([]);
         expect(repository.multiReordering).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
@@ -22,7 +22,7 @@ describe('TaskRepository', () => {
 
     describe('findAllFiltered', () => {
         it('applies projectId, phaseId, and status as an AND-combined where clause', async () => {
-            const tasks = [mockedTask] as Tasks[];
+            const tasks = [mockedTask] as unknown as Tasks[];
             const findSpy = jest.spyOn(repository['tasksRepository'], 'find').mockResolvedValue(tasks);
 
             const result = await repository.findAllFiltered({ projectId: 3, phaseId: 5, status: 'inProgress' });
@@ -32,7 +32,7 @@ describe('TaskRepository', () => {
         });
 
         it('omits filters that were not provided', async () => {
-            const tasks = [mockedTask] as Tasks[];
+            const tasks = [mockedTask] as unknown as Tasks[];
             const findSpy = jest.spyOn(repository['tasksRepository'], 'find').mockResolvedValue(tasks);
 
             await repository.findAllFiltered({ projectId: 3 });
@@ -41,7 +41,7 @@ describe('TaskRepository', () => {
         });
 
         it('returns everything when no filters are provided, matching todays unfiltered GET /tasks behavior', async () => {
-            const tasks = [mockedTask] as Tasks[];
+            const tasks = [mockedTask] as unknown as Tasks[];
             const findSpy = jest.spyOn(repository['tasksRepository'], 'find').mockResolvedValue(tasks);
 
             await repository.findAllFiltered({});

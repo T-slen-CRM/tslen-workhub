@@ -44,6 +44,7 @@ import { IncomingCallComponent } from './components/incoming-call/incoming-call.
 import { LiveKitWebSocketService } from './pages/live-kit/live-kitWebSocket.service';
 import {HelpersModule} from "./helpers/helpers.module";
 import {CallComponent} from "./pages/call/wellcome/call.component";
+import { NotificationBellComponent } from './tslen-components/notification-bell/notification-bell.component';
 
 export function initLang(langService: LanguageService) {
   return () => langService.setDefaultLangFromBrowser();
@@ -80,7 +81,8 @@ export function initLang(langService: LanguageService) {
         TimerComponent,
         LanguageConfigurationModule,
         HelpersModule,
-        CallComponent], providers: [NavigationItem,
+        CallComponent,
+        NotificationBellComponent], providers: [NavigationItem,
         WINDOW_PROVIDERS,
         { provide: APP_INITIALIZER, useFactory: () => () => { }, deps: [LiveKitWebSocketService], multi: true },
         { provide: APP_INITIALIZER, useFactory: initLang, deps: [LanguageService], multi: true },

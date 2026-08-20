@@ -1,15 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { TaskCommentsComponent } from './task-comments.component';
 import { DataService } from '../../services/data.service';
+import { TaskWebSocketService } from '../../pages/tasks-list/taskWebSocket.service';
 import { ITaskComment } from '../../interfaces/tasks';
 
 describe('TaskCommentsComponent', () => {
   let component: TaskCommentsComponent;
   let fixture: ComponentFixture<TaskCommentsComponent>;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
+  let commentCreatedSubject: Subject<any>;
 
   const existingComment: ITaskComment = {
     id: 1,
@@ -22,10 +24,14 @@ describe('TaskCommentsComponent', () => {
   beforeEach(async () => {
     dataServiceSpy = jasmine.createSpyObj('DataService', ['getObservableData', 'postData']);
     dataServiceSpy.getObservableData.and.returnValue(of([existingComment]));
+    commentCreatedSubject = new Subject();
 
     await TestBed.configureTestingModule({
       imports: [TaskCommentsComponent, TranslateModule.forRoot()],
-      providers: [{ provide: DataService, useValue: dataServiceSpy }],
+      providers: [
+        { provide: DataService, useValue: dataServiceSpy },
+        { provide: TaskWebSocketService, useValue: { getMessages: () => commentCreatedSubject.asObservable() } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TaskCommentsComponent);
@@ -66,5 +72,68 @@ describe('TaskCommentsComponent', () => {
     component.postComment();
 
     expect(dataServiceSpy.postData).not.toHaveBeenCalled();
+  });
+
+  describe('live comment delivery', () => {
+    it('appends a comment broadcast for this task from another user, without reopening the card', () => {
+      fixture.detectChanges();
+
+      const fromAnotherUser: ITaskComment = {
+        id: 2, taskId: 5, content: 'live comment', createdAt: '2026-08-17T10:10:00.000Z',
+        user: { id: 3, firstName: 'Bob', lastName: 'B' },
+      };
+      commentCreatedSubject.next(fromAnotherUser);
+
+      expect(component.comments).toEqual([existingComment, fromAnotherUser]);
+    });
+
+    it('ignores a broadcast for a different task', () => {
+      fixture.detectChanges();
+
+      commentCreatedSubject.next({
+        id: 2, taskId: 999, content: 'other task', createdAt: '2026-08-17T10:10:00.000Z',
+        user: { id: 3, firstName: 'Bob', lastName: 'B' },
+      });
+
+      expect(component.comments).toEqual([existingComment]);
+    });
+
+    it('does not duplicate a comment already appended locally by postComment() (REST response arrives first)', () => {
+      const created: ITaskComment = {
+        id: 2, taskId: 5, content: 'new comment', createdAt: '2026-08-17T10:05:00.000Z',
+        user: { id: 9, firstName: 'Jane', lastName: 'Doe' },
+      };
+      dataServiceSpy.postData.and.returnValue(of({ body: created }) as never);
+      fixture.detectChanges();
+      component.newCommentContent = 'new comment';
+      component.postComment();
+
+      commentCreatedSubject.next(created);
+
+      expect(component.comments).toEqual([existingComment, created]);
+    });
+
+    it('does not duplicate the sender\'s own comment when the broadcast arrives before the REST response', () => {
+      // Regression: the live broadcast reaches the sender's own socket too (it's a
+      // global emit with no self-exclusion), and can arrive before the POST /task-comments
+      // response does. postComment()'s response handler appended unconditionally, so when
+      // the broadcast won the race and had already added the comment, the response handler
+      // added it a second time — the sender saw their own comment twice; other users, who
+      // only ever get it via the broadcast, never did.
+      const created: ITaskComment = {
+        id: 2, taskId: 5, content: 'new comment', createdAt: '2026-08-17T10:05:00.000Z',
+        user: { id: 9, firstName: 'Jane', lastName: 'Doe' },
+      };
+      const postDataResponse = new Subject<any>();
+      dataServiceSpy.postData.and.returnValue(postDataResponse.asObservable() as never);
+      fixture.detectChanges();
+      component.newCommentContent = 'new comment';
+      component.postComment();
+
+      commentCreatedSubject.next(created);
+      postDataResponse.next({ body: created });
+
+      expect(component.comments).toEqual([existingComment, created]);
+    });
   });
 });

@@ -11,6 +11,7 @@ export const mockedTask: CreateTaskDto = {
     createdAt: new Date(date),
     updatedAt: new Date(date),
     orderId: 1,
+    actorUserId: null,
     status: 'unStatus',
     priority: 'test',
     estimate: new Date(date),

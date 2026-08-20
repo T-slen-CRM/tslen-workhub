@@ -36,7 +36,7 @@ export class InventoryComponent implements OnInit {
         return `${params.value.firstName} ${params.value.lastName}`;
       } }
   ];
-  public frameworkComponents = {
+  public components = {
     inventoryRenderComponent: InventoryRenderComponent
   };
 

@@ -16,16 +16,29 @@ describe('TaskProjectRepository', () => {
     });
     it('should call getOneWithRelations', async () => {
         const mockResponse: Partial<CreateTaskProjectDto> = mockedTaskProject;
-        jest.spyOn(repository, 'getOneWithRelations').mockResolvedValue(mockedTaskProject as TaskProject);
+        jest.spyOn(repository, 'getOneWithRelations').mockResolvedValue(mockedTaskProject as unknown as TaskProject);
         const result = await repository.getOneWithRelations(1, mockUser);
         expect(repository.getOneWithRelations).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call getByRole', async () => {
         const mockResponse: Partial<CreateTaskProjectDto>[] = [mockedTaskProject];
-        jest.spyOn(repository, 'getByRole').mockResolvedValue([mockedTaskProject] as TaskProject[]);
+        jest.spyOn(repository, 'getByRole').mockResolvedValue([mockedTaskProject] as unknown as TaskProject[]);
         const result = await repository.getByRole(mockUser);
         expect(repository.getByRole).toHaveBeenCalled();
+        expect(result).toEqual(mockResponse);
+    });
+    it('should call findByPhaseId', async () => {
+        jest.spyOn(repository, 'findByPhaseId').mockResolvedValue(mockedTaskProject as unknown as TaskProject);
+        const result = await repository.findByPhaseId(5);
+        expect(repository.findByPhaseId).toHaveBeenCalledWith(5);
+        expect(result).toEqual(mockedTaskProject);
+    });
+    it('should call findAllWithPhases', async () => {
+        const mockResponse = [{ id: 1, name: 'test', phases: [{ id: 5, name: 'ToDo' }] }];
+        jest.spyOn(repository, 'findAllWithPhases').mockResolvedValue(mockResponse);
+        const result = await repository.findAllWithPhases();
+        expect(repository.findAllWithPhases).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
 });

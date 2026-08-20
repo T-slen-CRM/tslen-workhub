@@ -3,6 +3,7 @@ import { TestBed } from '@automock/jest';
 import { JobPosition } from '../../../../src/resources/job-position/entities/job-position.entity';
 import { mockUser } from '../../../shared/users';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
+import { CreateJobPositionDto } from '../../../../src/resources/job-position/dto/create-job-position.dto';
 
 describe('JobPositionController', () => {
     let controller: JobPositionController;
@@ -18,14 +19,14 @@ describe('JobPositionController', () => {
     });
     it('should call jobPositionService.create', async () => {
         jest.spyOn(controller, 'create').mockResolvedValue(mockedJobPosition);
-        const result = await controller.create(mockedJobPosition);
+        const result = await controller.create(mockedJobPosition as unknown as CreateJobPositionDto);
         expect(controller.create).toHaveBeenCalled();
         expect(result).toEqual(mockedJobPosition);
     });
     it('should call jobPositionService.findAll', async () => {
         const mockResponse = [mockedJobPosition];
         jest.spyOn(controller, 'findAll').mockResolvedValue(mockResponse);
-        const result = await controller.findAll(mockUser as Users);
+        const result = await controller.findAll(mockUser as unknown as Users);
         expect(controller.findAll).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });

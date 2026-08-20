@@ -23,7 +23,7 @@ describe('CompanyDaysOffRulesController', () => {
     });
     it('should findOeById', async () => {
         jest.spyOn(controller, 'findOneById').mockResolvedValue(mockedCompanyDaysOffRules);
-        const result = await controller.findOneById(mockUser as Users);
+        const result = await controller.findOneById(mockUser as unknown as Users);
         expect(controller.findOneById).toHaveBeenCalled();
         expect(result).toEqual(mockedCompanyDaysOffRules);
     });

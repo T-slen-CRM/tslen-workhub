@@ -67,9 +67,9 @@ for the pattern) — no need to spin up Postgres for that.
 npm test   # ng test — opens real Chrome, watches by default
 ```
 The full `ng test` run type-checks *every* `*.spec.ts` in `src/`, including
-some pre-existing broken/unrelated spec files (e.g. `ag-grid-table`,
-`dash-analytics`, a couple of directive specs) — a failure there is not
-necessarily related to your change; check with `git stash` if unsure.
+some pre-existing broken/unrelated spec files (e.g. `dash-analytics`, a
+couple of directive specs) — a failure there is not necessarily related to
+your change; check with `git stash` if unsure.
 To run a single component's specs in isolation without booting the whole
 app's DI graph, mock the service dependencies directly (`jasmine.createSpyObj`)
 rather than pulling in the real providers — see `chat.service.spec.ts` /
@@ -85,21 +85,38 @@ works; `CHROME_BIN` may need to point at `/Applications/Google Chrome.app/Conten
   Existing RxJS `Subject`-based services (e.g. `ChatService`) are legacy —
   don't copy that pattern into new code; new services exposing reactive
   state should expose signals.
+- **Migrate old-style `@Input()` to signal `input()` whenever you touch
+  it.** If a change requires editing a component that still declares
+  `@Input()` (a plain property or, especially, the older `set setXxx(data)`
+  setter idiom used to react to input changes pre-signals), convert that
+  component's inputs to `input()` as part of the same change rather than
+  adding to/around the old style — don't leave the file half-migrated.
+  Drop the `setXxx` naming convention (the signal itself replaces the
+  setter's job); any imperative side effect that used to live in the
+  setter body moves into an `effect()` in the constructor (effects run
+  after inputs are bound, unlike constructor code — see the gotcha below).
+  Every template that binds into the renamed inputs needs its attribute
+  names updated to match. See `ag-grid-table.component.ts`'s migration
+  (columnDefs/rowData/components/sizeColumnsToFit/headerHeight/rowHeight/
+  tableId, plus its 7 consumers) as the worked example.
 - Standalone components (no `NgModule` declarations) — match the existing
   style under `packages/web/src/app/pages/` and `tslen-components/`.
 - **Loading state: scope it to the button/card that triggered the
   request, not the whole page.** `LoadingLogoComponent`
-  (`helpers/loading-logo/`) takes `isLoading`/`fixed` as signal inputs —
-  default (`fixed()` false) renders `position: absolute`, scoped to its
-  parent's `.loading-div` wrapper; only pass `[fixed]="true"` for
-  genuinely page-wide cases. `LoadingButtonComponent`
+  (`helpers/loading-logo/`) takes `isLoading`/`bar` as signal inputs —
+  default (`bar()` false) renders a dimmed, click-blocking `position:
+  absolute` overlay scoped to its parent's `.loading-div` wrapper, for
+  local per-card/page loading. `LoadingButtonComponent`
   (`helpers/loading-button/`) is the reusable button-level spinner
   (`[disabled]` stays on the real `<button>`, it only swaps content for a
   `mat-spinner` without changing the button's width). The global
-  `LoaderService`/`LoaderInterceptor` full-page overlay
-  (`admin.component.html`'s single `[fixed]="true"` instance) is a
-  fallback for page-wide cases only — new features should default to
-  local loading state, not lean on the global request counter. See
+  `LoaderService`/`LoaderInterceptor` fallback
+  (`admin.component.html`'s single `[bar]="true"` instance) renders a
+  thin, non-blocking top progress bar instead — `pointer-events: none`,
+  so the nav bar and the rest of the app stay usable during a long
+  global load. `[bar]="true"` is reserved for that one page-wide
+  fallback; new features should default to local loading state
+  (`bar()` false), not lean on the global request counter. See
   `docs/superpowers/specs/2026-08-18-scoped-loading-indicators-design.md`
   for the full rationale.
 - **Gotcha:** signal `input()` values are **not** set yet inside the

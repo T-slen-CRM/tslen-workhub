@@ -317,6 +317,7 @@ private authData: AuthData;
   }
   saveTask(task: ITask){
     task.url = this.router.url;
+    task.actorUserId = this.authData.id;
 
     if (task.taskAttachments instanceof FormData) {
       const sendAttachments: Subscription = this.dataService.postData('/tasks/upload-attachments?userId=' + this.authData.id, task.taskAttachments)
@@ -335,6 +336,8 @@ private authData: AuthData;
 
   }
   updateTask(task: ITask) {
+    task.actorUserId = this.authData.id;
+
     if (task.taskAttachments instanceof FormData) {
       const sendAttachments: Subscription = this.dataService.postData('/tasks/upload-attachments?userId=' + this.authData.id, task.taskAttachments)
        .subscribe((result: any) => {

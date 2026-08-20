@@ -18,20 +18,20 @@ describe('EventsByUserService', () => {
     });
     it('should get events by month', async () => {
         const result = [mockedEventByUser]
-        jest.spyOn(service, 'getEventsByMonth').mockResolvedValue(result as EventsByUser[]);
-        const res = await service.getEventsByMonth(mockUser as Users, mockedDateRangeDto);
+        jest.spyOn(service, 'getEventsByMonth').mockResolvedValue(result as unknown as EventsByUser[]);
+        const res = await service.getEventsByMonth(mockUser as unknown as Users, mockedDateRangeDto);
         expect(res).toEqual(result);
     });
     it('should get absent today', async () => {
         const result = [mockedEventByUser]
-        jest.spyOn(service, 'getAbsentToday').mockResolvedValue(result as EventsByUser[]);
-        const res = await service.getAbsentToday(mockUser as Users);
+        jest.spyOn(service, 'getAbsentToday').mockResolvedValue(result as unknown as EventsByUser[]);
+        const res = await service.getAbsentToday(mockUser as unknown as Users);
         expect(res).toEqual(result);
     });
     it('should get pending', async () => {
         const result = [mockedEventByUser];
-        jest.spyOn(service, 'getPending').mockResolvedValue(result as EventsByUser[]);
-        const res = await service.getPending(mockUser as Users);
+        jest.spyOn(service, 'getPending').mockResolvedValue(result as unknown as EventsByUser[]);
+        const res = await service.getPending(mockUser as unknown as Users);
         expect(res).toEqual(result);
     });
     it('should call approveDisapproveEvent', async () => {

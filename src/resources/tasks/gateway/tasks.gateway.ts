@@ -16,6 +16,7 @@ export const enum TasksEvents {
   CREATE = 'create',
   MULTI_REORDERING = 'multi-reordering',
   DELETE = 'delete',
+  COMMENT_CREATED = 'comment-created',
 }
 
 @WebSocketGateway({

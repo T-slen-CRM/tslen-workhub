@@ -113,7 +113,7 @@ export class EventsByUserService extends BaseAbstractService<EventsByUser> {
             const entityData: EventsByUser = Object.assign(entity, updateEventsByUserDto);
             const googleId: string = entity.googleId;
             if (googleId) {
-                await this.googleService.updateCalendarEvent(entityData, entityData.userId);
+                await this.googleService.updateCalendarEvent(entityData as unknown as UpdateEventsByUserDto, entityData.userId);
             }
             return this.currentRepository.updateOneWithRelations(entityData);
         } catch (e) {

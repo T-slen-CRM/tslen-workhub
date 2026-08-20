@@ -57,7 +57,7 @@ describe('AuthService signIn', () => {
     });
     it('should call changeUser', async () => {
         const id = 1;
-        const user = mockUser as Users;
+        const user = mockUser as unknown as Users;
         const mockedResponse = { user, accessToken: 'accessToken' }
         jest.spyOn(authService, 'changeUser').mockResolvedValue(mockedResponse);
         const result = await authService.changeUser(id, user);

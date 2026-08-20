@@ -27,7 +27,7 @@ export abstract class BaseAbstractService<TEntity, TCreateDto = any, TUpdateDto 
     async create (data: TCreateDto, user: any = null): Promise<TEntity> {
         try {
             if ('createOneWithRelations' in this.currentRepository) {
-                return this.currentRepository.createOneWithRelations(data, user);
+                return await this.currentRepository.createOneWithRelations(data, user);
             } else {
                 return this.baseAbstractRepository.create(data as any);
             }

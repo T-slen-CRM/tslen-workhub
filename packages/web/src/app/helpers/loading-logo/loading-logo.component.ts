@@ -9,5 +9,5 @@ import { Component, input } from '@angular/core';
 export class LoadingLogoComponent {
     public imagePath = input('/assets/images/.png');
     public isLoading = input(false);
-    public fixed = input(false);
+    public bar = input(false);
 }

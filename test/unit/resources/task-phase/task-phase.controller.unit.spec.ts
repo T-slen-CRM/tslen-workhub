@@ -17,19 +17,19 @@ describe('TaskPhaseController', () => {
         expect(controller).toBeDefined();
     });
     it('should call taskPhaseService.create', async () => {
-        jest.spyOn(controller, 'create').mockResolvedValue(mockedTaskPhase as TaskPhase);
+        jest.spyOn(controller, 'create').mockResolvedValue(mockedTaskPhase as unknown as TaskPhase);
         const result = await controller.create(mockedTaskPhase);
         expect(controller.create).toHaveBeenCalled();
         expect(result).toEqual(mockedTaskPhase);
     });
     it('should call taskPhaseService.findAll', async () => {
-        jest.spyOn(controller, 'findAll').mockResolvedValue([mockedTaskPhase] as TaskPhase[]);
-        const result = await controller.findAll(mockUser as Users);
+        jest.spyOn(controller, 'findAll').mockResolvedValue([mockedTaskPhase] as unknown as TaskPhase[]);
+        const result = await controller.findAll(mockUser as unknown as Users);
         expect(controller.findAll).toHaveBeenCalled();
         expect(result).toEqual([mockedTaskPhase]);
     });
     it('should call taskPhaseService.update', async () => {
-        jest.spyOn(controller, 'update').mockResolvedValue(mockedTaskPhase as TaskPhase);
+        jest.spyOn(controller, 'update').mockResolvedValue(mockedTaskPhase as unknown as TaskPhase);
         const result = await controller.update(1, mockedTaskPhase);
         expect(controller.update).toHaveBeenCalled();
         expect(result).toEqual(mockedTaskPhase);

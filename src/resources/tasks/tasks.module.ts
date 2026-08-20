@@ -16,6 +16,8 @@ import { FirebaseModule } from '../../common/services/firebase/firebase.module';
 import { UsersModule } from '../users/users.module';
 import { TaskAttachments } from './entities/task-attachments.entity';
 import { ErrorService } from '../../common/services/error/error.service';
+import { TaskNotificationsModule } from './task-notifications.module';
+import { TaskPhaseModule } from '../task-phase/task-phase.module';
 
 @Module({
     imports: [
@@ -32,7 +34,9 @@ import { ErrorService } from '../../common/services/error/error.service';
             inject: [ConfigService],
         }),
         FirebaseModule,
-        UsersModule
+        UsersModule,
+        TaskNotificationsModule,
+        TaskPhaseModule
     ],
     controllers: [TasksController],
     providers: [
@@ -47,6 +51,6 @@ import { ErrorService } from '../../common/services/error/error.service';
             useExisting: FirebaseService
         },
     ],
-    exports: [TasksService, TasksRepository],
+    exports: [TasksService, TasksRepository, TasksGateway],
 })
 export class TasksModule {}

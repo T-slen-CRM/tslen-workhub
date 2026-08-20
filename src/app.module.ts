@@ -25,6 +25,7 @@ import { InventoryModule } from './resources/inventory/inventory.module';
 import { AppThrottlerModule } from './common/throttler/throttler.module';
 import { ApiTokensModule } from './resources/api-tokens/api-tokens.module';
 import { ExternalTasksModule } from './resources/external-tasks/external-tasks.module';
+import { NotificationsModule } from './resources/notifications/notifications.module';
 @Module({
     imports: [
         ServeStaticModule.forRoot({
@@ -45,6 +46,7 @@ import { ExternalTasksModule } from './resources/external-tasks/external-tasks.m
         TaskCommentsModule,
         ApiTokensModule,
         ExternalTasksModule,
+        NotificationsModule,
         CompanyDaysOffRulesModule,
         CompanyModule,
         GoogleCalendarModule,

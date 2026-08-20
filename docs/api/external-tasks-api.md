@@ -93,6 +93,31 @@ token starts getting `401` right away.
 Everything below uses the **API token**, not the JWT:
 `Authorization: Bearer <api-token>`
 
+### List projects and their phases
+
+```
+GET /external/projects
+```
+
+**Response `200`:**
+```json
+[
+  {
+    "id": 7,
+    "name": "Marketing site",
+    "phases": [
+      { "id": 14, "name": "ToDo" },
+      { "id": 15, "name": "In progress" },
+      { "id": 12, "name": "Done" }
+    ]
+  }
+]
+```
+
+Use this to find a `phaseId` for the "Create a task" call below — every
+phase listed here has a real project attached (this is exactly how the
+server resolves `projectId` when you create a task).
+
 ### List tasks
 
 ```
@@ -147,9 +172,7 @@ disagree with each other, because you can't send a `projectId` at all.
 `createdBy` and `createdByName` always come from whoever the token
 belongs to — not from anything in the request body.
 
-**Finding a valid `phaseId`:** phases aren't exposed through this API
-(only tasks are, for now). Use the internal `GET /task-phase` endpoint
-(JWT auth) to look one up, or ask whoever manages the project for it.
+**Finding a valid `phaseId`:** use `GET /external/projects` (above).
 
 ### Errors
 
@@ -177,6 +200,10 @@ curl -s -X POST https://your-domain/api/v1/api-tokens \
 
 # 3. From here on, use the API token, not the JWT
 API_TOKEN="<the token from step 2>"
+
+# 4. Find a phaseId to create the task under
+curl -s https://your-domain/api/v1/external/projects \
+  -H "Authorization: Bearer $API_TOKEN"
 
 curl -s https://your-domain/api/v1/external/tasks \
   -H "Authorization: Bearer $API_TOKEN"

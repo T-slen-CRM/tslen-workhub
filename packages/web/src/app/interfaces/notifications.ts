@@ -6,5 +6,6 @@ export interface Notification {
     isRead: number;
     userId?: number;
     createdAt?: Date;
+    link?: string;
 }
 export interface Notifications extends Array<Notification>{}

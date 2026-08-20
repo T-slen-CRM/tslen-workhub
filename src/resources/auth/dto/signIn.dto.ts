@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
-import { IUserGooglePermissions } from '../auth.service';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class SignInDto {
   @IsEmail()
@@ -7,16 +6,4 @@ export class SignInDto {
 
   @IsNotEmpty()
       password: string;
-
-  @IsOptional()
-      skipPasswordCheck: boolean;
-
-  @IsOptional()
-      googleRefreshToken: string;
-
-  @IsOptional()
-      googleAccessToken: string;
-
-  @IsOptional()
-      googlePermissions: IUserGooglePermissions
 }

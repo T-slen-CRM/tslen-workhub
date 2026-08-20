@@ -37,7 +37,7 @@ describe('GoogleCalendar e2e', () => {
                         provide: GoogleCalendarService,
                         useValue: {
                             authorize: jest.fn(() => mockResponse),
-                            delete: jest.fn(() => mockResponse),
+                            remove: jest.fn(() => mockResponse),
                             createMeetingSpace: jest.fn(() => { return { uri: 'test' }; }),
                         },
                     },

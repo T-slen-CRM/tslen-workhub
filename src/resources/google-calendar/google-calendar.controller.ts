@@ -1,4 +1,4 @@
-import { Controller, Param, Delete, Get } from '@nestjs/common';
+import { Controller, Param, Delete, Get, ParseIntPipe } from '@nestjs/common';
 import { GoogleCalendarService } from './google-calendar.service';
 import { GoogleCalendar } from './entities/google-calendar.entity';
 import { DeleteResult } from 'typeorm';
@@ -18,8 +18,8 @@ export class GoogleCalendarController {
     }
 
   @Delete(':id')
-  async remove (@Param('id') id: string): Promise<DeleteResult> {
-      return this.googleCalendarService.delete(+id);
+  async remove (@Param('id', ParseIntPipe) id: number, @User() user: Users): Promise<DeleteResult> {
+      return this.googleCalendarService.remove(id, user);
   }
   @Get('create-google-meeting')
   async createMeetingSpace (@User() user: Users): Promise<{ uri: string }> {

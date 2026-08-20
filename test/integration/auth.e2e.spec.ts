@@ -68,7 +68,7 @@ describe('AuthController (e2e)', () => {
             .compile();
 
         authService = moduleFixture.get<AuthService>(AuthService);
-        authService.signIn = jest.fn().mockResolvedValue(AUTH_TOKEN_OBJECT);
+        authService.signInWithPassword = jest.fn().mockResolvedValue(AUTH_TOKEN_OBJECT);
 
         app = moduleFixture.createNestApplication();
         await app.init();
@@ -82,14 +82,6 @@ describe('AuthController (e2e)', () => {
         const signInDto: SignInDto = {
             email: 'test@example.com',
             password: 'password123',
-            skipPasswordCheck: true,
-            googleAccessToken: 'google',
-            googleRefreshToken: 'google',
-            googlePermissions: {
-                email: 1,
-                calendar: 1,
-                meetingSpace: 1
-            },
         };
         return request(app.getHttpServer())
             .post('/auth/login')

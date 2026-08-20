@@ -37,6 +37,11 @@ describe('GoogleService', () => {
             const result = await service.authorize(mockUserId);
             expect(result).toEqual(mockAuthClient);
         });
+        it('should throw when no saved credentials exist, instead of resolving with an Error value', async () => {
+            const freshService = new GoogleService(configService);
+            jest.spyOn(freshService, 'loadSavedCredentialsIfExist').mockResolvedValue(null);
+            await expect(freshService.authorize(mockUserId)).rejects.toThrow();
+        });
         it('should call getCalendarData', async () => {
             const mockResponse = { id: 1, calendarId: '', timezone: '', userId: 1, user: {} };
             jest.spyOn(service, 'getCalendarData').mockResolvedValue(mockResponse);

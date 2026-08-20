@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInResponseDto } from './dto/signIn.response.dto';
-import { SignInDto } from './dto/signIn.dto';
 import { Users } from '../users/entities/users.entity';
 import { ErrorExceptionMethod, ErrorService, IThrowErrorObject } from '../../common/services/error/error.service';
 import { GoogleService } from '../../common/services/google/google.service';
@@ -21,73 +20,85 @@ export class AuthService {
     ) {
     }
 
-    async signIn ({ email, password, skipPasswordCheck, googleAccessToken, googleRefreshToken, googlePermissions }: SignInDto): Promise<SignInResponseDto> {
+    async signInWithPassword (email: string, password: string): Promise<SignInResponseDto> {
         try {
-            if (skipPasswordCheck && !email) {
-                const errorMessage = `signIn: ${email}, class: ${this.constructor.name}. Message: Email is required`;
+            const user: Users = await this.findActiveUserByEmail(email);
+            const isMatchedPassword: boolean = await this.usersService.compareHashedValues(password, user.password);
+            if (!isMatchedPassword) {
+                const errorMessage = `signInWithPassword: ${email}, class: ${this.constructor.name}. Message: Invalid password`;
                 const throwError: IThrowErrorObject = {
-                    method: ErrorExceptionMethod.NotFound,
-                    message: `Email is required`
+                    method: ErrorExceptionMethod.Unauthorized,
+                    message: `Invalid password`
                 };
                 await this.errorService.aggregateError(errorMessage, null, throwError);
             }
-            const user: Users = await this.usersService.findOneByCondition({
-                where: [
-                    {
-                        email,
-                        isActive: 1,
-                        lastDayInCompany: MoreThanOrEqual(new Date())
-                    },
-                    {
-                        email,
-                        isActive: 1,
-                        lastDayInCompany: IsNull()
-                    }],
-            });
-
-            if (!user) {
-                const errorMessage = `signIn: ${email}, class: ${this.constructor.name}. Message: User not found`;
-                const throwError: IThrowErrorObject = {
-                    method: ErrorExceptionMethod.NotFound,
-                    message: `Cannot find user: ${email}`
-                };
-                await this.errorService.aggregateError(errorMessage, null, throwError);
-            }
-            if (!skipPasswordCheck) {
-                const isMatchedPassword: boolean = await this.usersService.compareHashedValues(password, user.password);
-                if (!isMatchedPassword) {
-                    const errorMessage = `signIn: ${email}, class: ${this.constructor.name}. Message: Invalid password`;
-                    const throwError: IThrowErrorObject = {
-                        method: ErrorExceptionMethod.Unauthorized,
-                        message: `Invalid password`
-                    };
-                    await this.errorService.aggregateError(errorMessage, null, throwError);
-                }
-            } else {
-                // for google auth save credentials
-                const tokenPath = path.join(process.cwd(), `credentials/token_${user.id}.json`);
-                await this.googleService.saveCredentials({ credentials: { access_token: googleAccessToken, refresh_token: googleRefreshToken } }, tokenPath);
-                // save permissions to db via service
-                const userGooglePermissions = user.googlePermissions || {};
-                const assignedGooglePermissions = Object.assign(userGooglePermissions, googlePermissions);
-                const updatedUser = await this.usersService.update(user.id, { googlePermissions: assignedGooglePermissions });
-                user.googlePermissions = updatedUser.googlePermissions;
-            }
-
-            const userPayload: IUserPayloadJwt = new UserPayloadJwt(user);
-            const payload: { user: IUserPayloadJwt } = { user: userPayload };
-            const accessToken = await this.jwtService.signAsync(payload);
-            return {
-                accessToken
-            };
+            return await this.issueAccessToken(user);
         } catch (e) {
-            const errorMessage = `signIn: ${email}, class: ${this.constructor.name}. Message: ${e.message}`;
+            const errorMessage = `signInWithPassword: ${email}, class: ${this.constructor.name}. Message: ${e.message}`;
             const throwError: IThrowErrorObject = {
                 method: ErrorExceptionMethod.Unauthorized,
                 message: `Cannot sign in: ${email}`
             };
             await this.errorService.aggregateError(errorMessage, null, throwError);
         }
+    }
+
+    // Only ever called internally, after `getAuthClientData(code)` has already verified the
+    // caller's identity via a server-side Google OAuth code exchange - never bind these
+    // arguments to a client-facing DTO/request body directly.
+    async signInWithGoogle (email: string, googleAccessToken: string, googleRefreshToken: string, googlePermissions: IUserGooglePermissions): Promise<SignInResponseDto> {
+        try {
+            const user: Users = await this.findActiveUserByEmail(email);
+            const tokenPath = path.join(process.cwd(), `credentials/token_${user.id}.json`);
+            await this.googleService.saveCredentials({ credentials: { access_token: googleAccessToken, refresh_token: googleRefreshToken } }, tokenPath);
+            const userGooglePermissions = user.googlePermissions || {};
+            const assignedGooglePermissions = Object.assign(userGooglePermissions, googlePermissions);
+            const updatedUser = await this.usersService.update(user.id, { googlePermissions: assignedGooglePermissions });
+            user.googlePermissions = updatedUser.googlePermissions;
+            return await this.issueAccessToken(user);
+        } catch (e) {
+            const errorMessage = `signInWithGoogle: ${email}, class: ${this.constructor.name}. Message: ${e.message}`;
+            const throwError: IThrowErrorObject = {
+                method: ErrorExceptionMethod.Unauthorized,
+                message: `Cannot sign in: ${email}`
+            };
+            await this.errorService.aggregateError(errorMessage, null, throwError);
+        }
+    }
+
+    private async findActiveUserByEmail (email: string): Promise<Users> {
+        const user: Users = await this.usersService.findOneByCondition({
+            where: [
+                {
+                    email,
+                    isActive: 1,
+                    lastDayInCompany: MoreThanOrEqual(new Date())
+                },
+                {
+                    email,
+                    isActive: 1,
+                    lastDayInCompany: IsNull()
+                }],
+        });
+
+        if (!user) {
+            const errorMessage = `findActiveUserByEmail: ${email}, class: ${this.constructor.name}. Message: User not found`;
+            const throwError: IThrowErrorObject = {
+                method: ErrorExceptionMethod.NotFound,
+                message: `Cannot find user: ${email}`
+            };
+            await this.errorService.aggregateError(errorMessage, null, throwError);
+        }
+        return user;
+    }
+
+    private async issueAccessToken (user: Users): Promise<SignInResponseDto> {
+        const userPayload: IUserPayloadJwt = new UserPayloadJwt(user);
+        const payload: { user: IUserPayloadJwt } = { user: userPayload };
+        const accessToken = await this.jwtService.signAsync(payload);
+        return {
+            accessToken
+        };
     }
 
     async changeUser (id: number, adminUser: Users): Promise<{ user: Users; accessToken: string }> {
@@ -157,7 +168,6 @@ export interface IUserPayloadJwt{
     lastName: string;
     email: string;
     country: string;
-    password: string;
     avatar: string;
     company: string;
     address: string;
@@ -184,7 +194,6 @@ export class UserPayloadJwt implements IUserPayloadJwt{
     lastName: string;
     email: string;
     country: string;
-    password: string;
     avatar: string;
     company: string;
     address: string;
@@ -210,7 +219,6 @@ export class UserPayloadJwt implements IUserPayloadJwt{
         this.lastName = user.lastName;
         this.email = user.email;
         this.country = user.country;
-        this.password = user.password;
         this.avatar = user.avatar;
         this.company = user.company;
         this.address = user.address;

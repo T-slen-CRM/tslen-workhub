@@ -58,17 +58,12 @@ export class GoogleService {
         await fsPromises.writeFile(tokenPath, payload);
     }
     async authorize (userId: number): Promise<any> {
-        try {
-            const tokenPath = path.join(process.cwd(), `credentials/token_${userId}.json`);
-            const authClient = await this.loadSavedCredentialsIfExist(tokenPath);
-            if (authClient) {
-                return authClient;
-            }
-            return new Error('No credentials found! Re-login with enabled Google permissions');
-        } catch (e) {
-            console.log('error', e);
+        const tokenPath = path.join(process.cwd(), `credentials/token_${userId}.json`);
+        const authClient = await this.loadSavedCredentialsIfExist(tokenPath);
+        if (authClient) {
+            return authClient;
         }
-
+        throw new Error('No credentials found! Re-login with enabled Google permissions');
     }
     async authorizeOnlyByToken (userId: number): Promise<OAuth2Client|null> {
         const tokenPath = path.join(process.cwd(), `credentials/token_${userId}.json`);

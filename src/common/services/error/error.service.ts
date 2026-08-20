@@ -7,7 +7,13 @@ export class ErrorService {
     constructor (private readonly slackService: SlackService) {}
     async aggregateError (loggerMsg: string, slackMsg: string = null, throwError: IThrowErrorObject = null): Promise<void> {
         if (loggerMsg) this.logger.error(loggerMsg);
-        if (slackMsg) await this.slackService.sendError(slackMsg);
+        if (slackMsg) {
+            try {
+                await this.slackService.sendError(slackMsg);
+            } catch (e) {
+                this.logger.error(`Failed to send error to Slack: ${e.message}`);
+            }
+        }
         if (throwError && throwError.method) {
             if (throwError.method === ErrorExceptionMethod.NotFound){
                 throw new NotFoundException(throwError.message);

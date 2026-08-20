@@ -56,7 +56,7 @@ describe('UsersController (e2e)', () => {
             .useValue(mockedAuthGuard)
             .overrideProvider(AuthService)
             .useValue({
-                signIn: jest.fn(() => accessToken),
+                signInWithPassword: jest.fn(() => accessToken),
             })
             .overrideProvider(SlackService)
             .useValue({

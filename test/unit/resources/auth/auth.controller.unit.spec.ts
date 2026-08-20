@@ -19,29 +19,21 @@ describe('AuthController', () => {
         expect(controller).toBeDefined();
     });
 
-    it('should call authService.signIn with correct parameters', async () => {
+    it('should call authService.signInWithPassword with the DTO email/password, and nothing else client-controlled', async () => {
         const signInDto: SignInDto = {
             email: 'test@example.com',
             password: 'password123',
-            skipPasswordCheck: true,
-            googleAccessToken: 'google',
-            googleRefreshToken: 'google',
-            googlePermissions: {
-                email: 1,
-                calendar: 1,
-                meetingSpace: 1
-            },
         };
 
         // Mock the expected response from the service
         const mockResponse = { accessToken: 'sampleToken' };
 
-        jest.spyOn(authService, 'signIn').mockResolvedValue(mockResponse);
+        jest.spyOn(authService, 'signInWithPassword').mockResolvedValue(mockResponse);
 
         const result = await controller.signIn(signInDto);
-        // Verify the AuthService.signIn method is called with the correct parameters
-        expect(authService.signIn).toHaveBeenCalledWith({ "email": "test@example.com", "googleAccessToken": "google", "googleRefreshToken": "google", googlePermissions: {
-            email: 1, calendar: 1, meetingSpace: 1 }, "password": "password123", "skipPasswordCheck": true });
+        // Verify the AuthService.signInWithPassword method is called with only email/password -
+        // there is no longer a way for a request body to skip the password check.
+        expect(authService.signInWithPassword).toHaveBeenCalledWith('test@example.com', 'password123');
 
         // Verify the expected response from the controller
         expect(result).toEqual(mockResponse);

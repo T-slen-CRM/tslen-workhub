@@ -1,0 +1,42 @@
+.to-fix-jump-mat-badge {
+  display: inline-block;
+}
+.one-notification {
+  height: auto;
+  line-height: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+}
+.notification-body {
+  display: flex;
+  flex-direction: column;
+  // Flex items default to min-width: auto, which refuses to shrink below the
+  // content's intrinsic width — that defeats text-overflow: ellipsis below (the
+  // text overflows this box instead of truncating inside it, then gets hard-clipped
+  // by the menu panel's own edge with no ellipsis showing).
+  min-width: 0;
+  flex: 1;
+}
+.notification-title {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.noti-message {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.noti-head-mat-menu {
+  padding: 15px 20px;
+
+  a {
+    text-decoration: underline;
+    font-size: 13px;
+  }
+}

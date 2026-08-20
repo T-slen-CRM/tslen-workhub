@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, effect, input, ViewChild} from '@angular/core';
 import {AgGridAngular} from 'ag-grid-angular';
 
 @Component({
@@ -10,44 +10,29 @@ import {AgGridAngular} from 'ag-grid-angular';
 export class AgGridTableComponent implements AfterViewInit {
 
   @ViewChild('agGrid') agGrid: AgGridAngular;
-  public columnDefs: any;
-  @Input() public set setColumnDefs(data: any){
-    this.columnDefs = data;
-  }
-  @Input() public frameworkComponents: any;
-  @Input() public set setFrameworkComponents(data: any){
-    this.frameworkComponents = data;
-  }
-  @Input() public set setRowData(data: any){
-    this._rowData = data;
-  }
-  @Input() public set setSizeColumnsToFit(data: any){
-    if (this.agGrid){
-      setTimeout(() => {
-        this.agGrid.api.sizeColumnsToFit();
-      }, 200);
-    }
-  }
-  @Input() public set setHeaderHeight(data: any){
-    this.headerHeight = data;
-  }
-  @Input() public set setRowHeight(data: any) {
-    this.rowHeight = data;
-  }
-  @Input() tableId: string;
-  public _rowData: any;
+  columnDefs = input<any>([]);
+  components = input<any>();
+  rowData = input<any>();
+  sizeColumnsToFit = input<boolean>(false);
+  headerHeight = input<number>(81);
+  rowHeight = input<number>(38);
+  tableId = input<string>();
   public defaultColDef: any;
-  public headerHeight: number = 81;
-  public rowHeight: number = 38;
 
   constructor() {
-    this.columnDefs = [];
     this.defaultColDef = {
       resizable: true,
       headerHeight: 81,
       pagination: true,
       width: 75,
     };
+    effect(() => {
+      if (this.sizeColumnsToFit() && this.agGrid){
+        setTimeout(() => {
+          this.agGrid.api.sizeColumnsToFit();
+        }, 200);
+      }
+    });
   }
 
   ngAfterViewInit(): void {

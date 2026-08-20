@@ -62,6 +62,6 @@ import { InventoryByUserHistory } from '../inventory/entities/inventory-by-user-
             useExisting: FirebaseService
         }
     ],
-    exports: [UsersService]
+    exports: [UsersService, UsersRepository]
 })
 export class UsersModule {}

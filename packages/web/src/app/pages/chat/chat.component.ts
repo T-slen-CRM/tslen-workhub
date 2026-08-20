@@ -43,11 +43,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   private toastr = inject(ToastrService);
 
   constructor(private chatService: ChatService) {
-    this.chatService.listenForEvents(this.chatRoomId(), +this.localUserId());
-    // For demonstration: get user ID from the service itself
-    // In a real app, this would come from an auth service or login process.
-    // Ensure this matches what you set in the service for the socket connection
-
     effect(() => {
         if (this.chatRoomId()){
           // this.chatService.disconnect(); // Ensure previous connection is closed

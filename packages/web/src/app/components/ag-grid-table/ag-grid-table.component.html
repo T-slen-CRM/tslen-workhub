@@ -1,13 +1,13 @@
-<div id="{{tableId}}" class="ag-grid-full-height">
+<div id="{{tableId()}}" class="ag-grid-full-height">
     <ag-grid-angular
             class="ag-theme-material ag-grid-angular-style ag-test"
             #agGrid
-            [rowData]="_rowData"
+            [rowData]="rowData()"
             [animateRows]="true"
-            [columnDefs]="columnDefs"
+            [columnDefs]="columnDefs()"
             [defaultColDef]="defaultColDef"
             [rowHeight]="38"
-            [frameworkComponents]="frameworkComponents"
+            [components]="components()"
             [headerHeight]="81"
             [enableCellTextSelection]="true">
     </ag-grid-angular>

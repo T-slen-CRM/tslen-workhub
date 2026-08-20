@@ -68,6 +68,10 @@ export class CreateTaskDto {
         orderId: number | null;
 
     @IsOptional()
+    @IsInt()
+        actorUserId: number | null;
+
+    @IsOptional()
     @IsIn(['unStatus', 'inProgress', 'hold', 'test', 'release', 'done'])
         status: 'unStatus' | 'inProgress' | 'hold' | 'test' | 'release' | 'done' | null;
 

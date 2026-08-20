@@ -1,6 +1,10 @@
-import {Injectable} from '@angular/core';
-import {Notification} from "../interfaces/notifications";
+import {inject, Injectable} from '@angular/core';
+import {Notification, Notifications} from "../interfaces/notifications";
 import {BehaviorSubject} from "rxjs";
+import {map, take} from "rxjs/operators";
+import {ToastrService} from "ngx-toastr";
+import {DataService} from "./data.service";
+import {LiveKitWebSocketService} from "../pages/live-kit/live-kitWebSocket.service";
 
 
 @Injectable({
@@ -8,9 +12,67 @@ import {BehaviorSubject} from "rxjs";
 })
 export class NotificationService {
     public countUnreadNotifications: BehaviorSubject<number>;
+    public notifications: BehaviorSubject<Notifications> = new BehaviorSubject<Notifications>([]);
+
+    private dataService = inject(DataService);
+    private liveKitWebSocketService = inject(LiveKitWebSocketService);
+    private toastr = inject(ToastrService);
+    private loadStarted = false;
 
     constructor() {
         this.countUnreadNotifications = new BehaviorSubject<number>(null);
+
+        // Subscribed once, for this singleton service's own lifetime — never tied to a
+        // NotificationBellComponent instance's mount/unmount. The previous "first-mounted
+        // component instance claims the live socket subscription" pattern had no way to
+        // hand that claim off: if that instance was ever destroyed (e.g. across a
+        // logout/login cycle recreating the layout), no bell instance could process live
+        // arrivals again until a full page reload.
+        this.liveKitWebSocketService.notification$.subscribe((notification: Notification) => {
+            const updatedNotifications = [{
+                id: notification.id,
+                title: notification.title,
+                message: notification.message,
+                time: this.timeSince(new Date(), new Date(notification.createdAt)),
+                isRead: notification.isRead,
+                link: notification.link,
+            }, ...this.notifications.value];
+            this.notifications.next(updatedNotifications);
+            const currentCount = this.countUnreadNotifications.value;
+            this.countUnreadNotifications.next((currentCount || 0) + 1);
+
+            new Audio('assets/audio/join.mp3').play().catch(() => {});
+            this.toastr.info(notification.message, notification.title);
+        });
+    }
+
+    load(): void {
+        if (this.loadStarted) {
+            return;
+        }
+        this.loadStarted = true;
+        let unreadCount = 0;
+        this.dataService.getObservableData('/notifications')
+            .pipe(
+                map((r: any) => r.map((item: any) => {
+                    if (item.isRead === 0) {
+                        unreadCount++;
+                    }
+                    return {
+                        id: item.id,
+                        title: item.title,
+                        message: item.message,
+                        time: this.timeSince(new Date(), new Date(item.createdAt)),
+                        isRead: item.isRead,
+                        link: item.link,
+                    };
+                })),
+                take(1),
+            )
+            .subscribe((notifications: Notifications) => {
+                this.countUnreadNotifications.next(unreadCount === 0 ? null : unreadCount);
+                this.notifications.next(notifications);
+            });
     }
 
     setCountUnreadNotifications(value: number){
@@ -74,4 +136,3 @@ export class NotificationService {
     }
 
 }
-

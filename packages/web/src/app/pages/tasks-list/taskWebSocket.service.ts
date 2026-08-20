@@ -26,11 +26,15 @@ export class TaskWebSocketService {
   }
 
   getMessages(event: string) {
-    const observable = new Observable<{ user: string, message: string }>(observer => {
-      this.socket.on(event, (data) => {
-        observer.next(data);
-      });
-      return () => { this.socket.disconnect(); };
+    const observable = new Observable<any>(observer => {
+      const handler = (data: any) => observer.next(data);
+      this.socket.on(event, handler);
+      // Remove only this listener on unsubscribe. The socket is a shared,
+      // providedIn: 'root' singleton with multiple independent subscribers
+      // (task list live updates, task-detail live comments, ...) — disconnecting
+      // it here would tear down every other subscriber's connection too, the
+      // moment any single one of them unsubscribes (e.g. a task card closing).
+      return () => { this.socket.off(event, handler); };
     });
     return observable;
   }

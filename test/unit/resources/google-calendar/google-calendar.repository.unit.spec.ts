@@ -71,7 +71,7 @@ describe('GoogleCalendarRepository', () => {
         const data = {
             googleCalendarEntity: mockDto,
             googleEvents: [mockedEventByUser]
-        } as {googleCalendarEntity: GoogleCalendar, googleEvents: EventsByUser[]}
+        } as unknown as {googleCalendarEntity: GoogleCalendar, googleEvents: EventsByUser[]}
         jest.spyOn(repository, 'authorize').mockResolvedValue(mockResponse);
         const result = await repository.authorize(data);
         expect(result).toEqual(mockResponse);

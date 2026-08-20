@@ -26,9 +26,9 @@ describe('EventsByUserController', () => {
     it('should call eventByUserService.getEventsByMonth', async () => {
         const mockResponse = [mockedEventByUser];
 
-        jest.spyOn(eventByUserService, 'getEventsByMonth').mockResolvedValue(mockResponse as EventsByUser[]);
+        jest.spyOn(eventByUserService, 'getEventsByMonth').mockResolvedValue(mockResponse as unknown as EventsByUser[]);
 
-        const result = await controller.getEventsByMonth(mockUser as Users, mockedDateRangeDto);
+        const result = await controller.getEventsByMonth(mockUser as unknown as Users, mockedDateRangeDto);
         expect(eventByUserService.getEventsByMonth).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
@@ -36,9 +36,9 @@ describe('EventsByUserController', () => {
     it('should call eventByUserService.getAbsentToday', async () => {
         const mockResponse = [mockedEventByUser];
 
-        jest.spyOn(eventByUserService, 'getAbsentToday').mockResolvedValue(mockResponse as EventsByUser[]);
+        jest.spyOn(eventByUserService, 'getAbsentToday').mockResolvedValue(mockResponse as unknown as EventsByUser[]);
 
-        const result = await controller.getAbsentToday(mockUser as Users);
+        const result = await controller.getAbsentToday(mockUser as unknown as Users);
         expect(eventByUserService.getAbsentToday).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
@@ -47,16 +47,16 @@ describe('EventsByUserController', () => {
         const createDTO: CreateEventsByUserDto = Object.assign({ googleTimezone: 'Europe/Madrid' }, mockedEventByUser);
         const mockResponse = mockedEventByUser;
 
-        jest.spyOn(eventByUserService, 'create').mockResolvedValue(mockResponse as EventsByUser);
+        jest.spyOn(eventByUserService, 'create').mockResolvedValue(mockResponse as unknown as EventsByUser);
 
-        const result = await controller.create(createDTO, mockUser as Users);
+        const result = await controller.create(createDTO, mockUser as unknown as Users);
         expect(eventByUserService.create).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call eventByUserService.update', async () => {
         const mockResponse = mockedEventByUser;
 
-        jest.spyOn(eventByUserService, 'update').mockResolvedValue(mockResponse as EventsByUser);
+        jest.spyOn(eventByUserService, 'update').mockResolvedValue(mockResponse as unknown as EventsByUser);
 
         const result = await controller.update(1, mockedEventByUser);
         expect(eventByUserService.update).toHaveBeenCalled();
@@ -74,9 +74,9 @@ describe('EventsByUserController', () => {
     it('should call eventByUserService.getPending', async () => {
         const mockResponse = [mockedEventByUser];
 
-        jest.spyOn(eventByUserService, 'getPending').mockResolvedValue(mockResponse as EventsByUser[]);
+        jest.spyOn(eventByUserService, 'getPending').mockResolvedValue(mockResponse as unknown as EventsByUser[]);
 
-        const result = await controller.getPending(mockUser as Users);
+        const result = await controller.getPending(mockUser as unknown as Users);
         expect(eventByUserService.getPending).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });

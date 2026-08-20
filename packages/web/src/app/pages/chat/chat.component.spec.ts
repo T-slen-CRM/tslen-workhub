@@ -53,6 +53,21 @@ describe('ChatComponent', () => {
     expect(callsForRoom.length).toBe(1);
   });
 
+  it('never opens a connection with unset input values before the inputs are bound', () => {
+    fixture.componentRef.setInput('chatRoomId', 'room-1');
+    fixture.componentRef.setInput('localUserId', 42);
+
+    fixture.detectChanges();
+    TestBed.flushEffects();
+
+    // Regression: the constructor used to call listenForEvents(this.chatRoomId(), ...)
+    // before Angular applies signal-input bindings, opening a throwaway connection with
+    // chatRoomId() still '' and localUserId() still null (+null -> 0). That socket then
+    // got torn down mid-handshake by the effect's real call a moment later.
+    expect(chatServiceSpy.listenForEvents.calls.count()).toBe(1);
+    expect(chatServiceSpy.listenForEvents).not.toHaveBeenCalledWith('', 0);
+  });
+
   describe('incoming message notifications', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('chatRoomId', 'room-1');

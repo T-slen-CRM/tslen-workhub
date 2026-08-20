@@ -20,7 +20,7 @@ describe('ApiTokensController', () => {
             const created = { id: 1, name: 'CI', token: 'abc123', createdAt: new Date() };
             service.createToken.mockResolvedValue(created);
 
-            const result = await controller.create({ name: 'CI' }, mockUser as Users);
+            const result = await controller.create({ name: 'CI' }, mockUser as unknown as Users);
 
             expect(service.createToken).toHaveBeenCalledWith(mockUser, 'CI');
             expect(result).toBe(created);
@@ -32,7 +32,7 @@ describe('ApiTokensController', () => {
             const tokens = [{ id: 1, userId: mockUser.id }] as ApiToken[];
             service.findAllForUser.mockResolvedValue(tokens);
 
-            const result = await controller.findAll(mockUser as Users);
+            const result = await controller.findAll(mockUser as unknown as Users);
 
             expect(service.findAllForUser).toHaveBeenCalledWith(mockUser.id);
             expect(result).toBe(tokens);
@@ -41,7 +41,7 @@ describe('ApiTokensController', () => {
 
     describe('revoke', () => {
         it('revokes a token owned by the authenticated user', async () => {
-            await controller.revoke(5, mockUser as Users);
+            await controller.revoke(5, mockUser as unknown as Users);
 
             expect(service.revoke).toHaveBeenCalledWith(5, mockUser.id);
         });

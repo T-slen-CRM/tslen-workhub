@@ -46,9 +46,9 @@
 <ng-container [ngSwitch]="employeeViewControl.value">
     <ng-container *ngSwitchCase="0">
         <div class="calendar-view-container">
-            <app-ag-grid-table [setRowData]="rowData | async"
-                               [setColumnDefs]="columnDefs"
-                               [setFrameworkComponents]="frameworkComponents"
+            <app-ag-grid-table [rowData]="rowData | async"
+                               [columnDefs]="columnDefs"
+                               [components]="components"
                                [tableId]="'common-schedule'"
             ></app-ag-grid-table>
         </div>

@@ -13,7 +13,7 @@
             <button mat-raised-button color="primary" (click)="onSubmit()">{{'people.job_position.button'| translate}}</button>
         </div>
 </div>
-<app-ag-grid-table [setColumnDefs]="columnDefs"
-                   [setRowData]="rowData$ | async"
-                   [setSizeColumnsToFit]="true"
+<app-ag-grid-table [columnDefs]="columnDefs"
+                   [rowData]="rowData$ | async"
+                   [sizeColumnsToFit]="true"
 ></app-ag-grid-table>

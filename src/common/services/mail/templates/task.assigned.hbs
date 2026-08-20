@@ -1,0 +1,3 @@
+<p>Hi {{ recipient.firstName }},</p>
+<p>{{#if actor}}{{ actor.firstName }} {{ actor.lastName }}{{else}}Someone{{/if}} assigned you to a task: <strong>{{ task.title }}</strong>.</p>
+<p><a style="color:#1b73e7" href="{{ link }}">View task</a></p>

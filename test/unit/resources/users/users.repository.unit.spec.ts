@@ -24,21 +24,21 @@ describe('UsersRepository', () => {
         expect(repository).toBeDefined();
     });
     it('should call getOneWithRelations', async () => {
-        const mockResponse: Partial<Users> = mockUser as Users;
+        const mockResponse: Partial<Users> = mockUser as unknown as Users;
         jest.spyOn(repository, 'getOneWithRelations').mockResolvedValue(mockResponse as Users);
-        const result = await repository.getOneWithRelations(1, mockUser as Users);
+        const result = await repository.getOneWithRelations(1, mockUser as unknown as Users);
         expect(repository.getOneWithRelations).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call getByRole', async () => {
-        const mockResponse: Partial<Users>[] = [mockUser] as Users[];
+        const mockResponse: Partial<Users>[] = [mockUser] as unknown as Users[];
         jest.spyOn(repository, 'getByRole').mockResolvedValue(mockResponse as Users[]);
-        const result = await repository.getByRole(mockUser as Users);
+        const result = await repository.getByRole(mockUser as unknown as Users);
         expect(repository.getByRole).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call createOneWithRelations', async () => {
-        const user = new Users(mockUser as Partial<Users>);
+        const user = new Users(mockUser as unknown as Partial<Users>);
         const companyDaysOffRules = new CompanyDaysOffRules({
             companyId: user.companyId,
             hospital: 1,
@@ -80,16 +80,16 @@ describe('UsersRepository', () => {
     it('should call getUsersWithRelationsByDateRange', async () => {
         const startDate = new Date('2021-01-01T00:00:00.000Z');
         const endDate = new Date('2021-01-02T00:00:00.000Z');
-        const mockResponse: Partial<Users>[] = [mockUser] as Users[];
+        const mockResponse: Partial<Users>[] = [mockUser] as unknown as Users[];
         jest.spyOn(repository, 'getUsersWithRelationsByDateRange').mockResolvedValue(mockResponse as Users[]);
-        const result = await repository.getUsersWithRelationsByDateRange(mockUser as Users, { startDate, endDate });
+        const result = await repository.getUsersWithRelationsByDateRange(mockUser as unknown as Users, { startDate, endDate });
         expect(repository.getUsersWithRelationsByDateRange).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call getBirthdayAnniversary', async () => {
-        const mockResponse: Partial<Users> = mockUser as Users;
+        const mockResponse: Partial<Users> = mockUser as unknown as Users;
         jest.spyOn(repository, 'getBirthdayAnniversary').mockResolvedValue(mockResponse as Users[]);
-        const result = await repository.getBirthdayAnniversary(mockUser as Users);
+        const result = await repository.getBirthdayAnniversary(mockUser as unknown as Users);
         expect(repository.getBirthdayAnniversary).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });

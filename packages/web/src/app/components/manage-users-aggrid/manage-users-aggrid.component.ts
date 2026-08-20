@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {ManageUsersActionsRendererComponent} from "../data-grid/manage-users-actions-renderer.component";
 import {Subscription, tap} from "rxjs";
@@ -20,7 +20,7 @@ export class ManageUsersAggridComponent implements OnInit {
   gridApi;
 
   rowData: any = [];
-  frameworkComponents = {
+  components = {
     manageUsersActionsRendererComponent: ManageUsersActionsRendererComponent
   };
 

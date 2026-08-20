@@ -38,6 +38,7 @@ export interface ITask{
     taskAttachments?: any[] | null;
     phaseId: number;
     projectId: number;
+    actorUserId?: number;
     phaseName?: string;
     projectName?: string;
     status?: string;

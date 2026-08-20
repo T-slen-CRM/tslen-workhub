@@ -84,4 +84,26 @@ export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
             .orderBy('projectPhasesRelation.orderId', 'ASC'); // Add this line to order by orderId
         return await qb.getOne();
     }
+    async findByPhaseId (phaseId: number): Promise<TaskProject> {
+        return await this.taskProjectRepository.createQueryBuilder('taskProject')
+            .innerJoin('taskProject.projectPhasesRelations', 'relation')
+            .where('relation.phaseId = :phaseId', { phaseId })
+            .getOne();
+    }
+    async findAllWithPhases (): Promise<{ id: number; name: string; phases: { id: number; name: string }[] }[]> {
+        const projects = await this.taskProjectRepository.createQueryBuilder('taskProject')
+            .leftJoinAndSelect('taskProject.projectPhasesRelations', 'relation')
+            .leftJoinAndSelect('relation.phase', 'phase')
+            .orderBy('relation.orderId', 'ASC')
+            .getMany();
+
+        return projects.map((project) => ({
+            id: project.id,
+            name: project.name,
+            phases: (project.projectPhasesRelations || []).map((relation) => ({
+                id: relation.phase.id,
+                name: relation.phase.name,
+            })),
+        }));
+    }
 }

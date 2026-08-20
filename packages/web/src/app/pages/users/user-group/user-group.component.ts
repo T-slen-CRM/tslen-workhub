@@ -17,7 +17,7 @@ export class UserGroupComponent implements OnInit, OnDestroy {
   public columnDefs: any;
   public rowData = [];
   public form: FormGroup;
-  public frameworkComponents = {
+  public components = {
       pendingDateRendererComponent: PendingDateRendererComponent,
   };
   @Output() addedGroup: EventEmitter<any> = new EventEmitter<any>();

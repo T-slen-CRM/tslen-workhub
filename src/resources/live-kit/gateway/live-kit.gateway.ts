@@ -14,6 +14,7 @@ export const enum LiveKitEvents  {
   CALL_ACCEPTED = 'call_accepted',
   CALL_REJECTED = 'call_rejected',
   ONLINE_USERS = 'online_users',
+  NOTIFICATION = 'notification',
 }
 
 @WebSocketGateway({
@@ -24,7 +25,7 @@ export const enum LiveKitEvents  {
 })
 
 export class LiveKitGateway {
-    public users: Map<string, Socket> = new Map();
+    public users: Map<number, Socket> = new Map();
     @WebSocketServer()
         server: Server;
 
@@ -32,7 +33,7 @@ export class LiveKitGateway {
     @UsePipes(new ValidationPipe({ transform: true }))
     @SubscribeMessage(LiveKitEvents.REGISTER)
     async register (@MessageBody() data, @ConnectedSocket() client: Socket) {
-        const userId = data.userId;
+        const userId = Number(data.userId);
         this.users.set(userId, client);
         this.broadcastOnlineUsers()
         return undefined;
@@ -42,7 +43,7 @@ export class LiveKitGateway {
     @UsePipes(new ValidationPipe({ transform: true }))
     @SubscribeMessage(LiveKitEvents.INCOMING_CALL)
     async incoling (@MessageBody() data) {
-        const callee = this.users.get(data.calleeId)
+        const callee = this.users.get(Number(data.calleeId))
         if (callee){
             const payload = {
                 callerId: data.callerId,
@@ -60,7 +61,7 @@ export class LiveKitGateway {
     @UsePipes(new ValidationPipe({ transform: true }))
     @SubscribeMessage(LiveKitEvents.CALL_ACCEPTED)
     async accept (@MessageBody() data) {
-        const caller = this.users.get(data.callerId)
+        const caller = this.users.get(Number(data.callerId))
         if (caller){
             const payload = {
                 calleeId: data.calleeId,
@@ -75,7 +76,7 @@ export class LiveKitGateway {
     @UsePipes(new ValidationPipe({ transform: true }))
     @SubscribeMessage(LiveKitEvents.CALL_REJECTED)
     async reject (@MessageBody() data) {
-        const reject = this.users.get(data.callerId)
+        const reject = this.users.get(Number(data.callerId))
         if (reject){
             const payload = {
                 calleeId: data.calleeId,
@@ -95,6 +96,13 @@ export class LiveKitGateway {
 
         for (const ws of uniqueSockets) {
             ws.emit(LiveKitEvents.ONLINE_USERS, message);
+        }
+    }
+
+    public notifyUser (userId: number, payload: unknown): void {
+        const socket = this.users.get(Number(userId));
+        if (socket) {
+            socket.emit(LiveKitEvents.NOTIFICATION, payload);
         }
     }
 

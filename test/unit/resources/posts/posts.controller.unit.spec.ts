@@ -26,7 +26,7 @@ describe('PostsController', () => {
     it('should call postsService.findAll', async () => {
         const mockResponse = [mockPost];
         jest.spyOn(controller, 'findAll').mockResolvedValue(mockResponse);
-        const result = await controller.findAll(mockUser as Users);
+        const result = await controller.findAll(mockUser as unknown as Users);
         expect(controller.findAll).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });

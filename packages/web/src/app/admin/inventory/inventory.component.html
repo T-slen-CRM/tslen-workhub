@@ -10,12 +10,12 @@
 </div>
 
 <div class="custom-table">
-    <app-ag-grid-table [setColumnDefs]="columnDefs"
-                       [setRowData]="rowData | async"
-                       [frameworkComponents]="frameworkComponents"
-                       [setSizeColumnsToFit]="true"
-                       [setRowHeight]="43"
-                       [setHeaderHeight]="50"
+    <app-ag-grid-table [columnDefs]="columnDefs"
+                       [rowData]="rowData | async"
+                       [components]="components"
+                       [sizeColumnsToFit]="true"
+                       [rowHeight]="43"
+                       [headerHeight]="50"
     ></app-ag-grid-table>
 </div>
 

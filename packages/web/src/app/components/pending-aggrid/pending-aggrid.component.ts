@@ -21,7 +21,7 @@ export class PendingAggridComponent implements OnInit {
   gridColumnApi;
   getSelectedRows;
   rowData: any = [];
-  frameworkComponents = {
+  components = {
     pendingActionsRendererComponent: PendingActionsRendererComponent,
     pendingDateRendererComponent: PendingDateRendererComponent,
   };

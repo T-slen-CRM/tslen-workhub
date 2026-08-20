@@ -19,14 +19,14 @@ describe('TasksController', () => {
     it('should call findAll', async () => {
         const mockResponse = [mockedTask];
         jest.spyOn(controller, 'findAll').mockResolvedValue(mockResponse as any);
-        const result = await controller.findAll(mockUser as Users);
+        const result = await controller.findAll(mockUser as unknown as Users);
         expect(controller.findAll).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
     it('should call findOne', async () => {
         const mockResponse = mockedTask;
         jest.spyOn(controller, 'findOne').mockResolvedValue(mockResponse as any);
-        const result = await controller.findOne(mockUser as Users, 1);
+        const result = await controller.findOne(mockUser as unknown as Users, 1);
         expect(controller.findOne).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
@@ -40,7 +40,7 @@ describe('TasksController', () => {
         }] as TaskAttachments[];
         const mockFile = { originalname: 'test', buffer: Buffer.from('test') } as unknown as Express.Multer.File[];
         jest.spyOn(controller, 'uploadFile').mockResolvedValue(mockedAttachments);
-        const result = await controller.uploadFile(mockUser as Users, mockFile, 1);
+        const result = await controller.uploadFile(mockUser as unknown as Users, mockFile, 1);
         expect(controller.uploadFile).toHaveBeenCalled();
         expect(result).toEqual(mockedAttachments);
 

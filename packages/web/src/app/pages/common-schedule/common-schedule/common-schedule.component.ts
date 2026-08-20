@@ -26,7 +26,7 @@ export class CommonScheduleComponent implements OnInit {
   public columnDefs: any;
   public defaultColDef: any;
   public rowData: any;
-  public frameworkComponents: any;
+  public components: any;
   public authData: AuthData;
   public month: number;
   public year: number;
@@ -62,7 +62,7 @@ export class CommonScheduleComponent implements OnInit {
       enableCellTextSelection: true,
       // suppressSizeToFit: true
     };
-    this.frameworkComponents = {
+    this.components = {
       daysHeaderComponent: DaysHeaderComponent,
       daysOffCellRendererComponent: DaysOffCellRendererComponent,
       nameAvatarCellRendererComponent: NameAvatarCellRendererComponent

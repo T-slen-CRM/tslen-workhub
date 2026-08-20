@@ -32,23 +32,23 @@ describe('Users Service Unit Test', () => {
     });
     it('should get birthday anniversary', async () => {
         const result = mockUser;
-        jest.spyOn(userService, 'getBirthdayAnniversary').mockResolvedValue(mockUser as Users);
+        jest.spyOn(userService, 'getBirthdayAnniversary').mockResolvedValue(mockUser as unknown as Users);
 
-        const res = await userService.getBirthdayAnniversary(mockUser as Users);
+        const res = await userService.getBirthdayAnniversary(mockUser as unknown as Users);
         expect(res).toEqual(result);
     });
     it('should get users with relations by date range', async () => {
         const result = [mockUser];
-        jest.spyOn(userService, 'getUsersWithRelationsByDateRange').mockResolvedValue([mockUser] as Users[]);
+        jest.spyOn(userService, 'getUsersWithRelationsByDateRange').mockResolvedValue([mockUser] as unknown as Users[]);
 
-        const res = await userService.getUsersWithRelationsByDateRange(mockUser as Users, { startDate: new Date(), endDate: new Date() });
+        const res = await userService.getUsersWithRelationsByDateRange(mockUser as unknown as Users, { startDate: new Date(), endDate: new Date() });
         expect(res).toEqual(result);
     });
     it('should get profile avatar', () => {
         const fileName = '1_avatar.jpg';
         const result = { file: fileName, settings: { root: '' } };
         jest.spyOn(userService, 'getProfileAvatar').mockReturnValue(result);
-        expect(userService.getProfileAvatar(mockUser as Users, fileName)).toEqual(result);
+        expect(userService.getProfileAvatar(mockUser as unknown as Users, fileName)).toEqual(result);
     });
     it('should get profile avatar path', () => {
         const fileName = '1_avatar.jpg';

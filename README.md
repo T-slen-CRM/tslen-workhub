@@ -32,28 +32,44 @@ full reference.
 
 ## Getting started
 
-1. Copy `.env.example` to `.env` and fill in your DB, Google, Slack, and Firebase credentials.
-2. Install dependencies:
+1. Copy `.env.example` to `.env`. `JWT_SECRET` needs a real value; Google,
+   Slack, and Firebase credentials can stay as placeholders for a first
+   run — those integrations are optional and only needed for Calendar
+   sync, Slack alerts, and file uploads respectively. `DB_*` values only
+   matter for bare-metal dev (steps 4–5, against your own Postgres) — the
+   Docker Compose quickstart below needs no DB credentials at all.
+2. Copy `packages/web/src/environments/environment.prod.ts.example` to
+   `environment.prod.ts` in the same folder (gitignored, same idea as
+   `.env.example` → `.env`). Leave `livekitUrl` empty to use the Compose
+   quickstart's self-hosted LiveKit server, or set it to your own LiveKit
+   server/Cloud project URL.
+3. Install dependencies:
    ```bash
    npm install
    cd packages/web && npm install
    ```
-3. Run the backend:
+4. Run the backend:
    ```bash
    npm run start:dev
    ```
-4. Run the frontend:
+5. Run the frontend:
    ```bash
    cd packages/web && npm start
    ```
-5. Or build and run with Docker (see `Dockerfile`):
+6. Or run the whole stack with Docker Compose — Postgres, a self-hosted
+   LiveKit server, and the app:
    ```bash
-   docker build -t tslen-workhub .
-   docker run --env-file .env -p 4004:4004 tslen-workhub
+   docker compose up
    ```
-   For a Traefik-fronted deployment, copy `start.sh.example` to `start.sh`
-   (gitignored, same idea as `.env.example` → `.env`), set `DOMAIN` and
-   customize as needed, then `chmod +x start.sh && ./start.sh`.
+   No external accounts and no DB credentials are required to boot. The
+   schema is created automatically (TypeORM `synchronize`, since `.env`'s
+   default `MODE=DEV`); for a `MODE=PROD` deployment, migrations run
+   automatically instead (`npm run migration:run` is only needed manually
+   for bare-metal dev, and only once your schema already exists).
+7. For a production deployment behind Traefik with automatic HTTPS, copy
+   `start.sh.example` to `start.sh` (gitignored, same idea as
+   `.env.example` → `.env`), set `DOMAIN` and customize as needed, then
+   `chmod +x start.sh && ./start.sh`.
 
 ## License
 

@@ -29,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { DataService } from 'src/app/services/data.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -38,7 +39,7 @@ type TrackInfo = {
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
 let APPLICATION_SERVER_URL = '';
-let LIVEKIT_URL = 'wss://tslen-sihva4bl.livekit.cloud';
+let LIVEKIT_URL = environment.livekitUrl;
 @Component({
     selector: 'app-live-kit-call',
     imports: [

@@ -8,4 +8,5 @@ export const environment = {
   apiHost: '',
   ipCheckerUrl: '',
   ftpDomain: '',
+  livekitUrl: '',
 };

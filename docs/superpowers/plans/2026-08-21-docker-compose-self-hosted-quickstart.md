@@ -525,6 +525,14 @@ container start. For bare-metal dev (steps 4–5), run them manually once:
 
 Confirm every command in the new section matches what Tasks 1–4 actually produced: `docker compose up` (Task 3's filename is exactly `docker-compose.yml` at repo root, so this needs no `-f` flag), the `environment.prod.ts.example` path and `livekitUrl` field name (Task 4), `start.sh.example` (unchanged, already existed).
 
+**Updated during this step:** the draft above predates the trust-auth
+(no DB credentials needed for Compose) and MODE-aware-migrations
+discoveries made during Task 3. The version actually committed to
+`README.md` reflects both: step 1 clarifies `DB_*` values only matter for
+bare-metal dev, and the Compose step explains schema creation happens via
+`synchronize` (MODE=DEV) or migrations (MODE=PROD) rather than claiming
+migrations "run automatically" unconditionally.
+
 - [ ] **Step 3: Commit**
 
 ```bash

@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      # No credentials required: trust auth accepts any connection from
+      # inside the Compose network. POSTGRES_USER is left unset so the
+      # image defaults it to its own built-in "postgres" role.
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: ${DB_SCHEMA}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${DB_SCHEMA}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --dev --bind 0.0.0.0
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    ports:
+      - "7880:7880"
+
+  app:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: ""
+    ports:
+      - "${APP_PORT:-4004}:${APP_PORT:-4004}"
+    volumes:
+      - ./upload:/app/upload
+      - ./credentials:/app/credentials
+
+volumes:
+  pgdata:

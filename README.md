@@ -42,7 +42,9 @@ full reference.
    `environment.prod.ts` in the same folder (gitignored, same idea as
    `.env.example` → `.env`). Leave `livekitUrl` empty to use the Compose
    quickstart's self-hosted LiveKit server, or set it to your own LiveKit
-   server/Cloud project URL.
+   server/Cloud project URL. Leave `protocol` as `http://` for the Compose
+   quickstart (step 6) — only change it to `https://` if you're building
+   for a real HTTPS deployment behind Traefik (step 7).
 3. Install dependencies:
    ```bash
    npm install

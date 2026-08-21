@@ -9,7 +9,7 @@ describe('LiveKitGateway', () => {
     });
 
     function fakeClient (): Socket {
-        return { emit: jest.fn() } as unknown as Socket;
+        return { emit: jest.fn(), data: {} } as unknown as Socket;
     }
 
     describe('notifyUser', () => {
@@ -42,6 +42,30 @@ describe('LiveKitGateway', () => {
             gateway.notifyUser('7' as unknown as number, { id: 1, title: 'New message' });
 
             expect(client.emit).toHaveBeenCalledWith(LiveKitEvents.NOTIFICATION, { id: 1, title: 'New message' });
+        });
+    });
+
+    describe('handleDisconnect', () => {
+        it('removes the disconnected socket from the online users so it is no longer notified', async () => {
+            const client = fakeClient();
+            await gateway.register({ userId: 7 }, client);
+
+            gateway.handleDisconnect(client);
+            gateway.notifyUser(7, { id: 1, title: 'New message' });
+
+            expect(client.emit).not.toHaveBeenCalledWith(LiveKitEvents.NOTIFICATION, expect.anything());
+        });
+
+        it('does not remove a newer registration for the same user when an older socket disconnects', async () => {
+            const oldClient = fakeClient();
+            const newClient = fakeClient();
+            await gateway.register({ userId: 7 }, oldClient);
+            await gateway.register({ userId: 7 }, newClient);
+
+            gateway.handleDisconnect(oldClient);
+            gateway.notifyUser(7, { id: 1, title: 'New message' });
+
+            expect(newClient.emit).toHaveBeenCalledWith(LiveKitEvents.NOTIFICATION, { id: 1, title: 'New message' });
         });
     });
 });

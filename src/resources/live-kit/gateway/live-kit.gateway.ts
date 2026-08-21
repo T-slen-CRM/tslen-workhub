@@ -4,6 +4,7 @@ import {
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
+    OnGatewayDisconnect,
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
@@ -24,7 +25,7 @@ export const enum LiveKitEvents  {
     },
 })
 
-export class LiveKitGateway {
+export class LiveKitGateway implements OnGatewayDisconnect {
     public users: Map<number, Socket> = new Map();
     @WebSocketServer()
         server: Server;
@@ -34,9 +35,20 @@ export class LiveKitGateway {
     @SubscribeMessage(LiveKitEvents.REGISTER)
     async register (@MessageBody() data, @ConnectedSocket() client: Socket) {
         const userId = Number(data.userId);
+        client.data.userId = userId;
         this.users.set(userId, client);
         this.broadcastOnlineUsers()
         return undefined;
+    }
+
+    handleDisconnect (@ConnectedSocket() client: Socket) {
+        const userId = client.data?.userId;
+        /** only remove the registration if it's still this exact socket -
+         * a newer reconnect for the same user may have already overwritten it */
+        if (userId !== undefined && this.users.get(userId) === client) {
+            this.users.delete(userId);
+            this.broadcastOnlineUsers();
+        }
     }
 
 

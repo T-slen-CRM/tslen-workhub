@@ -255,13 +255,11 @@ export class CallComponent implements OnDestroy, OnInit {
         this.localTrack.set(cameraTrack);
       }
     } catch (error: any) {
-      console.error('[LiveKit] joinRoom failed:', error?.message || error, error);
       await this.leaveRoom();
     }
   }
 
   async leaveRoom() {
-    console.warn('[LiveKit] leaveRoom called', { destroyed: this.destroyed, hadRoom: !!this.room() });
     // Leave the room by calling 'disconnect' method over the Room object
     await this.room()?.disconnect();
 
@@ -364,7 +362,6 @@ export class CallComponent implements OnDestroy, OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   async ngOnDestroy(event?: Event) {
-    console.warn('[LiveKit] ngOnDestroy triggered by:', event ? 'window beforeunload' : 'Angular component destroy (e.g. activeCallData became falsy)');
     this.destroyed = true;
     // On window closed or component destroyed, leave the room
     await this.leaveRoom();

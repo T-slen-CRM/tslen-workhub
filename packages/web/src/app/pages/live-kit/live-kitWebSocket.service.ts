@@ -103,7 +103,6 @@ export class LiveKitWebSocketService {
 
     this.socket.on(LiveKitEvents.CALL_ACCEPTED, (data) => {
       const { callerId, calleeId } = data;
-      console.warn('[LiveKit] socket CALL_ACCEPTED received (caller side):', data);
       if (callerId && calleeId) {
         this.outgoingCallDialogRef?.close(true);
         this.outgoingCallDialogRef = undefined;

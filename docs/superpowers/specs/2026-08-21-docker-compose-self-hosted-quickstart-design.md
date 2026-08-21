@@ -167,7 +167,9 @@ Two changes to the existing `Dockerfile`'s stage 3:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run migration:run
+if [ "${MODE:-}" != "DEV" ]; then
+  npm run migration:run
+fi
 exec node dist/main.js
 ```
 
@@ -176,6 +178,24 @@ copied in stage 3, `chmod +x` at build time). Runs on every container
 start, including `docker restart` — idempotent because TypeORM's
 migration runner already tracks applied migrations in its own table and
 no-ops on ones already run.
+
+**Correction found during the Task 3 smoke test:** running
+`migration:run` unconditionally against a genuinely empty Compose
+Postgres failed immediately — `ALTER TABLE "posts" DROP COLUMN "image"`,
+`relation "posts" does not exist`. Root cause: `src/common/database/database.module.ts`
+sets `synchronize: configService.get('MODE') === 'DEV'`, and `.env`'s
+actual default is `MODE=DEV`. The `migrations/` folder (6 migrations)
+contains only *incremental* changes on top of a schema `synchronize`
+already created during normal dev — there is no baseline/initial-schema
+migration, so `migration:run` was never designed to bootstrap an empty
+database. This is a pre-existing gap, unrelated to this pass's other
+changes. Fix (confirmed with the user): make the entrypoint skip
+`migration:run` when `MODE=DEV` and rely on `synchronize` instead, since
+that's the quickstart's actual default configuration. **Known
+limitation, explicitly out of scope for this pass:** self-hosting with
+`MODE=PROD` (synchronize disabled) from a truly empty database still
+isn't supported — that needs a proper baseline migration, a separate
+follow-up.
 
 ### 4. Firebase boot stopgap
 
@@ -306,3 +326,6 @@ path:
   in the same file (`call.component.ts:40`) — unused by anything this
   pass touches (it's dead: never assigned a truthy default, so its own
   `if (!APPLICATION_SERVER_URL)` fallback already runs), left alone.
+- Adding a baseline/initial-schema migration so `migration:run` alone can
+  bootstrap a truly empty database under `MODE=PROD` — pre-existing gap
+  (see the Task 3 correction above), separate follow-up.

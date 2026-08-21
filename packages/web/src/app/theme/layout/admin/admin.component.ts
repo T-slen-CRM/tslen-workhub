@@ -138,6 +138,7 @@ handleIncomingCall(data: { callerId: string; callerName: string; calleeId: strin
         localStorage.removeItem('incoming_call');
         const payload = { callerId: data.callerId, calleeId: data.calleeId };
         if (accepted) {
+          console.warn('[LiveKit] callee accepted -> setActiveCallData', payload);
           this.liveKitWebSocketService.send(LiveKitEvents.CALL_ACCEPTED, payload);
           this.liveChatService.setActiveCallData({callerId: +data.callerId, calleeId: +data.calleeId})
           // this.router.navigate(['/pages/call', data.callerId, data.calleeId]);
@@ -148,6 +149,7 @@ handleIncomingCall(data: { callerId: string; callerName: string; calleeId: strin
     }
 
   onCloseCall() {
+    console.warn('[LiveKit] onCloseCall (leaveRoomOutput) -> setActiveCallData(null)');
     this.liveChatService.setActiveCallData(null);
   }
 

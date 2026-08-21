@@ -8,6 +8,7 @@
 node_modules/
 dist/
 /src/environments/*.json
+/src/environments/environment.prod.ts
 # Compiled Java class files
 *.class
 

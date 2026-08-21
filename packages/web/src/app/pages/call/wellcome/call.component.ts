@@ -106,7 +106,7 @@ export class CallComponent implements OnDestroy, OnInit {
     //   const callee = params.get('calleeId');
     const user = this.auth.authDataSignal();
 
-    if (!this.callerId() || !this.calleeId || !user?.id) {
+    if (!this.callerId() || !this.calleeId() || !user?.id) {
       console.warn('Missing callerId, calleeId or user data');
       return;
     }

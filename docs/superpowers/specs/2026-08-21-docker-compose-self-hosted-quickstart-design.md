@@ -218,6 +218,28 @@ the same `FRONT_DOMAIN` value (its only other consumer). Verified with
 `curl -H "Origin: http://localhost:4004" ...` returning 200 where it
 previously 403'd.
 
+**Second correction, same testing round:** with static assets loading,
+sign-in/company-creation still failed —
+`POST https://localhost:4004/api/v1/company net::ERR_SSL_PROTOCOL_ERROR`.
+`ConfigurationService.getApiHost()`
+(`packages/web/src/app/services/ConfigurationService.ts`) builds the API
+base URL as `environment.protocol + hostname`, and
+`environment.prod.ts.example`'s `protocol` defaulted to `'https://'` —
+correct for the real HTTPS production deployment this template was
+copied from, wrong for the Compose quickstart, which only ever serves
+plain HTTP. Fixed by changing the `.example` template's default to
+`'http://'` (a real HTTPS deployment behind Traefik sets it back to
+`'https://'` in their own local `environment.prod.ts`, documented in the
+README). Separately: the local (gitignored, untracked)
+`environment.prod.ts` this session had been using was found missing
+entirely at this point — most likely lost somewhere during the earlier
+git-history rewrite (§ LiveKit URL correction), masked until now because
+Docker was reusing a cached build layer from before it went missing.
+Recreated from the corrected `.example` template; harmless for this
+session (nothing in it was unique — `livekitUrl` empty is the intended
+default), but a reminder that gitignored local config isn't protected by
+any of git's rewrite safeguards.
+
 ### 4. Firebase boot stopgap
 
 `src/common/services/firebase/firebase.module.ts`'s factory wraps the

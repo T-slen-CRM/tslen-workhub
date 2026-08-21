@@ -362,7 +362,7 @@ export class CallComponent implements OnDestroy, OnInit {
     }
   }
 
-  @HostListener('window:beforeunload')
+  @HostListener('window:beforeunload', ['$event'])
   async ngOnDestroy(event?: Event) {
     console.warn('[LiveKit] ngOnDestroy triggered by:', event ? 'window beforeunload' : 'Angular component destroy (e.g. activeCallData became falsy)');
     this.destroyed = true;

@@ -27,7 +27,7 @@ describe('LiveKitWebSocketService', () => {
         { provide: AuthenticationService, useValue: { authDataSignal: () => ({ id: 7 }) } },
         { provide: Router, useValue: {} },
         { provide: MatDialog, useValue: {} },
-        { provide: LiveChatService, useValue: {} },
+        { provide: LiveChatService, useValue: { setActiveCallData: jasmine.createSpy('setActiveCallData') } },
       ],
     });
     service = TestBed.inject(LiveKitWebSocketService);
@@ -44,5 +44,18 @@ describe('LiveKitWebSocketService', () => {
     });
 
     fakeSocket.handlers[LiveKitEvents.NOTIFICATION](payload);
+  });
+
+  it('closes only the registered outgoing-call dialog on CALL_ACCEPTED, not every open dialog', () => {
+    const outgoingDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    service.registerOutgoingCallDialog(outgoingDialogRef);
+
+    fakeSocket.handlers[LiveKitEvents.CALL_ACCEPTED]({ callerId: 1, calleeId: 2 });
+
+    expect(outgoingDialogRef.close).toHaveBeenCalledWith(true);
+  });
+
+  it('does nothing to any dialog on CALL_ACCEPTED when no outgoing-call dialog was registered', () => {
+    expect(() => fakeSocket.handlers[LiveKitEvents.CALL_ACCEPTED]({ callerId: 1, calleeId: 2 })).not.toThrow();
   });
 });

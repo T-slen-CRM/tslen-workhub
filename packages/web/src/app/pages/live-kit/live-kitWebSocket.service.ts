@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { ConfigurationService } from '../../services/ConfigurationService';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { LiveKitEvents } from './enum/live-kit.enum';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { Subject, filter, take } from 'rxjs';
@@ -24,6 +24,13 @@ export class LiveKitWebSocketService {
   private notification = new Subject<any>();
   public readonly notification$ = this.notification.asObservable();
   private liveChatService = inject(LiveChatService);
+  /** Tracks the caller's own "calling..." dialog so CALL_ACCEPTED can close
+   * just that one instead of every dialog open in the app. */
+  private outgoingCallDialogRef?: MatDialogRef<any, boolean>;
+
+  registerOutgoingCallDialog(ref: MatDialogRef<any, boolean>): void {
+    this.outgoingCallDialogRef = ref;
+  }
 
   constructor(
     private configService: ConfigurationService,
@@ -98,7 +105,8 @@ export class LiveKitWebSocketService {
       const { callerId, calleeId } = data;
       console.warn('[LiveKit] socket CALL_ACCEPTED received (caller side):', data);
       if (callerId && calleeId) {
-        this.dialog.closeAll();
+        this.outgoingCallDialogRef?.close(true);
+        this.outgoingCallDialogRef = undefined;
         this.liveChatService.setActiveCallData({callerId, calleeId});
         // this.router.navigate(['/pages/call', callerId, calleeId]);
       } else {

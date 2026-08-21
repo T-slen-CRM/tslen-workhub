@@ -72,10 +72,14 @@ export class CallButtonRendererComponent implements OnInit {
       disableClose: true,
       data: res.body
     });
-    dialogRef.afterClosed().subscribe(() => {
+    this.liveKitWebSocketService.registerOutgoingCallDialog(dialogRef);
+    dialogRef.afterClosed().subscribe((wasAccepted?: boolean) => {
       audio.pause();
       audio.currentTime = 0;
       localStorage.removeItem('outgoing_call');
+      if (wasAccepted) {
+        return;
+      }
       const data_rejected = {
         callerId: payload.calleeId,
         calleeId: payload.callerId

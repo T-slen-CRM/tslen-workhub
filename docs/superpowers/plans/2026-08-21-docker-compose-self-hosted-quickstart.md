@@ -169,15 +169,26 @@ CMD ["./docker-entrypoint.sh"]
 Run: `docker build -t tslen-workhub-quickstart-test .`
 Expected: build succeeds (this rebuilds all three stages — may take several minutes on first run).
 
+**Found during implementation:** the first attempt failed with `no space
+left on device` while transferring a 7.19GB build context. Cause:
+`.dockerignore` didn't exclude `packages/web/.angular` — Angular's local
+build cache, 7.1GB on disk, was being shipped into every build context.
+Fix: add `packages/web/.angular` to `.dockerignore`. After that, the
+build completed normally (~885MB final image). This is a one-line
+addition to `.dockerignore` alongside the existing `dist`/`node_modules`
+exclusions — no other files affected.
+
 Then, with a Postgres reachable at whatever `.env`'s `DB_HOST`/`DB_PORT` point to (use an already-running local Postgres, or skip this specific check and rely on Task 3's full Compose smoke test instead — both are fine, this step is optional if Task 3 is done immediately after):
 
 Run: `docker run --rm --env-file .env --network host tslen-workhub-quickstart-test npm run migration:run`
 Expected: TypeORM reports migrations applied (or "No migrations are pending" if already applied) — not a `ts-node: command not found` or `Cannot find module './migrations/...'` error, which is what today's image would produce.
 
+(Skipped in practice — verified via Task 3's full Compose smoke test instead, as the plan allows.)
+
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Dockerfile docker-entrypoint.sh
+git add Dockerfile docker-entrypoint.sh .dockerignore
 git commit -m "fix(docker): copy migrations into production image and auto-run them on start"
 ```
 

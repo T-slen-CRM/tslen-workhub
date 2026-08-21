@@ -129,9 +129,16 @@ Create `docker-entrypoint.sh`:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run migration:run
+if [ "${MODE:-}" != "DEV" ]; then
+  npm run migration:run
+fi
 exec node dist/main.js
 ```
+
+(Updated during Task 3 — see the correction note after Step 3's smoke
+test below: `migration:run` can't bootstrap an empty database, and
+`MODE=DEV`, the actual `.env` default, already gets a schema for free via
+TypeORM `synchronize`.)
 
 - [ ] **Step 2: Make it executable**
 
@@ -291,6 +298,29 @@ curl -sf http://localhost:7880/
 ```
 
 Expected: all of the above succeed with the `.env` at repo root as-is (Firebase/Google/Slack values can stay as placeholders).
+
+**Found during this step:** the first run failed two ways, fixed in order:
+1. `docker build` failed with `no space left on device` transferring a
+   7.19GB context — `packages/web/.angular` (Angular's build cache,
+   7.1GB) wasn't in `.dockerignore`. Fixed (recorded as an addendum to
+   Task 2 above).
+2. Postgres then failed `initdb` with `no space left on device` — Docker's
+   own VM disk was full (~45GB of images/build cache). Freed with
+   `docker builder prune -f && docker container prune -f` (~23GB
+   reclaimed, confirmed with the user first).
+3. `app` then exited 1: `migration:run` failed on the very first
+   migration (`relation "posts" does not exist`) — pre-existing gap,
+   migrations were never designed to bootstrap an empty database (see
+   the correction in Task 2 above: `docker-entrypoint.sh` now skips
+   `migration:run` when `MODE=DEV` and relies on TypeORM `synchronize`
+   instead, which is `.env`'s actual default).
+
+After all three fixes: `docker compose ps` showed all three services
+running/healthy, `docker compose logs app` showed a clean
+`Nest application successfully started` with no Firebase/migration
+errors, `\dt` in `psql` confirmed `synchronize` created the full schema,
+and both `curl http://localhost:4004/api` (Swagger, 200) and
+`curl http://localhost:7880/` (LiveKit, 200) succeeded.
 
 - [ ] **Step 4: Tear down**
 

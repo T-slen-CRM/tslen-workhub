@@ -3,6 +3,7 @@ npm-debug.log
 dist
 packages/web/node_modules
 packages/web/dist
+packages/web/.angular
 .git
 *.md
 credentials/*.json

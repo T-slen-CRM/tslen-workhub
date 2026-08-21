@@ -20,11 +20,15 @@ RUN npm run build
 FROM node:22-slim
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps --omit=dev
+RUN npm ci --legacy-peer-deps
 COPY --from=api-build /app/dist ./dist
 COPY --from=web-build /app/dist ./packages/web/dist
 COPY proto/ proto/
+COPY migrations/ migrations/
+COPY typeOrm.config.ts ./
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 
 ARG APP_PORT=4004
 EXPOSE ${APP_PORT}
-CMD ["node", "dist/main.js"]
+CMD ["./docker-entrypoint.sh"]

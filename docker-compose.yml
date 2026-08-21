@@ -36,6 +36,13 @@ services:
       DB_HOST: postgres
       DB_USER: postgres
       DB_PASSWORD: ""
+      # CorsMiddleware whitelists only FRONT_DOMAIN as an allowed Origin
+      # for every request (including static assets - it's applied before
+      # routing). Under Compose, frontend and backend share one origin
+      # (this app's own port), which .env's FRONT_DOMAIN won't match
+      # unless overridden here - without this, every JS/CSS/font request
+      # that carries an Origin header gets a 403 from the browser.
+      FRONT_DOMAIN: http://localhost:${APP_PORT:-4004}
     ports:
       - "${APP_PORT:-4004}:${APP_PORT:-4004}"
     volumes:

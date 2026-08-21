@@ -197,6 +197,27 @@ limitation, explicitly out of scope for this pass:** self-hosting with
 isn't supported — that needs a proper baseline migration, a separate
 follow-up.
 
+**Correction found after merge, from live browser testing:** the app
+booted and `index.html` loaded (200), but the browser showed a blank
+page with every JS/CSS/font asset 403ing. Cause: `CorsMiddleware`
+(`src/common/middlewares/cors.middlewares.ts`) is registered via
+`app.use()` in `main.ts`, so it runs in front of `ServeStaticModule` too,
+not just API routes. It whitelists exactly one `Origin` value —
+`process.env.FRONT_DOMAIN` — and 403s anything else that carries an
+`Origin` header. `.env`'s `FRONT_DOMAIN` (and `.env.example`'s default,
+`https://crm.t-slen.com`) point at a different origin than where Compose
+actually serves the app; browsers omit `Origin` on the top-level
+navigation (why `index.html` loaded fine via `curl` and in-browser alike)
+but send it on the module-script/font subresource requests that follow,
+so those got rejected. Fixed by adding `FRONT_DOMAIN:
+http://localhost:${APP_PORT:-4004}` to the `app` service's `environment:`
+block in `docker-compose.yml`, alongside the existing `DB_*` overrides —
+matches where the app is genuinely served from under Compose, and also
+correctly fixes the links `task-notifications.service.ts` builds using
+the same `FRONT_DOMAIN` value (its only other consumer). Verified with
+`curl -H "Origin: http://localhost:4004" ...` returning 200 where it
+previously 403'd.
+
 ### 4. Firebase boot stopgap
 
 `src/common/services/firebase/firebase.module.ts`'s factory wraps the

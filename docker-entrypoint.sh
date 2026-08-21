@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-npm run migration:run
+if [ "${MODE:-}" != "DEV" ]; then
+  npm run migration:run
+fi
 exec node dist/main.js

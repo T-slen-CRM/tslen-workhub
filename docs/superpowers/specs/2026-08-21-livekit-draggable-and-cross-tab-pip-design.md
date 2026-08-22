@@ -113,28 +113,35 @@ export class PictureInPictureService {
   `visibilitychange` handler and the `pagehide` listener without special
   ordering.
 
-### Known risk: user-activation requirement on `requestWindow()`
+### Confirmed: user-activation requirement on `requestWindow()`
 
-Unverified against the actual API at spec-writing time: whether
-`documentPictureInPicture.requestWindow()` requires "transient user
-activation" (a direct click/keypress on the page immediately before the
-call) to succeed, the way the older `element.requestPictureInPicture()`
-does. Switching browser tabs is a gesture on the *browser chrome*, not
-on the page itself, so if `requestWindow()` does enforce this, the
-`visibilitychange`-triggered `open()` call would reject/throw instead of
-opening a window.
+Confirmed during manual end-to-end verification against a real Chrome
+build: `documentPictureInPicture.requestWindow()` *does* require
+"transient user activation" (a direct click/keypress on the page
+immediately before the call), the same as the older
+`element.requestPictureInPicture()`. Switching browser tabs is a gesture
+on the *browser chrome*, not on the page itself, so the
+`visibilitychange`-triggered `open()` call reliably rejects with
+`NotAllowedError: Document PiP requires user activation` once any
+transient-activation window from an earlier in-page click has expired —
+reproduced by: dragging the call window (a click, which opens the PiP
+window successfully on the *next* tab switch while that activation is
+still fresh), returning to the main tab (closes the PiP window), then
+switching tabs again with no intervening click (fails every time).
 
-This must be checked first, as the first step of implementation, against
-a real Chrome/Edge 116+ build — before writing the rest of
-`PictureInPictureService`. If it turns out user activation *is* required
-and tab-switching doesn't count, the fallback is to keep the
-`visibilitychange` auto-trigger for the *common* case (many real Chrome
-versions do allow this) but accept that some versions may silently fail
-to open the window (falls back to no-op, same as the unsupported-browser
-path) rather than blocking on redesigning the trigger — a manual "pop
-out" button remains a fallback trigger option if the automatic path
-turns out to be unreliable in practice, but is not part of this pass
-unless the spike shows it's needed.
+**Resolution:** the automatic `visibilitychange` trigger stays as the
+common-case path (it works whenever a recent-enough in-page click
+happens to still count as "active"), but is now backed by a manual
+**"pop out" button** in the call window's header controls
+(`call.component.html`, next to the expand-window button, gated on
+`pip.isSupported` so it's absent in unsupported browsers). A real click
+on this button always satisfies user-activation, so it's the reliable
+path; the auto-trigger remains a convenience that works "often enough"
+without requiring the user to remember the button. Both paths call
+`PictureInPictureService.open()` with the same handles, built by a
+shared `CallComponent.buildPipHandles()` helper — no service-level
+change was needed, since `open()` already no-ops safely on rejection
+(falls back to no PiP, same as the unsupported-browser path).
 
 ### 3. Wiring into `CallComponent`
 

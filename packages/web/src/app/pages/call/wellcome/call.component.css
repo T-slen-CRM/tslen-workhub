@@ -543,6 +543,15 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* cdkDrag moves the window by updating this element's `transform` inline
+   style on every pointer-move frame. The transition above (needed for the
+   minimize/expand size change) would otherwise ease each of those frames
+   over 0.3s too, making the window visibly lag behind the cursor while
+   dragging. */
+.call-window.cdk-drag-dragging {
+  transition: none;
+}
+
 .call-small {
   width: 280px;
   /*height: 160px;*/

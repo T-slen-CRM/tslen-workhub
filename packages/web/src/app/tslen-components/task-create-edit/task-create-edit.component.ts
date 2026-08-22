@@ -1,6 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, Inject, OnInit, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {ITask, ITextEditor} from "../../interfaces/tasks";
@@ -49,7 +50,7 @@ import {TaskCommentsComponent} from "../task-comments/task-comments.component";
         { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
     ]
 })
-export class TaskCreateEditComponent implements OnInit {
+export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
 
   public form: FormGroup;
   public incomingProject: ITask;
@@ -58,10 +59,16 @@ export class TaskCreateEditComponent implements OnInit {
   public projectMembers: any[] = [];
   private authData: AuthData;
   public today = new Date();
+  public descriptionEditing = signal<boolean>(false);
+  public descriptionExpanded = signal<boolean>(false);
+  public descriptionOverflowing = signal<boolean>(false);
+  public titleEditing = signal<boolean>(false);
+  public activeActivityTab = signal<'all' | 'comments' | 'history'>('all');
+  @ViewChild('descriptionPreviewEl') descriptionPreviewEl?: ElementRef<HTMLElement>;
   public priorityList = [
-    {value: 'low', viewValue: 'Low'},
-    {value: 'medium', viewValue: 'Medium'},
-    {value: 'high', viewValue: 'High'}  ];
+    {value: 'low', viewValue: 'task.form.priority_low'},
+    {value: 'medium', viewValue: 'task.form.priority_medium'},
+    {value: 'high', viewValue: 'task.form.priority_high'}  ];
   public acceptedFileTypes = `image/png, image/jpeg, image/gif`;
   public uploadLimit = 5;
   public taskId = null;
@@ -102,7 +109,8 @@ export class TaskCreateEditComponent implements OnInit {
               private formBuilder: FormBuilder,
               private authService: AuthenticationService,
               private dataService: DataService,
-              private toastr: ToastrService){
+              private toastr: ToastrService,
+              private sanitizer: DomSanitizer){
     this.authData = this.authService.authDataSignal();
     this.today.setHours(0, 0, 0, 0);
   }
@@ -124,6 +132,27 @@ export class TaskCreateEditComponent implements OnInit {
     }
     if (this.incomingProject && this.incomingProject?.taskUserAssignmentRelations?.length > 0) {
       this.selectedAssignee = this.convertDataForAutoComplete(this.incomingProject.taskUserAssignmentRelations);
+    }
+    // A new task has nothing to preview yet, so both open directly in edit
+    // mode; an existing task always opens in preview/plain-text mode, even
+    // with an empty description or (implausibly, given validation) title -
+    // the point is "nothing to edit right now", not "nothing to show".
+    this.descriptionEditing.set(!this.taskId);
+    this.titleEditing.set(!this.taskId);
+  }
+
+  safeDescriptionHtml(): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.form.get('description').value ?? '');
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.descriptionEditing() || this.descriptionExpanded() || !this.descriptionPreviewEl) {
+      return;
+    }
+    const el = this.descriptionPreviewEl.nativeElement;
+    const isOverflowing = el.scrollHeight > el.clientHeight;
+    if (isOverflowing !== this.descriptionOverflowing()) {
+      this.descriptionOverflowing.set(isOverflowing);
     }
   }
 

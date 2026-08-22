@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .input-mat-select {
   width: 100%;
   .btn-remove-estimate{
@@ -28,17 +30,170 @@
 .custom-checkbox .mat-checkbox-frame {
   display: none;
 }
-.task-card {
+// Matches this app's real Angular Material theme (the prebuilt
+// indigo-pink.css imported in angular.json, not an invented color) so
+// every accent on this card - Save button, focus rings, these toggles -
+// stays one consistent palette instead of clashing shades of blue.
+// $task-primary-color-dark matches custom-dark-theme.scss's own
+// $buttons-color, for the same reason in dark mode.
+$task-primary-color: #3f51b5;
+$task-primary-color-dark: #4051b5;
+
+.task-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.task-dialog-header {
   display: flex;
   justify-content: space-between;
-  .description-column{
-    width: 58%;
-    textarea {
-      width: 100%;
-      height: 50vh;
+  align-items: center;
+  gap: 12px;
+  .title-block {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .title-field {
+    flex: 1;
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      font-size: 1.25rem;
     }
   }
-  .setting-column{
-    width: 39%;
+  .title-preview {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+  .phase-pill-field {
+    width: 200px;
+    flex-shrink: 0;
+  }
+}
+.task-dialog-body {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  .task-dialog-main {
+    width: 60%;
+  }
+  .task-dialog-sidebar {
+    width: 37%;
+    background-color: #f4f5fa;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+:host-context(.dark-theme) .task-dialog-sidebar {
+  background-color: color.adjust(#122442, $lightness: -2%, $space: hsl);
+}
+.sidebar-row {
+  .sidebar-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6d7c87;
+    margin-bottom: 4px;
+  }
+  .sidebar-value {
+    font-size: 0.9rem;
+  }
+  .input-mat-select {
+    width: 100%;
+    // Compact the field: the default MDC outline field reserves more
+    // vertical padding than this dense sidebar needs; subscriptSizing
+    //="dynamic" (set in the template) already drops the reserved
+    // hint/error row, this trims the field body itself.
+    ::ng-deep .mat-mdc-form-field-infix {
+      min-height: auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      font-size: 0.9rem;
+    }
+  }
+}
+.activity-section {
+  margin-top: 24px;
+  .activity-heading {
+    margin-bottom: 8px;
+  }
+  .activity-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #dadada;
+    margin-bottom: 12px;
+    .activity-tab {
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      &.active {
+        border-bottom-color: $task-primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+  .activity-empty-state {
+    color: #6d7c87;
+    font-size: 0.875rem;
+    padding: 12px 0;
+  }
+}
+:host-context(.dark-theme) .activity-tabs .activity-tab.active {
+  border-bottom-color: $task-primary-color-dark;
+}
+.description-preview {
+  max-height: 150px;
+  overflow: hidden;
+  line-height: 1.5;
+
+  &.description-preview-expanded {
+    max-height: none;
+  }
+}
+.description-collapse-btn {
+  background: none;
+  border: none;
+  color: $task-primary-color;
+  cursor: pointer;
+  padding: 4px 0;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+:host-context(.dark-theme) .description-collapse-btn {
+  color: $task-primary-color-dark;
+}
+// The "Done" icon (visible whenever a field is actively being edited)
+// always stays visible - hiding it while typing would remove your only
+// way out of edit mode. The "Edit" pencil only appears on hover, so the
+// plain-text preview reads as ordinary text until you go looking for it.
+.title-block, .description-block {
+  .field-edit-btn {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  &:hover .field-edit-btn {
+    opacity: 1;
+  }
+  .field-edit-btn, .field-done-btn {
+    color: $task-primary-color;
+  }
+}
+:host-context(.dark-theme) .title-block .field-edit-btn,
+:host-context(.dark-theme) .title-block .field-done-btn,
+:host-context(.dark-theme) .description-block .field-edit-btn,
+:host-context(.dark-theme) .description-block .field-done-btn {
+  color: $task-primary-color-dark;
 }

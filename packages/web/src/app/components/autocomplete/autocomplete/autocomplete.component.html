@@ -1,17 +1,14 @@
 <mat-form-field class="example-chip-list" appearance="outline">
-    @if (!selectedData.length) {
-        <mat-label>{{nameOfList}}</mat-label>
-    }
-<!--    <mat-label>{{nameOfList}}</mat-label>-->
+    <mat-label>{{nameOfList}}</mat-label>
     <mat-chip-grid #chipList [attr.aria-label]="'autocomplete.item_selection' | translate" >
-        <mat-chip
+        <mat-chip-row
                 color="primary"
                 *ngFor="let item of selectedData"
                 [removable]="removable"
                 (removed)="remove(item)">
             {{item.group}}
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
+        </mat-chip-row>
         <input
                 #elementInput
                 [formControl]="elementCtrl"

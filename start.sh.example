@@ -12,6 +12,15 @@ FULL_IMAGE="tslen-workhub:latest"
 PORT="${PORT:-4004}"
 DOCKER_NETWORK="${DOCKER_NETWORK:-tslen-net}"
 
+# The Angular prod build's environment.prod.ts is generated at build time
+# from this .env file (see packages/web/set-env.ts), and the Dockerfile
+# copies .env into the web-build stage - a missing .env fails deep in the
+# ng build log with a confusing error. Fail fast here instead.
+if [ ! -f "${ENV_FILE}" ]; then
+    echo "Missing ${ENV_FILE} - copy .env.example to ${ENV_FILE} and fill in this deployment's values, then re-run." >&2
+    exit 1
+fi
+
 docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
 
 docker build --build-arg APP_PORT="${PORT}" -t "${FULL_IMAGE}" .

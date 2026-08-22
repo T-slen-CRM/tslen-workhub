@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
+    "config": "ts-node set-env.ts",
+    "prestart": "npm run config",
     "start": "ng serve",
     "build": "ng build",
+    "preprod": "npm run config",
     "prod": "ng build --configuration production && cp .htaccess dist/",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "config": "ts-node set-env.ts"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {

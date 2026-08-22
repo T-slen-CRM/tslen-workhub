@@ -5,7 +5,6 @@ import { AuthenticationService } from '../../services/auth.service';
 import { LanguageService } from '../../language/language.service';
 import { CallButtonRendererComponent } from '../callButton/buttonRender.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { LiveKitEvents } from 'src/app/pages/live-kit/enum/live-kit.enum';
 import { LiveKitWebSocketService } from 'src/app/pages/live-kit/live-kitWebSocket.service';
 import {ComponentsModule} from "../components.module";
 import {UnsubscribeOnDestroyAdapter} from "../../helpers/UnsubscribeOnDestroyAdapter";
@@ -81,8 +80,8 @@ export class CallUsersOnlineComponent extends UnsubscribeOnDestroyAdapter implem
         this.gridApi.setRowData(this.rowData);
         this.gridApi.refreshCells({ force: true, columns: ['username'] });
       }
-      this.subscription.add(usersSub);
     });
+    this.subscription.add(usersSub);
 
     const online = this.liveKitWebSocketService.onlineStatus$.subscribe(statusMap => {
       this.userStatuses = statusMap;
@@ -90,7 +89,6 @@ export class CallUsersOnlineComponent extends UnsubscribeOnDestroyAdapter implem
     });
 
     this.subscription.add(online)
-    this.liveKitWebSocketService.send(LiveKitEvents.REGISTER, { userId: this.user.id });
   }
 
   loadColumnDefs(): void {

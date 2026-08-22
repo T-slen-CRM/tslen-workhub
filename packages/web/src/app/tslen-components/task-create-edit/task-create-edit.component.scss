@@ -84,7 +84,7 @@ $task-primary-color-dark: #4051b5;
   }
   .task-dialog-sidebar {
     width: 37%;
-    background-color: #f4f5fa;
+    background-color: #fff;
     border-radius: 8px;
     padding: 16px;
     display: flex;
@@ -187,8 +187,25 @@ $task-primary-color-dark: #4051b5;
   &:hover .field-edit-btn {
     opacity: 1;
   }
+  // mat-icon-button's touch target/icon size are fixed by Material's own
+  // CSS regardless of font-size on the button itself - both the button's
+  // box and the icon glyph inside it need their own override to actually
+  // shrink, done identically for both so Edit and Done stay the same size.
   .field-edit-btn, .field-done-btn {
     color: $task-primary-color;
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+    ::ng-deep .mat-mdc-button-touch-target {
+      width: 28px;
+      height: 28px;
+    }
+    ::ng-deep .mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+    }
   }
 }
 :host-context(.dark-theme) .title-block .field-edit-btn,

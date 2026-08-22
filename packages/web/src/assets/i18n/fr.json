@@ -551,6 +551,7 @@
         "toggle_screen_share": "Activer/désactiver le partage d'écran",
         "toggle_microphone": "Activer/désactiver le micro",
         "expand_window": "Agrandir la fenêtre",
+        "pop_out": "Détacher dans une fenêtre flottante",
         "leave_room": "Quitter la salle",
         "leave": "Quitter",
         "toggle_fullscreen": "Basculer en plein écran",

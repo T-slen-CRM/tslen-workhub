@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - No new npm dependency — `@angular/cdk` is already installed and `cdkDrag` is already used elsewhere in this codebase (`tasks-list.component.html`, `task-phase-sort.component.html`); follow that same pattern.
-- The floating cross-tab window is Chrome/Edge 116+ only. `PictureInPictureService.open()` must be a safe no-op (never throws, never leaves partial state) in every other browser and in every failure case (including `requestWindow()` rejecting, e.g. if user-activation is required and tab-switching doesn't count — see the spec's "Known risk" section).
+- The floating cross-tab window is Chrome/Edge 116+ only. `PictureInPictureService.open()` must be a safe no-op (never throws, never leaves partial state) in every other browser and in every failure case (including `requestWindow()` rejecting — confirmed to happen whenever `visibilitychange` fires without a fresh enough in-page click; see the spec's "Confirmed: user-activation requirement" section and Task 5's manual pop-out button).
 - The floating window is a **glance-view only**: main video, self-view, mic toggle, leave button. No screen share, camera toggle, fullscreen, or participant list in it — those stay in the main in-page overlay.
 - Tracks are never moved out of the main overlay's own `<video>` elements — the service attaches the *same* track to *additional* `<video>` elements it creates itself. The main overlay must keep working normally while the floating window is open.
 - Follow this repo's commit convention: Conventional Commits, no ticket prefix, no `Co-Authored-By: Claude` trailer (see `AGENTS.md`).
@@ -410,6 +410,20 @@ export class PictureInPictureService {
 Run: `cd packages/web && npx ng test --include='**/picture-in-picture.service.spec.ts'`
 Expected: PASS, all cases green.
 
+**Found during a later regression run (Task 3):** the "supported" describe
+block's direct assignment (`(window as any).documentPictureInPicture = {...}`)
+threw `TypeError: Cannot set property documentPictureInPicture of [object
+Window] which has only a getter` — the real Chrome in this environment
+already implements `documentPictureInPicture` natively as a getter-only
+accessor, so plain assignment doesn't work to mock/override it (this
+didn't surface on the very first run of this task, only inconsistently
+on a later rerun — timing of when Chrome exposes the native property
+appears to vary). Fixed by using `Object.defineProperty(window,
+'documentPictureInPicture', { value: ..., configurable: true })`
+everywhere the test sets or restores the global (`beforeEach` in both
+describe blocks, and the top-level `afterEach`), which can override an
+accessor property the same way a plain data property assignment can't.
+
 - [ ] **Step 5: Commit**
 
 ```bash
@@ -528,7 +542,7 @@ git commit -m "feat(live-kit): open the cross-tab PiP window on tab switch durin
 
 **Interfaces:** None.
 
-- [ ] **Step 1: Verify the automatic cross-tab flow in Chrome or Edge (116+)**
+- [x] **Step 1: Verify the automatic cross-tab flow in Chrome or Edge (116+)**
 
 Start the app (`npm run start:dev` + `cd packages/web && npm start`, or the Docker Compose quickstart), join or accept a call, then switch to a different browser tab.
 
@@ -540,10 +554,99 @@ Expected:
 - Switching back to the app's tab (without using the leave button) closes the floating window and the call keeps running in-page as normal.
 - Closing the floating window directly (its own window-chrome close button) doesn't break anything — the main tab's call state stays consistent (check the console for errors, and that a subsequent tab-switch can open the floating window again for the same call).
 
-- [ ] **Step 2: Verify the fallback in an unsupported browser (Firefox or Safari), if available**
+**Result:** worked the first time (fresh in-page click from dragging the
+call window kept transient activation alive), but failed on a second
+tab-switch after returning to the main tab with no intervening click —
+`requestWindow()` rejected with `NotAllowedError: Document PiP requires
+user activation`. See Task 5.
+
+- [x] **Step 2: Verify the fallback in an unsupported browser (Firefox or Safari), if available**
 
 Same call flow, switch tabs. Expected: no floating window appears, no console errors, and the call keeps working normally — this is the entire fallback story, so confirm there's no broken UI or thrown exception from the unsupported path.
 
-- [ ] **Step 3: Report findings**
+- [x] **Step 3: Report findings**
 
-If either check reveals the "Known risk" from the spec (e.g. `requestWindow()` rejecting even during a real user-triggered tab switch), report that back rather than silently reworking the trigger — the spec's stated position is that a manual "pop out" button fallback is explicitly out of scope for this pass unless this verification shows it's needed.
+Reported per systematic-debugging: added temporary diagnostics, captured
+the `NotAllowedError` from real Chrome console output, confirmed the
+spec's "Known risk" was real rather than guessing at a second fix. See
+Task 5 for the resolution.
+
+## Task 5: Manual "pop out" button (added after Task 4's finding)
+
+**Files:**
+- Modify: `packages/web/src/app/pages/call/wellcome/call.component.ts` — extract `buildPipHandles()`, add public `popOutToPictureInPicture()`.
+- Modify: `packages/web/src/app/pages/call/wellcome/call.component.html` — add a button in `.video-controls`, gated on `pip.isSupported`.
+- Modify: `packages/web/src/app/pages/call/wellcome/call.component.spec.ts` — test for `popOutToPictureInPicture()`.
+- Modify: `packages/web/src/assets/i18n/{en,uk,fr,ru,es}.json` — add `call_room.pop_out` key.
+
+**Interfaces:**
+- Consumes: `PictureInPictureService.open(handles)` (Task 2), `CallComponent.buildPipHandles()` (new, shared by both the auto-trigger and the button).
+- Produces: `CallComponent.popOutToPictureInPicture(): void`, template-visible `protected pip: PictureInPictureService`.
+
+- [x] **Step 1: Extract `buildPipHandles()` and add `popOutToPictureInPicture()`**
+
+Change the constructor's `pip` injection from `private` to `protected`
+(needed so the template can read `pip.isSupported`). Extract the
+`PictureInPictureHandles` object construction (previously inlined in
+`onVisibilityChange`) into a `buildPipHandles()` helper, and add:
+
+```typescript
+popOutToPictureInPicture(): void {
+  this.pip.open(this.buildPipHandles());
+}
+```
+
+`onVisibilityChange` calls `this.pip.open(this.buildPipHandles())` too,
+so both triggers stay in sync with no duplicated handle-building code.
+
+- [x] **Step 2: Write the test**
+
+```typescript
+it('popOutToPictureInPicture opens the PiP window with handles bound to this call', () => {
+  const openSpy = spyOn((component as any).pip, 'open');
+  const mainTrack = {} as any;
+  spyOn(component, 'getCurrentMainVideoTrack').and.returnValue(mainTrack);
+
+  component.popOutToPictureInPicture();
+
+  expect(openSpy).toHaveBeenCalledTimes(1);
+  const handles = openSpy.calls.mostRecent().args[0] as PictureInPictureHandles;
+  expect(handles.getMainVideoTrack()).toBe(mainTrack);
+  expect(handles.isMicEnabled()).toBe(component.microphoneEnabled());
+});
+```
+
+Run: `cd packages/web && npx ng test --karma-config=karma.headless.conf.js --include='**/call.component.spec.ts'` (temporary headless config per this file's testing section) — passes.
+
+- [ ] **Step 3: Add the button to the template**
+
+```html
+@if (pip.isSupported) {
+    <button
+        class="btn btn-sm"
+        (click)="popOutToPictureInPicture()"
+        [title]="'call_room.pop_out' | translate">
+        <i class="fas fa-external-link-alt"></i>
+    </button>
+}
+```
+
+Placed next to the existing expand-window button in `.video-controls`.
+
+- [ ] **Step 4: Add the `call_room.pop_out` translation key**
+
+Add to all five locale files (`en.json`, `uk.json`, `fr.json`, `ru.json`, `es.json`), next to the existing `expand_window` key, matching that key's indentation and quoting style.
+
+- [ ] **Step 5: Verify production build**
+
+Run: `cd packages/web && npx ng build --configuration production`
+Expected: builds clean (pre-existing CommonJS-dependency warnings for `apexcharts`/`lodash`/`file-saver`/`screenfull` are unrelated and expected).
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add packages/web/src/app/pages/call/wellcome/call.component.ts packages/web/src/app/pages/call/wellcome/call.component.html packages/web/src/app/pages/call/wellcome/call.component.spec.ts packages/web/src/assets/i18n/en.json packages/web/src/assets/i18n/uk.json packages/web/src/assets/i18n/fr.json packages/web/src/assets/i18n/ru.json packages/web/src/assets/i18n/es.json
+git commit -m "feat(live-kit): add manual pop-out button for cross-tab PiP"
+```
+
+- [ ] **Step 7: Ask the user to retest and confirm the button reliably opens the PiP window on a tab switch with no prior in-page click.**

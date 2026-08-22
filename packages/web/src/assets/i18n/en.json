@@ -549,6 +549,7 @@
         "toggle_screen_share": "Toggle Screen Share",
         "toggle_microphone": "Toggle Microphone",
         "expand_window": "Expand window",
+        "pop_out": "Pop out to floating window",
         "leave_room": "Leave Room",
         "leave": "Leave",
         "toggle_fullscreen": "Toggle Fullscreen",

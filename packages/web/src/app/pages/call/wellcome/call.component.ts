@@ -26,10 +26,12 @@ import { AudioComponent } from '../audio/audio.component';
 import { NgClass } from '@angular/common';
 import {Router} from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { DataService } from 'src/app/services/data.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { PictureInPictureService, PictureInPictureHandles } from '../../live-kit/picture-in-picture.service';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -48,7 +50,8 @@ let LIVEKIT_URL = environment.livekitUrl;
         AudioComponent,
         NgClass,
         MatButtonModule,
-        TranslateModule
+        TranslateModule,
+        DragDropModule
     ],
     templateUrl: './call.component.html',
     styleUrl: './call.component.css'
@@ -56,7 +59,8 @@ let LIVEKIT_URL = environment.livekitUrl;
 export class CallComponent implements OnDestroy, OnInit {
 
   constructor(private auth: AuthenticationService,
-              private dataService: DataService, private router: Router) {
+              private dataService: DataService, private router: Router,
+              protected pip: PictureInPictureService) {
     this.configureUrls();
   }
 
@@ -65,6 +69,35 @@ export class CallComponent implements OnDestroy, OnInit {
   minimized = true
   leaveRoomOutput = output();
   private destroyed = false;
+
+  private buildPipHandles(): PictureInPictureHandles {
+    return {
+      getMainVideoTrack: () => this.getCurrentMainVideoTrack(),
+      getSelfVideoTrack: () => this.localCameraTrack() ?? null,
+      isMicEnabled: () => this.microphoneEnabled(),
+      onToggleMic: () => this.setMicrophoneEnabled(!this.microphoneEnabled()),
+      onLeave: () => this.leaveRoom(),
+    };
+  }
+
+  /**
+   * Manual trigger for the cross-tab floating window. A real click here
+   * always satisfies the browser's user-activation requirement for
+   * documentPictureInPicture.requestWindow() - unlike the automatic
+   * tab-switch trigger below, which only works when a recent-enough
+   * click on the page happens to still count as "active".
+   */
+  popOutToPictureInPicture(): void {
+    this.pip.open(this.buildPipHandles());
+  }
+
+  private onVisibilityChange = () => {
+    if (document.visibilityState === 'hidden' && this.room()) {
+      this.pip.open(this.buildPipHandles());
+    } else if (document.visibilityState === 'visible') {
+      this.pip.close();
+    }
+  };
 
   firsName = this.auth.authDataSignal().firstName as string;
   lastName = this.auth.authDataSignal().lastName as string;
@@ -135,6 +168,7 @@ export class CallComponent implements OnDestroy, OnInit {
     // });
     // Initialize camera as disabled
     this.setMicrophoneEnabled(true);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
 
@@ -363,6 +397,8 @@ export class CallComponent implements OnDestroy, OnInit {
   @HostListener('window:beforeunload', ['$event'])
   async ngOnDestroy(event?: Event) {
     this.destroyed = true;
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.pip.close();
     // On window closed or component destroyed, leave the room
     await this.leaveRoom();
   }

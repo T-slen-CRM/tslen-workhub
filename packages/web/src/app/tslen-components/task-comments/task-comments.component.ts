@@ -2,6 +2,7 @@ import { Component, DestroyRef, OnInit, input, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { DataService } from '../../services/data.service';
 import { TaskWebSocketService } from '../../pages/tasks-list/taskWebSocket.service';
 import { ITaskComment } from '../../interfaces/tasks';
@@ -9,7 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-task-comments',
-    imports: [CommonModule, FormsModule, DatePipe, TranslateModule],
+    imports: [CommonModule, FormsModule, DatePipe, TranslateModule, MatButtonModule],
     templateUrl: './task-comments.component.html',
     styleUrls: ['./task-comments.component.scss']
 })

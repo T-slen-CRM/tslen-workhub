@@ -80,20 +80,44 @@ Replace `task-create-edit.component.html`'s current two-column form with:
 Since editing stays on the current single-form model (no hover-to-reveal
 click targets — that pattern only makes sense with true per-field
 auto-save editing, which is explicitly out of scope), the sidebar is
-**labeled rows**: a small uppercase-ish caption above each real,
-always-interactive Material control (`mat-select`, the assignee
-autocomplete, the datepicker). This reads as organized and
-Jira-*inspired* without pretending the fields are anything other than
-what they are — normal form controls saved together via the dialog's
-existing Save button.
+**labeled rows** using each Material control's own `<mat-label>` inside
+its `<mat-form-field>` (Priority, Estimate, and the Assignee autocomplete
+all render their label this standard way, with `subscriptSizing="dynamic"`
+and a denser field style rather than expanding the default MDC padding).
+
+**Revised during implementation feedback:** the first pass used a
+separate static `<span>` caption sitting *above* each always-expanded
+control instead of the field's own `<mat-label>`. That duplicated the
+label for the Assignee autocomplete (which already renders its own
+`<mat-label>` internally) and abandoned Material's built-in
+floating-label behavior (placeholder text sliding up into a label on
+focus/fill) for no benefit — corrected back to standard `<mat-label>`
+usage, which is also what makes the fields easy to shrink via
+`subscriptSizing`.
 
 ### Theming
 
-Built with the app's existing `.dark-mode` class-based theming (light by
-default, dark variant via that class already used elsewhere, e.g.
-`tasks-list.component.scss`), not Jira's dark-only palette — so the
+Built with the app's existing dark theme mechanism, targeted via
+`:host-context(.dark-theme)` — `ThemeService.changeThemeColor()` toggles a
+`.dark-theme` class on `<body>` (see `theme.service.ts`). This is **not**
+the `.dark-mode` class used locally in
+`tasks-list.component.scss`/`tasks-manager`, which turned out to be
+dead/inconsistent leftover code (its only toggle, `app-dark-mode-button`,
+is commented out in both `nav-bar.component.html` and
+`nav-right.component.html`, so nothing ever sets it). Light by default,
+dark variant via the real class — not Jira's dark-only palette — so the
 dialog matches the rest of the app in both modes instead of introducing
 an inconsistent one-off dark theme.
+
+**Also revised during implementation feedback:** the accent color used
+throughout (activity tab underline, description/title Edit-Done toggle
+buttons) was initially an invented `var(--bs-primary, #1389eb)` — a
+Bootstrap CSS variable that doesn't exist anywhere in this codebase, so
+it always fell back to an arbitrary blue that clashed with the Save
+button and every other Material control on the same dialog (this app's
+real Material theme is the prebuilt `indigo-pink.css`, primary `#3f51b5`).
+Corrected to use that real color (and `#4051b5` in dark mode, matching
+`custom-dark-theme.scss`'s own `$buttons-color`) throughout.
 
 ## Description: preview/edit toggle with collapse
 
@@ -124,8 +148,19 @@ New behavior:
     image-insert dialogs) make blur/click-outside detection unreliable —
     a stray blur while interacting with the toolbar would prematurely
     collapse the editor mid-edit.
-- **New tasks** (no `data.task`, i.e. empty description) open directly in
-  edit mode — there's nothing to preview yet.
+- **New tasks** (no `data.task`) open directly in edit mode — there's
+  nothing to preview yet. **Correction from implementation feedback:** the
+  default was initially keyed on whether the *description text* was empty
+  rather than on whether the task exists yet — so an *existing* task with
+  an empty description also opened straight into the editor, which is
+  wrong: "nothing to edit right now" is not the same as "nothing to show".
+  The default is keyed on `taskId` (does this task exist yet), not on the
+  field's current value — an existing task always opens in preview,
+  regardless of whether the description happens to be empty.
+- **Title gets the identical treatment.** A new task's title starts in
+  edit mode; an existing task shows its title as plain heading text with
+  the same explicit Edit/Done toggle, for the same "nothing to edit right
+  now" reasoning above.
 
 ## Assignee field bugs (found during this redesign, fixed as part of it)
 

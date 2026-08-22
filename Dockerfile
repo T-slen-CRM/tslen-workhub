@@ -1,10 +1,11 @@
 # Stage 1: Build Angular frontend
 FROM node:20 AS web-build
-WORKDIR /app
+WORKDIR /app/packages/web
 COPY packages/web/package.json packages/web/package-lock.json ./
 RUN npm ci --legacy-peer-deps
 COPY packages/web/ .
-RUN npx ng build --configuration production
+COPY .env /app/.env
+RUN npm run config && npx ng build --configuration production
 
 # Stage 2: Build NestJS backend
 FROM node:22 AS api-build
@@ -22,7 +23,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
 COPY --from=api-build /app/dist ./dist
-COPY --from=web-build /app/dist ./packages/web/dist
+COPY --from=web-build /app/packages/web/dist ./packages/web/dist
 COPY proto/ proto/
 COPY migrations/ migrations/
 COPY typeOrm.config.ts ./

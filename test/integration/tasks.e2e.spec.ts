@@ -12,6 +12,9 @@ import { TasksService } from '../../src/resources/tasks/tasks.service';
 import { TasksRepository } from '../../src/resources/tasks/tasks.repository';
 import { UploadAbstractService } from '../../src/common/services/upload/upload.abstract.service';
 import { UsersService } from '../../src/resources/users/users.service';
+import { UsersRepository } from '../../src/resources/users/users.repository';
+import { TaskNotificationsService } from '../../src/resources/tasks/task-notifications.service';
+import { TaskPhaseRepository } from '../../src/resources/task-phase/task-phase.repository';
 import { ErrorService } from '../../src/common/services/error/error.service';
 
 describe('TasksController (e2e)', () => {
@@ -54,6 +57,26 @@ describe('TasksController (e2e)', () => {
                         provide: UsersService,
                         useValue: {
                             validateUserIdByRole: jest.fn(() => true)
+                        }
+                    },
+                    {
+                        provide: UsersRepository,
+                        useValue: {
+                            findOne: jest.fn(() => null)
+                        }
+                    },
+                    {
+                        provide: TaskNotificationsService,
+                        useValue: {
+                            notifyAssigned: jest.fn(),
+                            notifyCommented: jest.fn(),
+                            notifyPhaseMoved: jest.fn()
+                        }
+                    },
+                    {
+                        provide: TaskPhaseRepository,
+                        useValue: {
+                            findOne: jest.fn(() => null)
                         }
                     },
                     ErrorService

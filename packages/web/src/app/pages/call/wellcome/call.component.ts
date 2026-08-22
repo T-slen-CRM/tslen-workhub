@@ -10,11 +10,13 @@ import {
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LocalVideoTrack,
+  LogLevel,
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
   Room,
   RoomEvent,
+  setLogLevel,
   VideoPresets,
   VideoTrack
 } from 'livekit-client';
@@ -42,6 +44,12 @@ type TrackInfo = {
 // For other deployment type, configure them with correct URLs depending on your deployment
 let APPLICATION_SERVER_URL = '';
 let LIVEKIT_URL = environment.livekitUrl;
+
+// livekit-client defaults its own internal logger to `info`, which prints
+// routine per-track/per-room lifecycle noise ("publishing track",
+// "disconnect from room", etc.) on every call - raise it to `warn` so only
+// actual problems show up.
+setLogLevel(LogLevel.warn);
 @Component({
     selector: 'app-live-kit-call',
     imports: [

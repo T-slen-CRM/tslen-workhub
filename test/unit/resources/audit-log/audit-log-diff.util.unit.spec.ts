@@ -1,4 +1,5 @@
-import { computeFieldDiff, diffAssigneeUserId } from '../../../../src/resources/audit-log/audit-log-diff.util';
+import { collapseRelationPairs, computeFieldDiff } from '../../../../src/resources/audit-log/audit-log-diff.util';
+import { AuditEntityChange } from '../../../../src/common/audit-context.storage';
 
 describe('computeFieldDiff', () => {
     it('returns only the fields that actually changed, for an update', () => {
@@ -57,25 +58,63 @@ describe('computeFieldDiff', () => {
     });
 });
 
-describe('diffAssigneeUserId', () => {
-    it('returns null when both sides have the same assignee', () => {
-        expect(diffAssigneeUserId([{ userId: 7 }], [{ userId: 7 }])).toBeNull();
+describe('collapseRelationPairs', () => {
+    it('merges a delete+insert pair on TaskUserAssignmentRelation into one synthetic assignee change on the parent Tasks entity', () => {
+        const changes: AuditEntityChange[] = [
+            { entityName: 'TaskUserAssignmentRelation', entityId: 101, action: 'delete', fields: [{ field: 'taskId', from: 42 }, { field: 'userId', from: 7, fromLabel: 'Oleh Teslenko' }] },
+            { entityName: 'TaskUserAssignmentRelation', entityId: 108, action: 'insert', fields: [{ field: 'taskId', to: 42 }, { field: 'userId', to: 12, toLabel: 'John Smith' }] },
+        ];
+
+        const result = collapseRelationPairs(changes);
+
+        expect(result).toEqual([
+            { entityName: 'Tasks', entityId: 42, action: 'update', fields: [
+                { field: 'assignee', from: 7, fromLabel: 'Oleh Teslenko', to: 12, toLabel: 'John Smith' },
+            ] },
+        ]);
     });
 
-    it('returns null when neither side has an assignee', () => {
-        expect(diffAssigneeUserId(undefined, undefined)).toBeNull();
-        expect(diffAssigneeUserId([], [])).toBeNull();
+    it('an insert with no matching delete reads as a new assignment (no "from") - this is the reliable case: a first-time assignment', () => {
+        const changes: AuditEntityChange[] = [
+            { entityName: 'TaskUserAssignmentRelation', entityId: 108, action: 'insert', fields: [{ field: 'taskId', to: 42 }, { field: 'userId', to: 12, toLabel: 'John Smith' }] },
+        ];
+
+        expect(collapseRelationPairs(changes)).toEqual([
+            { entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'assignee', to: 12, toLabel: 'John Smith' }] },
+        ]);
     });
 
-    it('reports a reassignment with both from and to', () => {
-        expect(diffAssigneeUserId([{ userId: 12 }], [{ userId: 7 }])).toEqual({ from: 7, to: 12 });
+    it('a delete with no matching insert reads as unassigned (no "to")', () => {
+        const changes: AuditEntityChange[] = [
+            { entityName: 'TaskUserAssignmentRelation', entityId: 101, action: 'delete', fields: [{ field: 'taskId', from: 42 }, { field: 'userId', from: 7, fromLabel: 'Oleh Teslenko' }] },
+        ];
+
+        expect(collapseRelationPairs(changes)).toEqual([
+            { entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'assignee', from: 7, fromLabel: 'Oleh Teslenko' }] },
+        ]);
     });
 
-    it('reports a new assignment with no "from"', () => {
-        expect(diffAssigneeUserId([{ userId: 12 }], [])).toEqual({ to: 12 });
+    it('merges the synthetic assignee field into an existing Tasks change for the same task, instead of a duplicate entry', () => {
+        const changes: AuditEntityChange[] = [
+            { entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'phaseId', from: 3, to: 5 }] },
+            { entityName: 'TaskUserAssignmentRelation', entityId: 108, action: 'insert', fields: [{ field: 'taskId', to: 42 }, { field: 'userId', to: 12, toLabel: 'John Smith' }] },
+        ];
+
+        const result = collapseRelationPairs(changes);
+
+        expect(result).toEqual([
+            { entityName: 'Tasks', entityId: 42, action: 'update', fields: [
+                { field: 'phaseId', from: 3, to: 5 },
+                { field: 'assignee', to: 12, toLabel: 'John Smith' },
+            ] },
+        ]);
     });
 
-    it('reports an unassignment with no "to"', () => {
-        expect(diffAssigneeUserId([], [{ userId: 7 }])).toEqual({ from: 7 });
+    it('leaves unrelated entity changes untouched', () => {
+        const changes: AuditEntityChange[] = [
+            { entityName: 'Users', entityId: 3, action: 'update', fields: [{ field: 'email', from: 'a@x.com', to: 'b@x.com' }] },
+        ];
+
+        expect(collapseRelationPairs(changes)).toEqual(changes);
     });
 });

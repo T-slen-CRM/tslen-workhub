@@ -1,3 +1,5 @@
+import { AuditEntityChange, AuditFieldChange } from '../../common/audit-context.storage';
+
 const SENSITIVE_KEY_PATTERN = /password|token|secret|apikey/i;
 
 export interface RawFieldDiff {
@@ -57,34 +59,94 @@ function valuesEqual (a: unknown, b: unknown): boolean {
     return a === b;
 }
 
-interface AssigneeRelation {
-    userId?: number | null;
+interface AssignmentRelationRule {
+    entityName: string;
+    parentEntityName: string;
+    parentIdField: string;
+    userIdField: string;
+    syntheticFieldName: string;
 }
 
+const ASSIGNMENT_RELATION_RULES: AssignmentRelationRule[] = [
+    { entityName: 'TaskUserAssignmentRelation', parentEntityName: 'Tasks', parentIdField: 'taskId', userIdField: 'userId', syntheticFieldName: 'assignee' },
+];
+
 /**
- * Diffs the single-assignee relation on a Tasks entity directly from its own
- * eager taskUserAssignmentRelations arrays, rather than from
- * TaskUserAssignmentRelation's own insert/delete subscriber events - those
- * are unreliable here because TypeORM's orphan-removal cascade for an eager
- * @OneToMany relation executes as a raw bulk DELETE, which never fires
- * beforeRemove/afterRemove. event.databaseEntity, by contrast, comes from a
- * fresh DB query done before the update, so it reliably has the old value.
+ * Known limitation, confirmed via live testing against a real Postgres (not
+ * just unit tests): reassigning a task removes the old
+ * TaskUserAssignmentRelation row via TypeORM's orphan-removal cascade, which
+ * is NOT awaited as part of the same .save() chain the operation's
+ * response/observable resolves on - it can complete after this operation's
+ * AsyncLocalStorage snapshot has already been read, so its beforeRemove
+ * subscriber event sometimes arrives too late to pair with the new row's
+ * insert here. When that happens, a reassignment shows only the new assignee
+ * ({field:'assignee', to}), not the previous one - best-effort, not
+ * guaranteed. A first-time assignment (no prior relation to remove) is
+ * unaffected and always correct.
  */
-export function diffAssigneeUserId (
-    newRelations: AssigneeRelation[] | undefined,
-    oldRelations: AssigneeRelation[] | undefined
-): { from?: number; to?: number } | null {
-    const oldUserId = oldRelations?.[0]?.userId ?? undefined;
-    const newUserId = newRelations?.[0]?.userId ?? undefined;
-    if (oldUserId === newUserId) {
-        return null;
+export function collapseRelationPairs (changes: AuditEntityChange[]): AuditEntityChange[] {
+    return ASSIGNMENT_RELATION_RULES.reduce(collapseForRule, changes);
+}
+
+function collapseForRule (changes: AuditEntityChange[], rule: AssignmentRelationRule): AuditEntityChange[] {
+    const relationChanges = changes.filter((c) => c.entityName === rule.entityName);
+    if (relationChanges.length === 0) {
+        return changes;
     }
-    const result: { from?: number; to?: number } = {};
-    if (oldUserId !== undefined) {
-        result.from = oldUserId;
+    const others = changes.filter((c) => c.entityName !== rule.entityName);
+
+    const byParent = new Map<string, { inserted?: AuditEntityChange; deleted?: AuditEntityChange }>();
+    for (const change of relationChanges) {
+        const direction = change.action === 'delete' ? 'from' : 'to';
+        const parentId = fieldValue(change, rule.parentIdField, direction);
+        if (parentId === undefined) {
+            continue;
+        }
+        const bucket = byParent.get(String(parentId)) ?? {};
+        if (change.action === 'insert') {
+            bucket.inserted = change;
+        }
+        if (change.action === 'delete') {
+            bucket.deleted = change;
+        }
+        byParent.set(String(parentId), bucket);
     }
-    if (newUserId !== undefined) {
-        result.to = newUserId;
+
+    let result = others;
+    for (const [parentId, { inserted, deleted }] of byParent) {
+        const syntheticField: AuditFieldChange = { field: rule.syntheticFieldName };
+        if (deleted) {
+            syntheticField.from = fieldValue(deleted, rule.userIdField, 'from');
+            syntheticField.fromLabel = fieldLabel(deleted, rule.userIdField, 'from');
+        }
+        if (inserted) {
+            syntheticField.to = fieldValue(inserted, rule.userIdField, 'to');
+            syntheticField.toLabel = fieldLabel(inserted, rule.userIdField, 'to');
+        }
+        result = mergeChange(result, {
+            entityName: rule.parentEntityName,
+            entityId: isNaN(Number(parentId)) ? parentId : Number(parentId),
+            action: 'update',
+            fields: [syntheticField],
+        });
     }
     return result;
+}
+
+function fieldValue (change: AuditEntityChange, fieldName: string, direction: 'from' | 'to'): unknown {
+    return change.fields.find((f) => f.field === fieldName)?.[direction];
+}
+
+function fieldLabel (change: AuditEntityChange, fieldName: string, direction: 'from' | 'to'): string | null | undefined {
+    const field = change.fields.find((f) => f.field === fieldName);
+    return direction === 'from' ? field?.fromLabel : field?.toLabel;
+}
+
+function mergeChange (changes: AuditEntityChange[], change: AuditEntityChange): AuditEntityChange[] {
+    const existing = changes.find((c) => c.entityName === change.entityName && String(c.entityId) === String(change.entityId));
+    if (existing) {
+        existing.fields.push(...change.fields);
+        return changes;
+    }
+    return [...changes, change];
 }

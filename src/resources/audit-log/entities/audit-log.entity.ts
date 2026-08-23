@@ -36,6 +36,9 @@ export class AuditLog extends BaseAbstractEntity<AuditLog> {
     @Column('jsonb', { name: 'requestBody', nullable: true })
         requestBody: Record<string, unknown> | null;
 
+    @Column('jsonb', { name: 'changes', nullable: true })
+        changes: unknown[] | null;
+
     @Index()
     @CreateDateColumn({ name: 'createdAt' })
         createdAt: Date;

@@ -23,4 +23,18 @@ describe('AuditLogRepository', () => {
             expect(insert).not.toHaveBeenCalled();
         });
     });
+
+    describe('findRecent', () => {
+        it('queries rows within the given age window, ordered newest first, capped at the given limit', async () => {
+            const find = jest.fn().mockResolvedValue([]);
+            const repository = new AuditLogRepository({ find } as unknown as Repository<AuditLog>);
+
+            await repository.findRecent(30, 1000);
+
+            expect(find).toHaveBeenCalledWith(expect.objectContaining({
+                order: { createdAt: 'DESC' },
+                take: 1000,
+            }));
+        });
+    });
 });

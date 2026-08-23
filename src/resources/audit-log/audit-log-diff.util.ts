@@ -22,8 +22,11 @@ export function computeFieldDiff (
         if (SENSITIVE_KEY_PATTERN.test(key)) {
             continue;
         }
-        const hasNew = !!newValues && key in newValues;
-        const hasOld = !!oldValues && key in oldValues;
+        // undefined (as opposed to a real null) means this key is an unloaded
+        // relation placeholder on the entity object, not real column data -
+        // exclude it rather than reporting a spurious "changed to undefined".
+        const hasNew = !!newValues && key in newValues && newValues[key] !== undefined;
+        const hasOld = !!oldValues && key in oldValues && oldValues[key] !== undefined;
 
         if (hasNew && hasOld) {
             if (!valuesEqual(oldValues[key], newValues[key])) {

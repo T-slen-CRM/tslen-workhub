@@ -31,6 +31,12 @@ describe('computeFieldDiff', () => {
 
         expect(result).toEqual([{ field: 'id', from: 1 }, { field: 'title', from: 'x' }]);
     });
+
+    it('excludes undefined-valued fields (unloaded relation placeholders on the entity object), unlike a real null', () => {
+        expect(computeFieldDiff({ id: 1, phases: undefined }, undefined)).toEqual([{ field: 'id', to: 1 }]);
+        expect(computeFieldDiff({ id: 1, description: null }, undefined)).toEqual([{ field: 'id', to: 1 }, { field: 'description', to: null }]);
+        expect(computeFieldDiff({ id: 1, phases: undefined }, { id: 1, phases: undefined })).toEqual([]);
+    });
 });
 
 describe('collapseRelationPairs', () => {

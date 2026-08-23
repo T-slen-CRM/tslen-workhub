@@ -151,6 +151,8 @@
         "activity_new_task": "Activity will be available after this task is created.",
         "users": "Users",
         "upload attachments": "Upload attachments:",
+        "attachments": "Attachments",
+        "add_attachment": "+ Add attachment",
         "button": {
           "save": "Save",
           "cancel":"Cancel",

@@ -29,6 +29,7 @@
                     }
                 </div>
                 <mat-form-field class="phase-pill-field input-mat-select" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>{{'task.form.move_card'| translate}}</mat-label>
                     <mat-select formControlName="phaseId">
                         <mat-option *ngFor="let phase of data.phaseList" [value]="phase.id">
                             {{phase.name}}
@@ -142,25 +143,30 @@
                     }
 
                     <div class="sidebar-row">
-                        <span class="field-label">{{'task.form.upload attachments'| translate}}</span>
+                        <span class="field-label">{{'task.form.attachments'| translate}}</span>
+                        @if(attachments && attachments?.length > 0) {
+                            <div class="attachment-chips">
+                                <div class="attachment-chip" *ngFor="let files of attachments">
+                                    <mat-icon class="attachment-chip-icon">{{ getAttachmentIcon(files.originName) }}</mat-icon>
+                                    <span class="attachment-chip-name" (click)="openPreview(files.url)" [title]="files.originName">{{files.originName}}</span>
+                                    <button type="button" class="attachment-chip-remove"
+                                            (click)="deleteAttachment(files.id)"
+                                            [matTooltip]="'task.button.delete' | translate"
+                                            [attr.aria-label]="'task.button.delete' | translate">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        }
                         <app-upload-files
                                 formControlName="taskAttachments"
-                                [uploadLabel]="'task.form.upload attachments'| translate"
+                                [uploadLabel]=""
+                                [buttonLabel]="'task.form.add_attachment' | translate"
                                 [params]="{id: null}"
                                 [multipleSelection]="true"
                                 [acceptedFileTypes]="acceptedFileTypes"
                                 [uploadLimit]="uploadLimit"
                         ></app-upload-files>
-                        @if(attachments && attachments?.length > 0) {
-                            <mat-selection-list [multiple]="false">
-                                <mat-list-option *ngFor="let files of attachments" [value]="[files.url, files.originName]">
-                                    <span class="d-flex">
-                                        <span (click)="openPreview(files.url)" class="mr-auto p-2">{{files.originName}}</span>
-                                        <span (click)="deleteAttachment(files.id)" class="p-2 custom-icon-delete"><mat-icon>delete_forever</mat-icon></span>
-                                    </span>
-                                </mat-list-option>
-                            </mat-selection-list>
-                        }
                     </div>
                 </div>
             </div>

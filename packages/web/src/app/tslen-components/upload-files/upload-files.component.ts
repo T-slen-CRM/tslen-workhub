@@ -28,6 +28,7 @@ export class UploadFilesComponent implements ControlValueAccessor {
   @Input() public multipleSelection: boolean;
   @Input() public acceptedFileTypes: string;
   @Input() public uploadLabel: string;
+  @Input() public buttonLabel: string;
   @Input() public uploadLimit: number;
   value: any;
 

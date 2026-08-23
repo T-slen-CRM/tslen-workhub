@@ -29,21 +29,6 @@
   display: flex;
   justify-content: space-between;
 }
-.mat-pseudo-checkbox  {
-  display: none !important;
-}
-.mat-pseudo-checkbox{
-  display: none !important;
-}
-.custom-icon-delete :hover {
-  color: darkred;
-}
-.mat-list-option .mat-pseudo-checkbox {
-  display: none !important;
-}
-.custom-checkbox .mat-checkbox-frame {
-  display: none;
-}
 // Matches this app's real Angular Material theme (the prebuilt
 // indigo-pink.css imported in angular.json, not an invented color) so
 // every accent on this card - Save button, focus rings, these toggles -
@@ -222,4 +207,72 @@ $task-primary-color-dark: #4051b5;
 :host-context(.dark-theme) .description-block .field-edit-btn,
 :host-context(.dark-theme) .description-block .field-done-btn {
   color: $task-primary-color-dark;
+}
+.attachment-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.attachment-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px 6px 4px 8px;
+  border-radius: 14px;
+  background-color: #f4f5fa;
+  font-size: 0.8rem;
+  .attachment-chip-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #6d7c87;
+  }
+  .attachment-chip-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .attachment-chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+    color: #6d7c87;
+    ::ng-deep .mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      line-height: 14px;
+    }
+    &:hover {
+      color: darkred;
+    }
+  }
+}
+:host-context(.dark-theme) .attachment-chip {
+  background-color: color.adjust(#122442, $lightness: -2%, $space: hsl);
+}
+// Reskins the shared upload-files component's own button (a full-size
+// mat-raised-button by default, used as-is by its other two consumers) to
+// match this card's compact "+ Add attachment" trigger - scoped to this
+// component's view via ::ng-deep so the shared component itself, and its
+// other consumers, are untouched.
+.sidebar-row ::ng-deep .file-button {
+  font-size: 0.8rem;
+  line-height: 30px;
+  padding: 0 12px;
 }

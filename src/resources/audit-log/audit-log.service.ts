@@ -9,7 +9,7 @@ const MAX_ROWS = 1000;
 export class AuditLogService {
     constructor (private readonly auditLogRepository: AuditLogRepository) {}
 
-    findRecent (): Promise<AuditLog[]> {
-        return this.auditLogRepository.findRecent(MAX_AGE_DAYS, MAX_ROWS);
+    findRecent (filters: { userId?: number; resourceType?: string } = {}): Promise<AuditLog[]> {
+        return this.auditLogRepository.findRecent(MAX_AGE_DAYS, MAX_ROWS, filters);
     }
 }

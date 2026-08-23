@@ -18,10 +18,18 @@ export class AuditLogRepository extends BaseAbstractRepository<AuditLog> {
         await this.auditLogRepository.insert(entries);
     }
 
-    findRecent (maxAgeDays: number, limit: number): Promise<AuditLog[]> {
+    findRecent (
+        maxAgeDays: number,
+        limit: number,
+        filters: { userId?: number; resourceType?: string } = {}
+    ): Promise<AuditLog[]> {
         const since = new Date(Date.now() - maxAgeDays * 24 * 60 * 60 * 1000);
         return this.auditLogRepository.find({
-            where: { createdAt: MoreThanOrEqual(since) },
+            where: {
+                createdAt: MoreThanOrEqual(since),
+                ...(filters.userId !== undefined ? { userId: filters.userId } : {}),
+                ...(filters.resourceType !== undefined ? { resourceType: filters.resourceType } : {}),
+            },
             order: { createdAt: 'DESC' },
             take: limit,
         });

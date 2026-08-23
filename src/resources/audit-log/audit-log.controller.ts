@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AuditLogService } from './audit-log.service';
 import { AuditLog } from './entities/audit-log.entity';
 import { Roles } from '../../common/guards/roles/roles.decorator';
 import { Role } from '../../common/guards/roles/role.enum';
+import { ListAuditLogsQueryDto } from './dto/list-audit-logs-query.dto';
 
 @Controller('audit-log')
 export class AuditLogController {
@@ -10,7 +11,7 @@ export class AuditLogController {
 
     @Roles(Role.Admin)
     @Get()
-    findRecent (): Promise<AuditLog[]> {
-        return this.auditLogService.findRecent();
+    findRecent (@Query() query: ListAuditLogsQueryDto): Promise<AuditLog[]> {
+        return this.auditLogService.findRecent({ userId: query.userId, resourceType: query.resourceType });
     }
 }

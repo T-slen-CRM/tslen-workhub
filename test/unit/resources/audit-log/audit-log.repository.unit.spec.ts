@@ -35,6 +35,36 @@ describe('AuditLogRepository', () => {
                 order: { createdAt: 'DESC' },
                 take: 1000,
             }));
+            const where = find.mock.calls[0][0].where;
+            expect(where.userId).toBeUndefined();
+            expect(where.resourceType).toBeUndefined();
+        });
+
+        it('adds a userId filter when given one, without requiring resourceType', async () => {
+            const find = jest.fn().mockResolvedValue([]);
+            const repository = new AuditLogRepository({ find } as unknown as Repository<AuditLog>);
+
+            await repository.findRecent(30, 1000, { userId: 3 });
+
+            expect(find.mock.calls[0][0].where).toEqual(expect.objectContaining({ userId: 3 }));
+        });
+
+        it('adds a resourceType filter when given one, without requiring userId', async () => {
+            const find = jest.fn().mockResolvedValue([]);
+            const repository = new AuditLogRepository({ find } as unknown as Repository<AuditLog>);
+
+            await repository.findRecent(30, 1000, { resourceType: 'Tasks' });
+
+            expect(find.mock.calls[0][0].where).toEqual(expect.objectContaining({ resourceType: 'Tasks' }));
+        });
+
+        it('combines both filters when both are given', async () => {
+            const find = jest.fn().mockResolvedValue([]);
+            const repository = new AuditLogRepository({ find } as unknown as Repository<AuditLog>);
+
+            await repository.findRecent(30, 1000, { userId: 3, resourceType: 'Tasks' });
+
+            expect(find.mock.calls[0][0].where).toEqual(expect.objectContaining({ userId: 3, resourceType: 'Tasks' }));
         });
     });
 });

@@ -8,6 +8,6 @@ import { AuditLogMiddleware } from '../../common/middlewares/audit-log.middlewar
 @Module({
     imports: [TypeOrmModule.forFeature([AuditLog])],
     providers: [AuditLogRepository, AuditLogBufferService, AuditLogMiddleware],
-    exports: [AuditLogMiddleware],
+    exports: [AuditLogMiddleware, AuditLogBufferService],
 })
 export class AuditLogModule {}

@@ -94,45 +94,7 @@ describe('AuditLogSubscriber', () => {
         } as unknown as UpdateEvent<any>)).resolves.toBeUndefined();
     });
 
-    it('afterUpdate on Tasks reports a reassignment with both from and to, resolved from taskUserAssignmentRelations directly (not from a separate delete event)', async () => {
-        const { subscriber, resolveLabel } = build(jest.fn().mockImplementation((field, id) => Promise.resolve(id === 7 ? 'Oleh Teslenko' : id === 12 ? 'John Smith' : null)));
-
-        const result = await runWithAuditContext(async () => {
-            await subscriber.afterUpdate({
-                metadata: { name: 'Tasks' },
-                entity: { id: 42, taskUserAssignmentRelations: [{ userId: 12 }] },
-                databaseEntity: { id: 42, taskUserAssignmentRelations: [{ id: 1, taskId: 42, userId: 7 }] },
-            } as unknown as UpdateEvent<any>);
-            return finalizeAuditChanges();
-        });
-
-        expect(result).toEqual([{
-            entityName: 'Tasks', entityId: 42, action: 'update',
-            fields: [{ field: 'assignee', from: 7, fromLabel: 'Oleh Teslenko', to: 12, toLabel: 'John Smith' }],
-        }]);
-        expect(resolveLabel).toHaveBeenCalledWith('userId', 7);
-        expect(resolveLabel).toHaveBeenCalledWith('userId', 12);
-    });
-
-    it('does not report an assignee change (or the raw relations array) when taskUserAssignmentRelations content is unchanged', async () => {
-        const { subscriber } = build();
-
-        const result = await runWithAuditContext(async () => {
-            await subscriber.afterUpdate({
-                metadata: { name: 'Tasks' },
-                entity: { id: 42, title: 'new', taskUserAssignmentRelations: [{ id: 1, taskId: 42, userId: 7 }] },
-                databaseEntity: { id: 42, title: 'old', taskUserAssignmentRelations: [{ id: 1, taskId: 42, userId: 7 }] },
-            } as unknown as UpdateEvent<any>);
-            return finalizeAuditChanges();
-        });
-
-        expect(result).toEqual([{
-            entityName: 'Tasks', entityId: 42, action: 'update',
-            fields: [{ field: 'title', from: 'old', to: 'new', fromLabel: null, toLabel: null }],
-        }]);
-    });
-
-    it('suppresses TaskUserAssignmentRelation changes entirely (superseded by the Tasks-level assignee diff)', async () => {
+    it('afterInsert/beforeRemove on TaskUserAssignmentRelation are captured like any other entity - collapsing into an assignee field happens downstream in collapseRelationPairs, not here', async () => {
         const { subscriber } = build();
 
         const result = await runWithAuditContext(async () => {
@@ -147,6 +109,7 @@ describe('AuditLogSubscriber', () => {
             return finalizeAuditChanges();
         });
 
-        expect(result).toEqual([]);
+        expect(result).toHaveLength(2);
+        expect(result.map((c) => c.entityName)).toEqual(['TaskUserAssignmentRelation', 'TaskUserAssignmentRelation']);
     });
 });

@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffer.service';
 import { sanitizeRequestBody } from '../../resources/audit-log/audit-log-sanitize.util';
+import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
 import { captureAuditContext, finalizeAuditChanges, runWithAuditContext, AuditEntityChange } from '../audit-context.storage';
 
 const LOGGED_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
@@ -30,7 +31,7 @@ export class AuditLogMiddleware implements NestMiddleware {
             res.on('finish', () => {
                 const user = (req as unknown as { user?: { id?: number } }).user;
                 const route: string = (req.route?.path as string | undefined) ?? req.originalUrl;
-                const changes = finalizeAuditChanges(auditContext);
+                const changes = collapseRelationPairs(finalizeAuditChanges(auditContext));
                 const primaryChange = changes.find((c) => !SECONDARY_ENTITY_NAMES.has(c.entityName)) as AuditEntityChange | undefined;
 
                 this.auditLogBufferService.enqueue({

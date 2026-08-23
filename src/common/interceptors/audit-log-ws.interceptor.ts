@@ -2,6 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffer.service';
+import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
 import { AuditEntityChange, captureAuditContext, finalizeAuditChanges, runWithAuditContext } from '../audit-context.storage';
 
 interface AuditableSocket {
@@ -41,7 +42,7 @@ export class AuditLogWsInterceptor implements NestInterceptor {
     }
 
     private record (auditContext: unknown, client: AuditableSocket, eventName: string, statusCode: number): void {
-        const changes = finalizeAuditChanges(auditContext);
+        const changes = collapseRelationPairs(finalizeAuditChanges(auditContext));
         const primaryChange = changes.find((c) => !SECONDARY_ENTITY_NAMES.has(c.entityName)) as AuditEntityChange | undefined;
 
         this.auditLogBufferService.enqueue({

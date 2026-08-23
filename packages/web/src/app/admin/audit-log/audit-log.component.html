@@ -1,0 +1,9 @@
+<div class="custom-table">
+    <app-ag-grid-table [columnDefs]="columnDefs"
+                       [rowData]="rowData | async"
+                       [components]="components"
+                       [sizeColumnsToFit]="true"
+                       [rowHeight]="43"
+                       [headerHeight]="50"
+    ></app-ag-grid-table>
+</div>

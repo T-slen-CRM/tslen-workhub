@@ -37,12 +37,22 @@ not by hand through the UI.
   `src/resources/external-tasks/`). Auth: `Authorization: Bearer
   <api-token>`, where the token is minted via `POST /api-tokens` while
   logged in (see `src/resources/api-tokens/`).
-- Required body field: `title`, `phaseId` (the Kanban list/phase to file
-  into — resolve this from the target board, e.g. the list id in a
-  `tasks-list/<id>` URL). Optional: `description`, `priority`,
-  `assigneeEmail`.
+- Required body field: `title`, `phaseId` (the Kanban column to file
+  into). Resolve it via `GET /api/v{API_VERSION}/external/projects`
+  (same auth), which returns each project with its nested
+  `phases: [{id, name}]` — match the phase by name (e.g. "In progress")
+  under the target project. **Don't infer `phaseId` from the numeric id
+  in a `tasks-list/<id>` UI URL** — that id is the *project* id, not a
+  phase id (confirmed: task 413 files under project 10 "T-slen Workhub",
+  phase 22 "In progress" — the two ids are unrelated numbers).
 - Never guess the API token or `phaseId` against production — ask the
-  user for both before calling this endpoint.
+  user for the token, and either ask which phase or resolve it via the
+  `external/projects` lookup above, before calling this endpoint.
+- **Link the task from the commit(s) that do the work**: once a task
+  exists for the work, append a footer line `Task: <task URL>` to the
+  relevant commit message(s) (after a blank line, like any other
+  trailer) — e.g. `Task: https://tslen.ds.bidscube.com/pages/tasks-list/10;title=T-slen%2520Workhub;task=413`.
+  Skip it only when no task exists yet for that work.
 
 ## Git workflow
 

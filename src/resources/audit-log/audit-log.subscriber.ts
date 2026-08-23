@@ -1,7 +1,7 @@
 import { EventSubscriber, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent, DataSource } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { pushAuditChange, AuditEntityChange } from '../../common/audit-context.storage';
-import { computeFieldDiff } from './audit-log-diff.util';
+import { computeFieldDiff, pickColumns } from './audit-log-diff.util';
 import { AuditLogLabelResolverService } from './audit-log-label-resolver.service';
 
 @EventSubscriber()
@@ -16,15 +16,18 @@ export class AuditLogSubscriber implements EntitySubscriberInterface {
     }
 
     async afterInsert (event: InsertEvent<any>): Promise<void> {
-        await this.capture(event.metadata.name, event.entity, undefined, 'insert');
+        const columnNames = event.metadata.columns.map((c) => c.propertyName);
+        await this.capture(event.metadata.name, pickColumns(event.entity, columnNames), undefined, 'insert');
     }
 
     async afterUpdate (event: UpdateEvent<any>): Promise<void> {
-        await this.capture(event.metadata.name, event.entity, event.databaseEntity, 'update');
+        const columnNames = event.metadata.columns.map((c) => c.propertyName);
+        await this.capture(event.metadata.name, pickColumns(event.entity, columnNames), pickColumns(event.databaseEntity, columnNames), 'update');
     }
 
     async beforeRemove (event: RemoveEvent<any>): Promise<void> {
-        await this.capture(event.metadata.name, undefined, event.databaseEntity, 'delete');
+        const columnNames = event.metadata.columns.map((c) => c.propertyName);
+        await this.capture(event.metadata.name, undefined, pickColumns(event.databaseEntity, columnNames), 'delete');
     }
 
     private async capture (

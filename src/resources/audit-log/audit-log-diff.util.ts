@@ -8,6 +8,32 @@ export interface RawFieldDiff {
     to?: unknown;
 }
 
+/**
+ * Restricts an entity object to only its real, mapped-column properties
+ * (per TypeORM's own metadata), dropping everything else before it ever
+ * reaches computeFieldDiff: DTO-only fields that aren't @Column properties
+ * (e.g. actorUserId, or UI-computed fields like phaseName the frontend
+ * happens to send along) and, critically, relations (e.g.
+ * taskUserAssignmentRelations) - eager-loaded relations can carry a full
+ * nested entity (e.g. a Users row, including its password hash) and must
+ * never be treated as plain diffable field data.
+ */
+export function pickColumns (
+    entity: Record<string, unknown> | undefined,
+    columnNames: string[]
+): Record<string, unknown> | undefined {
+    if (!entity) {
+        return undefined;
+    }
+    const picked: Record<string, unknown> = {};
+    for (const name of columnNames) {
+        if (name in entity) {
+            picked[name] = entity[name];
+        }
+    }
+    return picked;
+}
+
 export function computeFieldDiff (
     newValues: Record<string, unknown> | undefined,
     oldValues: Record<string, unknown> | undefined

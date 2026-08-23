@@ -1,4 +1,4 @@
-import { AUDIT_CONTEXT_MAX_CHANGES, finalizeAuditChanges, pushAuditChange, runWithAuditContext } from '../../../src/common/audit-context.storage';
+import { AUDIT_CONTEXT_MAX_CHANGES, captureAuditContext, finalizeAuditChanges, pushAuditChange, runWithAuditContext } from '../../../src/common/audit-context.storage';
 
 describe('audit-context.storage', () => {
     it('finalizeAuditChanges returns an empty array when no context is active', () => {
@@ -63,5 +63,21 @@ describe('audit-context.storage', () => {
 
         expect(a).toEqual([{ entityName: 'Tasks', entityId: 1, action: 'update', fields: [] }]);
         expect(b).toEqual([{ entityName: 'Users', entityId: 2, action: 'update', fields: [] }]);
+    });
+
+    it('captureAuditContext + finalizeAuditChanges(handle) reads changes pushed after capture, without needing an active ALS context at read time', () => {
+        let handle: unknown;
+        runWithAuditContext(() => {
+            handle = captureAuditContext();
+            pushAuditChange({ entityName: 'Tasks', entityId: 1, action: 'update', fields: [] });
+        });
+
+        // Read outside any runWithAuditContext call - simulates an event-emitter
+        // callback firing well after the context that registered it has ended.
+        expect(finalizeAuditChanges(handle)).toEqual([{ entityName: 'Tasks', entityId: 1, action: 'update', fields: [] }]);
+    });
+
+    it('captureAuditContext returns undefined outside a context', () => {
+        expect(captureAuditContext()).toBeUndefined();
     });
 });

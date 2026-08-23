@@ -40,8 +40,19 @@ export function pushAuditChange (change: AuditEntityChange): void {
     store.changes.push(change);
 }
 
-export function finalizeAuditChanges (): AuditEntityChange[] {
-    const store = auditContextStorage.getStore();
+/**
+ * Captures a direct reference to the active store, to be read later via
+ * finalizeAuditChanges(handle) from a callback that might not reliably
+ * re-enter the AsyncLocalStorage context on its own (e.g. an EventEmitter
+ * listener fired via .emit() well after it was registered) - capturing the
+ * live object here, synchronously, sidesteps that uncertainty entirely.
+ */
+export function captureAuditContext (): unknown {
+    return auditContextStorage.getStore();
+}
+
+export function finalizeAuditChanges (context?: unknown): AuditEntityChange[] {
+    const store = (context as AuditContextStore | undefined) ?? auditContextStorage.getStore();
     if (!store) {
         return [];
     }

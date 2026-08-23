@@ -8,6 +8,8 @@ import { UpdateTaskDto } from '../../../../src/resources/tasks/dto/update-task.d
 import { mockedTask } from '../../../shared/task';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AuditLogWsInterceptor } from '../../../../src/common/interceptors/audit-log-ws.interceptor';
+import { AuditLogBufferService } from '../../../../src/resources/audit-log/audit-log-buffer.service';
 
 describe('TasksGateway', () => {
     let gateway: TasksGateway;
@@ -27,6 +29,15 @@ describe('TasksGateway', () => {
                         update: jest.fn(),
                         multiReordering: jest.fn(),
                     },
+                },
+                // @UseInterceptors(AuditLogWsInterceptor) on TasksGateway makes Nest's
+                // testing module construct a real enhancer instance even though these
+                // tests call gateway methods directly and never go through the
+                // interceptor chain - satisfy its one dependency with a stub.
+                AuditLogWsInterceptor,
+                {
+                    provide: AuditLogBufferService,
+                    useValue: { enqueue: jest.fn() },
                 },
             ],
         }).compile();

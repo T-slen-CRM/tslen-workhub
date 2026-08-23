@@ -11,6 +11,8 @@ import { UpdateTaskDto } from '../dto/update-task.dto';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UsePipes } from '@nestjs/common/decorators/core/use-pipes.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
+import { UseInterceptors } from '@nestjs/common';
+import { AuditLogWsInterceptor } from '../../../common/interceptors/audit-log-ws.interceptor';
 export const enum TasksEvents {
   UPDATE = 'update',
   CREATE = 'create',
@@ -19,6 +21,7 @@ export const enum TasksEvents {
   COMMENT_CREATED = 'comment-created',
 }
 
+@UseInterceptors(AuditLogWsInterceptor)
 @WebSocketGateway({
     namespace: 'tasks',
     cors: {

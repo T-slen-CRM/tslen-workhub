@@ -236,6 +236,26 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       })
   }
 
+  getAttachmentIcon(fileName: string): string {
+    const extension = (fileName ?? '').split('.').pop()?.toLowerCase() ?? '';
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) {
+      return 'image';
+    }
+    if (extension === 'pdf') {
+      return 'picture_as_pdf';
+    }
+    if (['doc', 'docx'].includes(extension)) {
+      return 'description';
+    }
+    if (['xls', 'xlsx', 'csv'].includes(extension)) {
+      return 'table_chart';
+    }
+    if (['zip', 'rar', '7z'].includes(extension)) {
+      return 'folder_zip';
+    }
+    return 'insert_drive_file';
+  }
+
   openPreview(event){
     this.dialog.open(PreviewModalComponent, {
         width: '80%',

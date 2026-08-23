@@ -151,6 +151,8 @@
       "activity_new_task": "La actividad estará disponible una vez creada esta tarea.",
       "users": "Usuarios",
       "upload attachments": "Subir archivos adjuntos:",
+      "attachments": "Archivos adjuntos",
+      "add_attachment": "+ Añadir archivo adjunto",
       "button": {
         "save": "Guardar",
         "cancel": "Cancelar",

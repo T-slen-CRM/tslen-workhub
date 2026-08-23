@@ -1,10 +1,12 @@
 <div class="file-input">
-    <mat-label>{{uploadLabel}}</mat-label>
+    @if (uploadLabel) {
+        <mat-label>{{uploadLabel}}</mat-label>
+    }
     <button class="file-button"  mat-raised-button
             (click)="fileInput.click()"
             [disabled]="disableSelect"
     >
-        {{"task.form.button.select"| translate}}
+        {{ buttonLabel || ("task.form.button.select"| translate) }}
     </button>
     <input
             hidden

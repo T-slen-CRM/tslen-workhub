@@ -151,6 +151,8 @@
       "activity_new_task": "L'activité sera disponible une fois cette tâche créée.",
       "users": "Utilisateurs",
       "upload attachments": "Téléverser des pièces jointes :",
+      "attachments": "Pièces jointes",
+      "add_attachment": "+ Ajouter une pièce jointe",
       "button": {
         "save": "Enregistrer",
         "cancel": "Annuler",

@@ -6,9 +6,10 @@ import { TasksModule } from '../tasks/tasks.module';
 import { TaskPhaseModule } from '../task-phase/task-phase.module';
 import { TaskProjectModule } from '../task-project/task-project.module';
 import { ApiTokensModule } from '../api-tokens/api-tokens.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-    imports: [TasksModule, TaskPhaseModule, TaskProjectModule, ApiTokensModule],
+    imports: [TasksModule, TaskPhaseModule, TaskProjectModule, ApiTokensModule, UsersModule],
     controllers: [ExternalTasksController, ExternalProjectsController],
     providers: [ExternalTasksService],
 })

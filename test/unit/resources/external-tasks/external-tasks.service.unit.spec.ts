@@ -5,6 +5,7 @@ import { TasksService } from '../../../../src/resources/tasks/tasks.service';
 import { TasksRepository } from '../../../../src/resources/tasks/tasks.repository';
 import { TaskPhaseRepository } from '../../../../src/resources/task-phase/task-phase.repository';
 import { TaskProjectRepository } from '../../../../src/resources/task-project/task-project.repository';
+import { UsersRepository } from '../../../../src/resources/users/users.repository';
 import { Tasks } from '../../../../src/resources/tasks/entities/task.entity';
 import { TaskPhase } from '../../../../src/resources/task-phase/entities/task-phase.entity';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
@@ -16,6 +17,7 @@ describe('ExternalTasksService', () => {
     let tasksRepository: jest.Mocked<TasksRepository>;
     let taskPhaseRepository: jest.Mocked<TaskPhaseRepository>;
     let taskProjectRepository: jest.Mocked<TaskProjectRepository>;
+    let usersRepository: jest.Mocked<UsersRepository>;
 
     beforeEach(() => {
         const { unit, unitRef } = TestBed.create(ExternalTasksService).compile();
@@ -24,6 +26,7 @@ describe('ExternalTasksService', () => {
         tasksRepository = unitRef.get(TasksRepository);
         taskPhaseRepository = unitRef.get(TaskPhaseRepository);
         taskProjectRepository = unitRef.get(TaskProjectRepository);
+        usersRepository = unitRef.get(UsersRepository);
     });
 
     describe('list', () => {
@@ -100,6 +103,55 @@ describe('ExternalTasksService', () => {
             const user = { id: 7 } as Users;
 
             await expect(service.create({ title: 'New task', phaseId: 31 } as never, user))
+                .rejects.toThrow(NotFoundException);
+            expect(tasksService.create).not.toHaveBeenCalled();
+        });
+
+        it('sets createdAt to the current time', async () => {
+            taskPhaseRepository.findOne.mockResolvedValue({ id: 5 } as TaskPhase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
+            tasksService.create.mockResolvedValue({ id: 1 } as Tasks);
+            const user = { id: 7, firstName: 'Jane', lastName: 'Doe' } as Users;
+
+            await service.create({ title: 'New task', phaseId: 5 } as never, user);
+
+            expect(tasksService.create).toHaveBeenCalledWith(expect.objectContaining({ createdAt: expect.any(Date) }));
+        });
+
+        it('resolves assigneeEmail to a user and populates taskUserAssignmentRelations', async () => {
+            taskPhaseRepository.findOne.mockResolvedValue({ id: 5 } as TaskPhase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
+            usersRepository.findOneByCondition.mockResolvedValue({ id: 42 } as Users);
+            tasksService.create.mockResolvedValue({ id: 1 } as Tasks);
+            const user = { id: 7, firstName: 'Jane', lastName: 'Doe' } as Users;
+
+            await service.create({ title: 'New task', phaseId: 5, assigneeEmail: 'assignee@example.com' } as never, user);
+
+            expect(usersRepository.findOneByCondition).toHaveBeenCalledWith({ email: 'assignee@example.com' });
+            expect(tasksService.create).toHaveBeenCalledWith(expect.objectContaining({
+                taskUserAssignmentRelations: [{ userId: 42 }],
+            }));
+        });
+
+        it('does not look up a user or populate taskUserAssignmentRelations when no assigneeEmail is given', async () => {
+            taskPhaseRepository.findOne.mockResolvedValue({ id: 5 } as TaskPhase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
+            tasksService.create.mockResolvedValue({ id: 1 } as Tasks);
+            const user = { id: 7, firstName: 'Jane', lastName: 'Doe' } as Users;
+
+            await service.create({ title: 'New task', phaseId: 5 } as never, user);
+
+            expect(usersRepository.findOneByCondition).not.toHaveBeenCalled();
+            expect(tasksService.create).toHaveBeenCalledWith(expect.objectContaining({ taskUserAssignmentRelations: undefined }));
+        });
+
+        it('throws NotFoundException for an unknown assigneeEmail, instead of silently creating an unassigned task', async () => {
+            taskPhaseRepository.findOne.mockResolvedValue({ id: 5 } as TaskPhase);
+            taskProjectRepository.findByPhaseId.mockResolvedValue({ id: 9 } as TaskProject);
+            usersRepository.findOneByCondition.mockResolvedValue(null);
+            const user = { id: 7 } as Users;
+
+            await expect(service.create({ title: 'New task', phaseId: 5, assigneeEmail: 'missing@example.com' } as never, user))
                 .rejects.toThrow(NotFoundException);
             expect(tasksService.create).not.toHaveBeenCalled();
         });

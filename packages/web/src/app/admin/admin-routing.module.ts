@@ -6,6 +6,7 @@ import {PendingComponent} from "./pending/pending.component";
 import {InventoryComponent} from './inventory/inventory.component';
 import {InventoryCreateComponent} from './inventory/inventory-create/inventory-create.component';
 import {InventoryUpdateComponent} from './inventory/inventory-update/inventory-update.component';
+import {RoleGuard} from '../guards/role.guard';
 
 const routes: Routes = [
   {
@@ -38,6 +39,12 @@ const routes: Routes = [
             path: 'inventory-update/:id',
             component: InventoryUpdateComponent,
             data: { animation: 'InventoryUpdateComponent'}
+        },
+        {
+            path: 'audit-log',
+            loadComponent: () => import('./audit-log/audit-log.component').then(module => module.AuditLogComponent),
+            canActivate: [RoleGuard],
+            data: { roles: ['admin'] },
         }
       ],
   }

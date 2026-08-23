@@ -5,7 +5,7 @@
             <div class="task-dialog-header">
                 <div class="title-block">
                     @if (titleEditing()) {
-                        <mat-form-field class="title-field" appearance="outline" subscriptSizing="dynamic">
+                        <mat-form-field class="title-field input-mat-select" appearance="outline" subscriptSizing="dynamic">
                             <input matInput
                                    type="text"
                                    [placeholder]="'task.form.placeholder'| translate"
@@ -28,7 +28,7 @@
                         </button>
                     }
                 </div>
-                <mat-form-field class="phase-pill-field" appearance="outline" subscriptSizing="dynamic">
+                <mat-form-field class="phase-pill-field input-mat-select" appearance="outline" subscriptSizing="dynamic">
                     <mat-select formControlName="phaseId">
                         <mat-option *ngFor="let phase of data.phaseList" [value]="phase.id">
                             {{phase.name}}
@@ -40,15 +40,26 @@
             <div class="task-dialog-body">
                 <div class="task-dialog-main">
                     <div class="description-block">
-                        <mat-label>{{'task.form.description' | translate}}</mat-label>
+                        <div class="field-label-row">
+                            <span class="field-label">{{'task.form.description' | translate}}</span>
+                            @if (descriptionEditing()) {
+                                <button type="button" mat-icon-button class="field-done-btn"
+                                        (click)="descriptionEditing.set(false)"
+                                        [matTooltip]="'task.form.description_done' | translate"
+                                        [attr.aria-label]="'task.form.description_done' | translate">
+                                    <mat-icon>done</mat-icon>
+                                </button>
+                            } @else {
+                                <button type="button" mat-icon-button class="field-edit-btn"
+                                        (click)="descriptionEditing.set(true)"
+                                        [matTooltip]="'task.form.description_edit' | translate"
+                                        [attr.aria-label]="'task.form.description_edit' | translate">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            }
+                        </div>
                         @if (descriptionEditing()) {
                             <app-text-editor formControlName="description" [customEditorConfig]="textEditorConfig"></app-text-editor>
-                            <button type="button" mat-icon-button class="field-done-btn"
-                                    (click)="descriptionEditing.set(false)"
-                                    [matTooltip]="'task.form.description_done' | translate"
-                                    [attr.aria-label]="'task.form.description_done' | translate">
-                                <mat-icon>done</mat-icon>
-                            </button>
                         } @else {
                             <div #descriptionPreviewEl
                                  class="description-preview"
@@ -60,17 +71,11 @@
                                     {{ (descriptionExpanded() ? 'task.form.show_less' : 'task.form.show_more') | translate }}
                                 </button>
                             }
-                            <button type="button" mat-icon-button class="field-edit-btn"
-                                    (click)="descriptionEditing.set(true)"
-                                    [matTooltip]="'task.form.description_edit' | translate"
-                                    [attr.aria-label]="'task.form.description_edit' | translate">
-                                <mat-icon>edit</mat-icon>
-                            </button>
                         }
                     </div>
 
                     <div class="activity-section">
-                        <h4 class="activity-heading">{{'task.form.activity' | translate}}</h4>
+                        <span class="field-label">{{'task.form.activity' | translate}}</span>
                         <div class="activity-tabs">
                             <button type="button" class="activity-tab" [class.active]="activeActivityTab() === 'all'" (click)="activeActivityTab.set('all')">
                                 {{'task.form.activity_all' | translate}}
@@ -131,13 +136,13 @@
 
                     @if (incomingProject?.createdByName) {
                         <div class="sidebar-row">
-                            <span class="sidebar-label">{{'task.form.created_by' | translate}}</span>
+                            <span class="field-label">{{'task.form.created_by' | translate}}</span>
                             <span class="sidebar-value">{{incomingProject.createdByName}}</span>
                         </div>
                     }
 
                     <div class="sidebar-row">
-                        <span class="sidebar-label">{{'task.form.upload attachments'| translate}}</span>
+                        <span class="field-label">{{'task.form.upload attachments'| translate}}</span>
                         <app-upload-files
                                 formControlName="taskAttachments"
                                 [uploadLabel]="'task.form.upload attachments'| translate"

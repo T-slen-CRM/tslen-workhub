@@ -198,6 +198,22 @@ const NavigationItems = [
       }
     ]
   },
+  {
+    id: 'audit-log-group',
+    title: 'Audit Log',
+    type: 'group',
+    icon: 'feather icon-monitor',
+    admin: true,
+    children: [
+      {
+        id: 'audit-log',
+        title: 'Audit Log',
+        type: 'item',
+        url: '/admin/audit-log',
+        icon: 'feather icon-list'
+      }
+    ]
+  },
 
 ];
 

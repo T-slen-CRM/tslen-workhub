@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -26,6 +26,8 @@ import { AppThrottlerModule } from './common/throttler/throttler.module';
 import { ApiTokensModule } from './resources/api-tokens/api-tokens.module';
 import { ExternalTasksModule } from './resources/external-tasks/external-tasks.module';
 import { NotificationsModule } from './resources/notifications/notifications.module';
+import { AuditLogModule } from './resources/audit-log/audit-log.module';
+import { AuditLogMiddleware } from './common/middlewares/audit-log.middleware';
 @Module({
     imports: [
         ServeStaticModule.forRoot({
@@ -56,7 +58,12 @@ import { NotificationsModule } from './resources/notifications/notifications.mod
         LiveKitModule,
         ChatModule,
         InventoryModule,
-        AppThrottlerModule
+        AppThrottlerModule,
+        AuditLogModule
     ]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure (consumer: MiddlewareConsumer): void {
+        consumer.apply(AuditLogMiddleware).forRoutes('*');
+    }
+}

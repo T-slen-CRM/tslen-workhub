@@ -47,7 +47,7 @@ AuditLogMiddleware (global, common/middlewares/)
 AuditLogBufferService.enqueue(entry)   -- O(1), never awaited, never blocks
   - bounded in-memory array (capacity-capped)
         |
-        v  (every ~2s, via @Interval())
+        v  (every 60s, via @Interval())
   batched repository.insert([...])  -->  audit_logs table (Postgres)
 ```
 
@@ -89,19 +89,33 @@ Responsibilities:
   if under capacity; if full, increments a `droppedCount` and logs a
   warning via Nest's `Logger` (throttled to avoid log-spam-on-log-spam) —
   it never grows unbounded, never throws, never blocks the caller.
-- `@Interval(2000)` handler drains the current buffer (swap-and-clear to
-  avoid races with concurrent `enqueue()` calls) and issues one batched
-  `repository.insert(entries)`. If the insert throws, catch and log —
-  never propagate (the HTTP responses these entries belong to have
+- `@Interval(60_000)` handler drains the current buffer (swap-and-clear
+  to avoid races with concurrent `enqueue()` calls) and issues one
+  batched `repository.insert(entries)`. If the insert throws, catch and
+  log — never propagate (the HTTP responses these entries belong to have
   already completed).
 - This bounded-buffer design is the direct answer to "what if this gets
   flooded/DDoSed": the middleware still fires on every incoming request
   (it runs before the rate limiter, which is a guard), but the *cost* of
   each fired request is one array push, and total DB write cost is
   capped at `flushInterval × capacity`, independent of request volume.
-  A crash before a flush loses at most ~2s of buffered rows — acceptable
-  for this use case (same loss window as any other in-process
-  fire-and-forget write), not acceptable for hard compliance guarantees.
+  A crash before a flush loses at most ~60s of buffered rows — a real
+  trade-off, chosen deliberately over a shorter interval to minimize
+  write frequency against the relational DB (see below), not acceptable
+  for hard compliance guarantees. Under sustained traffic exceeding
+  `capacity / flushInterval` (~83 mutations/sec at these settings), the
+  buffer fills between ticks and additional entries are dropped rather
+  than queued — a longer interval trades a larger drop rate under
+  sustained heavy load for fewer, larger batched writes under normal
+  load.
+- **Why 60s and not something shorter** (e.g. 2s, as first drafted):
+  each flush is already a single batched multi-row `INSERT`, not one
+  write per request, so DB cost per flush barely changes whether it
+  carries a handful of rows or a few hundred — the per-flush overhead
+  that scales with *frequency* (one transaction, one WAL write, one
+  index-maintenance pass) is what a longer interval reduces. For this
+  app's realistic mutation volume, minimizing flush frequency was judged
+  to matter more than log freshness or the crash-loss window.
 
 ### 3. `AuditLog` entity + repository (`src/resources/audit-log/`)
 

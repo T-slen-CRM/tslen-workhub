@@ -5,7 +5,7 @@ import { AuditLogRepository } from './audit-log.repository';
 import { AuditLog } from './entities/audit-log.entity';
 
 export const AUDIT_LOG_BUFFER_CAPACITY = 5000;
-export const AUDIT_LOG_FLUSH_INTERVAL_MS = 2000;
+export const AUDIT_LOG_FLUSH_INTERVAL_MS = 60_000;
 
 @Injectable()
 export class AuditLogBufferService {

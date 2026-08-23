@@ -47,6 +47,21 @@ describe('AuditLogWsInterceptor', () => {
         });
     });
 
+    it('picks Tasks as resourceType over a Notification side effect, even when Notification was pushed first', (done) => {
+        const { interceptor, enqueue } = build();
+        const client = { user: { id: 7 }, handshake: { address: '9.9.9.9' } };
+        const wrappedHandler: CallHandler = { handle: () => {
+            pushAuditChange({ entityName: 'Notification', entityId: 3, action: 'insert', fields: [] });
+            pushAuditChange({ entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'assignee', to: 12 }] });
+            return of(undefined);
+        } };
+
+        interceptor.intercept(buildContext(client), wrappedHandler).subscribe(() => {
+            expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({ resourceType: 'Tasks', resourceId: '42' }));
+            done();
+        });
+    });
+
     it('records a failure and re-throws the original error unchanged', (done) => {
         const { interceptor, enqueue } = build();
         const client = { user: { id: 7 }, handshake: { address: '9.9.9.9' } };

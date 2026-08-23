@@ -2,13 +2,17 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffer.service';
-import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
-import { captureAuditContext, finalizeAuditChanges, runWithAuditContext } from '../audit-context.storage';
+import { AuditEntityChange, captureAuditContext, finalizeAuditChanges, runWithAuditContext } from '../audit-context.storage';
 
 interface AuditableSocket {
     user?: { id?: number };
     handshake?: { address?: string };
 }
+
+// Entities that are always a side effect of an operation, never its subject -
+// excluded from resourceType/resourceId selection so e.g. a Notification
+// created as a side effect of a task reassignment doesn't outrank Tasks.
+const SECONDARY_ENTITY_NAMES = new Set(['Notification', 'TaskUserAssignmentRelation']);
 
 @Injectable()
 export class AuditLogWsInterceptor implements NestInterceptor {
@@ -37,8 +41,8 @@ export class AuditLogWsInterceptor implements NestInterceptor {
     }
 
     private record (auditContext: unknown, client: AuditableSocket, eventName: string, statusCode: number): void {
-        const changes = collapseRelationPairs(finalizeAuditChanges(auditContext));
-        const primaryChange = changes[0] as { entityName?: string; entityId?: unknown } | undefined;
+        const changes = finalizeAuditChanges(auditContext);
+        const primaryChange = changes.find((c) => !SECONDARY_ENTITY_NAMES.has(c.entityName)) as AuditEntityChange | undefined;
 
         this.auditLogBufferService.enqueue({
             userId: client.user?.id ?? null,

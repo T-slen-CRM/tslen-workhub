@@ -98,11 +98,10 @@ describe('AuditLogMiddleware', () => {
         const { middleware, enqueue } = buildMiddleware();
         const req: any = { method: 'PATCH', headers: {}, params: { id: '42' }, route: { path: '/api/v1/tasks/:id' }, originalUrl: '/api/v1/tasks/42', body: {} };
         const res = buildRes(200);
-        let capturedNext: () => void;
-        const next = jest.fn(() => { capturedNext(); });
-
         // Simulate a downstream subscriber pushing a change during next().
-        capturedNext = () => { pushAuditChange({ entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'phaseId', from: 3, to: 5 }] }); };
+        const next = jest.fn(() => {
+            pushAuditChange({ entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'phaseId', from: 3, to: 5 }] });
+        });
 
         middleware.use(req, res as any, next);
         (res as unknown as EventEmitter).emit('finish');
@@ -112,6 +111,21 @@ describe('AuditLogMiddleware', () => {
             resourceId: '42',
             changes: [{ entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'phaseId', from: 3, to: 5 }] }],
         }));
+    });
+
+    it('picks Tasks as resourceType over a Notification side effect, even when Notification was pushed first', () => {
+        const { middleware, enqueue } = buildMiddleware();
+        const req: any = { method: 'PATCH', headers: {}, params: { id: '42' }, route: { path: '/api/v1/tasks/:id' }, originalUrl: '/api/v1/tasks/42', body: {} };
+        const res = buildRes(200);
+        const next = jest.fn(() => {
+            pushAuditChange({ entityName: 'Notification', entityId: 3, action: 'insert', fields: [] });
+            pushAuditChange({ entityName: 'Tasks', entityId: 42, action: 'update', fields: [{ field: 'assignee', to: 12 }] });
+        });
+
+        middleware.use(req, res as any, next);
+        (res as unknown as EventEmitter).emit('finish');
+
+        expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({ resourceType: 'Tasks', resourceId: '42' }));
     });
 
     it('falls back to the URL-derived resourceType and a null changes field when nothing changed', () => {

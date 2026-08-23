@@ -2,11 +2,13 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffer.service';
 import { sanitizeRequestBody } from '../../resources/audit-log/audit-log-sanitize.util';
-import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
 import { captureAuditContext, finalizeAuditChanges, runWithAuditContext, AuditEntityChange } from '../audit-context.storage';
 
 const LOGGED_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
-const RELATION_ENTITY_NAMES = new Set(['TaskUserAssignmentRelation']);
+// Entities that are always a side effect of an operation, never its subject -
+// excluded from resourceType/resourceId selection so e.g. a Notification
+// created as a side effect of a task reassignment doesn't outrank Tasks.
+const SECONDARY_ENTITY_NAMES = new Set(['Notification', 'TaskUserAssignmentRelation']);
 
 @Injectable()
 export class AuditLogMiddleware implements NestMiddleware {
@@ -28,8 +30,8 @@ export class AuditLogMiddleware implements NestMiddleware {
             res.on('finish', () => {
                 const user = (req as unknown as { user?: { id?: number } }).user;
                 const route: string = (req.route?.path as string | undefined) ?? req.originalUrl;
-                const changes = collapseRelationPairs(finalizeAuditChanges(auditContext));
-                const primaryChange = changes.find((c) => !RELATION_ENTITY_NAMES.has(c.entityName)) as AuditEntityChange | undefined;
+                const changes = finalizeAuditChanges(auditContext);
+                const primaryChange = changes.find((c) => !SECONDARY_ENTITY_NAMES.has(c.entityName)) as AuditEntityChange | undefined;
 
                 this.auditLogBufferService.enqueue({
                     userId: user?.id ?? null,

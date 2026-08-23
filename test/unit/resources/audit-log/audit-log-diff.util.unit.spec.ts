@@ -1,5 +1,19 @@
-import { collapseRelationPairs, computeFieldDiff } from '../../../../src/resources/audit-log/audit-log-diff.util';
+import { collapseRelationPairs, computeFieldDiff, pickColumns } from '../../../../src/resources/audit-log/audit-log-diff.util';
 import { AuditEntityChange } from '../../../../src/common/audit-context.storage';
+
+describe('pickColumns', () => {
+    it('keeps only the listed keys', () => {
+        expect(pickColumns({ id: 1, title: 'x', actorUserId: 2 }, ['id', 'title'])).toEqual({ id: 1, title: 'x' });
+    });
+
+    it('omits a listed key that is not present on the entity at all, rather than adding it as undefined', () => {
+        expect(pickColumns({ id: 1 }, ['id', 'title'])).toEqual({ id: 1 });
+    });
+
+    it('returns undefined for an undefined entity', () => {
+        expect(pickColumns(undefined, ['id'])).toBeUndefined();
+    });
+});
 
 describe('computeFieldDiff', () => {
     it('returns only the fields that actually changed, for an update', () => {

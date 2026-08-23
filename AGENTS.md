@@ -27,6 +27,23 @@ Two separate npm projects: `npm install` at repo root **and** inside
   Running tests/build under an old Node version fails with cryptic
   `ERR_UNKNOWN_BUILTIN_MODULE` errors from `npx jest` — that's the tell.
 
+## Task tracking
+
+Track significant feature/architectural work (not small bug fixes) as a
+task in the production Workhub instance itself
+(`https://tslen.ds.bidscube.com`), created via its own external API —
+not by hand through the UI.
+- Endpoint: `POST {baseUrl}/api/v{API_VERSION}/external/tasks` (see
+  `src/resources/external-tasks/`). Auth: `Authorization: Bearer
+  <api-token>`, where the token is minted via `POST /api-tokens` while
+  logged in (see `src/resources/api-tokens/`).
+- Required body field: `title`, `phaseId` (the Kanban list/phase to file
+  into — resolve this from the target board, e.g. the list id in a
+  `tasks-list/<id>` URL). Optional: `description`, `priority`,
+  `assigneeEmail`.
+- Never guess the API token or `phaseId` against production — ask the
+  user for both before calling this endpoint.
+
 ## Git workflow
 
 - **Conventional Commits** for every commit message: `<type>(<scope>): <description>`

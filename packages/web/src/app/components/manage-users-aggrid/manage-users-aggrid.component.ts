@@ -117,7 +117,6 @@ export class ManageUsersAggridComponent implements OnInit {
       sortable: true,
       resizable: true,
       flex: 1,
-      enableCellTextSelection: true,
       suppressSizeToFit: true,
       filter: true,
     };

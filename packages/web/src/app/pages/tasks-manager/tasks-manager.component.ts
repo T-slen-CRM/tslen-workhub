@@ -235,8 +235,8 @@ export class TasksManagerComponent implements OnInit, OnDestroy {
     return await lastValueFrom(dialogRef.afterClosed());
   }
 
-  trackByFn(index: any, item: any): number {
-    return item.index;
+  trackByFn(index: any, item: ITaskProject): number {
+    return item.id;
   }
   openProjectMembers(project: ITaskProject) {
     const dialogConfig = {

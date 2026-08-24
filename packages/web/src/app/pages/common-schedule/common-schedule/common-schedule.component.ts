@@ -75,7 +75,6 @@ export class CommonScheduleComponent implements OnInit {
       sortable: true,
       resizable: true,
       // maxWidth: 25,
-      enableCellTextSelection: true,
       // suppressSizeToFit: true
     };
     this.components = {

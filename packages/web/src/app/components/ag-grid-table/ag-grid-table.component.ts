@@ -29,8 +29,6 @@ export class AgGridTableComponent implements AfterViewInit {
   constructor() {
     this.defaultColDef = {
       resizable: true,
-      headerHeight: 81,
-      pagination: true,
       width: 75,
     };
     effect(() => {

@@ -36,7 +36,6 @@ export class PendingAggridComponent implements OnInit {
       sortable: true,
       resizable: true,
       flex: 1,
-      enableCellTextSelection: true,
       suppressSizeToFit: true,
       filter: true,
     };
@@ -51,7 +50,7 @@ export class PendingAggridComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.gridApi.showLoadingOverlay();
+    this.gridApi.setGridOption('loading', true);
     this.gridApi.sizeColumnsToFit();
   }
   loadTranslations() {

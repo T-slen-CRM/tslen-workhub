@@ -1,9 +1,9 @@
 import {Injectable, Signal, signal, WritableSignal} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import {BehaviorSubject, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {ConfigurationService} from "./ConfigurationService";
-import {environment} from "../../environments/environment";
 
 export interface ISessionData {
     userId?: number;
@@ -69,7 +69,7 @@ export class AuthDataParams implements ISessionData {
 export class AuthData extends AuthDataParams  {
 
     constructor(authData: ISessionData) {
-        super(authData)
+        super(authData);
     }
 
 }
@@ -112,14 +112,14 @@ export class AuthenticationService {
         // );
     }
 
-    login(data: any): any {
+    login(data: Record<string, unknown>): Observable<HttpResponse<unknown>> {
         return this.http.post(this.apiHost + '/auth/login', data, {
             observe: 'response'
 
         });
     }
 
-    getCurrentUser(): any {
+    getCurrentUser(): Record<string, unknown> {
         // TODO: Enable after implementation
         if ( Object.keys(localStorage).length > 0 && localStorage.isLoggedIn === 'true' && localStorage.token) {
             return {
@@ -140,7 +140,7 @@ export class AuthenticationService {
         });
     }
 
-    getAuthData(router: any = null): Observable<boolean> {
+    getAuthData(router: Router | null = null): Observable<boolean> {
         return this.http.get(this.apiHost + '/auth/session-data').pipe(map((authData: AuthData) => {
             if (authData && Object.keys(authData).length) {
                 this.authData$.next(new AuthData(authData));
@@ -153,9 +153,10 @@ export class AuthenticationService {
             return false;
         }));
     }
-    public updateAuthDataSignal(authData: any) {
-        this.authData$.next(new AuthData(authData));
-        this._authDataSignal.set(authData);
+    public updateAuthDataSignal(authData: ISessionData) {
+        const nextAuthData = new AuthData(authData);
+        this.authData$.next(nextAuthData);
+        this._authDataSignal.set(nextAuthData);
     }
 }
 export interface IUserGooglePermissions {

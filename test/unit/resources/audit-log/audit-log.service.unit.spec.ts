@@ -16,13 +16,13 @@ describe('AuditLogService', () => {
         expect(result).toBe(rows);
     });
 
-    it('passes userId/resourceType filters through to the repository', async () => {
+    it('passes userIds/resourceTypes filters through to the repository', async () => {
         const { unit, unitRef } = TestBed.create(AuditLogService).compile();
         const repository = unitRef.get(AuditLogRepository);
         repository.findRecent.mockResolvedValue([]);
 
-        await unit.findRecent({ userId: 3, resourceType: 'Tasks' });
+        await unit.findRecent({ userIds: [3, 5], resourceTypes: ['Tasks'] });
 
-        expect(repository.findRecent).toHaveBeenCalledWith(30, 1000, { userId: 3, resourceType: 'Tasks' });
+        expect(repository.findRecent).toHaveBeenCalledWith(30, 1000, { userIds: [3, 5], resourceTypes: ['Tasks'] });
     });
 });

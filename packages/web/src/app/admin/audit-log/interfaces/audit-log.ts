@@ -27,3 +27,25 @@ export interface IAuditLog {
     changes: IAuditEntityChange[] | null;
     createdAt: string;
 }
+
+export interface IAuditLogUser {
+    id: number;
+    firstName: string;
+    lastName: string;
+}
+
+export interface IAuditLogRow {
+    logId: number;
+    createdAt: string;
+    userId: number | null;
+    userName: string;
+    ip: string;
+    method: string;
+    resourceType: string | null;
+    resourceId: string | null;
+    statusCode: number;
+    entityName: string | null;
+    field: string | null;
+    oldValue: string | null;
+    newValue: string | null;
+}

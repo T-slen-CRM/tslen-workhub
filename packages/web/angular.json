@@ -36,7 +36,13 @@
               "ng2-validation",
               "css-animator",
               "xlsx",
-              "ng-click-outside"
+              "ng-click-outside",
+              "debug",
+              "apexcharts",
+              "lodash",
+              "file-saver",
+              "screenfull",
+              "moment"
             ],
             "assets": [
               "src/favicon.ico",

@@ -11,7 +11,7 @@ See `README.md` for the product/feature overview and tech stack.
 - `src/` — NestJS backend (TypeORM + PostgreSQL, WebSockets).
 - `packages/web/` — Angular 17 frontend, its own `package.json`.
 - `test/` — backend Jest tests (`unit/`, `integration/`).
-- Frontend tests live next to the file they cover (`*.spec.ts`), run via Karma/Jasmine.
+- Frontend tests live next to the file they cover (`*.spec.ts`), run via Jest.
 
 Two separate npm projects: `npm install` at repo root **and** inside
 `packages/web/` are both required.
@@ -89,21 +89,27 @@ repository a small fake `EntityManager` that applies the same `where`
 clause shape (see `test/unit/resources/google-calendar/google-calendar.repository.unit.spec.ts`
 for the pattern) — no need to spin up Postgres for that.
 
-**Frontend (Karma/Jasmine, from `packages/web/`):**
+**Frontend (Jest + jest-preset-angular, from `packages/web/`):**
 ```bash
-npm test   # ng test — opens real Chrome, watches by default
+npm test   # jest — headless (jsdom), no browser, runs once and exits
 ```
-The full `ng test` run type-checks *every* `*.spec.ts` in `src/`, including
-some pre-existing broken/unrelated spec files (e.g. `dash-analytics`, a
-couple of directive specs) — a failure there is not necessarily related to
-your change; check with `git stash` if unsure.
+Spec files are still written against Jasmine's API (`jasmine.createSpyObj`,
+`spyOn(obj, 'method').and.returnValue(...)`, `.calls.mostRecent()`, etc.) —
+that's intentional, not a migration leftover to clean up. `@types/jest`
+ships most of that ambient `jasmine` typing itself (Jest carries a copy of
+Jasmine's types for back-compat); `src/test-setup/jasmine-compat.ts` fills
+the small remaining gap (`resolveTo`/`rejectWith`, `SpyObj<T>`,
+`spyOnProperty`, `toBeTrue`/`toBeFalse`) with real `jest.fn()`/`jest.spyOn()`
+underneath, and `src/test-setup/setup-jest.ts` also stubs jsdom's
+`HTMLMediaElement.play()` (jsdom's is a `Promise`-less "not implemented"
+stub, unlike a real browser — code doing `new Audio(...).play().catch(...)`
+throws synchronously without this). Extend `jasmine-compat.ts` rather than
+rewriting a spec file to native `jest.fn()`/`jest.spyOn()` unless you're
+touching that spec anyway.
 To run a single component's specs in isolation without booting the whole
 app's DI graph, mock the service dependencies directly (`jasmine.createSpyObj`)
 rather than pulling in the real providers — see `chat.service.spec.ts` /
-`chat.component.spec.ts` for the pattern. For a one-off headless run
-(e.g. to avoid an interactive Chrome window), a temporary Karma config with
-a `ChromeHeadless` custom launcher (`--no-sandbox`) and `singleRun: true`
-works; `CHROME_BIN` may need to point at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS.
+`chat.component.spec.ts` for the pattern.
 
 ## Angular conventions
 

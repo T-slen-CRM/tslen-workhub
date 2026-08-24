@@ -14,6 +14,7 @@
   <div class="task-comments-form">
     <textarea
       [(ngModel)]="newCommentContent"
+      [ngModelOptions]="{ standalone: true }"
       [placeholder]="'task_comments.placeholder' | translate"
       rows="2"
     ></textarea>

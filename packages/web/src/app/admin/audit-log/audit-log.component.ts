@@ -15,6 +15,7 @@ interface IChipItem {
     selector: 'app-audit-log',
     imports: [CommonModule, ComponentsModule],
     templateUrl: './audit-log.component.html',
+    styleUrls: ['./audit-log.component.scss'],
 })
 export class AuditLogComponent implements OnInit {
     private auditLogService = inject(AuditLogService);
@@ -28,16 +29,16 @@ export class AuditLogComponent implements OnInit {
     public rowData = signal<IAuditLogRow[]>([]);
 
     public columnDefs: ColDef[] = [
-        { field: 'createdAt', headerName: 'When', valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : '' },
-        { field: 'userName', headerName: 'User' },
-        { field: 'ip', headerName: 'IP' },
-        { field: 'method', headerName: 'Method' },
-        { field: 'resourceType', headerName: 'Resource' },
-        { field: 'resourceId', headerName: 'Resource ID' },
-        { field: 'statusCode', headerName: 'Status' },
-        { field: 'field', headerName: 'Field', filter: true, floatingFilter: true },
-        { field: 'oldValue', headerName: 'Old Value', filter: true, floatingFilter: true },
-        { field: 'newValue', headerName: 'New Value', filter: true, floatingFilter: true },
+        { field: 'createdAt', headerName: 'When', sortable: true, filter: true, valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : '' },
+        { field: 'userName', headerName: 'User', sortable: true, filter: true },
+        { field: 'ip', headerName: 'IP', sortable: true, filter: true },
+        { field: 'method', headerName: 'Method', sortable: true, filter: true },
+        { field: 'resourceType', headerName: 'Resource', sortable: true, filter: true },
+        { field: 'resourceId', headerName: 'Resource ID', sortable: true, filter: true },
+        { field: 'statusCode', headerName: 'Status', sortable: true, filter: true },
+        { field: 'field', headerName: 'Field', sortable: true, filter: true },
+        { field: 'oldValue', headerName: 'Old Value', sortable: true, filter: true },
+        { field: 'newValue', headerName: 'New Value', sortable: true, filter: true },
     ];
 
     ngOnInit (): void {

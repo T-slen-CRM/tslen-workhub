@@ -1,21 +1,16 @@
 "use strict";
 
-const webpack = require("webpack");
 /**
  * Custom webpack configuration
+ *
+ * Empty: this used to filter moment's locale files out of the bundle via
+ * webpack.IgnorePlugin, but moment was removed from the project entirely
+ * (nothing here depends on it any more) - see git history for that rule if
+ * a future dependency needs the same locale-filtering treatment.
  */
 module.exports = {
-        module: {
-    rules: [],
-},
-plugins: [
-    // Filter out the moment locales to reduce bundle size
-    // Locales that should be included MUST be added to the project, otherwise they won't be available for use)
-    // References:
-    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-    new webpack.IgnorePlugin({
-        resourceRegExp: /^\.\/locale$/,
-        contextRegExp: /moment$/,
-    })
-],
+    module: {
+        rules: [],
+    },
+    plugins: [],
 };

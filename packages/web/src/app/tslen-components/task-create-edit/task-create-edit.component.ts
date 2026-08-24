@@ -21,9 +21,7 @@ import {DeleteConfirmModalComponent} from '../../components/delete-confirm-modal
 import {DataService} from '../../services/data.service';
 import {ToastrService} from 'ngx-toastr';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {DateAdapter} from 'angular-calendar';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
+import {MatNativeDateModule} from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import {TextEditorComponent} from "../text-editor/text-editor.component";
 import {TaskCommentsComponent} from "../task-comments/task-comments.component";
@@ -41,14 +39,6 @@ import {TaskCommentsComponent} from "../task-comments/task-comments.component";
     ],
     templateUrl: './task-create-edit.component.html',
     styleUrls: ['./task-create-edit.component.scss'],
-    providers: [
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-        },
-        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
-    ]
 })
 export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
 

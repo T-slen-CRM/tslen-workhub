@@ -1,13 +1,21 @@
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
+
+function toArray (value: unknown): string[] {
+    if (Array.isArray(value)) {
+        return value;
+    }
+    return String(value).split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+}
 
 export class ListAuditLogsQueryDto {
     @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-        userId?: number;
+    @Transform(({ value }) => toArray(value).map(Number))
+    @IsInt({ each: true })
+        userIds?: number[];
 
     @IsOptional()
-    @IsString()
-        resourceType?: string;
+    @Transform(({ value }) => toArray(value))
+    @IsString({ each: true })
+        resourceTypes?: string[];
 }

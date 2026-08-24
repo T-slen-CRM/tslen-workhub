@@ -35,7 +35,6 @@ import {DateTimeInputComponent} from "../feature/date-time-input/date-time-input
 import {ComponentsModule} from "../components/components.module";
 import { TranslateModule } from '@ngx-translate/core';
 import { InventoryRenderComponent } from './ag-grid/inventory-render/inventory-render.component';
-import { AuditLogChangesRenderComponent } from './ag-grid/audit-log-changes-render/audit-log-changes-render.component';
 
 @NgModule({
   declarations: [
@@ -46,8 +45,7 @@ import { AuditLogChangesRenderComponent } from './ag-grid/audit-log-changes-rend
       DaysOffCellRendererComponent,
       NameAvatarCellRendererComponent,
       PostsComponent,
-      InventoryRenderComponent,
-      AuditLogChangesRenderComponent
+      InventoryRenderComponent
   ],
     exports: [
         AddUserComponent,

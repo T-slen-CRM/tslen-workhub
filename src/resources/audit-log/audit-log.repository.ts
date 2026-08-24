@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, MoreThanOrEqual, Repository } from 'typeorm';
+import { DeepPartial, In, MoreThanOrEqual, Repository } from 'typeorm';
 import { BaseAbstractRepository } from '../../common/repositories/base/base.abstract.repository';
 import { AuditLog } from './entities/audit-log.entity';
 
@@ -21,14 +21,14 @@ export class AuditLogRepository extends BaseAbstractRepository<AuditLog> {
     findRecent (
         maxAgeDays: number,
         limit: number,
-        filters: { userId?: number; resourceType?: string } = {}
+        filters: { userIds?: number[]; resourceTypes?: string[] } = {}
     ): Promise<AuditLog[]> {
         const since = new Date(Date.now() - maxAgeDays * 24 * 60 * 60 * 1000);
         return this.auditLogRepository.find({
             where: {
                 createdAt: MoreThanOrEqual(since),
-                ...(filters.userId !== undefined ? { userId: filters.userId } : {}),
-                ...(filters.resourceType !== undefined ? { resourceType: filters.resourceType } : {}),
+                ...(filters.userIds && filters.userIds.length > 0 ? { userId: In(filters.userIds) } : {}),
+                ...(filters.resourceTypes && filters.resourceTypes.length > 0 ? { resourceType: In(filters.resourceTypes) } : {}),
             },
             order: { createdAt: 'DESC' },
             take: limit,

@@ -12,6 +12,6 @@ export class AuditLogController {
     @Roles(Role.Admin)
     @Get()
     findRecent (@Query() query: ListAuditLogsQueryDto): Promise<AuditLog[]> {
-        return this.auditLogService.findRecent({ userId: query.userId, resourceType: query.resourceType });
+        return this.auditLogService.findRecent({ userIds: query.userIds, resourceTypes: query.resourceTypes });
     }
 }

@@ -11,16 +11,16 @@ describe('AuditLogController', () => {
         service.findRecent.mockResolvedValue(rows);
 
         expect(await unit.findRecent({})).toBe(rows);
-        expect(service.findRecent).toHaveBeenCalledWith({ userId: undefined, resourceType: undefined });
+        expect(service.findRecent).toHaveBeenCalledWith({ userIds: undefined, resourceTypes: undefined });
     });
 
-    it('passes userId/resourceType query params through to the service', async () => {
+    it('passes userIds/resourceTypes query params through to the service', async () => {
         const { unit, unitRef } = TestBed.create(AuditLogController).compile();
         const service = unitRef.get(AuditLogService);
         service.findRecent.mockResolvedValue([]);
 
-        await unit.findRecent({ userId: 3, resourceType: 'Tasks' });
+        await unit.findRecent({ userIds: [3, 5], resourceTypes: ['Tasks'] });
 
-        expect(service.findRecent).toHaveBeenCalledWith({ userId: 3, resourceType: 'Tasks' });
+        expect(service.findRecent).toHaveBeenCalledWith({ userIds: [3, 5], resourceTypes: ['Tasks'] });
     });
 });

@@ -1,37 +1,48 @@
 <div>
-    <ng-container *ngTemplateOutlet="mediaQueryMatch ? desktop : mobweb"></ng-container>
-    <ng-template #desktop>
-        <div class="request-type-chips">
-            <mat-chip-listbox *ngFor="let logo of logoArr" >
-                <mat-chip-option (click)="changeSelectedType(logo)"
-                          [value]="logo"
-                          [selected]="logo === selectedType"
-                          [ngClass]="logo === selectedType ? 'chip assigned-chip' : 'chip not-assigned-chip'"
-                >
-                    <mat-icon [ngStyle]="{ color: logoObject[logo].color }">
-                        {{logoObject[logo].icon}}
-                    </mat-icon>
-                </mat-chip-option>
-            </mat-chip-listbox>
-        </div>
-    </ng-template>
-    <ng-template #mobweb>
-        <button mat-button>
-            <mat-select [value]="selectedType"
-            >
-                <mat-select-trigger class="selected-trigger">
-                    <mat-icon [ngStyle]="{ color: logoObject[selectedType].color}">
-                        {{logoObject[selectedType].icon}}
-                    </mat-icon>&nbsp;
-                    {{ selectedType }}
-                </mat-select-trigger>
-                <mat-option *ngFor="let day of logoArr" [value]="day">
-                    <mat-icon [ngStyle]="{ color: logoObject[selectedType].color }">{{logoObject[selectedType].icon}}</mat-icon>&nbsp;
-                    {{logoObject[selectedType].title}}
-                </mat-option>
-            </mat-select>
-        </button>
-    </ng-template>
+  <ng-container
+    *ngTemplateOutlet="mediaQueryMatch ? desktop : mobweb"
+  ></ng-container>
+  <ng-template #desktop>
+    <div class="request-type-chips">
+      @for (logo of logoArr; track logo) {
+      <mat-chip-listbox>
+        <mat-chip-option
+          (click)="changeSelectedType(logo)"
+          [value]="logo"
+          [selected]="logo === selectedType"
+          [ngClass]="
+            logo === selectedType
+              ? 'chip assigned-chip'
+              : 'chip not-assigned-chip'
+          "
+        >
+          <mat-icon [ngStyle]="{ color: logoObject[logo].color }">
+            {{ logoObject[logo].icon }}
+          </mat-icon>
+        </mat-chip-option>
+      </mat-chip-listbox>
+      }
+    </div>
+  </ng-template>
+  <ng-template #mobweb>
+    <button mat-button>
+      <mat-select [value]="selectedType">
+        <mat-select-trigger class="selected-trigger">
+          <mat-icon [ngStyle]="{ color: logoObject[selectedType].color }">
+            {{ logoObject[selectedType].icon }} </mat-icon
+          >&nbsp;
+          {{ selectedType }}
+        </mat-select-trigger>
+        @for (day of logoArr; track day) {
+        <mat-option [value]="day">
+          <mat-icon [ngStyle]="{ color: logoObject[selectedType].color }">{{
+            logoObject[selectedType].icon
+          }}</mat-icon
+          >&nbsp;
+          {{ logoObject[selectedType].title }}
+        </mat-option>
+        }
+      </mat-select>
+    </button>
+  </ng-template>
 </div>
-
-

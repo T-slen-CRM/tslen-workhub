@@ -1,24 +1,30 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NavigationItem} from '../../navigation';
-import {animate, style, transition, trigger} from '@angular/animations';
-import {NextConfig} from '../../../../../../app-config';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { NavigationItem } from '../../navigation';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { NextConfig } from '../../../../../../app-config';
 
 @Component({
-    selector: 'app-nav-collapse',
-    templateUrl: './nav-collapse.component.html',
-    styleUrls: ['./nav-collapse.component.scss'],
-    animations: [
-        trigger('slideInOut', [
-            transition(':enter', [
-                style({ transform: 'translateY(-100%)', display: 'block' }),
-                animate('250ms ease-in', style({ transform: 'translateY(0%)' }))
-            ]),
-            transition(':leave', [
-                animate('250ms ease-in', style({ transform: 'translateY(-100%)' }))
-            ])
-        ])
-    ],
-    standalone: false
+  selector: 'app-nav-collapse',
+  templateUrl: './nav-collapse.component.html',
+  styleUrls: ['./nav-collapse.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ transform: 'translateY(-100%)', display: 'block' }),
+        animate('250ms ease-in', style({ transform: 'translateY(0%)' })),
+      ]),
+      transition(':leave', [
+        animate('250ms ease-in', style({ transform: 'translateY(-100%)' })),
+      ]),
+    ]),
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class NavCollapseComponent implements OnInit {
   public visible;
@@ -32,8 +38,7 @@ export class NavCollapseComponent implements OnInit {
     this.themeLayout = this.nextConfig.layout;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   navCollapse(e) {
     this.visible = !this.visible;
@@ -66,5 +71,4 @@ export class NavCollapseComponent implements OnInit {
     }
     parent.classList.toggle('pcoded-trigger');
   }
-
 }

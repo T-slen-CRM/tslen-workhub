@@ -1,11 +1,18 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {NextConfig} from '../../../../app-config';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { NextConfig } from '../../../../app-config';
 
 @Component({
-    selector: 'app-navigation',
-    templateUrl: './navigation.component.html',
-    styleUrls: ['./navigation.component.scss'],
-    standalone: false
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class NavigationComponent implements OnInit {
   public windowWidth: number;
@@ -17,7 +24,7 @@ export class NavigationComponent implements OnInit {
     this.windowWidth = window.innerWidth;
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   navMobCollapse() {
     if (this.windowWidth < 992) {

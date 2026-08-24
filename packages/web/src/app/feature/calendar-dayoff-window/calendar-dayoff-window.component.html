@@ -1,33 +1,52 @@
-
-    <div [ngClass]="isOpenWindow ? 'calendar-dayoff-main-container open' : 'calendar-dayoff-main-container close'"
-         [@expandCollapseBar]="isOpenWindow ? 'open' : 'close'">
-        <div class="calendar-dayoff-header-container">
-            <app-modal-dialog-header
-                    [title]="clickedDate | date: 'EEEE, MMMM d, y'"
-                    (closeDialog)="closeWindow()"
-            ></app-modal-dialog-header>
+<div
+  [ngClass]="
+    isOpenWindow
+      ? 'calendar-dayoff-main-container open'
+      : 'calendar-dayoff-main-container close'
+  "
+  [@expandCollapseBar]="isOpenWindow ? 'open' : 'close'"
+>
+  <div class="calendar-dayoff-header-container">
+    <app-modal-dialog-header
+      [title]="clickedDate | date : 'EEEE, MMMM d, y'"
+      (closeDialog)="closeWindow()"
+    ></app-modal-dialog-header>
+  </div>
+  @for (category of eventsCategories; track category) {
+  <div>
+    @if (events[category].length) {
+    <div class="calendar-dayoff-reason-user-list">
+      <h6>
+        {{ 'model_transltate.' + category | translate }} ({{
+          events[category].length
+        }})
+      </h6>
+      @for (event of events[category]; track event) {
+      <div>
+        <div class="calendar-dayoff-item-content">
+          <div class="calendar-dayoff-item-left-side">
+            <img
+              class="user-avatar-image"
+              src="{{ event.userAvatar }}"
+              alt="user photo"
+            />
+            <span>{{ event.userFirstName }}</span>
+            <span>{{ event.userLastName }}</span>
+          </div>
+          <div class="calendar-dayoff-item-right-side">
+            @if (totalStaticEventIconList[event.title]) {
+            <mat-icon
+              [matTooltip]="event.titleAlias"
+              [ngStyle]="{ color: totalStaticEventIconList[event.title].color }"
+              >{{ totalStaticEventIconList[event.title].icon }}</mat-icon
+            >
+            }
+          </div>
         </div>
-        <div *ngFor="let category of eventsCategories">
-            <div *ngIf="events[category].length" class="calendar-dayoff-reason-user-list">
-                <h6>{{ ('model_transltate.' + category) | translate }} ({{ events[category].length }})</h6>
-                <div *ngFor="let event of events[category]">
-                    <div class="calendar-dayoff-item-content">
-                        <div class="calendar-dayoff-item-left-side">
-                            <img class="user-avatar-image" src="{{event.userAvatar}}" alt="user photo">
-                            <span>{{event.userFirstName}}</span>
-                            <span>{{event.userLastName}}</span>
-                        </div>
-                        <div class="calendar-dayoff-item-right-side">
-                            <ng-container *ngIf="totalStaticEventIconList[event.title]">
-                                <mat-icon [matTooltip]="event.titleAlias"
-                                          [ngStyle]="{ color: totalStaticEventIconList[event.title].color}">{{totalStaticEventIconList[event.title].icon}}</mat-icon>
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+      </div>
+      }
     </div>
-
+    }
+  </div>
+  }
+</div>

@@ -1,21 +1,32 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
-import {IUploadService} from '../../services/upload/upload';
-import {MultipleUploadCreativeService} from '../../services/upload/multiple-upload-creative.service';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-
+import { IUploadService } from '../../services/upload/upload';
+import { MultipleUploadCreativeService } from '../../services/upload/multiple-upload-creative.service';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-upload-creative-modal',
-    templateUrl: './upload-creative-modal.component.html',
-    styleUrls: ['./upload-creative-modal.component.scss'],
-    providers: [{
-            provide: IUploadService,
-            useClass: MultipleUploadCreativeService
-        }],
-    standalone: false
+  selector: 'app-upload-creative-modal',
+  templateUrl: './upload-creative-modal.component.html',
+  styleUrls: ['./upload-creative-modal.component.scss'],
+  providers: [
+    {
+      provide: IUploadService,
+      useClass: MultipleUploadCreativeService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
-export class UploadCreativeModalComponent implements OnInit{
+export class UploadCreativeModalComponent implements OnInit {
   folderId: number;
   file: File | null | undefined;
   format: string;
@@ -31,9 +42,9 @@ export class UploadCreativeModalComponent implements OnInit{
   public folders = [];
   public foldersKeys = [];
   constructor(
-              public dialog: MatDialog,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              public dialogRef: MatDialogRef<UploadCreativeModalComponent>,
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<UploadCreativeModalComponent>,
   ) {}
 
   ngOnInit() {

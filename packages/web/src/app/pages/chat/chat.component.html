@@ -1,28 +1,40 @@
 <div class="chat-container">
-<!--  <h2>Real-time Chat</h2>-->
+  <!--  <h2>Real-time Chat</h2>-->
 
   <div class="status-bar">
     <span [class.connected]="isConnected" [class.disconnected]="!isConnected">
-      {{'chat.status_label' | translate}} {{ (isConnected ? 'chat.status_connected' : 'chat.status_disconnected') | translate }}
+      {{ 'chat.status_label' | translate }}
+      {{
+        (isConnected ? 'chat.status_connected' : 'chat.status_disconnected')
+          | translate
+      }}
     </span>
-<!--    <span class="room-id">Room: {{ chatRoomId() }}</span>-->
-<!--    <span class="user-id">You: {{ userId }}</span>-->
+    <!--    <span class="room-id">Room: {{ chatRoomId() }}</span>-->
+    <!--    <span class="user-id">You: {{ userId }}</span>-->
   </div>
 
-  <div *ngIf="errorMessage" class="error-message">
+  @if (errorMessage) {
+  <div class="error-message">
     {{ errorMessage }}
   </div>
+  }
 
   <div class="chat-messages">
-    <div *ngFor="let message of messages" class="message-bubble" [class.my-message]="message.isMine">
+    @for (message of messages; track message) {
+    <div class="message-bubble" [class.my-message]="message.isMine">
       <div class="message-header">
-        <span class="sender-id">{{ message.isMine ? ('chat.you' | translate) : message.senderId }}</span>
-        <span class="timestamp">{{ message.timestamp | date:'shortTime' }}</span>
+        <span class="sender-id">{{
+          message.isMine ? ('chat.you' | translate) : message.senderId
+        }}</span>
+        <span class="timestamp">{{
+          message.timestamp | date : 'shortTime'
+        }}</span>
       </div>
       <div class="message-content">
         {{ message.content }}
       </div>
     </div>
+    }
   </div>
 
   <div class="chat-input-area">
@@ -33,6 +45,11 @@
       [placeholder]="'chat.message_placeholder' | translate"
       [disabled]="!isConnected"
     />
-    <button (click)="sendMessage()" [disabled]="!isConnected || !newMessageContent.trim()">{{'chat.send' | translate}}</button>
+    <button
+      (click)="sendMessage()"
+      [disabled]="!isConnected || !newMessageContent.trim()"
+    >
+      {{ 'chat.send' | translate }}
+    </button>
   </div>
 </div>

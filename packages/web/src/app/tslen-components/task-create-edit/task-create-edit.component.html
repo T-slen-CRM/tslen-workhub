@@ -1,195 +1,305 @@
-
 <form [formGroup]="form">
-    <mat-dialog-content class="mat-typography">
-        <div class="task-dialog">
-            <div class="task-dialog-header">
-                <div class="title-block">
-                    @if (titleEditing()) {
-                        <mat-form-field class="title-field input-mat-select" appearance="outline" subscriptSizing="dynamic">
-                            <input matInput
-                                   type="text"
-                                   [placeholder]="'task.form.placeholder'| translate"
-                                   formControlName="title"
-                            />
-                        </mat-form-field>
-                        <button type="button" mat-icon-button class="field-done-btn"
-                                (click)="titleEditing.set(false)"
-                                [matTooltip]="'task.form.description_done' | translate"
-                                [attr.aria-label]="'task.form.description_done' | translate">
-                            <mat-icon>done</mat-icon>
-                        </button>
-                    } @else {
-                        <h2 class="title-preview">{{ form.get('title').value }}</h2>
-                        <button type="button" mat-icon-button class="field-edit-btn"
-                                (click)="titleEditing.set(true)"
-                                [matTooltip]="'task.form.description_edit' | translate"
-                                [attr.aria-label]="'task.form.description_edit' | translate">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    }
-                </div>
-                <mat-form-field class="phase-pill-field input-mat-select" appearance="outline" subscriptSizing="dynamic">
-                    <mat-label>{{'task.form.move_card'| translate}}</mat-label>
-                    <mat-select formControlName="phaseId">
-                        <mat-option *ngFor="let phase of data.phaseList" [value]="phase.id">
-                            {{phase.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-
-            <div class="task-dialog-body">
-                <div class="task-dialog-main">
-                    <div class="description-block">
-                        <div class="field-label-row">
-                            <span class="field-label">{{'task.form.description' | translate}}</span>
-                            @if (descriptionEditing()) {
-                                <button type="button" mat-icon-button class="field-done-btn"
-                                        (click)="descriptionEditing.set(false)"
-                                        [matTooltip]="'task.form.description_done' | translate"
-                                        [attr.aria-label]="'task.form.description_done' | translate">
-                                    <mat-icon>done</mat-icon>
-                                </button>
-                            } @else {
-                                <button type="button" mat-icon-button class="field-edit-btn"
-                                        (click)="descriptionEditing.set(true)"
-                                        [matTooltip]="'task.form.description_edit' | translate"
-                                        [attr.aria-label]="'task.form.description_edit' | translate">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            }
-                        </div>
-                        @if (descriptionEditing()) {
-                            <app-text-editor formControlName="description" [customEditorConfig]="textEditorConfig"></app-text-editor>
-                        } @else {
-                            <div #descriptionPreviewEl
-                                 class="description-preview"
-                                 [class.description-preview-expanded]="descriptionExpanded()"
-                                 [innerHTML]="safeDescriptionHtml()">
-                            </div>
-                            @if (descriptionOverflowing() || descriptionExpanded()) {
-                                <button type="button" class="description-collapse-btn" (click)="descriptionExpanded.set(!descriptionExpanded())">
-                                    {{ (descriptionExpanded() ? 'task.form.show_less' : 'task.form.show_more') | translate }}
-                                </button>
-                            }
-                        }
-                    </div>
-
-                    <div class="activity-section">
-                        <span class="field-label">{{'task.form.activity' | translate}}</span>
-                        <div class="activity-tabs">
-                            <button type="button" class="activity-tab" [class.active]="activeActivityTab() === 'all'" (click)="activeActivityTab.set('all')">
-                                {{'task.form.activity_all' | translate}}
-                            </button>
-                            <button type="button" class="activity-tab" [class.active]="activeActivityTab() === 'comments'" (click)="activeActivityTab.set('comments')">
-                                {{'task.form.activity_comments' | translate}}
-                            </button>
-                            <button type="button" class="activity-tab" [class.active]="activeActivityTab() === 'history'" (click)="activeActivityTab.set('history')">
-                                {{'task.form.activity_history' | translate}}
-                            </button>
-                        </div>
-                        @if (taskId) {
-                            @if (activeActivityTab() !== 'history') {
-                                <app-task-comments [taskId]="taskId"></app-task-comments>
-                            } @else {
-                                <div class="activity-empty-state">{{'task.form.activity_history_empty' | translate}}</div>
-                            }
-                        } @else {
-                            <div class="activity-empty-state">{{'task.form.activity_new_task' | translate}}</div>
-                        }
-                    </div>
-                </div>
-
-                <div class="task-dialog-sidebar">
-                    <div class="sidebar-row">
-                        <app-autocomplete (selectedItemsForParent)="getSelectedValues($event)"
-                                          [allData]="projectMembers"
-                                          [nameOfList]="'task.form.assignee'| translate"
-                                          [selectedData]="selectedAssignee">
-                        </app-autocomplete>
-                    </div>
-
-                    <div class="sidebar-row">
-                        <mat-form-field class="input-mat-select" appearance="outline" subscriptSizing="dynamic">
-                            <mat-label>{{'task.form.priority'| translate}}</mat-label>
-                            <mat-select formControlName="priority">
-                                <mat-option *ngFor="let priority of priorityList" [value]="priority.value">
-                                    {{priority.viewValue | translate}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="sidebar-row">
-                        <mat-form-field class="input-mat-select" appearance="outline" subscriptSizing="dynamic">
-                            <mat-label>{{"task.form.estimate" | translate}}</mat-label>
-                            <input matInput [matDatepicker]="picker1" formControlName="estimate">
-                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                            @if (form.get('estimate').value) {
-                                <mat-icon matSuffix
-                                          (click)="resetEstimate()"
-                                          class="btn-remove-estimate"
-                                >remove</mat-icon>
-                            }
-                            <mat-datepicker #picker1></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-
-                    @if (incomingProject?.createdByName) {
-                        <div class="sidebar-row">
-                            <span class="field-label">{{'task.form.created_by' | translate}}</span>
-                            <span class="sidebar-value">{{incomingProject.createdByName}}</span>
-                        </div>
-                    }
-
-                    <div class="sidebar-row">
-                        <span class="field-label">{{'task.form.attachments'| translate}}</span>
-                        @if(attachments && attachments?.length > 0) {
-                            <div class="attachment-chips">
-                                <div class="attachment-chip" *ngFor="let files of attachments">
-                                    <mat-icon class="attachment-chip-icon">{{ getAttachmentIcon(files.originName) }}</mat-icon>
-                                    <span class="attachment-chip-name" (click)="openPreview(files.url)" [title]="files.originName">{{files.originName}}</span>
-                                    <button type="button" class="attachment-chip-remove"
-                                            (click)="deleteAttachment(files.id)"
-                                            [matTooltip]="'task.button.delete' | translate"
-                                            [attr.aria-label]="'task.button.delete' | translate">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        <app-upload-files
-                                formControlName="taskAttachments"
-                                [uploadLabel]=""
-                                [buttonLabel]="'task.form.add_attachment' | translate"
-                                [params]="{id: null}"
-                                [multipleSelection]="true"
-                                [acceptedFileTypes]="acceptedFileTypes"
-                                [uploadLimit]="uploadLimit"
-                        ></app-upload-files>
-                    </div>
-                </div>
-            </div>
+  <mat-dialog-content class="mat-typography">
+    <div class="task-dialog">
+      <div class="task-dialog-header">
+        <div class="title-block">
+          @if (titleEditing()) {
+          <mat-form-field
+            class="title-field input-mat-select"
+            appearance="outline"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              type="text"
+              [placeholder]="'task.form.placeholder' | translate"
+              formControlName="title"
+            />
+          </mat-form-field>
+          <button
+            type="button"
+            mat-icon-button
+            class="field-done-btn"
+            (click)="titleEditing.set(false)"
+            [matTooltip]="'task.form.description_done' | translate"
+            [attr.aria-label]="'task.form.description_done' | translate"
+          >
+            <mat-icon>done</mat-icon>
+          </button>
+          } @else {
+          <h2 class="title-preview">{{ form.get('title').value }}</h2>
+          <button
+            type="button"
+            mat-icon-button
+            class="field-edit-btn"
+            (click)="titleEditing.set(true)"
+            [matTooltip]="'task.form.description_edit' | translate"
+            [attr.aria-label]="'task.form.description_edit' | translate"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          }
         </div>
-    </mat-dialog-content>
-    <mat-dialog-actions class="dialog-action-button">
-        <div class="save-cancel-btn-container">
-            <button mat-button mat-stroked-button color="primary" [mat-dialog-close]="true">{{'task.form.button.cancel' | translate}}</button>
-            <button mat-button mat-raised-button color="primary"
-                    (click)="onSubmit()"
-                    [disabled]="!form.valid"
-            >{{'task.form.button.save' | translate}}</button>
-        </div>
-        <div>
-            <button mat-icon-button color="accent"
-                    (click)="onDelete()"
-                    [disabled]="deleteDisabled"
-                    [matTooltip]="'task.button.delete' | translate"
+        <mat-form-field
+          class="phase-pill-field input-mat-select"
+          appearance="outline"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>{{ 'task.form.move_card' | translate }}</mat-label>
+          <mat-select formControlName="phaseId">
+            @for (phase of data.phaseList; track phase) {
+            <mat-option [value]="phase.id">
+              {{ phase.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="task-dialog-body">
+        <div class="task-dialog-main">
+          <div class="description-block">
+            <div class="field-label-row">
+              <span class="field-label">{{
+                'task.form.description' | translate
+              }}</span>
+              @if (descriptionEditing()) {
+              <button
+                type="button"
+                mat-icon-button
+                class="field-done-btn"
+                (click)="descriptionEditing.set(false)"
+                [matTooltip]="'task.form.description_done' | translate"
+                [attr.aria-label]="'task.form.description_done' | translate"
+              >
+                <mat-icon>done</mat-icon>
+              </button>
+              } @else {
+              <button
+                type="button"
+                mat-icon-button
+                class="field-edit-btn"
+                (click)="descriptionEditing.set(true)"
+                [matTooltip]="'task.form.description_edit' | translate"
+                [attr.aria-label]="'task.form.description_edit' | translate"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              }
+            </div>
+            @if (descriptionEditing()) {
+            <app-text-editor
+              formControlName="description"
+              [customEditorConfig]="textEditorConfig"
+            ></app-text-editor>
+            } @else {
+            <div
+              #descriptionPreviewEl
+              class="description-preview"
+              [class.description-preview-expanded]="descriptionExpanded()"
+              [innerHTML]="safeDescriptionHtml()"
+            ></div>
+            @if (descriptionOverflowing() || descriptionExpanded()) {
+            <button
+              type="button"
+              class="description-collapse-btn"
+              (click)="descriptionExpanded.set(!descriptionExpanded())"
             >
-                <mat-icon>delete</mat-icon>
+              {{
+                (descriptionExpanded()
+                  ? 'task.form.show_less'
+                  : 'task.form.show_more'
+                ) | translate
+              }}
             </button>
+            } }
+          </div>
+
+          <div class="activity-section">
+            <span class="field-label">{{
+              'task.form.activity' | translate
+            }}</span>
+            <div class="activity-tabs">
+              <button
+                type="button"
+                class="activity-tab"
+                [class.active]="activeActivityTab() === 'all'"
+                (click)="activeActivityTab.set('all')"
+              >
+                {{ 'task.form.activity_all' | translate }}
+              </button>
+              <button
+                type="button"
+                class="activity-tab"
+                [class.active]="activeActivityTab() === 'comments'"
+                (click)="activeActivityTab.set('comments')"
+              >
+                {{ 'task.form.activity_comments' | translate }}
+              </button>
+              <button
+                type="button"
+                class="activity-tab"
+                [class.active]="activeActivityTab() === 'history'"
+                (click)="activeActivityTab.set('history')"
+              >
+                {{ 'task.form.activity_history' | translate }}
+              </button>
+            </div>
+            @if (taskId) { @if (activeActivityTab() !== 'history') {
+            <app-task-comments [taskId]="taskId"></app-task-comments>
+            } @else {
+            <div class="activity-empty-state">
+              {{ 'task.form.activity_history_empty' | translate }}
+            </div>
+            } } @else {
+            <div class="activity-empty-state">
+              {{ 'task.form.activity_new_task' | translate }}
+            </div>
+            }
+          </div>
         </div>
-    </mat-dialog-actions>
+
+        <div class="task-dialog-sidebar">
+          <div class="sidebar-row">
+            <app-autocomplete
+              (selectedItemsForParent)="getSelectedValues($event)"
+              [allData]="projectMembers"
+              [nameOfList]="'task.form.assignee' | translate"
+              [selectedData]="selectedAssignee"
+            >
+            </app-autocomplete>
+          </div>
+
+          <div class="sidebar-row">
+            <mat-form-field
+              class="input-mat-select"
+              appearance="outline"
+              subscriptSizing="dynamic"
+            >
+              <mat-label>{{ 'task.form.priority' | translate }}</mat-label>
+              <mat-select formControlName="priority">
+                @for (priority of priorityList; track priority) {
+                <mat-option [value]="priority.value">
+                  {{ priority.viewValue | translate }}
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="sidebar-row">
+            <mat-form-field
+              class="input-mat-select"
+              appearance="outline"
+              subscriptSizing="dynamic"
+            >
+              <mat-label>{{ 'task.form.estimate' | translate }}</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker1"
+                formControlName="estimate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker1"
+              ></mat-datepicker-toggle>
+              @if (form.get('estimate').value) {
+              <mat-icon
+                matSuffix
+                (click)="resetEstimate()"
+                class="btn-remove-estimate"
+                >remove</mat-icon
+              >
+              }
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          @if (incomingProject?.createdByName) {
+          <div class="sidebar-row">
+            <span class="field-label">{{
+              'task.form.created_by' | translate
+            }}</span>
+            <span class="sidebar-value">{{
+              incomingProject.createdByName
+            }}</span>
+          </div>
+          }
+
+          <div class="sidebar-row">
+            <span class="field-label">{{
+              'task.form.attachments' | translate
+            }}</span>
+            @if(attachments && attachments?.length > 0) {
+            <div class="attachment-chips">
+              @for (files of attachments; track files) {
+              <div class="attachment-chip">
+                <mat-icon class="attachment-chip-icon">{{
+                  getAttachmentIcon(files.originName)
+                }}</mat-icon>
+                <span
+                  class="attachment-chip-name"
+                  (click)="openPreview(files.url)"
+                  [title]="files.originName"
+                  >{{ files.originName }}</span
+                >
+                <button
+                  type="button"
+                  class="attachment-chip-remove"
+                  (click)="deleteAttachment(files.id)"
+                  [matTooltip]="'task.button.delete' | translate"
+                  [attr.aria-label]="'task.button.delete' | translate"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+              }
+            </div>
+            }
+            <app-upload-files
+              formControlName="taskAttachments"
+              [uploadLabel]=""
+              [buttonLabel]="'task.form.add_attachment' | translate"
+              [params]="{ id: null }"
+              [multipleSelection]="true"
+              [acceptedFileTypes]="acceptedFileTypes"
+              [uploadLimit]="uploadLimit"
+            ></app-upload-files>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions class="dialog-action-button">
+    <div class="save-cancel-btn-container">
+      <button
+        mat-button
+        mat-stroked-button
+        color="primary"
+        [mat-dialog-close]="true"
+      >
+        {{ 'task.form.button.cancel' | translate }}
+      </button>
+      <button
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="onSubmit()"
+        [disabled]="!form.valid"
+      >
+        {{ 'task.form.button.save' | translate }}
+      </button>
+    </div>
+    <div>
+      <button
+        mat-icon-button
+        color="accent"
+        (click)="onDelete()"
+        [disabled]="deleteDisabled"
+        [matTooltip]="'task.button.delete' | translate"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-dialog-actions>
 </form>
-
-

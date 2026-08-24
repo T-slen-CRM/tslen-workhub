@@ -1,38 +1,41 @@
-import { Component } from '@angular/core';
-import {AgRendererComponent} from "ag-grid-angular";
-import {ICellRendererParams} from "ag-grid-community";
-import {LibsService} from "../../../services/libs.service";
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { AgRendererComponent } from 'ag-grid-angular';
+import { ICellRendererParams } from 'ag-grid-community';
+import { LibsService } from '../../../services/libs.service';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
-    selector: 'app-days-off-cell-renderer',
-    template: `
+  selector: 'app-days-off-cell-renderer',
+  template: `
     <ng-container>
-      <div *ngIf="style"
-           [style]="style"
-           [matTooltip]="tooltip"
-      >
-        <mat-icon>{{icon}}</mat-icon>
+      @if (style) {
+      <div [style]="style" [matTooltip]="tooltip">
+        <mat-icon>{{ icon }}</mat-icon>
       </div>
+      }
     </ng-container>
-    `,
-    styleUrls: ['./days-off-cell-renderer.component.scss'],
-    standalone: false
+  `,
+  styleUrls: ['./days-off-cell-renderer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class DaysOffCellRendererComponent implements AgRendererComponent {
-public params: any;
-public daysOffList: any;
-public requestType: string;
-public time: string;
-public style: object;
-public icon: string;
-public tooltip: string;
-  constructor(public libsService: LibsService, public translateService: LanguageService) {
+  public params: any;
+  public daysOffList: any;
+  public requestType: string;
+  public time: string;
+  public style: object;
+  public icon: string;
+  public tooltip: string;
+  constructor(
+    public libsService: LibsService,
+    public translateService: LanguageService,
+  ) {
     this.daysOffList = this.libsService.daysOffList;
   }
   agInit(params: ICellRendererParams): void {
     this.params = params;
-    if (this.params && this.params.value){
+    if (this.params && this.params.value) {
       const paramsArr = this.params.value.split('|');
       this.requestType = paramsArr[0];
       this.time = paramsArr[1];
@@ -42,7 +45,7 @@ public tooltip: string;
       let textColor: string;
       let border: string;
 
-      if (approved){
+      if (approved) {
         backgroundColor = this.daysOffList[this.requestType].color;
         textColor = '#fff';
         border = 'none';
@@ -55,7 +58,8 @@ public tooltip: string;
         });
       }
 
-      this.style = {background: backgroundColor,
+      this.style = {
+        background: backgroundColor,
         color: textColor,
         width: '43px',
         height: '35px',
@@ -64,7 +68,7 @@ public tooltip: string;
         margin: '2px',
         display: 'flex',
         'align-items': 'center',
-        'justify-content': 'center'
+        'justify-content': 'center',
       };
       this.icon = this.daysOffList[this.requestType].icon;
     }
@@ -73,5 +77,4 @@ public tooltip: string;
   refresh(params: ICellRendererParams): boolean {
     return false;
   }
-
 }

@@ -1,26 +1,40 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {customFormatDate, dayByWeek, daysInMonth, getDaysArray} from '../../../helpers/utils';
-import {DaysHeaderComponent} from '../../../tslen-components/ag-grid/days-header/days-header.component';
-import {map, Observable, Subject, tap} from 'rxjs';
-import {DataService} from '../../../services/data.service';
-import {AuthData, AuthenticationService} from '../../../services/auth.service';
-import {endOfDay, endOfMonth, format} from 'date-fns';
-import {CalendarEvent, CalendarView,} from 'angular-calendar';
 import {
-  DaysOffCellRendererComponent
-} from "../../../tslen-components/ag-grid/days-off-cell-renderer/days-off-cell-renderer.component";
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
-  NameAvatarCellRendererComponent
-} from "../../../tslen-components/ag-grid/name-avatar-cell-renderer/name-avatar-cell-renderer.component";
-import {FormControl} from "@angular/forms";
-import {IDaysOffStaticList, IFullEventList, LibsService} from "../../../services/libs.service";
+  customFormatDate,
+  dayByWeek,
+  daysInMonth,
+  getDaysArray,
+} from '../../../helpers/utils';
+import { DaysHeaderComponent } from '../../../tslen-components/ag-grid/days-header/days-header.component';
+import { map, Observable, Subject, tap } from 'rxjs';
+import { DataService } from '../../../services/data.service';
+import {
+  AuthData,
+  AuthenticationService,
+} from '../../../services/auth.service';
+import { endOfDay, endOfMonth, format } from 'date-fns';
+import { CalendarEvent, CalendarView } from 'angular-calendar';
+import { DaysOffCellRendererComponent } from '../../../tslen-components/ag-grid/days-off-cell-renderer/days-off-cell-renderer.component';
+import { NameAvatarCellRendererComponent } from '../../../tslen-components/ag-grid/name-avatar-cell-renderer/name-avatar-cell-renderer.component';
+import { FormControl } from '@angular/forms';
+import {
+  IDaysOffStaticList,
+  IFullEventList,
+  LibsService,
+} from '../../../services/libs.service';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
-    selector: 'app-common-schedule',
-    templateUrl: './common-schedule.component.html',
-    styleUrls: ['./common-schedule.component.scss'],
-    standalone: false
+  selector: 'app-common-schedule',
+  templateUrl: './common-schedule.component.html',
+  styleUrls: ['./common-schedule.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class CommonScheduleComponent implements OnInit {
   public columnDefs: any;
@@ -43,9 +57,11 @@ export class CommonScheduleComponent implements OnInit {
   public employeeViewControl = new FormControl(0);
   public totalStaticEventIconList: IFullEventList;
 
-  constructor(private dataService: DataService,
-              private authService: AuthenticationService,
-              public translateService: LanguageService) {
+  constructor(
+    private dataService: DataService,
+    private authService: AuthenticationService,
+    public translateService: LanguageService,
+  ) {
     this.totalStaticEventIconList = this.setTotalStaticIconList();
 
     const date = new Date();
@@ -65,7 +81,7 @@ export class CommonScheduleComponent implements OnInit {
     this.components = {
       daysHeaderComponent: DaysHeaderComponent,
       daysOffCellRendererComponent: DaysOffCellRendererComponent,
-      nameAvatarCellRendererComponent: NameAvatarCellRendererComponent
+      nameAvatarCellRendererComponent: NameAvatarCellRendererComponent,
     };
     this.setColumnDef(this.year, this.month);
     this.authData = this.authService.authData;
@@ -77,7 +93,7 @@ export class CommonScheduleComponent implements OnInit {
     this.getRowData();
     this.getEventsData();
     this.lastLang = this.translateService.currentLang;
-    this.translateService.onLangChange.subscribe(event => {
+    this.translateService.onLangChange.subscribe((event) => {
       if (event.lang !== this.lastLang) {
         this.lastLang = event.lang;
         this.setColumnDef(this.year, this.month);
@@ -86,46 +102,48 @@ export class CommonScheduleComponent implements OnInit {
   }
 
   setColumnDef(year: number, month: number) {
-    this.translateService.get('common_schedule.name_column').subscribe(nameColumnHeader => {
-      this.columnDefs = [
-        {
-          headerName: nameColumnHeader,
-          field: 'name',
-          minWidth: 200,
-          pinned: 'left',
-          cellRenderer: 'nameAvatarCellRendererComponent',
-          headerClass: 'common-name-header'
-        },
-      ];
-      const daysInMonthV = daysInMonth(month, year);
-      for (let i = 1; i <= daysInMonthV; i++) {
-        const date = `${year}-${month}-${i} 05:00:00`;
-        const weekDay = dayByWeek(new Date(date));
-        const headerName = i + '|' + weekDay + '|' + date;
-        this.columnDefs.push({
-          headerName,
-          field: '' + i,
-          cellRenderer: 'daysOffCellRendererComponent',
-          headerComponent: 'daysHeaderComponent',
-          width: 10,
-          cellClassRules: {
-            // apply green to 2008
-            'weekends-columns': (params) => {
-              // tslint:disable-next-line:no-shadowed-variable
-              const weekDay = params.colDef.headerName.split('|')[1];
-              return weekDay === '6' || weekDay === '0';
+    this.translateService
+      .get('common_schedule.name_column')
+      .subscribe((nameColumnHeader) => {
+        this.columnDefs = [
+          {
+            headerName: nameColumnHeader,
+            field: 'name',
+            minWidth: 200,
+            pinned: 'left',
+            cellRenderer: 'nameAvatarCellRendererComponent',
+            headerClass: 'common-name-header',
+          },
+        ];
+        const daysInMonthV = daysInMonth(month, year);
+        for (let i = 1; i <= daysInMonthV; i++) {
+          const date = `${year}-${month}-${i} 05:00:00`;
+          const weekDay = dayByWeek(new Date(date));
+          const headerName = i + '|' + weekDay + '|' + date;
+          this.columnDefs.push({
+            headerName,
+            field: '' + i,
+            cellRenderer: 'daysOffCellRendererComponent',
+            headerComponent: 'daysHeaderComponent',
+            width: 10,
+            cellClassRules: {
+              // apply green to 2008
+              'weekends-columns': (params) => {
+                // tslint:disable-next-line:no-shadowed-variable
+                const weekDay = params.colDef.headerName.split('|')[1];
+                return weekDay === '6' || weekDay === '0';
+              },
             },
-          }
-        });
-      }
-    });
+          });
+        }
+      });
   }
 
   addExtensionDays(array) {
     return array.reduce((newArr, event) => {
       if (event.dateDiff > 1) {
         const extensionDateArray = getDaysArray(event.start, event.end);
-        extensionDateArray.forEach(day => {
+        extensionDateArray.forEach((day) => {
           const oneDate = new Date(day);
           if (oneDate.getMonth() + 1 === this.month) {
             const newEvent = Object.assign({}, event);
@@ -147,12 +165,16 @@ export class CommonScheduleComponent implements OnInit {
     return array.reduce((obj, item) => {
       if (obj[item.id]) {
         if (item.requestType !== '0') {
-          obj[item.id][item.monthDay] = item.requestType + '|' + item.timeDiff + '|' + item.approved;
+          obj[item.id][item.monthDay] =
+            item.requestType + '|' + item.timeDiff + '|' + item.approved;
         }
       } else {
-        obj[item.id] = {name: item.avatar + '|' + item.firstName + ' ' + item.lastName};
+        obj[item.id] = {
+          name: item.avatar + '|' + item.firstName + ' ' + item.lastName,
+        };
         if (item.requestType !== '0') {
-          obj[item.id][item.monthDay] = item.requestType + '|' + item.timeDiff + '|' + item.approved;
+          obj[item.id][item.monthDay] =
+            item.requestType + '|' + item.timeDiff + '|' + item.approved;
         }
       }
       return obj;
@@ -167,63 +189,73 @@ export class CommonScheduleComponent implements OnInit {
   }
 
   getRowData() {
-    const {startDate, endDate} = this.getDatesForRequest();
-    this.rowData = this.dataService.getObservableData('/events-by-user/events-by-month?startDate=' + startDate + '&endDate=' + endDate)
-        .pipe(map(response => {
+    const { startDate, endDate } = this.getDatesForRequest();
+    this.rowData = this.dataService
+      .getObservableData(
+        '/events-by-user/events-by-month?startDate=' +
+          startDate +
+          '&endDate=' +
+          endDate,
+      )
+      .pipe(
+        map((response) => {
           const newEventsArray = this.addExtensionDays(response);
           const eventsByUser = this.aggregateEventsByUser(newEventsArray);
-          return Object.keys(eventsByUser).map(item => eventsByUser[item]);
-        }));
+          return Object.keys(eventsByUser).map((item) => eventsByUser[item]);
+        }),
+      );
   }
   getEventsData() {
-    const {startDate, endDate} = this.getDatesForRequest();
-    this.events$ = this.dataService.getObservableData(`/users/get-with-relations-by-date-range?startDate=${startDate}&endDate=${endDate}`)
-        .pipe(
-            map(userData => {
-              let events = [];
-              userData.forEach(user => {
-                const absentEvents = this.generateAbsentCalendarEvents(user);
-                events = events.concat(absentEvents);
-                // probation events
-                const probationEvent = this.generateProbationCalendarEvents(user);
-                if (probationEvent) {
-                  events.push(probationEvent);
-                }
-                // new employees events
-                const firstDayEvent = this.generateSingleDayCalendarEvents(
-                    user,
-                    'firstDayInCompany',
-                    'newEmployee',
-                    'New employee'
-                );
-                if (firstDayEvent) {
-                  events.push(firstDayEvent);
-                }
-                // birthday events
-                const birthdayEvent = this.generateAnniversaryCalendarEvents(
-                    user,
-                    'birthDay',
-                    'birthDay',
-                    'Birthdays'
-                );
-                if (birthdayEvent) {
-                  events.push(birthdayEvent);
-                }
-                // anniversary events
-                const anniversary = this.generateAnniversaryCalendarEvents(
-                    user,
-                    'firstDayInCompany',
-                    'anniversary',
-                    'Anniversary'
-                );
-                if (anniversary) {
-                  events.push(anniversary);
-                }
-
-              });
-              return events;
-            })
-        );
+    const { startDate, endDate } = this.getDatesForRequest();
+    this.events$ = this.dataService
+      .getObservableData(
+        `/users/get-with-relations-by-date-range?startDate=${startDate}&endDate=${endDate}`,
+      )
+      .pipe(
+        map((userData) => {
+          let events = [];
+          userData.forEach((user) => {
+            const absentEvents = this.generateAbsentCalendarEvents(user);
+            events = events.concat(absentEvents);
+            // probation events
+            const probationEvent = this.generateProbationCalendarEvents(user);
+            if (probationEvent) {
+              events.push(probationEvent);
+            }
+            // new employees events
+            const firstDayEvent = this.generateSingleDayCalendarEvents(
+              user,
+              'firstDayInCompany',
+              'newEmployee',
+              'New employee',
+            );
+            if (firstDayEvent) {
+              events.push(firstDayEvent);
+            }
+            // birthday events
+            const birthdayEvent = this.generateAnniversaryCalendarEvents(
+              user,
+              'birthDay',
+              'birthDay',
+              'Birthdays',
+            );
+            if (birthdayEvent) {
+              events.push(birthdayEvent);
+            }
+            // anniversary events
+            const anniversary = this.generateAnniversaryCalendarEvents(
+              user,
+              'firstDayInCompany',
+              'anniversary',
+              'Anniversary',
+            );
+            if (anniversary) {
+              events.push(anniversary);
+            }
+          });
+          return events;
+        }),
+      );
   }
 
   setYearMonth(date: Date) {
@@ -231,7 +263,7 @@ export class CommonScheduleComponent implements OnInit {
     this.year = date.getFullYear();
   }
 
-  dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     this.isOpenCalendarDayWindow = true;
     // separate by event category
     // example : {Absent: [], Probation: []}
@@ -245,15 +277,11 @@ export class CommonScheduleComponent implements OnInit {
     }, {});
     this.eventsByDay = eventsByCategory;
     this.clickedDate = date;
-
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
-  }
+  handleEvent(action: string, event: CalendarEvent): void {}
 
-  eventTimesChanged(): void {
-
-  }
+  eventTimesChanged(): void {}
 
   generateAbsentCalendarEvents(user: any) {
     const events = user.eventsByUsers;
@@ -266,7 +294,10 @@ export class CommonScheduleComponent implements OnInit {
         titleAlias: currentItem.title,
         color: {
           primary: currentItem.primaryColor,
-          secondary: (currentItem.isRequest && currentItem.approved !== 1) ? '#d4dadc' : currentItem.primaryColor
+          secondary:
+            currentItem.isRequest && currentItem.approved !== 1
+              ? '#d4dadc'
+              : currentItem.primaryColor,
         },
         cssClass: 'calendar-event',
         // actions: this.actions,
@@ -287,7 +318,7 @@ export class CommonScheduleComponent implements OnInit {
         userFirstName: user.firstName,
         userLastName: user.lastName,
         userAvatar: user.avatar,
-        category: 'Absent'
+        category: 'Absent',
       };
       newArr.push(oneEvent);
       return newArr;
@@ -300,56 +331,64 @@ export class CommonScheduleComponent implements OnInit {
       return null;
     }
     return {
-          id: userProbationObject.id,
-          start: new Date(userProbationObject.end),
-          // end: new Date(userProbationObject.end),
-          title: 'probation',
-          titleAlias: 'Probation end' ,
-          color: {
-            primary: '#ff3f80',
-            secondary: '#ff3f80'
-          },
-          cssClass: 'calendar-event',
-          resizable: {
-            beforeStart: true,
-            afterEnd: true,
-          },
-          draggable: false,
-          userFirstName: user.firstName,
-          userLastName: user.lastName,
-          userAvatar: user.avatar,
-          category: 'Probation'
-        };
-
+      id: userProbationObject.id,
+      start: new Date(userProbationObject.end),
+      // end: new Date(userProbationObject.end),
+      title: 'probation',
+      titleAlias: 'Probation end',
+      color: {
+        primary: '#ff3f80',
+        secondary: '#ff3f80',
+      },
+      cssClass: 'calendar-event',
+      resizable: {
+        beforeStart: true,
+        afterEnd: true,
+      },
+      draggable: false,
+      userFirstName: user.firstName,
+      userLastName: user.lastName,
+      userAvatar: user.avatar,
+      category: 'Probation',
+    };
   }
-  generateSingleDayCalendarEvents(user: any, key: string, titleAlias: string, category: string) {
+  generateSingleDayCalendarEvents(
+    user: any,
+    key: string,
+    titleAlias: string,
+    category: string,
+  ) {
     const keyDate = user[key];
     if (!keyDate) {
       return null;
     }
     return {
-        id: user.id + Date.now() + key,
-        start: new Date(keyDate),
-        title: titleAlias,
-        titleAlias: titleAlias,
-        color: {
-          primary: '#07FFDAFF',
-          secondary: '#07FFDAFF'
-        },
-        cssClass: 'calendar-event',
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-        draggable: false,
-        userFirstName: user.firstName,
-        userLastName: user.lastName,
-        userAvatar: user.avatar,
-        category: category
-      };
-
+      id: user.id + Date.now() + key,
+      start: new Date(keyDate),
+      title: titleAlias,
+      titleAlias: titleAlias,
+      color: {
+        primary: '#07FFDAFF',
+        secondary: '#07FFDAFF',
+      },
+      cssClass: 'calendar-event',
+      resizable: {
+        beforeStart: true,
+        afterEnd: true,
+      },
+      draggable: false,
+      userFirstName: user.firstName,
+      userLastName: user.lastName,
+      userAvatar: user.avatar,
+      category: category,
+    };
   }
-  generateAnniversaryCalendarEvents(user: any, key: string, titleAlias: string, category: string) {
+  generateAnniversaryCalendarEvents(
+    user: any,
+    key: string,
+    titleAlias: string,
+    category: string,
+  ) {
     const _key = user[key];
     if (!_key) {
       return null;
@@ -363,34 +402,36 @@ export class CommonScheduleComponent implements OnInit {
       targetDate.setDate(day);
       // Check if the user has a birthday or anniversary on the current day
       if (
-          userDate.getMonth() === targetDate.getMonth() &&
-          userDate.getDate() === targetDate.getDate()
+        userDate.getMonth() === targetDate.getMonth() &&
+        userDate.getDate() === targetDate.getDate()
       ) {
         // avoid showing anniversary in a first day
-        if (key === 'firstDayInCompany'
-            && userDate.getDay() === targetDate.getDay()) {
+        if (
+          key === 'firstDayInCompany' &&
+          userDate.getDay() === targetDate.getDay()
+        ) {
           continue;
         }
         return {
-            id: user.id + Date.now() + key,
-            start: targetDate,
-            title: titleAlias,
-            titleAlias: titleAlias,
-            color: {
-              primary: '#07FFDAFF',
-              secondary: '#07FFDAFF'
-            },
-            cssClass: 'calendar-event',
-            resizable: {
-              beforeStart: true,
-              afterEnd: true,
-            },
-            draggable: false,
-            userFirstName: user.firstName,
-            userLastName: user.lastName,
-            userAvatar: user.avatar,
-            category: category
-          };
+          id: user.id + Date.now() + key,
+          start: targetDate,
+          title: titleAlias,
+          titleAlias: titleAlias,
+          color: {
+            primary: '#07FFDAFF',
+            secondary: '#07FFDAFF',
+          },
+          cssClass: 'calendar-event',
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+          draggable: false,
+          userFirstName: user.firstName,
+          userLastName: user.lastName,
+          userAvatar: user.avatar,
+          category: category,
+        };
       }
     }
   }
@@ -399,15 +440,30 @@ export class CommonScheduleComponent implements OnInit {
     const startDate = `${this.year}-${month}-01`;
     const endDate = endOfMonth(new Date(startDate));
     const formattedEndDate = customFormatDate(endDate, 'yyyy-MM-dd');
-    return {startDate, endDate: formattedEndDate};
+    return { startDate, endDate: formattedEndDate };
   }
   setTotalStaticIconList() {
-    const daysOffList: IDaysOffStaticList = Object.assign({}, inject(LibsService).daysOffList);
-    const newEmployee = {icon: 'person_add', title: 'New employee', color: '#07FFDAFF'};
-    const probation = {icon: 'school', title: 'Probation', color: '#FFC107'};
-    const birthDay = {icon: 'cake', title: 'Birthday', color: '#FF4081'};
-    const anniversary = {icon: 'star', title: 'Anniversary', color: '#FF4081'};
-    return Object.assign(daysOffList, {probation, newEmployee, birthDay, anniversary});
+    const daysOffList: IDaysOffStaticList = Object.assign(
+      {},
+      inject(LibsService).daysOffList,
+    );
+    const newEmployee = {
+      icon: 'person_add',
+      title: 'New employee',
+      color: '#07FFDAFF',
+    };
+    const probation = { icon: 'school', title: 'Probation', color: '#FFC107' };
+    const birthDay = { icon: 'cake', title: 'Birthday', color: '#FF4081' };
+    const anniversary = {
+      icon: 'star',
+      title: 'Anniversary',
+      color: '#FF4081',
+    };
+    return Object.assign(daysOffList, {
+      probation,
+      newEmployee,
+      birthDay,
+      anniversary,
+    });
   }
-
 }

@@ -1,40 +1,64 @@
 <div>
-    <ng-container *ngTemplateOutlet="mediaQueryMatch ? desktop : mobweb"></ng-container>
-    <ng-template #desktop>
-        <div class="request-type-chips">
-            <mat-chip-set *ngFor="let day of keysDayOff" >
-                <mat-chip-row (click)="changeSelectedType(day)"
-                          [value]="day"
-                          [ngClass]="day === selectedType ? 'chip assigned-chip' : 'chip not-assigned-chip'"
-                          [matTooltip]="iconsListByRequestTypes[day].title"
-                          matTooltipPosition="above"
-                          [disabled]="disabledChips"
-                >
-                    <mat-icon matChipAvatar
-                              [ngStyle]="{ color: iconsListByRequestTypes[day].color, fontSize: '20px' }"
-                    >
-                        {{iconsListByRequestTypes[day].icon}}
-                    </mat-icon>
-                    <span>{{incomingDaysOffItems[day]}}</span>
-                </mat-chip-row>
-            </mat-chip-set>
-        </div></ng-template>
-    <ng-template #mobweb>
-        <button mat-button>
-            <mat-select [value]="selectedType">
-                <mat-select-trigger style="display: flex; align-items: center">
-                    <mat-icon [ngStyle]="{ color: iconsListByRequestTypes[selectedType]?.color, fontSize: '20px' }">
-                        {{iconsListByRequestTypes[selectedType]?.icon}}
-                    </mat-icon>
-                    {{ selectedType }}
-                </mat-select-trigger>
-                <mat-option *ngFor="let day of keysDayOff" [value]="day">
-                    <mat-icon [ngStyle]="{ color: iconsListByRequestTypes[day].color }">{{iconsListByRequestTypes[day].icon}}</mat-icon>&nbsp;
-                    {{iconsListByRequestTypes[day].title}}
-                </mat-option>
-            </mat-select>
-        </button>
-    </ng-template>
+  <ng-container
+    *ngTemplateOutlet="mediaQueryMatch ? desktop : mobweb"
+  ></ng-container>
+  <ng-template #desktop>
+    <div class="request-type-chips">
+      @for (day of keysDayOff; track day) {
+      <mat-chip-set>
+        <mat-chip-row
+          (click)="changeSelectedType(day)"
+          [value]="day"
+          [ngClass]="
+            day === selectedType
+              ? 'chip assigned-chip'
+              : 'chip not-assigned-chip'
+          "
+          [matTooltip]="iconsListByRequestTypes[day].title"
+          matTooltipPosition="above"
+          [disabled]="disabledChips"
+        >
+          <mat-icon
+            matChipAvatar
+            [ngStyle]="{
+              color: iconsListByRequestTypes[day].color,
+              fontSize: '20px'
+            }"
+          >
+            {{ iconsListByRequestTypes[day].icon }}
+          </mat-icon>
+          <span>{{ incomingDaysOffItems[day] }}</span>
+        </mat-chip-row>
+      </mat-chip-set>
+      }
+    </div></ng-template
+  >
+  <ng-template #mobweb>
+    <button mat-button>
+      <mat-select [value]="selectedType">
+        <mat-select-trigger style="display: flex; align-items: center">
+          <mat-icon
+            [ngStyle]="{
+              color: $safeNavigationMigration(
+                iconsListByRequestTypes[selectedType]?.color
+              ),
+              fontSize: '20px'
+            }"
+          >
+            {{ iconsListByRequestTypes[selectedType]?.icon }}
+          </mat-icon>
+          {{ selectedType }}
+        </mat-select-trigger>
+        @for (day of keysDayOff; track day) {
+        <mat-option [value]="day">
+          <mat-icon [ngStyle]="{ color: iconsListByRequestTypes[day].color }">{{
+            iconsListByRequestTypes[day].icon
+          }}</mat-icon
+          >&nbsp;
+          {{ iconsListByRequestTypes[day].title }}
+        </mat-option>
+        }
+      </mat-select>
+    </button>
+  </ng-template>
 </div>
-
-

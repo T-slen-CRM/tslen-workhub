@@ -1,9 +1,13 @@
-@import "../../../node_modules/ag-grid-community/src/styles/ag-grid.scss";
-@import "../../../node_modules/ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material-mixin.scss";
-@import "~ag-grid-community/dist/styles/ag-grid.css";
+// ag-grid v32 dropped the Sass source files this used to import
+// (src/styles/ag-grid.scss, the ag-theme-material Sass mixin, and the old
+// dist/styles/ path) in favor of shipping only precompiled CSS themes -
+// import those directly instead of `@include`-ing the (now nonexistent)
+// mixin. Every rule below this point is plain CSS, not mixin-dependent,
+// so it still applies on top of the precompiled theme unchanged.
+@import "~ag-grid-community/styles/ag-grid.css";
+@import "~ag-grid-community/styles/ag-theme-material.css";
 
 .ag-theme-material {
-  @include ag-theme-material();
   border: none;
 }
 

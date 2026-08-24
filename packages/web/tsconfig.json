@@ -1,16 +1,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "strict": false,
     "paths": {
-      "path": [
-        "./node_modules/path-browserify"
-      ],
-      "fs": [
-        "./node_modules/browserify-fs"
-      ],
-      "stream": [
-        "./node_modules/stream-browserify"
-      ]
+      "path": ["./node_modules/path-browserify"],
+      "fs": ["./node_modules/browserify-fs"],
+      "stream": ["./node_modules/stream-browserify"]
     },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
@@ -24,13 +20,8 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2022",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node"],
     "useDefineForClassFields": false,
     "skipLibCheck": true
   }

@@ -1,14 +1,21 @@
-import {AfterViewInit, Component, effect, input, ViewChild} from '@angular/core';
-import {AgGridAngular} from 'ag-grid-angular';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  input,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
-    selector: 'app-ag-grid-table',
-    templateUrl: './ag-grid-table.component.html',
-    styleUrls: ['./ag-grid-table.component.scss'],
-    standalone: false
+  selector: 'app-ag-grid-table',
+  templateUrl: './ag-grid-table.component.html',
+  styleUrls: ['./ag-grid-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class AgGridTableComponent implements AfterViewInit {
-
   @ViewChild('agGrid') agGrid: AgGridAngular;
   columnDefs = input<any>([]);
   components = input<any>();
@@ -27,7 +34,7 @@ export class AgGridTableComponent implements AfterViewInit {
       width: 75,
     };
     effect(() => {
-      if (this.sizeColumnsToFit() && this.agGrid){
+      if (this.sizeColumnsToFit() && this.agGrid) {
         setTimeout(() => {
           this.agGrid.api.sizeColumnsToFit();
         }, 200);
@@ -38,6 +45,4 @@ export class AgGridTableComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.agGrid.api.sizeColumnsToFit();
   }
-
-
 }

@@ -1,73 +1,123 @@
-
 <div class="main-auth-container">
-  <div *ngIf="loading" class="loading-div">
-    <app-loading-logo [imagePath]="'/assets/images/tslen/T-SLEN_2.png'"></app-loading-logo>
+  @if (loading) {
+  <div class="loading-div">
+    <app-loading-logo
+      [imagePath]="'/assets/images/tslen/T-SLEN_2.png'"
+    ></app-loading-logo>
   </div>
+  }
 
-<!--        <app-auth-header></app-auth-header>-->
+  <!--        <app-auth-header></app-auth-header>-->
 
   <div class="auth-wrapper" id="auth-custom-mat-style">
-
     <div class="auth-content">
-
       <div class="card custom-card">
-
         <div class="row align-items-center text-center">
-
           <div class="col-md-12">
-
             <div class="card-body">
               <div class="main-brand-logo">
-                <img src="../../../../assets/images/tslen/T-SLEN_2.png" width="120"  alt="" class="img-fluid mb-4">
-
+                <img
+                  src="../../../../assets/images/tslen/T-SLEN_2.png"
+                  width="120"
+                  alt=""
+                  class="img-fluid mb-4"
+                />
               </div>
 
-<!--              <p>Welcome to Task Scheduler & Labour Efficiency Network</p>-->
+              <!--              <p>Welcome to Task Scheduler & Labour Efficiency Network</p>-->
               <!--              <img src="../../../../assets/images/auth/Logo%20876x265.png" alt="" class="img-fluid mb-4">-->
-<!--              <h4 class="mb-2 f-w-400">Sign In</h4>-->
-<!--              <div class="social-login-container">-->
-<!--                <google-signin-butt [option]="hideGoogleLogin$ | async"></google-signin-butt>-->
-<!--              </div>-->
-                <button class="main-btn" mat-stroked-button (click)="googleLogin()">
-                    <img ngSrc="../../../../assets/images/auth/google-icon.svg" width="20" height="20" alt="">
-                    {{ pageTraslate['auth_signin.sign_google'] }}
-                </button>
-              <br>
+              <!--              <h4 class="mb-2 f-w-400">Sign In</h4>-->
+              <!--              <div class="social-login-container">-->
+              <!--                <google-signin-butt [option]="hideGoogleLogin$ | async"></google-signin-butt>-->
+              <!--              </div>-->
+              <button
+                class="main-btn"
+                mat-stroked-button
+                (click)="googleLogin()"
+              >
+                <img
+                  ngSrc="../../../../assets/images/auth/google-icon.svg"
+                  width="20"
+                  height="20"
+                  alt=""
+                />
+                {{ pageTraslate['auth_signin.sign_google'] }}
+              </button>
+              <br />
               <div class="separator">{{ pageTraslate['auth_signin.or'] }}</div>
               <form [formGroup]="loginForm">
                 <div>
                   <div class="full-width">
                     <mat-form-field class="mat-text-field" appearance="outline">
-                        <mat-label>{{ pageTraslate['auth_signin.email.name'] }}</mat-label>
-                      <input matInput [placeholder]="pageTraslate['auth_signin.email.name']" required formControlName="email">
-                      <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
+                      <mat-label>{{
+                        pageTraslate['auth_signin.email.name']
+                      }}</mat-label>
+                      <input
+                        matInput
+                        [placeholder]="pageTraslate['auth_signin.email.name']"
+                        required
+                        formControlName="email"
+                      />
+                      @if (loginForm.controls['email'].hasError('required')) {
+                      <mat-error>
                         {{ pageTraslate['auth_signin.email.require_email'] }}
                       </mat-error>
+                      }
                     </mat-form-field>
                   </div>
                   <div class="full-width">
                     <mat-form-field class="mat-text-field" appearance="outline">
-                        <mat-label>{{ pageTraslate['auth_signin.password.name'] }}</mat-label>
-                      <input [type]="hidePassword ? 'password' : 'text'" matInput [placeholder]="pageTraslate['auth_signin.password.name']" required formControlName="password">
-                      <mat-icon class="custom-mat-icon" matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                      <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
-                        {{ pageTraslate['auth_signin.password.require_password'] }}
+                      <mat-label>{{
+                        pageTraslate['auth_signin.password.name']
+                      }}</mat-label>
+                      <input
+                        [type]="hidePassword ? 'password' : 'text'"
+                        matInput
+                        [placeholder]="
+                          pageTraslate['auth_signin.password.name']
+                        "
+                        required
+                        formControlName="password"
+                      />
+                      <mat-icon
+                        class="custom-mat-icon"
+                        matSuffix
+                        (click)="hidePassword = !hidePassword"
+                        >{{
+                          hidePassword ? 'visibility_off' : 'visibility'
+                        }}</mat-icon
+                      >
+                      @if (loginForm.controls['password'].hasError('required'))
+                      {
+                      <mat-error>
+                        {{
+                          pageTraslate['auth_signin.password.require_password']
+                        }}
                       </mat-error>
+                      }
                     </mat-form-field>
                   </div>
                   <button class="main-btn" mat-stroked-button (click)="login()">
-                      <mat-icon>login</mat-icon>
-                      {{ pageTraslate['auth_signin.sign_button'] }}
+                    <mat-icon>login</mat-icon>
+                    {{ pageTraslate['auth_signin.sign_button'] }}
                   </button>
 
-                  <p> {{ pageTraslate['auth_signin.text'] }} <a [routerLink]="['/auth/signup']" class="f-w-400 header-style">{{ pageTraslate['auth_signin.create_button'] }}</a></p>
-
+                  <p>
+                    {{ pageTraslate['auth_signin.text'] }}
+                    <a
+                      [routerLink]="['/auth/signup']"
+                      class="f-w-400 header-style"
+                      >{{ pageTraslate['auth_signin.create_button'] }}</a
+                    >
+                  </p>
                 </div>
 
-                <div class='alert alert-danger' *ngIf='message'>
-                  <button class='close' data-close='alert'></button>
-                  <span>{{message}}</span>
+                @if (message) {
+                <div class="alert alert-danger">
+                  <button class="close" data-close="alert"></button>
+                  <span>{{ message }}</span>
                 </div>
+                }
               </form>
             </div>
           </div>
@@ -76,4 +126,3 @@
     </div>
   </div>
 </div>
-

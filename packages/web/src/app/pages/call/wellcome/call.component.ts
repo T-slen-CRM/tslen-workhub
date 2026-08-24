@@ -5,9 +5,15 @@ import {
   OnDestroy,
   OnInit,
   signal,
-  output
+  output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   LocalVideoTrack,
   LogLevel,
@@ -18,7 +24,7 @@ import {
   RoomEvent,
   setLogLevel,
   VideoPresets,
-  VideoTrack
+  VideoTrack,
 } from 'livekit-client';
 
 import { HttpClient } from '@angular/common/http';
@@ -26,18 +32,21 @@ import { lastValueFrom } from 'rxjs';
 import { VideoComponent } from '../video/video.component';
 import { AudioComponent } from '../audio/audio.component';
 import { NgClass } from '@angular/common';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { DataService } from 'src/app/services/data.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
-import { PictureInPictureService, PictureInPictureHandles } from '../../live-kit/picture-in-picture.service';
+import {
+  PictureInPictureService,
+  PictureInPictureHandles,
+} from '../../live-kit/picture-in-picture.service';
 
 type TrackInfo = {
-    trackPublication: RemoteTrackPublication;
-    participantIdentity: string;
+  trackPublication: RemoteTrackPublication;
+  participantIdentity: string;
 };
 
 // When running OpenVidu locally, leave these variables empty
@@ -51,30 +60,33 @@ let LIVEKIT_URL = environment.livekitUrl;
 // actual problems show up.
 setLogLevel(LogLevel.warn);
 @Component({
-    selector: 'app-live-kit-call',
-    imports: [
-        ReactiveFormsModule,
-        VideoComponent,
-        AudioComponent,
-        NgClass,
-        MatButtonModule,
-        TranslateModule,
-        DragDropModule
-    ],
-    templateUrl: './call.component.html',
-    styleUrl: './call.component.css'
+  selector: 'app-live-kit-call',
+  imports: [
+    ReactiveFormsModule,
+    VideoComponent,
+    AudioComponent,
+    NgClass,
+    MatButtonModule,
+    TranslateModule,
+    DragDropModule,
+  ],
+  templateUrl: './call.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './call.component.css',
 })
 export class CallComponent implements OnDestroy, OnInit {
-
-  constructor(private auth: AuthenticationService,
-              private dataService: DataService, private router: Router,
-              protected pip: PictureInPictureService) {
+  constructor(
+    private auth: AuthenticationService,
+    private dataService: DataService,
+    private router: Router,
+    protected pip: PictureInPictureService,
+  ) {
     this.configureUrls();
   }
 
   callerId = input<number | null>(null);
   calleeId = input<number | null>(null);
-  minimized = true
+  minimized = true;
   leaveRoomOutput = output();
   private destroyed = false;
 
@@ -112,7 +124,10 @@ export class CallComponent implements OnDestroy, OnInit {
 
   roomForm = new FormGroup({
     roomName: new FormControl('' + Date.now(), Validators.required),
-    participantName: new FormControl(`${this.firsName}  ${this.lastName}`, Validators.required),
+    participantName: new FormControl(
+      `${this.firsName}  ${this.lastName}`,
+      Validators.required,
+    ),
   });
   currentRoomLink = signal<string>('');
 
@@ -139,7 +154,6 @@ export class CallComponent implements OnDestroy, OnInit {
   //   const participants = [caller, callee].sort();
   //   return `room-${participants[0]}-${participants[1]}`;
   // });
-
 
   ngOnInit() {
     // this.route.paramMap.subscribe((params) => {
@@ -179,14 +193,14 @@ export class CallComponent implements OnDestroy, OnInit {
     document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
-
   configureUrls() {
     // If APPLICATION_SERVER_URL is not configured, use default value from OpenVidu Local deployment
     if (!APPLICATION_SERVER_URL) {
       if (window.location.hostname === 'localhost') {
         // APPLICATION_SERVER_URL = 'http://localhost:4004/api/v1/';
       } else {
-        APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/';
+        APPLICATION_SERVER_URL =
+          'https://' + window.location.hostname + ':6443/';
       }
     }
 
@@ -203,45 +217,49 @@ export class CallComponent implements OnDestroy, OnInit {
   async joinRoom() {
     this.playSound('join');
     // Initialize a new Room object
-    const room = new Room(
-        {
-          adaptiveStream: true, // Enable adaptive stream to optimize video quality
-          dynacast: true, // Enable dynacast to reduce bandwidth usage
-          // autoSubscribe: true, // Automatically subscribe to all tracks in the room
-          // default capture settings
-          videoCaptureDefaults: {
-            resolution: VideoPresets.h720.resolution,
-          },
-        }
-    );
+    const room = new Room({
+      adaptiveStream: true, // Enable adaptive stream to optimize video quality
+      dynacast: true, // Enable dynacast to reduce bandwidth usage
+      // autoSubscribe: true, // Automatically subscribe to all tracks in the room
+      // default capture settings
+      videoCaptureDefaults: {
+        resolution: VideoPresets.h720.resolution,
+      },
+    });
     this.room.set(room);
 
     // Specify the actions when events take place in the room
     // On every new Track received...
     room.on(
-        RoomEvent.TrackSubscribed,
-        (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => {
-          this.remoteTracksMap.update((map) => {
-            map.set(publication.trackSid, {
-              trackPublication: publication,
-              participantIdentity: participant.identity,
-            });
-            return map;
+      RoomEvent.TrackSubscribed,
+      (
+        _track: RemoteTrack,
+        publication: RemoteTrackPublication,
+        participant: RemoteParticipant,
+      ) => {
+        this.remoteTracksMap.update((map) => {
+          map.set(publication.trackSid, {
+            trackPublication: publication,
+            participantIdentity: participant.identity,
           });
-        }
+          return map;
+        });
+      },
     );
 
     // On every new Track destroyed...
-    room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => {
-      this.remoteTracksMap.update((map) => {
-        map.delete(publication.trackSid);
-        return map;
-      });
-    });
+    room.on(
+      RoomEvent.TrackUnsubscribed,
+      (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+        this.remoteTracksMap.update((map) => {
+          map.delete(publication.trackSid);
+          return map;
+        });
+      },
+    );
     // Add this to your joinRoom() method after creating the room and setting up other event listeners
 
     room.on(RoomEvent.LocalTrackPublished, (publication) => {
-
       if (publication.kind === 'video') {
         if (publication.source === 'camera') {
           this.localCameraTrack.set(publication.videoTrack);
@@ -249,7 +267,6 @@ export class CallComponent implements OnDestroy, OnInit {
             this.localTrack.set(publication.videoTrack);
           }
         } else if (publication.source === 'screen_share') {
-
           this.localScreenTrack.set(publication.videoTrack);
           this.localTrack.set(publication.videoTrack);
           this.screenShareEnabled.set(true);
@@ -258,7 +275,6 @@ export class CallComponent implements OnDestroy, OnInit {
     });
 
     room.on(RoomEvent.LocalTrackUnpublished, (publication) => {
-
       if (publication.kind === 'video') {
         if (publication.source === 'camera') {
           this.localCameraTrack.set(undefined);
@@ -289,9 +305,14 @@ export class CallComponent implements OnDestroy, OnInit {
       // this.localTrack.set(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
       // add this.id to url params
       // window.history.pushState({}, '', `/${roomName}`);
-      this.currentRoomLink.set(window.location.origin + `/pages/call/${this.callerId()}/${this.calleeId()}/?id=` + roomName);
-      const cameraTrack = Array.from(room.localParticipant.videoTrackPublications.values())
-          .find(pub => pub.source === 'camera')?.videoTrack;
+      this.currentRoomLink.set(
+        window.location.origin +
+          `/pages/call/${this.callerId()}/${this.calleeId()}/?id=` +
+          roomName,
+      );
+      const cameraTrack = Array.from(
+        room.localParticipant.videoTrackPublications.values(),
+      ).find((pub) => pub.source === 'camera')?.videoTrack;
       if (cameraTrack) {
         this.localCameraTrack.set(cameraTrack);
         this.localTrack.set(cameraTrack);
@@ -309,13 +330,12 @@ export class CallComponent implements OnDestroy, OnInit {
     this.room.set(undefined);
     this.localTrack.set(undefined);
     this.remoteTracksMap.set(new Map());
-    if (!this.destroyed){
+    if (!this.destroyed) {
       this.leaveRoomOutput.emit(); // Emit leave event
     }
   }
 
   async setCameraEnabled(value: boolean) {
-
     const room = this.room();
     if (room) {
       const p = room.localParticipant;
@@ -325,8 +345,9 @@ export class CallComponent implements OnDestroy, OnInit {
       // If we're not screen sharing, update the local track
       if (!this.screenShareEnabled()) {
         if (value) {
-          const cameraTrack = Array.from(p.videoTrackPublications.values())
-              .find(pub => pub.source === 'camera')?.videoTrack;
+          const cameraTrack = Array.from(
+            p.videoTrackPublications.values(),
+          ).find((pub) => pub.source === 'camera')?.videoTrack;
           if (cameraTrack) {
             this.localTrack.set(cameraTrack);
           }
@@ -374,14 +395,13 @@ export class CallComponent implements OnDestroy, OnInit {
 
           // Debug: Check if screen share track was created
           setTimeout(() => {
-            const screenTrack = Array.from(p.videoTrackPublications.values())
-                .find(pub => pub.source === 'screen_share');
-
+            const screenTrack = Array.from(
+              p.videoTrackPublications.values(),
+            ).find((pub) => pub.source === 'screen_share');
 
             if (screenTrack?.videoTrack) {
             }
           }, 1000);
-
         } else {
           await p.setScreenShareEnabled(false);
         }
@@ -393,7 +413,6 @@ export class CallComponent implements OnDestroy, OnInit {
   }
 
   async setMicrophoneEnabled(value: boolean) {
-
     const room = this.room();
     if (room) {
       const p = room.localParticipant;
@@ -426,7 +445,7 @@ export class CallComponent implements OnDestroy, OnInit {
    */
   async getToken(roomName: string, participantName: string): Promise<string> {
     const response = await lastValueFrom(
-        this.dataService.sendToken('/api/token', {roomName, participantName})
+      this.dataService.sendToken('/api/token', { roomName, participantName }),
     );
     return response.token;
   }
@@ -495,7 +514,11 @@ export class CallComponent implements OnDestroy, OnInit {
     return `video-${size}`;
   }
 
-  setMainVideo(track: VideoTrack, participantIdentity: string, isLocal: boolean = false) {
+  setMainVideo(
+    track: VideoTrack,
+    participantIdentity: string,
+    isLocal: boolean = false,
+  ) {
     this.mainVideoTrack.set(track);
     this.mainVideoParticipant.set(participantIdentity);
     this.isLocalMainVideo.set(isLocal);
@@ -518,8 +541,9 @@ export class CallComponent implements OnDestroy, OnInit {
     }
 
     // Get first available remote video track
-    const firstRemoteVideo = Array.from(this.remoteTracksMap().values())
-        .find(track => track.trackPublication.kind === 'video');
+    const firstRemoteVideo = Array.from(this.remoteTracksMap().values()).find(
+      (track) => track.trackPublication.kind === 'video',
+    );
 
     return firstRemoteVideo?.trackPublication.videoTrack || null;
   }
@@ -539,17 +563,20 @@ export class CallComponent implements OnDestroy, OnInit {
       return 'You (Camera)';
     }
 
-    const firstRemoteVideo = Array.from(this.remoteTracksMap().values())
-        .find(track => track.trackPublication.kind === 'video');
+    const firstRemoteVideo = Array.from(this.remoteTracksMap().values()).find(
+      (track) => track.trackPublication.kind === 'video',
+    );
 
     return firstRemoteVideo?.participantIdentity || 'No Video';
   }
 
   // Check if we should show camera PiP overlay
   shouldShowCameraPiP(): boolean {
-    return this.screenShareEnabled() &&
-        !!this.localCameraTrack() &&
-        this.getCurrentMainVideoTrack() !== this.localCameraTrack();
+    return (
+      this.screenShareEnabled() &&
+      !!this.localCameraTrack() &&
+      this.getCurrentMainVideoTrack() !== this.localCameraTrack()
+    );
   }
 
   // Method to check if current main video is local
@@ -579,10 +606,10 @@ export class CallComponent implements OnDestroy, OnInit {
 
   updateQueryParam(id: string) {
     this.router.navigate([], {
-      queryParams: {id},
+      queryParams: { id },
       queryParamsHandling: 'merge',
-      replaceUrl: true,         // prevents pushing to history stack
-      skipLocationChange: false // keep the URL change visible
+      replaceUrl: true, // prevents pushing to history stack
+      skipLocationChange: false, // keep the URL change visible
     });
   }
   playSound(name: 'join' | 'screenshare') {
@@ -591,5 +618,4 @@ export class CallComponent implements OnDestroy, OnInit {
     audio.load();
     audio.play().catch((err) => console.warn('Audio play error:', err));
   }
-
 }

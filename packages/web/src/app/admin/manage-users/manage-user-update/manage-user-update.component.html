@@ -1,109 +1,168 @@
 <div>
-    <app-custom-header-page [mainHeader]="mainHeaderPage" [headerRoutes]="headerRoutes"></app-custom-header-page>
-    <br/>
-    <app-card [options]="false" [customHeader]="true"  [hidHeader]="true" [logoLoading]="loading">
-        <div>
-            <div class="example-form">
-                <div class="card mb-3 mainContent">
-                    <form [formGroup]='form' >
-                <div class="row">
-                    <div class="col-md-4 col-sm-4">
-                        <div style="max-height: 300px">
-                            <img
-                                    src="{{userAvatar}}"
-                                    alt="..."
-                                    class="img-fluid"
-                            />
-                        </div>
-        <!--                                <div>-->
-        <!--                                    <label>Photo: </label>-->
-        <!--                                    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />-->
-        <!--                                </div>-->
-        <!--                                <div class="form-group">-->
-        <!--                                    <button-->
-        <!--                                            class="btn btn-default" (click)="uploader.uploadAll()" >Загрузить фото</button>-->
-        <!--                                </div>-->
-                                </div>
-                            <div class="col-md-4 col-sm-4 user-settings">
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.first_name' | translate" required formControlName="firstName">
-                                        <mat-error *ngIf="form.controls['firstName'].hasError('required')">
-                                            {{'manage_user_update.first_name_required' | translate}}
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.last_name' | translate" required formControlName="lastName">
-                                        <mat-error *ngIf="form.controls['lastName'].hasError('required')">
-                                            {{'manage_user_update.last_name_required' | translate}}
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.email' | translate" required formControlName="email">
-                                        <mat-error *ngIf="form.controls['email'].hasError('required')">
-                                            {{'manage_user_update.email_required' | translate}}
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.country' | translate" formControlName="country">
-<!--                                        <mat-error *ngIf="form.controls['country'].hasError('required')">-->
-<!--                                            Country is required!-->
-<!--                                        </mat-error>-->
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.company' | translate" formControlName="company">
-<!--                                        <mat-error *ngIf="form.controls['company'].hasError('required')">-->
-<!--                                            Company is required!-->
-<!--                                        </mat-error>-->
-                                    </mat-form-field>
-                                </div>
+  <app-custom-header-page
+    [mainHeader]="mainHeaderPage"
+    [headerRoutes]="headerRoutes"
+  ></app-custom-header-page>
+  <br />
+  <app-card
+    [options]="false"
+    [customHeader]="true"
+    [hidHeader]="true"
+    [logoLoading]="loading"
+  >
+    <div>
+      <div class="example-form">
+        <div class="card mb-3 mainContent">
+          <form [formGroup]="form">
+            <div class="row">
+              <div class="col-md-4 col-sm-4">
+                <div style="max-height: 300px">
+                  <img src="{{ userAvatar }}" alt="..." class="img-fluid" />
+                </div>
+                <!--                                <div>-->
+                <!--                                    <label>Photo: </label>-->
+                <!--                                    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />-->
+                <!--                                </div>-->
+                <!--                                <div class="form-group">-->
+                <!--                                    <button-->
+                <!--                                            class="btn btn-default" (click)="uploader.uploadAll()" >Загрузить фото</button>-->
+                <!--                                </div>-->
+              </div>
+              <div class="col-md-4 col-sm-4 user-settings">
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="
+                        'manage_user_update.first_name' | translate
+                      "
+                      required
+                      formControlName="firstName"
+                    />
+                    @if (form.controls['firstName'].hasError('required')) {
+                    <mat-error>
+                      {{ 'manage_user_update.first_name_required' | translate }}
+                    </mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.last_name' | translate"
+                      required
+                      formControlName="lastName"
+                    />
+                    @if (form.controls['lastName'].hasError('required')) {
+                    <mat-error>
+                      {{ 'manage_user_update.last_name_required' | translate }}
+                    </mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.email' | translate"
+                      required
+                      formControlName="email"
+                    />
+                    @if (form.controls['email'].hasError('required')) {
+                    <mat-error>
+                      {{ 'manage_user_update.email_required' | translate }}
+                    </mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.country' | translate"
+                      formControlName="country"
+                    />
+                    <!--                                        <mat-error *ngIf="form.controls['country'].hasError('required')">-->
+                    <!--                                            Country is required!-->
+                    <!--                                        </mat-error>-->
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.company' | translate"
+                      formControlName="company"
+                    />
+                    <!--                                        <mat-error *ngIf="form.controls['company'].hasError('required')">-->
+                    <!--                                            Company is required!-->
+                    <!--                                        </mat-error>-->
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-4 user-settings">
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.address' | translate"
+                      formControlName="address"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.phone' | translate"
+                      formControlName="phone"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="'manage_user_update.skype' | translate"
+                      formControlName="skype"
+                    />
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="mat-text-field">
+                    <input
+                      matInput
+                      [placeholder]="
+                        'manage_user_update.email_spare' | translate
+                      "
+                      formControlName="emailSpare"
+                    />
+                  </mat-form-field>
+                </div>
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openUploadDialog()"
+                >
+                  {{ 'manage_user_update.upload_new_photo' | translate }}
+                </button>
 
-                            </div>
-                            <div class="col-md-4 col-sm-4 user-settings">
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.address' | translate" formControlName="address">
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.phone' | translate" formControlName="phone">
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.skype' | translate" formControlName="skype">
-                                    </mat-form-field>
-                                </div>
-                                <div>
-                                    <mat-form-field class="mat-text-field">
-                                        <input matInput [placeholder]="'manage_user_update.email_spare' | translate" formControlName="emailSpare">
-                                    </mat-form-field>
-                                </div>
-                                <button mat-stroked-button color="primary" (click)="openUploadDialog()">{{'manage_user_update.upload_new_photo' | translate}}</button>
-
-                                <!--                country: ['', Validators.required],-->
-                                <!--                company: ['', Validators.required],-->
-                                <!--                address: [],-->
-                                <!--                phone: [],-->
-                                <!--                skype: [],-->
-                                <!--                emailSpare: [],-->
-                            </div>
-                            </div>
-                    </form>
-
-                        </div>
-                    </div>
-            <button mat-raised-button color="primary" (click)="onSubmit()">{{'manage_user_update.save_changes' | translate}}</button>
+                <!--                country: ['', Validators.required],-->
+                <!--                company: ['', Validators.required],-->
+                <!--                address: [],-->
+                <!--                phone: [],-->
+                <!--                skype: [],-->
+                <!--                emailSpare: [],-->
+              </div>
+            </div>
+          </form>
         </div>
-    </app-card>
-<!--<ngx-loading [show]="loading"></ngx-loading>-->
+      </div>
+      <button mat-raised-button color="primary" (click)="onSubmit()">
+        {{ 'manage_user_update.save_changes' | translate }}
+      </button>
+    </div>
+  </app-card>
+  <!--<ngx-loading [show]="loading"></ngx-loading>-->
 </div>

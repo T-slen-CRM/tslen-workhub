@@ -1,4 +1,10 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 interface IDateParts {
   year: number;
@@ -33,14 +39,13 @@ function lastDayOfMonth(year: number, month: number): number {
 }
 
 @Component({
-    selector: 'app-datepicker',
-    templateUrl: './date-picker.component.html',
-    styleUrls: ['./date-picker.component.scss'],
-    standalone: false
+  selector: 'app-datepicker',
+  templateUrl: './date-picker.component.html',
+  styleUrls: ['./date-picker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
-
 export class DatePickerComponent implements OnInit {
-
   @Output() dateRangeChanged: EventEmitter<object>;
   dateStart: any;
   dateEnd: any;
@@ -50,11 +55,11 @@ export class DatePickerComponent implements OnInit {
   constructor() {
     this.dateRangeChanged = new EventEmitter<object>();
     this.ranges = [
-      {id: 0, tittle: 'Today', value: 'today', focus: false},
-      {id: 1, tittle: 'Yesterday', value: 'yesterday', focus: false},
-      {id: 2, tittle: 'Last 7 days', value: 'week', focus: false},
-      {id: 3, tittle: 'This month', value: 'month', focus: false},
-      {id: 4, tittle: 'Last month', value: 'priviesMonth', focus: false}
+      { id: 0, tittle: 'Today', value: 'today', focus: false },
+      { id: 1, tittle: 'Yesterday', value: 'yesterday', focus: false },
+      { id: 2, tittle: 'Last 7 days', value: 'week', focus: false },
+      { id: 3, tittle: 'This month', value: 'month', focus: false },
+      { id: 4, tittle: 'Last month', value: 'priviesMonth', focus: false },
     ];
   }
 
@@ -76,7 +81,7 @@ export class DatePickerComponent implements OnInit {
           year: today.year,
           month: today.month - 1,
           day: today.day,
-        }
+        };
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
         this.dateStart = inputStartDate;
@@ -87,7 +92,7 @@ export class DatePickerComponent implements OnInit {
           year: yesterday.year,
           month: yesterday.month - 1,
           day: yesterday.day,
-        }
+        };
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
         this.dateStart = inputStartDate;
@@ -100,7 +105,7 @@ export class DatePickerComponent implements OnInit {
           year: weekAgo.year,
           month: weekAgo.month - 1,
           day: weekAgo.day,
-        }
+        };
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
         this.dateStart = inputStartDate;
@@ -110,12 +115,12 @@ export class DatePickerComponent implements OnInit {
           year: today.year,
           month: today.month - 1,
           day: 1,
-        }
+        };
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
         this.dateStart = inputStartDate;
         this.dateEnd = today;
-      } else if (type.value === 'priviesMonth')  {
+      } else if (type.value === 'priviesMonth') {
         const prevAnchor = monthsAgoAnchor(1);
         const prevYear = prevAnchor.getFullYear();
         const prevMonth = prevAnchor.getMonth() + 1;
@@ -131,15 +136,19 @@ export class DatePickerComponent implements OnInit {
           year: prevYear,
           month: prevMonth,
           day: lastDayOfMonth(prevYear, prevMonth),
-        }
+        };
         const inputEndDate = Object.assign({}, range['end']);
         inputEndDate.month = inputEndDate.month;
         this.dateEnd = inputEndDate;
       }
     } else {
-      this.resetFocus()
-      range['start'] = this.dateStart ? Object.assign({},  this.dateStart) : this.dateStart;
-      range['end'] = this.dateEnd ? Object.assign({},  this.dateEnd) : this.dateEnd;
+      this.resetFocus();
+      range['start'] = this.dateStart
+        ? Object.assign({}, this.dateStart)
+        : this.dateStart;
+      range['end'] = this.dateEnd
+        ? Object.assign({}, this.dateEnd)
+        : this.dateEnd;
     }
     const rangeKeys: string[] = Object.keys(range);
     if (rangeKeys.includes('start') && rangeKeys.includes('end')) {
@@ -156,7 +165,10 @@ export class DatePickerComponent implements OnInit {
   }
 
   resetFocus(): void {
-    this.ranges.forEach(range => { if (range.focus) { range.focus = !range.focus; }})
+    this.ranges.forEach((range) => {
+      if (range.focus) {
+        range.focus = !range.focus;
+      }
+    });
   }
-
 }

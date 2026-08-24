@@ -1,39 +1,52 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 /**
  * @title Chips Autocomplete
  */
 @Component({
-    selector: 'app-autocomplete',
-    templateUrl: './autocomplete.component.html',
-    styleUrls: ['./autocomplete.component.scss'],
-    standalone: false
+  selector: 'app-autocomplete',
+  templateUrl: './autocomplete.component.html',
+  styleUrls: ['./autocomplete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class AutocompleteComponent {
   public allData = [];
-  @Output() selectedItemsForParent: EventEmitter<{name: string, data: any[]}> = new EventEmitter();
+  @Output() selectedItemsForParent: EventEmitter<{
+    name: string;
+    data: any[];
+  }> = new EventEmitter();
   @Input('allData') set setAllData(value) {
     this.allData = value ? value : [];
-    if (!this.selectedData){
+    if (!this.selectedData) {
       this.selectedData = [];
     }
     //make object from entries
-    const selectedEntries = Object.fromEntries(this.selectedData.map((item: any) => [item.value, item]));
+    const selectedEntries = Object.fromEntries(
+      this.selectedData.map((item: any) => [item.value, item]),
+    );
     this.renewData = this.allData.reduce((acc: any, cur: any) => {
       // exclude selected data
-      if (!selectedEntries[cur.value]){
+      if (!selectedEntries[cur.value]) {
         acc.push(cur);
       }
       return acc;
     }, []);
     this.filteredElement();
-
   }
   @Input() nameOfList: any;
   @Input() shownLabel: string;
@@ -51,18 +64,20 @@ export class AutocompleteComponent {
     this.filteredElement();
   }
 
-  ngOnInit(){
-    if (!this.selectedData){
+  ngOnInit() {
+    if (!this.selectedData) {
       this.selectedData = [];
     }
-    this.renewData = this.allData.map(item => {return item;});
-    if (this.selectedData.length > 0){
-      for (let i=0; i<this.selectedData.length; i++){
+    this.renewData = this.allData.map((item) => {
+      return item;
+    });
+    if (this.selectedData.length > 0) {
+      for (let i = 0; i < this.selectedData.length; i++) {
         let selectedEl = this.selectedData[i];
-        for (let j=0; j<this.renewData.length; j++){
+        for (let j = 0; j < this.renewData.length; j++) {
           let allDataEl = this.renewData[j];
-          if (allDataEl.value === selectedEl.value){
-            this.renewData.splice(j,1);
+          if (allDataEl.value === selectedEl.value) {
+            this.renewData.splice(j, 1);
           }
         }
       }
@@ -74,7 +89,7 @@ export class AutocompleteComponent {
     const value = (event.value || '').trim();
 
     if (value && typeof value === 'string') {
-      this.selectedData.push({group: value, value: value});
+      this.selectedData.push({ group: value, value: value });
     }
     // Add our option
     // if (value) {
@@ -86,7 +101,10 @@ export class AutocompleteComponent {
     event.input.value = '';
 
     this.elementCtrl.setValue(null);
-    this.selectedItemsForParent.emit({name: this.nameOfList, data: this.selectedData});
+    this.selectedItemsForParent.emit({
+      name: this.nameOfList,
+      data: this.selectedData,
+    });
   }
 
   remove(el: string): void {
@@ -97,7 +115,10 @@ export class AutocompleteComponent {
       this.renewData.push(el);
     }
     this.filteredElement();
-    this.selectedItemsForParent.emit({name: this.nameOfList, data: this.selectedData});
+    this.selectedItemsForParent.emit({
+      name: this.nameOfList,
+      data: this.selectedData,
+    });
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -106,35 +127,45 @@ export class AutocompleteComponent {
     this.elementCtrl.setValue(null);
     const index = this.renewData.indexOf(event.option.value);
 
-
     if (index >= 0) {
       this.renewData.splice(index, 1);
     }
     this.filteredElement();
-    this.selectedItemsForParent.emit({name: this.nameOfList, data: this.selectedData});
+    this.selectedItemsForParent.emit({
+      name: this.nameOfList,
+      data: this.selectedData,
+    });
   }
 
   private _filter(value: any) {
     let filterValue;
-    if (typeof value === 'object'){
+    if (typeof value === 'object') {
       filterValue = value.group.toLowerCase();
     } else {
       filterValue = value.toLowerCase();
     }
-    return this.renewData.filter(item => {
+    return this.renewData.filter((item) => {
       return item.group.toLowerCase().includes(filterValue);
     });
   }
-  filteredElement(){
+  filteredElement() {
     this.filteredElements = this.elementCtrl.valueChanges.pipe(
-        startWith(null),
-        map((item: string | null) => item ? this._filter(item) : this.renewData.slice()));
+      startWith(null),
+      map((item: string | null) =>
+        item ? this._filter(item) : this.renewData.slice(),
+      ),
+    );
   }
 
-  resetSelectedData(){
+  resetSelectedData() {
     this.selectedData = [];
-    this.renewData = this.allData.map(item => {return item;});
+    this.renewData = this.allData.map((item) => {
+      return item;
+    });
     this.filteredElement();
-    this.selectedItemsForParent.emit({name: this.nameOfList, data: this.selectedData});
+    this.selectedItemsForParent.emit({
+      name: this.nameOfList,
+      data: this.selectedData,
+    });
   }
 }

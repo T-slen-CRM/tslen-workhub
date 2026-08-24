@@ -1,71 +1,75 @@
-<br/>
+<br />
 
-<div *ngIf="taskProjects$ | async as taskProjects">
-        <div class="main-container">
-            <div
-                 *ngFor="let project of taskProjects;
-                    let i = index;
-                    let first = first;
-                    trackBy: trackByFn"
-            >
-                <mat-card class="mat-item-card-wrapper" (click)="openProject(project, $event)">
-                    <div class="project-card-body"
-                            >
-                        <mat-card-header>
-                            <mat-icon mat-card-avatar *ngIf="project.logo">{{project.logo}}</mat-icon>
-
-                            <mat-card-title>{{project.name}} </mat-card-title>
-                            <mat-card-subtitle>
-                                {{project.description}}
-                            </mat-card-subtitle>
-                        </mat-card-header>
-                    </div>
-
-                    <!--        <img mat-card-image style="width: 150px;" src="https://angular.io/assets/images/logos/angularjs/AngularJS-Shield.svg" alt="Angular Logo">-->
-<!--                    <mat-card-content>-->
-<!--                        <h6>{{project.name}}</h6>-->
-
-<!--                    </mat-card-content>-->
-
-                        <div class="project-actions-button">
-                            <div [matMenuTriggerFor]="menu">
-                                <mat-icon>more_vert</mat-icon>
-                            </div>
-                            <div >
-                                <mat-menu  #menu="matMenu" class="project-settings-menu">
-                                    <div mat-menu-item class="project-settings-menu-item"
-                                            (click)="createEditProject('edit', project)"
-                                         >
-                                        {{'task.button.edit'| translate}}
-                                    </div>
-                                    <div mat-menu-item
-                                         (click)="openProjectMembers(project)"
-                                         >
-                                        {{'task.button.members'| translate}}
-                                    </div>
-                                    <div mat-menu-item
-                                         (click)="deleteProject(project)"
-                                         >
-                                        {{'task.button.delete'| translate}}
-                                    </div>
-                                </mat-menu>
-                            </div>
-                        </div>
-                </mat-card>
-            </div>
-            <div>
-
-                <mat-card [ngClass]="isDarkMode ? 'mat-add-card-wrapper dark-mode' : 'mat-add-card-wrapper' ">
-                    <mat-card-content>
-                        <mat-icon class="mat-icon-wrapper"
-                                  (click)="createEditProject('create')"
-                        >add</mat-icon>
-                    </mat-card-content>
-                </mat-card>
-            </div>
-            <div class="loading-div" *ngIf="!taskProjects">
-                <app-loading-logo></app-loading-logo>
-            </div>
+@if (taskProjects$ | async; as taskProjects) {
+<div>
+  <div class="main-container">
+    @for (project of taskProjects; track trackByFn(i, project); let i = $index;
+    let first = $first) {
+    <div>
+      <mat-card
+        class="mat-item-card-wrapper"
+        (click)="openProject(project, $event)"
+      >
+        <div class="project-card-body">
+          <mat-card-header>
+            @if (project.logo) {
+            <mat-icon mat-card-avatar>{{ project.logo }}</mat-icon>
+            }
+            <mat-card-title>{{ project.name }} </mat-card-title>
+            <mat-card-subtitle>
+              {{ project.description }}
+            </mat-card-subtitle>
+          </mat-card-header>
         </div>
+        <!--        <img mat-card-image style="width: 150px;" src="https://angular.io/assets/images/logos/angularjs/AngularJS-Shield.svg" alt="Angular Logo">-->
+        <!--                    <mat-card-content>-->
+        <!--                        <h6>{{project.name}}</h6>-->
+        <!--                    </mat-card-content>-->
+        <div class="project-actions-button">
+          <div [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </div>
+          <div>
+            <mat-menu #menu="matMenu" class="project-settings-menu">
+              <div
+                mat-menu-item
+                class="project-settings-menu-item"
+                (click)="createEditProject('edit', project)"
+              >
+                {{ 'task.button.edit' | translate }}
+              </div>
+              <div mat-menu-item (click)="openProjectMembers(project)">
+                {{ 'task.button.members' | translate }}
+              </div>
+              <div mat-menu-item (click)="deleteProject(project)">
+                {{ 'task.button.delete' | translate }}
+              </div>
+            </mat-menu>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    }
+    <div>
+      <mat-card
+        [ngClass]="
+          isDarkMode ? 'mat-add-card-wrapper dark-mode' : 'mat-add-card-wrapper'
+        "
+      >
+        <mat-card-content>
+          <mat-icon
+            class="mat-icon-wrapper"
+            (click)="createEditProject('create')"
+            >add</mat-icon
+          >
+        </mat-card-content>
+      </mat-card>
+    </div>
+    @if (!taskProjects) {
+    <div class="loading-div">
+      <app-loading-logo></app-loading-logo>
+    </div>
+    }
+  </div>
 </div>
-
+}

@@ -1,16 +1,30 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, NgZone, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  NgZone,
+  OnInit,
+  Output,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NavigationItem } from '../navigation';
 import { NextConfig } from '../../../../../app-config';
 import { Location } from '@angular/common';
-import {AuthData, AuthenticationService} from "../../../../../services/auth.service";
-import {ThemeService} from "../../../../../services/theme.service";
+import {
+  AuthData,
+  AuthenticationService,
+} from '../../../../../services/auth.service';
+import { ThemeService } from '../../../../../services/theme.service';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
-    selector: 'app-nav-content',
-    templateUrl: './nav-content.component.html',
-    styleUrls: ['./nav-content.component.scss'],
-    standalone: false
+  selector: 'app-nav-content',
+  templateUrl: './nav-content.component.html',
+  styleUrls: ['./nav-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class NavContentComponent implements OnInit, AfterViewInit {
   public nextConfig: any;
@@ -33,13 +47,14 @@ export class NavContentComponent implements OnInit, AfterViewInit {
   @ViewChild('navbarContent') navbarContent: ElementRef;
   @ViewChild('navbarWrapper') navbarWrapper: ElementRef;
 
-  constructor(public nav: NavigationItem,
-              private zone: NgZone,
-              private location: Location,
-              private authService: AuthenticationService,
-              private themeService: ThemeService,
-              public translate: LanguageService
-            ) {
+  constructor(
+    public nav: NavigationItem,
+    private zone: NgZone,
+    private location: Location,
+    private authService: AuthenticationService,
+    private themeService: ThemeService,
+    public translate: LanguageService,
+  ) {
     this.nextConfig = NextConfig.config;
     this.windowWidth = window.innerWidth;
 
@@ -55,17 +70,20 @@ export class NavContentComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.themeService.isDarkTheme.subscribe(value => {
+    this.themeService.isDarkTheme.subscribe((value) => {
       this.isDarkTheme = value;
-    })
+    });
     if (this.windowWidth < 992) {
       this.nextConfig['layout'] = 'vertical';
       setTimeout(() => {
-        document.querySelector('.pcoded-navbar').classList.add('menupos-static');
-        (document.querySelector('#nav-ps-next') as HTMLElement).style.maxHeight = '100%';
+        document
+          .querySelector('.pcoded-navbar')
+          .classList.add('menupos-static');
+        (
+          document.querySelector('#nav-ps-next') as HTMLElement
+        ).style.maxHeight = '100%';
       }, 500);
     }
-
   }
   ngAfterViewInit() {
     if (this.nextConfig['layout'] === 'horizontal') {
@@ -76,15 +94,19 @@ export class NavContentComponent implements OnInit, AfterViewInit {
 
   scrollPlus() {
     this.scrollWidth = this.scrollWidth + (this.wrapperWidth - 80);
-    if (this.scrollWidth > (this.contentWidth - this.wrapperWidth)) {
+    if (this.scrollWidth > this.contentWidth - this.wrapperWidth) {
       this.scrollWidth = this.contentWidth - this.wrapperWidth + 80;
       this.nextDisabled = 'disabled';
     }
     this.prevDisabled = '';
-    if(this.nextConfig.rtlLayout) {
-      (document.querySelector('#side-nav-horizontal') as HTMLElement).style.marginRight = '-' + this.scrollWidth + 'px';
+    if (this.nextConfig.rtlLayout) {
+      (
+        document.querySelector('#side-nav-horizontal') as HTMLElement
+      ).style.marginRight = '-' + this.scrollWidth + 'px';
     } else {
-      (document.querySelector('#side-nav-horizontal') as HTMLElement).style.marginLeft = '-' + this.scrollWidth + 'px';
+      (
+        document.querySelector('#side-nav-horizontal') as HTMLElement
+      ).style.marginLeft = '-' + this.scrollWidth + 'px';
     }
   }
 
@@ -95,12 +117,15 @@ export class NavContentComponent implements OnInit, AfterViewInit {
       this.prevDisabled = 'disabled';
     }
     this.nextDisabled = '';
-    if(this.nextConfig.rtlLayout) {
-      (document.querySelector('#side-nav-horizontal') as HTMLElement).style.marginRight = '-' + this.scrollWidth + 'px';
+    if (this.nextConfig.rtlLayout) {
+      (
+        document.querySelector('#side-nav-horizontal') as HTMLElement
+      ).style.marginRight = '-' + this.scrollWidth + 'px';
     } else {
-      (document.querySelector('#side-nav-horizontal') as HTMLElement).style.marginLeft = '-' + this.scrollWidth + 'px';
+      (
+        document.querySelector('#side-nav-horizontal') as HTMLElement
+      ).style.marginLeft = '-' + this.scrollWidth + 'px';
     }
-
   }
 
   fireLeave() {
@@ -122,7 +147,7 @@ export class NavContentComponent implements OnInit, AfterViewInit {
       const last_parent = up_parent.parentElement;
       if (parent.classList.contains('pcoded-hasmenu')) {
         parent.classList.add('active');
-      } else if(up_parent.classList.contains('pcoded-hasmenu')) {
+      } else if (up_parent.classList.contains('pcoded-hasmenu')) {
         up_parent.classList.add('active');
       } else if (last_parent.classList.contains('pcoded-hasmenu')) {
         last_parent.classList.add('active');
@@ -131,7 +156,12 @@ export class NavContentComponent implements OnInit, AfterViewInit {
   }
 
   navMob() {
-    if (this.windowWidth < 992 && document.querySelector('app-navigation.pcoded-navbar').classList.contains('mob-open')) {
+    if (
+      this.windowWidth < 992 &&
+      document
+        .querySelector('app-navigation.pcoded-navbar')
+        .classList.contains('mob-open')
+    ) {
       this.onNavMobCollapse.emit();
     }
   }
@@ -152,7 +182,7 @@ export class NavContentComponent implements OnInit, AfterViewInit {
           parent.classList.add('pcoded-trigger');
         }
         parent.classList.add('active');
-      } else if(up_parent.classList.contains('pcoded-hasmenu')) {
+      } else if (up_parent.classList.contains('pcoded-hasmenu')) {
         if (this.nextConfig['layout'] === 'vertical') {
           up_parent.classList.add('pcoded-trigger');
         }
@@ -165,9 +195,8 @@ export class NavContentComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  hideSupportButton(){
+  hideSupportButton() {
     this.showSupportButton = !this.showSupportButton;
     this.showSupportEmail = !this.showSupportEmail;
   }
-
 }

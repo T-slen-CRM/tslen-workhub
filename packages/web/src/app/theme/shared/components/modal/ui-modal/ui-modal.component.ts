@@ -1,11 +1,18 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
-    selector: 'app-ui-modal',
-    templateUrl: './ui-modal.component.html',
-    styleUrls: ['./ui-modal.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'app-ui-modal',
+  templateUrl: './ui-modal.component.html',
+  styleUrls: ['./ui-modal.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class UiModalComponent implements OnInit {
   @Input() dialogClass: string;
@@ -15,27 +22,28 @@ export class UiModalComponent implements OnInit {
   public visible = false;
   public visibleAnimate = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public show(): void {
     this.visible = true;
-    setTimeout(() => this.visibleAnimate = true, 100);
+    setTimeout(() => (this.visibleAnimate = true), 100);
     document.querySelector('body').classList.add('modal-open');
   }
 
   public hide(): void {
     this.visibleAnimate = false;
-    setTimeout(() => this.visible = false, 300);
+    setTimeout(() => (this.visible = false), 300);
     document.querySelector('body').classList.remove('modal-open');
   }
 
   public onContainerClicked(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal') && this.containerClick === true) {
+    if (
+      (event.target as HTMLElement).classList.contains('modal') &&
+      this.containerClick === true
+    ) {
       this.hide();
     }
   }
-
 }

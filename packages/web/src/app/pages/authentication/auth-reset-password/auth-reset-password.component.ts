@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from "../../../services/auth.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AuthenticationService } from '../../../services/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-auth-reset-password',
-    templateUrl: './auth-reset-password.component.html',
-    styleUrls: ['./auth-reset-password.component.scss'],
-    standalone: false
+  selector: 'app-auth-reset-password',
+  templateUrl: './auth-reset-password.component.html',
+  styleUrls: ['./auth-reset-password.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class AuthResetPasswordComponent implements OnInit {
   form: FormGroup;
@@ -15,25 +16,26 @@ export class AuthResetPasswordComponent implements OnInit {
   successSubmit = false;
   loading = false;
   constructor(
-      private authService: AuthenticationService,
-      private fb: FormBuilder
-  ) { }
+    private authService: AuthenticationService,
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
-      email: ['', Validators.required]
-    })
+      email: ['', Validators.required],
+    });
   }
-  onSubmit(){
+  onSubmit() {
     this.loading = true;
-    this.authService.forgotPassword({data: this.form.value}).subscribe(response => {
-      this.loading = false;
-      if (response.body['error']) {
-        this.message = response.body['error'];
-      } else {
-        this.successSubmit = true;
-      }
-    })
+    this.authService
+      .forgotPassword({ data: this.form.value })
+      .subscribe((response) => {
+        this.loading = false;
+        if (response.body['error']) {
+          this.message = response.body['error'];
+        } else {
+          this.successSubmit = true;
+        }
+      });
   }
-
 }

@@ -1,50 +1,77 @@
 <div class="date-range-container">
   <div class="mr-4">
-    <div >
-      <form >
+    <div>
+      <form>
         <div class="form-inline">
           <div class="form-group">
             <div class="input-group">
-              <input [ngClass]="invalidRange ? 'form-control date-input invalid': 'form-control date-input'"
-                     placeholder="yyyy-mm-dd"
-                     name="dpStart" [(ngModel)]="dateStart" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle();">
+              <input
+                [ngClass]="
+                  invalidRange
+                    ? 'form-control date-input invalid'
+                    : 'form-control date-input'
+                "
+                placeholder="yyyy-mm-dd"
+                name="dpStart"
+                [(ngModel)]="dateStart"
+                ngbDatepicker
+                #d="ngbDatepicker"
+                (click)="d.toggle()"
+              />
               <div class="input-group-append" style="margin-right: 5px">
                 <!--        <i class="fas fa-calendar"></i>-->
                 <!--            <button class="btn btn-outline-primary fas fa-calendar-day " (click)="d.toggle();" type="button"></button>-->
               </div>
-              <input [ngClass]="invalidRange ? 'form-control date-input invalid': 'form-control date-input'"
-                     placeholder="yyyy-mm-dd"
-                     name="dpEnd" [(ngModel)]="dateEnd" ngbDatepicker #d2="ngbDatepicker" (click)="d2.toggle();" style="margin-right: 5px">
-              <div class="input-group-append" >
+              <input
+                [ngClass]="
+                  invalidRange
+                    ? 'form-control date-input invalid'
+                    : 'form-control date-input'
+                "
+                placeholder="yyyy-mm-dd"
+                name="dpEnd"
+                [(ngModel)]="dateEnd"
+                ngbDatepicker
+                #d2="ngbDatepicker"
+                (click)="d2.toggle()"
+                style="margin-right: 5px"
+              />
+              <div class="input-group-append">
                 <!--        <i class="fas fa-calendar"></i>-->
-                <button class="fas fa-chart-bar "
-                        mat-stroked-button color="primary"
-                        (click)="onClick()" type="button"></button>
+                <button
+                  class="fas fa-chart-bar"
+                  mat-stroked-button
+                  color="primary"
+                  (click)="onClick()"
+                  type="button"
+                ></button>
               </div>
             </div>
           </div>
           <!--        <i class="fas fa-calendar"></i>-->
           <!--      <button class="btn btn-outline-primary fas fa-chart-bar " (click)="d2.toggle(); onClick()" type="button"></button>-->
         </div>
-
       </form>
-
     </div>
   </div>
-  <div >
+  <div>
     <div class="float-right">
       <div class="form-group">
         <div class="input-group">
-          <div class="input-group-append" *ngFor="let range of ranges">
-            <button mat-stroked-button color="primary"
-                    [ngClass]="{'btn-after-focus': range.focus}"
-                    (click)="onClick(range)"
-                    >{{range.tittle}}</button>
+          @for (range of ranges; track range) {
+          <div class="input-group-append">
+            <button
+              mat-stroked-button
+              color="primary"
+              [ngClass]="{ 'btn-after-focus': range.focus }"
+              (click)="onClick(range)"
+            >
+              {{ range.tittle }}
+            </button>
           </div>
+          }
         </div>
       </div>
     </div>
   </div>
 </div>
-
-

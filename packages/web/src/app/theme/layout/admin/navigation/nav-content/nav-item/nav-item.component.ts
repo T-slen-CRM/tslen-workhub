@@ -1,15 +1,21 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NavigationItem} from '../../navigation';
-import {NextConfig} from '../../../../../../app-config';
-import {Location} from '@angular/common';
-import {PendingService} from "../../../../../../services/pending.service";
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { NavigationItem } from '../../navigation';
+import { NextConfig } from '../../../../../../app-config';
+import { Location } from '@angular/common';
+import { PendingService } from '../../../../../../services/pending.service';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
-    selector: 'app-nav-item',
-    templateUrl: './nav-item.component.html',
-    styleUrls: ['./nav-item.component.scss'],
-    standalone: false
+  selector: 'app-nav-item',
+  templateUrl: './nav-item.component.html',
+  styleUrls: ['./nav-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class NavItemComponent implements OnInit {
   @Input() item: NavigationItem;
@@ -17,30 +23,30 @@ export class NavItemComponent implements OnInit {
   public themeLayout: string;
   public badge: number;
 
-  constructor(private location: Location,
-              private pendingService: PendingService,
-              public  translate: LanguageService
-            ) {
+  constructor(
+    private location: Location,
+    private pendingService: PendingService,
+    public translate: LanguageService,
+  ) {
     this.nextConfig = NextConfig.config;
     this.themeLayout = this.nextConfig['layout'];
   }
 
   ngOnInit() {
-    if (this.item.id === 'pending'){
-      this.pendingService.getPendingData().subscribe(response =>{
+    if (this.item.id === 'pending') {
+      this.pendingService.getPendingData().subscribe((response) => {
         this.badge = response.length;
         this.item.badge.title = this.badge?.toString() || '';
         this.pendingService.setCreativePendingCount(this.badge, true);
-      })
-    this.pendingService.pendingCount.subscribe(count => {
-      this.badge = count;
-    if (this.badge < 1){
-      this.item.badge.title = '';
-    } else {
-      this.item.badge.title = this.badge.toString();
-    }
-
-      })
+      });
+      this.pendingService.pendingCount.subscribe((count) => {
+        this.badge = count;
+        if (this.badge < 1) {
+          this.item.badge.title = '';
+        } else {
+          this.item.badge.title = this.badge.toString();
+        }
+      });
     }
   }
 
@@ -68,8 +74,14 @@ export class NavItemComponent implements OnInit {
           last_parent.classList.add('active');
         }
       }
-      if ((document.querySelector('app-navigation.pcoded-navbar').classList.contains('mob-open'))) {
-        document.querySelector('app-navigation.pcoded-navbar').classList.remove('mob-open');
+      if (
+        document
+          .querySelector('app-navigation.pcoded-navbar')
+          .classList.contains('mob-open')
+      ) {
+        document
+          .querySelector('app-navigation.pcoded-navbar')
+          .classList.remove('mob-open');
       }
     } else {
       setTimeout(() => {
@@ -100,5 +112,4 @@ export class NavItemComponent implements OnInit {
       }, 500);
     }
   }
-
 }

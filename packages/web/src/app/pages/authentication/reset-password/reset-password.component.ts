@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DataService} from '../../../services/data.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DataService } from '../../../services/data.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-registration-confirm',
-    templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.scss'],
-    standalone: false
+  selector: 'app-registration-confirm',
+  templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class ResetPasswordComponent implements OnInit {
   hash = '';
@@ -23,26 +24,31 @@ export class ResetPasswordComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private formBuilder: FormBuilder,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.hash = this.route.snapshot.paramMap.get('hash');
-    this.resetForm = this.formBuilder.group({
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
-      hash: [this.hash, Validators.required]
-    }, {
-      validators: [this.requireConfirmPassword]
-    });
+    this.resetForm = this.formBuilder.group(
+      {
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
+        hash: [this.hash, Validators.required],
+      },
+      {
+        validators: [this.requireConfirmPassword],
+      },
+    );
   }
 
   requireConfirmPassword(form: FormGroup) {
     if (form.get('password').value !== form.get('confirmPassword').value) {
-      return {requireConfirmPassword: true};
+      return { requireConfirmPassword: true };
     }
     return null;
   }
-  get f() { return this.resetForm.controls; }
+  get f() {
+    return this.resetForm.controls;
+  }
 
   onResetSubmit() {
     this.submitted = true;
@@ -52,8 +58,9 @@ export class ResetPasswordComponent implements OnInit {
       return;
     } else {
       this.loading = true;
-      this.dataService.resetPassword(this.resetForm.value).subscribe(
-        (response) => {
+      this.dataService
+        .resetPassword(this.resetForm.value)
+        .subscribe((response) => {
           this.loading = false;
           if (response.body['error']) {
             this.message = response.body['error'];
@@ -63,5 +70,4 @@ export class ResetPasswordComponent implements OnInit {
         });
     }
   }
-
 }

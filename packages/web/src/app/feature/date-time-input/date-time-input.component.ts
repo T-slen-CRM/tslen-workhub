@@ -1,18 +1,19 @@
-import {Component, Input} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'app-date-time-input',
-    imports: [],
-    templateUrl: './date-time-input.component.html',
-    styleUrl: './date-time-input.component.scss',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: DateTimeInputComponent
-        }
-    ]
+  selector: 'app-date-time-input',
+  imports: [],
+  templateUrl: './date-time-input.component.html',
+  styleUrl: './date-time-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: DateTimeInputComponent,
+    },
+  ],
 })
 export class DateTimeInputComponent implements ControlValueAccessor {
   @Input() public label: string;
@@ -38,7 +39,7 @@ export class DateTimeInputComponent implements ControlValueAccessor {
   writeValue(currentValue: string): void {
     this.currentValue = currentValue;
   }
-  changeCurrentValue(event){
+  changeCurrentValue(event) {
     this.currentValue = event.target.value;
     this.onChange(this.currentValue);
     this.markAsTouched();
@@ -49,5 +50,4 @@ export class DateTimeInputComponent implements ControlValueAccessor {
       this.touched = true;
     }
   }
-
 }

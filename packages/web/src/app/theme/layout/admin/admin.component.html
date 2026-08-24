@@ -1,13 +1,32 @@
-<app-navigation class="pcoded-navbar" [ngClass]="{'navbar-collapsed' : navCollapsed, 'theme-horizontal': this.nextConfig['layout'] === 'horizontal', 'mob-open' : navCollapsedMob}" (onNavMobCollapse)="navMobClick()"></app-navigation>
-<app-nav-bar class="navbar pcoded-header navbar-expand-lg navbar-light" (onNavCollapse)="this.navCollapsed = !this.navCollapsed;" (onNavHeaderMobCollapse)="navMobClick()"></app-nav-bar>
+<app-navigation
+  class="pcoded-navbar"
+  [ngClass]="{
+    'navbar-collapsed': navCollapsed,
+    'theme-horizontal': this.nextConfig['layout'] === 'horizontal',
+    'mob-open': navCollapsedMob
+  }"
+  (onNavMobCollapse)="navMobClick()"
+></app-navigation>
+<app-nav-bar
+  class="navbar pcoded-header navbar-expand-lg navbar-light"
+  (onNavCollapse)="this.navCollapsed = !this.navCollapsed"
+  (onNavHeaderMobCollapse)="navMobClick()"
+></app-nav-bar>
 <div class="pcoded-main-container" [@routeAnimations]="getState(o)">
-  <div class="pcoded-wrapper" [ngClass]="{'container': this.nextConfig.layout === 'horizontal' && this.nextConfig.subLayout === 'horizontal-2'}" >
+  <div
+    class="pcoded-wrapper"
+    [ngClass]="{
+      container:
+        this.nextConfig.layout === 'horizontal' &&
+        this.nextConfig.subLayout === 'horizontal-2'
+    }"
+  >
     <div class="pcoded-content">
       <div class="pcoded-inner-content">
         <div class="main-body">
           <div class="page-wrapper">
             <app-breadcrumb></app-breadcrumb>
-            <router-outlet  router-outlet #o="outlet"></router-outlet>
+            <router-outlet router-outlet #o="outlet"></router-outlet>
           </div>
         </div>
       </div>
@@ -15,11 +34,14 @@
   </div>
 </div>
 <app-configuration></app-configuration>
-<app-loading-logo [isLoading]="loaderService.isLoading()" [bar]="true"></app-loading-logo>
+<app-loading-logo
+  [isLoading]="loaderService.isLoading()"
+  [bar]="true"
+></app-loading-logo>
 @if (activeCallData()){
-        <app-live-kit-call
-          [callerId]="activeCallData()?.callerId"
-          [calleeId]="activeCallData()?.calleeId"
-          (leaveRoomOutput)="onCloseCall()"
-          ></app-live-kit-call>
-    }
+<app-live-kit-call
+  [callerId]="$safeNavigationMigration(activeCallData()?.callerId)"
+  [calleeId]="$safeNavigationMigration(activeCallData()?.calleeId)"
+  (leaveRoomOutput)="onCloseCall()"
+></app-live-kit-call>
+}

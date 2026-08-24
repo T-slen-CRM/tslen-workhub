@@ -1,43 +1,54 @@
 <div class="live-chat-container">
   <!-- Header with user info -->
-    @if (selectedChatId()) {
-        <div class="live-chat-header">
-            @if (localUserData() && selectedChatId()?.id && localUserData().id !== selectedChatId()?.id) {
-                <app-call-button-renderer [selectedUserId]="selectedChatId()?.id"></app-call-button-renderer>
-            }
-            <p class="chat-user-name">
-              {{ selectedChatId()?.firstName }} {{ selectedChatId()?.lastName }}
-            </p>
-        </div>
+  @if (selectedChatId()) {
+  <div class="live-chat-header">
+    @if (localUserData() && selectedChatId()?.id && localUserData().id !==
+    selectedChatId()?.id) {
+    <app-call-button-renderer
+      [selectedUserId]="$safeNavigationMigration(selectedChatId()?.id)"
+    ></app-call-button-renderer>
     }
+    <p class="chat-user-name">
+      {{ selectedChatId()?.firstName }} {{ selectedChatId()?.lastName }}
+    </p>
+  </div>
+  }
   <!-- Messages area -->
-<!--  <div class="live-chat-messages-container">-->
-<!--    messages:-->
-<!--    &lt;!&ndash; Later you can add ngFor to show messages here &ndash;&gt;-->
-<!--  </div>-->
+  <!--  <div class="live-chat-messages-container">-->
+  <!--    messages:-->
+  <!--    &lt;!&ndash; Later you can add ngFor to show messages here &ndash;&gt;-->
+  <!--  </div>-->
 
-<!--  &lt;!&ndash; Input area &ndash;&gt;-->
-<!--  <div class="live-chat-input-container">-->
-<!--    <form class="chat-form">-->
-<!--      <mat-form-field class="chat-textarea" appearance="outline">-->
-<!--        <mat-label>Message</mat-label>-->
-<!--        <textarea-->
-<!--          matInput-->
-<!--          placeholder="Type your message..."-->
-<!--          rows="3"-->
-<!--        ></textarea>-->
-<!--      </mat-form-field>-->
-<!--    </form>-->
-<!--    <button-->
-<!--      mat-stroked-button-->
-<!--      color="primary"-->
-<!--      class="live-chat-send-button"-->
-<!--    >-->
-<!--      Send-->
-<!--    </button>-->
-<!--  </div>-->
-    @if (localUserData() && selectedChatId()?.id && localUserData().id !== selectedChatId()?.id) {
-        <app-chat [chatRoomId]="chatRoomId()" [localUserId]="localUserData().id" [senderName]="selectedChatId()?.firstName + ' ' + selectedChatId()?.lastName" />
-    }
-
+  <!--  &lt;!&ndash; Input area &ndash;&gt;-->
+  <!--  <div class="live-chat-input-container">-->
+  <!--    <form class="chat-form">-->
+  <!--      <mat-form-field class="chat-textarea" appearance="outline">-->
+  <!--        <mat-label>Message</mat-label>-->
+  <!--        <textarea-->
+  <!--          matInput-->
+  <!--          placeholder="Type your message..."-->
+  <!--          rows="3"-->
+  <!--        ></textarea>-->
+  <!--      </mat-form-field>-->
+  <!--    </form>-->
+  <!--    <button-->
+  <!--      mat-stroked-button-->
+  <!--      color="primary"-->
+  <!--      class="live-chat-send-button"-->
+  <!--    >-->
+  <!--      Send-->
+  <!--    </button>-->
+  <!--  </div>-->
+  @if (localUserData() && selectedChatId()?.id && localUserData().id !==
+  selectedChatId()?.id) {
+  <app-chat
+    [chatRoomId]="chatRoomId()"
+    [localUserId]="localUserData().id"
+    [senderName]="
+      $safeNavigationMigration(selectedChatId()?.firstName) +
+      ' ' +
+      $safeNavigationMigration(selectedChatId()?.lastName)
+    "
+  />
+  }
 </div>

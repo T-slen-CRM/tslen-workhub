@@ -1,4 +1,19 @@
-<div #alert class="alert alert-{{type}}" role="alert" [ngClass]="{'alert-dismissible': dismiss}">
+<div
+  #alert
+  class="alert alert-{{ type }}"
+  role="alert"
+  [ngClass]="{ 'alert-dismissible': dismiss }"
+>
   <ng-content></ng-content>
-  <button *ngIf="dismiss" (click)="dismissAlert(alert)" type="button" class="close" data-dismiss="alert" [attr.aria-label]="'alert.close' | translate"><span aria-hidden="true">&times;</span></button>
+  @if (dismiss) {
+  <button
+    (click)="dismissAlert(alert)"
+    type="button"
+    class="close"
+    data-dismiss="alert"
+    [attr.aria-label]="'alert.close' | translate"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+  }
 </div>

@@ -1,31 +1,44 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {CalendarEvent} from 'angular-calendar';
-import {Subject} from 'rxjs';
-import {customFormatDate} from '../../helpers/utils';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LibsService} from '../../services/libs.service';
-import {IDaysOffObject} from '../../interfaces/dashboard';
-import {FadeIn, FadeInOut, FadeInOutByHidden} from '../../../animations/animations';
-import {endOfDay, startOfDay, subMinutes} from 'date-fns';
-import {ValidatorFormGroupService} from '../../services/validatorFormGroup.service';
-import {Router} from "@angular/router";
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { CalendarEvent } from 'angular-calendar';
+import { Subject } from 'rxjs';
+import { customFormatDate } from '../../helpers/utils';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LibsService } from '../../services/libs.service';
+import { IDaysOffObject } from '../../interfaces/dashboard';
+import {
+  FadeIn,
+  FadeInOut,
+  FadeInOutByHidden,
+} from '../../../animations/animations';
+import { endOfDay, startOfDay, subMinutes } from 'date-fns';
+import { ValidatorFormGroupService } from '../../services/validatorFormGroup.service';
+import { Router } from '@angular/router';
 import { LanguageService } from 'src/app/language/language.service';
-
 
 /**
  * @title Dialog with header, scrollable content and actions
  */
 @Component({
-    selector: 'app-create-one-event-dialog',
-    templateUrl: './create-one-event-dialog.component.html',
-    styleUrls: ['./create-one-event-dialog.component.scss'],
-    animations: [
-        FadeInOutByHidden(300, 300, true),
-        FadeInOut(500, 300, true),
-        FadeIn(500, true),
-    ],
-    standalone: false
+  selector: 'app-create-one-event-dialog',
+  templateUrl: './create-one-event-dialog.component.html',
+  styleUrls: ['./create-one-event-dialog.component.scss'],
+  animations: [
+    FadeInOutByHidden(300, 300, true),
+    FadeInOut(500, 300, true),
+    FadeIn(500, true),
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class CreateOneEventDialogComponent implements OnInit {
   // TODO: interface
@@ -47,14 +60,15 @@ export class CreateOneEventDialogComponent implements OnInit {
   public allPossibleAttendees: any;
   public selectedAttendees: any;
 
-  constructor(public dialog: MatDialog,
-              public matDialogRef: MatDialogRef<CreateOneEventDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private formBuilder: FormBuilder,
-              private libsService: LibsService,
-              private validatorService: ValidatorFormGroupService,
-              public translateService: LanguageService
-            ) {
+  constructor(
+    public dialog: MatDialog,
+    public matDialogRef: MatDialogRef<CreateOneEventDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private formBuilder: FormBuilder,
+    private libsService: LibsService,
+    private validatorService: ValidatorFormGroupService,
+    public translateService: LanguageService,
+  ) {
     this.requestTypes = this.libsService.requestTypeList;
     this.iconsListByRequestTypes = this.libsService.daysOffList;
     this.approveStatusObject = this.libsService.approveStatusList;
@@ -64,16 +78,21 @@ export class CreateOneEventDialogComponent implements OnInit {
     this.googleCalendarId = this.data.googleCalendarData?.calendarId;
     this.googleTimezone = this.data.googleCalendarData?.timezone;
     this.usersList = this.data.usersList;
-    if (this.usersList){
-        this.userListByEmail = Object.fromEntries(this.usersList.map(user => [user.email, user]));
-        this.allPossibleAttendees = this.getAllPossibleAttendees(this.usersList);
+    if (this.usersList) {
+      this.userListByEmail = Object.fromEntries(
+        this.usersList.map((user) => [user.email, user]),
+      );
+      this.allPossibleAttendees = this.getAllPossibleAttendees(this.usersList);
     }
   }
 
   ngOnInit() {
-    this.loadTranslations()
+    this.loadTranslations();
     this.translateService.onLangChange.subscribe(() => this.loadTranslations());
-    this.selectedDate = customFormatDate(this.data?.date, 'yyyy-MM-dd HH:mm:ss'); // if edit event use new Date()
+    this.selectedDate = customFormatDate(
+      this.data?.date,
+      'yyyy-MM-dd HH:mm:ss',
+    ); // if edit event use new Date()
     this.createForm();
     const incomingEvent = this.data.events;
     this.selectedAttendees = this.setSelectedAttendees(incomingEvent.attendees);
@@ -83,7 +102,7 @@ export class CreateOneEventDialogComponent implements OnInit {
       event.end = customFormatDate(event.end, 'yyyy-MM-dd HH:mm:ss');
       this.form.patchValue(event);
     }
-    this.form.get('isRequest').valueChanges.subscribe(isRequest => {
+    this.form.get('isRequest').valueChanges.subscribe((isRequest) => {
       if (isRequest) {
         setTimeout(() => {
           this.form.get('requestType').patchValue('hospital');
@@ -92,7 +111,7 @@ export class CreateOneEventDialogComponent implements OnInit {
 
         this.form.get('showDateWithHours').patchValue(1);
       } else {
-        if (this.form.get('isGoogleEvent').value === 1){
+        if (this.form.get('isGoogleEvent').value === 1) {
           return;
         }
         setTimeout(() => {
@@ -101,9 +120,13 @@ export class CreateOneEventDialogComponent implements OnInit {
         this.form.get('requestType').patchValue('own');
       }
     });
-    this.form.get('requestType').valueChanges.subscribe(requestType => {
+    this.form.get('requestType').valueChanges.subscribe((requestType) => {
       if (requestType !== 'own') {
-        this.form.get('color').patchValue({primary: this.iconsListByRequestTypes[requestType].color});
+        this.form
+          .get('color')
+          .patchValue({
+            primary: this.iconsListByRequestTypes[requestType].color,
+          });
         if (requestType === 'hospital' || requestType === 'timeOff') {
           this.form.get('showDateWithHours').patchValue(1);
         } else {
@@ -111,11 +134,11 @@ export class CreateOneEventDialogComponent implements OnInit {
         }
         this.form.get('dateWithHours').patchValue(0);
       } else {
-        this.form.get('color').patchValue({primary: '#4680ff'});
+        this.form.get('color').patchValue({ primary: '#4680ff' });
       }
       this.form.get('title').patchValue(requestType);
     });
-    this.form.get('dateWithHours').valueChanges.subscribe(dateWithHours => {
+    this.form.get('dateWithHours').valueChanges.subscribe((dateWithHours) => {
       setTimeout(() => {
         this.changeDateTimeByRequestType(dateWithHours);
       }, 0);
@@ -125,44 +148,46 @@ export class CreateOneEventDialogComponent implements OnInit {
     if (this.isRequest === 1) {
       this.form.get('isRequest').patchValue(1);
     }
-    this.form.get('start').valueChanges.subscribe(start => {
+    this.form.get('start').valueChanges.subscribe((start) => {
       this.setTimeOffset(start, this.form.value.end);
     });
-    this.form.get('end').valueChanges.subscribe(end => {
+    this.form.get('end').valueChanges.subscribe((end) => {
       this.setTimeOffset(this.form.value.start, end);
     });
-    if (!this.googleCalendarId){
+    if (!this.googleCalendarId) {
       this.form.get('isGoogleEvent').disable();
     } else {
       this.form.get('googleCalendarId').patchValue(this.googleCalendarId);
       this.form.get('googleTimezone').patchValue(this.googleTimezone);
     }
-    if (this.form.get('isGoogleEvent').value === 1){
+    if (this.form.get('isGoogleEvent').value === 1) {
       this.form.get('isRequest').disable();
       this.form.get('isGoogleEvent').disable();
     }
   }
 
   loadTranslations(): void {
-    this.translateService.get([
-      'daysOffStaticList.hospital',
-      'daysOffStaticList.vocation',
-      'daysOffStaticList.timeOff',
-      'daysOffStaticList.transfer',
-      'daysOffStaticList.home'
-    ]).subscribe((translation) => {
-      const keys = Object.keys(translation);
-      for (let i = 0; i < keys.length; i++) {
-        const fullKey = keys[i];
-        const shortKey = fullKey.split('.').pop();
-        if (this.iconsListByRequestTypes[shortKey]) {
-          this.iconsListByRequestTypes[shortKey].title = translation[fullKey];
+    this.translateService
+      .get([
+        'daysOffStaticList.hospital',
+        'daysOffStaticList.vocation',
+        'daysOffStaticList.timeOff',
+        'daysOffStaticList.transfer',
+        'daysOffStaticList.home',
+      ])
+      .subscribe((translation) => {
+        const keys = Object.keys(translation);
+        for (let i = 0; i < keys.length; i++) {
+          const fullKey = keys[i];
+          const shortKey = fullKey.split('.').pop();
+          if (this.iconsListByRequestTypes[shortKey]) {
+            this.iconsListByRequestTypes[shortKey].title = translation[fullKey];
+          }
         }
-      }
-    });
+      });
   }
   closeDialog(action: string, result: any) {
-    this.matDialogRef.close({result, action});
+    this.matDialogRef.close({ result, action });
   }
 
   onSubmit() {
@@ -170,8 +195,10 @@ export class CreateOneEventDialogComponent implements OnInit {
       if (this.form.value.isRequest === 0) {
         this.form.value.requestType = 'own';
       } else {
-        const newTypeValue = this.daysOffList[this.form.value.requestType] - this.form.value.timeOffset;
-        if (newTypeValue >= 0){
+        const newTypeValue =
+          this.daysOffList[this.form.value.requestType] -
+          this.form.value.timeOffset;
+        if (newTypeValue >= 0) {
           this.daysOffList[this.form.value.requestType] = newTypeValue;
         }
       }
@@ -197,7 +224,7 @@ export class CreateOneEventDialogComponent implements OnInit {
       approved: 0,
       requestType: 'own',
       comment: '',
-      color: this.formBuilder.group({primary: '#4680ff'}),
+      color: this.formBuilder.group({ primary: '#4680ff' }),
       draggable: true,
       resizable: {
         beforeStart: true,
@@ -234,7 +261,10 @@ export class CreateOneEventDialogComponent implements OnInit {
   changeDateTimeByRequestType(dateWithHours: boolean = false) {
     let formattedDate;
     if (dateWithHours) {
-      formattedDate = customFormatDate(this.selectedDate, 'yyyy-MM-dd HH:mm:ss');
+      formattedDate = customFormatDate(
+        this.selectedDate,
+        'yyyy-MM-dd HH:mm:ss',
+      );
       this.form.get('start').patchValue(formattedDate);
       this.form.get('end').patchValue(formattedDate);
     } else {
@@ -247,14 +277,18 @@ export class CreateOneEventDialogComponent implements OnInit {
   checkDateTime() {
     if (this.form.value.isRequest && !this.form.value.dateWithHours) {
       const end = subMinutes(endOfDay(new Date(this.form.value.end)), 1);
-      const  start = startOfDay(new Date(this.form.value.start));
-      this.form.get('start').patchValue(customFormatDate(start, 'yyyy-MM-dd HH:mm:ss'));
-      this.form.get('end').patchValue(customFormatDate(end, 'yyyy-MM-dd HH:mm:ss'));
+      const start = startOfDay(new Date(this.form.value.start));
+      this.form
+        .get('start')
+        .patchValue(customFormatDate(start, 'yyyy-MM-dd HH:mm:ss'));
+      this.form
+        .get('end')
+        .patchValue(customFormatDate(end, 'yyyy-MM-dd HH:mm:ss'));
     }
   }
 
   setTimeOffset(start: any, end: any) {
-    if (this.form.value.isRequest){
+    if (this.form.value.isRequest) {
       start = new Date(start).getTime();
       end = new Date(end).getTime();
       const diff = end - start;
@@ -262,30 +296,30 @@ export class CreateOneEventDialogComponent implements OnInit {
       let timeOffset = 1;
       if (diff === 0) {
         timeOffset = 1;
-      } else if (diff <= (2 * hour)) {
+      } else if (diff <= 2 * hour) {
         timeOffset = 0.25;
       } else if (diff <= 4 * hour) {
         timeOffset = 0.5;
       } else if (diff <= 6 * hour) {
         timeOffset = 0.75;
-      } else if (diff >= 24 * hour){
+      } else if (diff >= 24 * hour) {
         timeOffset = Math.floor(diff / (24 * hour));
       }
-      if (this.daysOffList[this.form.value.requestType] - timeOffset < 0){
+      if (this.daysOffList[this.form.value.requestType] - timeOffset < 0) {
         timeOffset = -1;
       }
       this.form.get('timeOffset').patchValue(timeOffset);
     }
   }
   getAllPossibleAttendees(usersList) {
-    return usersList.map(user => {
-      return {value: user.email, group: user.firstName + ' ' + user.lastName}
+    return usersList.map((user) => {
+      return { value: user.email, group: user.firstName + ' ' + user.lastName };
     });
   }
   getSelectedAttendees(event) {
     this.selectedAttendees = event.data;
-    const currentAttendees = this.selectedAttendees.map(item => {
-      return {userEmail: item.value}
+    const currentAttendees = this.selectedAttendees.map((item) => {
+      return { userEmail: item.value };
     });
     this.form.get('attendees').patchValue(currentAttendees);
   }
@@ -293,13 +327,11 @@ export class CreateOneEventDialogComponent implements OnInit {
     if (!attendees) {
       return [];
     }
-    return attendees.map(attendee => {
+    return attendees.map((attendee) => {
       const userEmail = attendee.userEmail;
       const user = this.userListByEmail[userEmail];
       const userName = user ? user.firstName + ' ' + user.lastName : userEmail;
-      return {value: userEmail, group: userName}
+      return { value: userEmail, group: userName };
     });
-
   }
-
 }

@@ -1,4 +1,9 @@
-import {Component, input, OnInit} from '@angular/core';
+import {
+  Component,
+  input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalLiveKit } from '../model-live-kit/model-live-kit.component';
 import { DataService } from 'src/app/services/data.service';
@@ -6,14 +11,15 @@ import { AuthenticationService } from 'src/app/services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { LiveKitWebSocketService } from 'src/app/pages/live-kit/live-kitWebSocket.service';
 import { LiveKitEvents } from 'src/app/pages/live-kit/enum/live-kit.enum';
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-call-button-renderer',
-    imports: [TranslateModule, MatButtonModule, MatIconModule],
-    templateUrl: './buttonRender.component.html',
-    styleUrls: ['./buttonRender.component.scss']
+  selector: 'app-call-button-renderer',
+  imports: [TranslateModule, MatButtonModule, MatIconModule],
+  templateUrl: './buttonRender.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./buttonRender.component.scss'],
 })
 export class CallButtonRendererComponent implements OnInit {
   params: any;
@@ -25,7 +31,7 @@ export class CallButtonRendererComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataService,
     private auth: AuthenticationService,
-    public liveKitWebSocketService: LiveKitWebSocketService
+    public liveKitWebSocketService: LiveKitWebSocketService,
   ) {}
 
   ngOnInit() {
@@ -35,7 +41,7 @@ export class CallButtonRendererComponent implements OnInit {
       const payload = JSON.parse(activeCall);
       if (payload.callerId === this.user.id && payload.calleeId) {
         this.dataService.getOneUser(payload.calleeId).subscribe((res) => {
-          this.callModal(res, payload)
+          this.callModal(res, payload);
         });
       }
     }
@@ -52,25 +58,24 @@ export class CallButtonRendererComponent implements OnInit {
       callerName: this.user.firstName,
       callerLastName: this.user.lastName,
       calleeId: this.selectedUserId(),
-      img: this.user.avatar
+      img: this.user.avatar,
     };
     localStorage.setItem('outgoing_call', JSON.stringify(payload));
 
     this.dataService.getOneUser(this.selectedUserId()).subscribe((res) => {
-       this.callModal(res, payload)
+      this.callModal(res, payload);
     });
     this.liveKitWebSocketService.send(LiveKitEvents.INCOMING_CALL, payload);
   }
 
-
-  private callModal(res, payload){
+  private callModal(res, payload) {
     const audio = new Audio('assets/audio/call.mp3');
     audio.loop = true;
     audio.play();
 
     const dialogRef = this.dialog.open(ModalLiveKit, {
       disableClose: true,
-      data: res.body
+      data: res.body,
     });
     this.liveKitWebSocketService.registerOutgoingCallDialog(dialogRef);
     dialogRef.afterClosed().subscribe((wasAccepted?: boolean) => {
@@ -82,10 +87,12 @@ export class CallButtonRendererComponent implements OnInit {
       }
       const data_rejected = {
         callerId: payload.calleeId,
-        calleeId: payload.callerId
+        calleeId: payload.callerId,
       };
-      this.liveKitWebSocketService.send(LiveKitEvents.CALL_REJECTED, data_rejected);
+      this.liveKitWebSocketService.send(
+        LiveKitEvents.CALL_REJECTED,
+        data_rejected,
+      );
     });
   }
 }
-

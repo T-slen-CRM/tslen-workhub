@@ -1,33 +1,121 @@
-<div class="container" *ngIf="this.nextConfig.layout === 'horizontal' && this.nextConfig.subLayout === 'horizontal-2'; else mainHeader">
+@if (this.nextConfig.layout === 'horizontal' && this.nextConfig.subLayout ===
+'horizontal-2') {
+<div class="container">
   <ng-container *ngTemplateOutlet="mainHeader"></ng-container>
 </div>
+} @else {
+<div class="m-header custom-logo-header">
+  @if (windowWidth < 992) {
+  <a
+    href="javascript:"
+    class="mobile-menu"
+    id="mobile-collapse"
+    (click)="navCollapse()"
+    ><span></span
+  ></a>
+  }
+  <a [routerLink]="['/dashboard/analytics']" class="b-brand">
+    @if (!this.isDarkTheme) {
+    <div>
+      @if (this.nextConfig.navBrandColor !== 'brand-default' ||
+      this.nextConfig.headerBackColor !== 'header-default') {
+      <img
+        src="../../../../../assets/images/tslen/T-SLEN_2.png"
+        class="brand-img"
+      />
+      }
+    </div>
+    }
+    <!--      <div *ngIf="this.isDarkTheme">-->
+    <!--          <img  src="../../../../../assets/images/auth/Bidscube_2_white.png" width="170" height="45" alt="" *ngIf="this.nextConfig.navBrandColor !== 'brand-default' || this.nextConfig.headerBackColor !== 'header-default'">-->
+    <!--      </div>-->
+    <!--      <img src="assets/images/Bidscube_white_22.png" alt="" class="logo" *ngIf="this.nextConfig.navBrandColor === 'brand-default' && this.nextConfig.headerBackColor === 'header-default'">-->
+    <!--      <img src="assets/images/logo-icon.png" alt="" class="logo-thumb">-->
+  </a>
+  <a
+    class="mob-toggler"
+    [ngClass]="{ on: this.menuClass }"
+    href="javascript:"
+    (click)="toggleMobOption()"
+    ><i class="feather icon-more-vertical"></i
+  ></a>
+</div>
+<div class="collapse navbar-collapse" [style.display]="this.collapseStyle">
+  <!--    <button mat-reised-button (click)="changeThemeColor()">change color</button>-->
+  <!--    <app-dark-mode-button class="mr-auto" [isDarkTheme]="isDarkTheme" [userId]="userId"></app-dark-mode-button>-->
+  <!--    <div>-->
+  <!--      <div class="flex-stretch"></div>-->
+  <!--      <mat-icon class="mr-8">brightness_5</mat-icon>-->
+  <!--      <mat-slide-toggle (change)="changeThemeColor()" class="mr-8">-->
+  <!--      </mat-slide-toggle>-->
+  <!--      <mat-icon>bedtime</mat-icon>-->
+  <!--    </div>-->
+  <!--    <app-nav-left class="mr-auto"></app-nav-left>-->
+  <!--    <a *ngIf="userRole === 'admin'" [routerLink]="['/admin/admin-settings']">Admin</a>-->
+  <app-nav-right
+    class="ml-auto"
+    [firstName]="firstName"
+    [lastName]="lastName"
+    [userAvatar]="userAvatar"
+    [userId]="userId"
+  ></app-nav-right>
+</div>
+}
 <ng-template #mainHeader>
   <div class="m-header custom-logo-header">
-    <a *ngIf="windowWidth < 992" href="javascript:" class="mobile-menu" id="mobile-collapse" (click)="navCollapse()"><span></span></a>
+    @if (windowWidth < 992) {
+    <a
+      href="javascript:"
+      class="mobile-menu"
+      id="mobile-collapse"
+      (click)="navCollapse()"
+      ><span></span
+    ></a>
+    }
     <a [routerLink]="['/dashboard/analytics']" class="b-brand">
-      <div *ngIf="!this.isDarkTheme" >
-          <img src="../../../../../assets/images/tslen/T-SLEN_2.png" class="brand-img"  *ngIf="this.nextConfig.navBrandColor !== 'brand-default' || this.nextConfig.headerBackColor !== 'header-default'">
+      @if (!this.isDarkTheme) {
+      <div>
+        @if (this.nextConfig.navBrandColor !== 'brand-default' ||
+        this.nextConfig.headerBackColor !== 'header-default') {
+        <img
+          src="../../../../../assets/images/tslen/T-SLEN_2.png"
+          class="brand-img"
+        />
+        }
       </div>
-<!--      <div *ngIf="this.isDarkTheme">-->
-<!--          <img  src="../../../../../assets/images/auth/Bidscube_2_white.png" width="170" height="45" alt="" *ngIf="this.nextConfig.navBrandColor !== 'brand-default' || this.nextConfig.headerBackColor !== 'header-default'">-->
-<!--      </div>-->
-<!--      <img src="assets/images/Bidscube_white_22.png" alt="" class="logo" *ngIf="this.nextConfig.navBrandColor === 'brand-default' && this.nextConfig.headerBackColor === 'header-default'">-->
-<!--      <img src="assets/images/logo-icon.png" alt="" class="logo-thumb">-->
+      }
+      <!--      <div *ngIf="this.isDarkTheme">-->
+      <!--          <img  src="../../../../../assets/images/auth/Bidscube_2_white.png" width="170" height="45" alt="" *ngIf="this.nextConfig.navBrandColor !== 'brand-default' || this.nextConfig.headerBackColor !== 'header-default'">-->
+      <!--      </div>-->
+      <!--      <img src="assets/images/Bidscube_white_22.png" alt="" class="logo" *ngIf="this.nextConfig.navBrandColor === 'brand-default' && this.nextConfig.headerBackColor === 'header-default'">-->
+      <!--      <img src="assets/images/logo-icon.png" alt="" class="logo-thumb">-->
     </a>
-    <a class="mob-toggler" [ngClass]="{'on' : this.menuClass}" href="javascript:" (click)="toggleMobOption()"><i class="feather icon-more-vertical"></i></a>
+    <a
+      class="mob-toggler"
+      [ngClass]="{ on: this.menuClass }"
+      href="javascript:"
+      (click)="toggleMobOption()"
+      ><i class="feather icon-more-vertical"></i
+    ></a>
   </div>
   <div class="collapse navbar-collapse" [style.display]="this.collapseStyle">
-<!--    <button mat-reised-button (click)="changeThemeColor()">change color</button>-->
-<!--    <app-dark-mode-button class="mr-auto" [isDarkTheme]="isDarkTheme" [userId]="userId"></app-dark-mode-button>-->
-<!--    <div>-->
-<!--      <div class="flex-stretch"></div>-->
-<!--      <mat-icon class="mr-8">brightness_5</mat-icon>-->
-<!--      <mat-slide-toggle (change)="changeThemeColor()" class="mr-8">-->
-<!--      </mat-slide-toggle>-->
-<!--      <mat-icon>bedtime</mat-icon>-->
-<!--    </div>-->
-<!--    <app-nav-left class="mr-auto"></app-nav-left>-->
-<!--    <a *ngIf="userRole === 'admin'" [routerLink]="['/admin/admin-settings']">Admin</a>-->
-    <app-nav-right class="ml-auto" [firstName]="firstName" [lastName]="lastName" [userAvatar]="userAvatar" [userId]="userId"></app-nav-right>
+    <!--    <button mat-reised-button (click)="changeThemeColor()">change color</button>-->
+    <!--    <app-dark-mode-button class="mr-auto" [isDarkTheme]="isDarkTheme" [userId]="userId"></app-dark-mode-button>-->
+    <!--    <div>-->
+    <!--      <div class="flex-stretch"></div>-->
+    <!--      <mat-icon class="mr-8">brightness_5</mat-icon>-->
+    <!--      <mat-slide-toggle (change)="changeThemeColor()" class="mr-8">-->
+    <!--      </mat-slide-toggle>-->
+    <!--      <mat-icon>bedtime</mat-icon>-->
+    <!--    </div>-->
+    <!--    <app-nav-left class="mr-auto"></app-nav-left>-->
+    <!--    <a *ngIf="userRole === 'admin'" [routerLink]="['/admin/admin-settings']">Admin</a>-->
+    <app-nav-right
+      class="ml-auto"
+      [firstName]="firstName"
+      [lastName]="lastName"
+      [userAvatar]="userAvatar"
+      [userId]="userId"
+    ></app-nav-right>
   </div>
 </ng-template>

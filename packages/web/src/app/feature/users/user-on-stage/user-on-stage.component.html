@@ -1,51 +1,48 @@
 @for (user of users; track user.id){
-    <mat-card class="main-card-container">
-        <mat-card-header>
-            <div mat-card-avatar class="card-header-image">
-                <img [ngSrc]="user.avatar" alt="User Logo" fill>
-            </div>
-            <mat-card-title>
-                <a [routerLink]="['/pages/user-profile/' + user.id]">
-                    {{user.firstName}} {{user.lastName}}
-                </a>
+<mat-card class="main-card-container">
+  <mat-card-header>
+    <div mat-card-avatar class="card-header-image">
+      <img [ngSrc]="user.avatar" alt="User Logo" fill />
+    </div>
+    <mat-card-title>
+      <a [routerLink]="['/pages/user-profile/' + user.id]">
+        {{ user.firstName }} {{ user.lastName }}
+      </a>
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{ user?.jobPositionDetails?.title }}
+    </mat-card-subtitle>
+  </mat-card-header>
 
-            </mat-card-title>
-            <mat-card-subtitle>
-                {{user?.jobPositionDetails?.title}}
-            </mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content>
-            <div class="card-content-container">
-                <span>
-                    @switch (stageType){
-                        @case ('onProbation'){
-                            <b>Probation end:</b> {{user?.userProbation.end | date}}
-                        }
-                        @case ('onLayOff'){
-                            <b>Last day in company:</b> {{user?.lastDayInCompany | date}}
-                        }
-                        @case ('onBoarding'){
-                            <b>First day in company:</b> {{user?.firstDayInCompany | date}}
-                        }
-                    }
-                </span>
-                @if (user.userChiefRelations; as chiefs){
-                    <span><b>Chief:</b>
-                        @for (chief of chiefs; track chief; let last = $last){
-                            <a [routerLink]="['/pages/user-profile/' + chief.chiefId]">
-                                {{chief.chief.firstName + ' ' + chief.chief.lastName}}
-                            </a>
-                            @if (!last){
-                                <span>, </span>
-                            }
-                        }
-                    </span>
-                }
-                @else{
-                    <span><b>Chief:</b> unset</span>
-                }
-            </div>
-        </mat-card-content>
-    </mat-card>
+  <mat-card-content>
+    <div class="card-content-container">
+      <span>
+        @switch (stageType){ @case ('onProbation'){
+        <b>Probation end:</b>
+        {{ $safeNavigationMigration(user?.userProbation.end) | date }}
+        } @case ('onLayOff'){
+        <b>Last day in company:</b>
+        {{ $safeNavigationMigration(user?.lastDayInCompany) | date }}
+        } @case ('onBoarding'){
+        <b>First day in company:</b>
+        {{ $safeNavigationMigration(user?.firstDayInCompany) | date }}
+        } }
+      </span>
+      @if (user.userChiefRelations; as chiefs){
+      <span
+        ><b>Chief:</b>
+        @for (chief of chiefs; track chief; let last = $last){
+        <a [routerLink]="['/pages/user-profile/' + chief.chiefId]">
+          {{ chief.chief.firstName + ' ' + chief.chief.lastName }}
+        </a>
+        @if (!last){
+        <span>, </span>
+        } }
+      </span>
+      } @else{
+      <span><b>Chief:</b> unset</span>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
 }

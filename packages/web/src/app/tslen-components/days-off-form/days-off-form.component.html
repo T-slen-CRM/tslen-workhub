@@ -1,19 +1,21 @@
-
 <form [formGroup]="form" class="days-off-container">
-    <div *ngFor="let type of rulesTypes" >
-        <mat-form-field class="days-off-item" appearance="outline">
-            <mat-label>{{type.title}}</mat-label>
-            <div class="days-off-item-input">
-
-                <input matInput
-                       [placeholder]="type.title"
-                       formControlName="{{type.value}}"
-                       type="number"
-                >
-                <mat-icon [ngStyle]="{color: type.color}" matSuffix> {{type.icon}}</mat-icon>
-            </div>
-
-        </mat-form-field>
-    </div>
-    <ng-content select=".save-button"></ng-content>
+  @for (type of rulesTypes; track type) {
+  <div>
+    <mat-form-field class="days-off-item" appearance="outline">
+      <mat-label>{{ type.title }}</mat-label>
+      <div class="days-off-item-input">
+        <input
+          matInput
+          [placeholder]="type.title"
+          formControlName="{{ type.value }}"
+          type="number"
+        />
+        <mat-icon [ngStyle]="{ color: type.color }" matSuffix>
+          {{ type.icon }}</mat-icon
+        >
+      </div>
+    </mat-form-field>
+  </div>
+  }
+  <ng-content select=".save-button"></ng-content>
 </form>

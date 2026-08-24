@@ -1,26 +1,31 @@
 <mat-form-field class="example-chip-list" appearance="outline">
-    <mat-label >{{nameOfList}}</mat-label>
-    <mat-chip-grid #chipList [attr.aria-label]="'autocomplete.item_selection' | translate">
-        <mat-chip-row
-                *ngFor="let item of selectedData"
-                [removable]="removable"
-                (removed)="remove(item)">
-            {{item.group}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip-row>
-        <input
-
-                #elementInput
-                [formControl]="elementCtrl"
-                [matAutocomplete]="auto"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                (matChipInputTokenEnd)="add($event)"
-                >
-    </mat-chip-grid>
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let item of filteredElements | async" [value]="item">
-            {{item.group}}
-        </mat-option>
-    </mat-autocomplete>
+  <mat-label>{{ nameOfList }}</mat-label>
+  <mat-chip-grid
+    #chipList
+    [attr.aria-label]="'autocomplete.item_selection' | translate"
+  >
+    @for (item of selectedData; track item) {
+    <mat-chip-row [removable]="removable" (removed)="remove(item)">
+      {{ item.group }}
+      @if (removable) {
+      <mat-icon matChipRemove>cancel</mat-icon>
+      }
+    </mat-chip-row>
+    }
+    <input
+      #elementInput
+      [formControl]="elementCtrl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)"
+    />
+  </mat-chip-grid>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    @for (item of filteredElements | async; track item) {
+    <mat-option [value]="item">
+      {{ item.group }}
+    </mat-option>
+    }
+  </mat-autocomplete>
 </mat-form-field>

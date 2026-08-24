@@ -1,9 +1,17 @@
-import {Component, OnInit, OnDestroy, input, effect, inject} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  input,
+  effect,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
-import {ChatService} from "./chat.service";
-import {FormsModule} from "@angular/forms";
-import {DatePipe, NgForOf, NgIf} from "@angular/common";
-import {ToastrService} from "ngx-toastr";
+import { ChatService } from './chat.service';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import { TranslateModule } from '@ngx-translate/core';
 
 const MESSAGE_PREVIEW_LENGTH = 60;
@@ -19,16 +27,11 @@ interface DisplayMessage {
 }
 
 @Component({
-    selector: 'app-chat',
-    templateUrl: './chat.component.html',
-    styleUrls: ['./chat.component.scss'],
-    imports: [
-        FormsModule,
-        DatePipe,
-        NgIf,
-        NgForOf,
-        TranslateModule
-    ]
+  selector: 'app-chat',
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, DatePipe, TranslateModule],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: DisplayMessage[] = [];
@@ -44,14 +47,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   constructor(private chatService: ChatService) {
     effect(() => {
-        if (this.chatRoomId()){
-          // this.chatService.disconnect(); // Ensure previous connection is closed
-          this.chatService.listenForEvents(this.chatRoomId(), +this.localUserId());
-        }
-
+      if (this.chatRoomId()) {
+        // this.chatService.disconnect(); // Ensure previous connection is closed
+        this.chatService.listenForEvents(
+          this.chatRoomId(),
+          +this.localUserId(),
+        );
+      }
     });
   }
-
 
   ngOnInit(): void {
     // Subscribe to connection status
@@ -62,14 +66,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         } else {
           console.warn('Chat connection is DOWN!');
         }
-      })
+      }),
     );
 
     // Subscribe to errors
     this.subscriptions.add(
       this.chatService.getErrors().subscribe((error) => {
         this.errorMessage = error;
-      })
+      }),
     );
 
     // Subscribe to chat history
@@ -81,7 +85,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           isMine: +msg.senderId === this.localUserId(),
         }));
         this.scrollToBottom();
-      })
+      }),
     );
 
     // Subscribe to new real-time messages
@@ -101,14 +105,17 @@ export class ChatComponent implements OnInit, OnDestroy {
           isMine: +message.senderId === this.localUserId(),
         });
         this.scrollToBottom();
-      })
+      }),
     );
   }
 
   // Method to send a new message
   sendMessage(): void {
     if (this.newMessageContent.trim() && this.chatRoomId()) {
-      this.chatService.sendMessage(this.chatRoomId(), this.newMessageContent.trim());
+      this.chatService.sendMessage(
+        this.chatRoomId(),
+        this.newMessageContent.trim(),
+      );
       this.newMessageContent = ''; // Clear input field
       this.errorMessage = ''; // Clear any previous errors
     } else {
@@ -118,9 +125,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   // Show a toast for a message that arrived while the tab wasn't in focus
   private notifyNewMessage(content: string): void {
-    const preview = content.length > MESSAGE_PREVIEW_LENGTH
-      ? content.slice(0, MESSAGE_PREVIEW_LENGTH) + '…'
-      : content;
+    const preview =
+      content.length > MESSAGE_PREVIEW_LENGTH
+        ? content.slice(0, MESSAGE_PREVIEW_LENGTH) + '…'
+        : content;
     this.toastr.info(preview, this.senderName() || 'New message');
   }
 

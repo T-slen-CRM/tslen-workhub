@@ -1,10 +1,13 @@
 @use "sass:color";
 
-// @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
-@import "../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
-@import "../node_modules/ag-grid-community/dist/styles/ag-theme-alpine-dark.css";
-
-@import "../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";
+// ag-grid v32 moved its precompiled themes from dist/styles/ to styles/,
+// dropped the separate ag-theme-alpine-dark.css file (dark mode works
+// differently in the new Theming API), and ag-theme-alpine/alpine-dark
+// were never actually referenced by any component in this app (only
+// ag-theme-material is, in manage-users-aggrid, pending-aggrid, and
+// ag-grid-table). The material theme CSS itself is imported once, by
+// scss/ag-custom/_ag-custom.scss (pulled in below via scss/style) -
+// removed the redundant duplicate that used to live here.
 /* You can add global styles to this file, and also import other style files */
 
 /* SCSS */

@@ -28,15 +28,35 @@ management, `ng update` for Angular migrations.
   `^22.22.3 || ^24.15.0 || >=26.0.0` — the current Node pin, 22.22.2, is
   one patch *below* that range, which is exactly why Node must be bumped
   before the second Angular step, not after).
-- TypeScript target: **6.0.3** — Angular 22 requires `>=6.0 <6.1`
-  specifically (not TypeScript's own latest, 7.x, which is too new).
-  6.0.3 also satisfies Angular 21's `>=5.9 <6.1` range, so it only needs
-  to change once (during Task 2), not twice.
-- `ag-grid-angular`/`ag-grid-community` (currently `28.2.1`) are
-  **explicitly out of scope** — already satisfy every Angular version in
-  this plan's peer-dep requirements (`>=20.0.0`), and the latest ag-grid
-  (`36.x`) is an 8-major jump with its own breaking theming API changes.
-  Do not touch these packages as part of this plan.
+- TypeScript target: **stays at 5.9.3 through Task 2, bumps to 6.0.3 in
+  Task 3.** Originally planned as a single bump to 6.0.3 during Task 2,
+  reasoning that `@angular/compiler-cli@21`'s own peer dep
+  (`>=5.9 <6.1`) allows it — **corrected after `npm ls` surfaced real
+  "invalid" peer-dep warnings mid-Task-2**: `@angular-devkit/build-angular
+  @21.2.21` (the actual builder Jest's toolchain depends on) requires the
+  *narrower* `>=5.9 <6.0`, and `@typescript-eslint/eslint-plugin@8.57.2`
+  caps at `<6.0.0` too — TypeScript 6.0.3 breaks both during the 21 step.
+  17 of 22 Jest suites failed to even compile under it (widespread
+  `strictPropertyInitialization`/`noImplicitAny` errors on pre-existing
+  code that TypeScript 6.0 apparently enforces differently than 5.9).
+  6.0.3 is still the right target once Angular 22's own
+  `@angular-devkit/build-angular` range moves — verify that range before
+  bumping in Task 3, don't assume it from Task 2's now-corrected
+  reasoning.
+- `ag-grid-angular`/`ag-grid-community` were originally planned as
+  **out of scope** (their peer-dep declaration, `>=20.0.0`, claimed
+  compatibility with every Angular version in this plan without a
+  version cap). **Corrected mid-Task-3**: peer-dep ranges only describe
+  a package's own claimed support window, not actual runtime API usage —
+  `ag-grid-angular@28.2.1` (and, unexpectedly, `ngx-toastr@18.0.0`) both
+  import `ComponentFactoryResolver` from `@angular/core`, which Angular
+  22 removed entirely, so the production build hard-failed regardless of
+  the passing peer-dep check. Checked exactly where ag-grid dropped that
+  API (v30 still has it, v32 doesn't) and presented the user with the
+  real choice — stop at Angular 21, or take on the ag-grid v28→32 bump
+  (the *minimum* viable version, well short of latest `36.x`) as part of
+  this plan. User chose to include it. See Task 3 for what that bump
+  actually required.
 - There is an unrelated, uncommitted change already in the working tree
   (moment.js removal — `package.json`, `task-create-edit.component.ts`,
   `webpack.config.js`) that the user is handling separately. Do not
@@ -49,9 +69,16 @@ management, `ng update` for Angular migrations.
   <version>` in the same shell invocation as the command that follows it
   (each new Bash tool call starts a fresh shell with no memory of a
   prior `nvm use`).
-- Frontend tests: from `packages/web/`, use a temporary (never
-  committed) headless Karma config per this repo's `AGENTS.md` testing
-  section — write it fresh each task, delete it before committing.
+- Frontend tests: **discovered mid-Task-1** that `AGENTS.md`'s
+  Karma/Jasmine testing section is stale — commit `e5f84c9 build(web):
+  migrate frontend tests from Karma/Jasmine to Jest` (unrelated to this
+  plan, landed on `main` before this plan started) removed
+  `karma.conf.js` entirely. The frontend now runs on Jest: `npm test`
+  (plain `jest`, no flags needed) for the full suite, or
+  `npx jest <pattern-matching-part-of-a-spec-filename>` for a subset —
+  no temporary config file needed at all. Every later reference in this
+  plan to "recreate the temporary Karma config" means: just run the
+  Jest command directly instead.
 
 ---
 
@@ -174,35 +201,14 @@ cd /Users/olegteslenko/Desktop/T/tslen-workhub/packages/web
 npm install
 ```
 
-Write a temporary `karma.headless.conf.js` (per `AGENTS.md`'s testing
-section):
-```javascript
-process.env.CHROME_BIN = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-
-module.exports = function (config) {
-  const base = require('./karma.conf.js');
-  base(config);
-  config.set({
-    browsers: ['ChromeHeadlessNoSandbox'],
-    customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox'],
-      },
-    },
-    singleRun: true,
-    autoWatch: false,
-    restartOnFileChange: false,
-  });
-};
-```
-
 ```bash
-npx ng test --karma-config=karma.headless.conf.js --include='**/task-create-edit.component.spec.ts' --include='**/autocomplete.component.spec.ts' --include='**/task-comments.component.spec.ts' --include='**/table-live-kit.component.spec.ts'
+npx jest
 npx ng build --configuration production
 ```
-Expected: tests pass, build succeeds. Delete `karma.headless.conf.js`
-afterward (never commit it).
+Expected: full Jest suite passes (22 suites / 99 tests as of this
+plan), build succeeds. **Actual result:** confirmed — 22/22 suites,
+99/99 tests, clean build (only pre-existing ag-grid Sass deprecation
+warnings, unrelated).
 
 - [ ] **Step 9: Commit**
 
@@ -252,15 +258,32 @@ already needs `--legacy-peer-deps` for plain installs), re-run with
 npx ng update @angular/core@21 @angular/cli@21 @angular/cdk@21 @angular/material@21 --force
 ```
 
-- [ ] **Step 3: Bump TypeScript to 6.0.3**
+**Actual result:** completed with 62 files migrated to block control-flow
+syntax (`*ngIf`/`*ngFor` → `@if`/`@for`), plus 5 files it flagged and left
+unmigrated (structural cases it can't safely auto-convert — duplicate
+`ng-template` names, `[ngSwitch]` on `<th>`/`<ng-template>` elements: see
+`nav-item.component.html`, `mat-table-dynamic.component.html`,
+`main-calendar.component.html`, `mat-table.component.html`,
+`manage-users.component.html`). This is expected and not a blocker — the
+old structural-directive syntax still works in Angular 21, it's just
+deprecated. Left as-is; a future cleanup pass can finish those 5 by hand.
 
-Angular 21 accepts TypeScript `>=5.9 <6.1`, and 22 (Task 3) will require
-`>=6.0 <6.1` — 6.0.3 satisfies both, so this is the only TypeScript bump
-needed in this whole plan.
+- [ ] **Step 2b: Bump `@angular-builders/custom-webpack` (not covered by `ng update`)**
 
+`ng update` only manages Angular's own first-party packages — this repo's
+custom webpack config depends on a separate package that has its own
+Angular-version-tied major releases and needs bumping by hand:
 ```bash
-npm install --save-dev typescript@6.0.3
+npm install @angular-builders/custom-webpack@21.1.0
 ```
+
+- [ ] **Step 3: Confirm TypeScript stays at 5.9.3 for this step**
+
+TypeScript is already `5.9.3` (unchanged from before this plan) — no
+action needed here. See this plan's Global Constraints for why 6.0.3
+does *not* belong in this step (it breaks `@angular-devkit/build-angular
+@21`'s peer-dep range), even though the original version of this plan
+said otherwise.
 
 - [ ] **Step 4: Bump `@angular-eslint/*` to their v21-compatible versions**
 
@@ -287,10 +310,8 @@ export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use 24.19.0
 cd /Users/olegteslenko/Desktop/T/tslen-workhub/packages/web
 ```
 
-Write the same temporary `karma.headless.conf.js` as Task 1 Step 8 (it
-was deleted at the end of that task, so recreate it), then:
 ```bash
-npx ng test --karma-config=karma.headless.conf.js --include='**/task-create-edit.component.spec.ts' --include='**/autocomplete.component.spec.ts' --include='**/task-comments.component.spec.ts' --include='**/table-live-kit.component.spec.ts'
+npx jest
 npx ng build --configuration production
 ```
 
@@ -305,6 +326,14 @@ Step 6 fails: **REQUIRED SUB-SKILL:** use superpowers:systematic-debugging
 fix that specific thing. Do not silently downgrade a package or add a
 blanket `--legacy-peer-deps`/`--force` workaround without understanding
 why the failure happened.
+
+**Actual result:** Step 6 failed on the first attempt — 17 of 22 Jest
+suites wouldn't compile (see the TypeScript 6.0.3 finding recorded in
+this plan's Global Constraints and Step 3). Root-caused via `npm ls
+typescript`, which surfaced the real "invalid" peer-dep chain rather
+than guessing from the compile errors alone. After reverting TypeScript
+to 5.9.3 (Step 3, corrected): 22/22 suites, 99/99 tests, clean
+production build.
 
 - [ ] **Step 8: Run the backend suite too, as a monorepo regression check**
 
@@ -342,6 +371,28 @@ modifications to tracked files, matching what's expected here. Review
 
 **Interfaces:** None (same as Task 2).
 
+- [ ] **Step 0: Resolve two unplanned peer conflicts before `ng update` can even run**
+
+`ng update`'s own preflight check found two dependencies added to this
+repo since this plan was written, both capped at Angular 20 with no
+newer-Angular-compatible release *assumed* at plan-writing time — turned
+out both actually do have one:
+```bash
+npm view @ng-bootstrap/ng-bootstrap@latest peerDependencies --json
+npm view ngx-cookie-service@latest peerDependencies --json
+```
+Confirmed `@ng-bootstrap/ng-bootstrap@21.0.0` and
+`ngx-cookie-service@22.0.0` both require Angular `^22.0.0`:
+```bash
+npm install @ng-bootstrap/ng-bootstrap@21.0.0 ngx-cookie-service@22.0.0
+```
+Commit this alone first — `ng update` refuses to run against a dirty
+tree:
+```bash
+git add packages/web/package.json packages/web/package-lock.json
+git commit -m "chore(web): bump ng-bootstrap and ngx-cookie-service ahead of Angular 22"
+```
+
 - [ ] **Step 1: Run Angular's official update to v22**
 
 ```bash
@@ -349,18 +400,68 @@ export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use 24.19.0
 cd /Users/olegteslenko/Desktop/T/tslen-workhub/packages/web
 npx ng update @angular/core@22 @angular/cli@22 @angular/cdk@22 @angular/material@22
 ```
-Same `--force` fallback as Task 2 Step 2 if peer-dependency conflicts
-block it.
-
-- [ ] **Step 2: Confirm TypeScript still satisfies the new range**
-
-Angular 22 requires TypeScript `>=6.0 <6.1`. 6.0.3 (set in Task 2) is
-already in range — verify `ng update` didn't change it unexpectedly:
+**Actual result:** blocked again, on `@angular-eslint/*` (still 21.4.0),
+`@angular-builders/custom-webpack` (still 21.1.0), and
+`@typescript-eslint/*` (still capped `<6.0.0`) — all three are things
+this task's later steps already bump, `ng update`'s own preflight just
+runs before I'd had the chance. Re-ran with `--force`, matching this
+plan's documented fallback, since all three are already known-resolvable
+by the very next steps:
 ```bash
-grep '"typescript"' package.json
+npx ng update @angular/core@22 @angular/cli@22 @angular/cdk@22 @angular/material@22 --force
 ```
-Expected: still `6.0.3` (or another `6.0.x` patch if `ng update` bumped
-it within-range on its own, which is fine).
+Completed cleanly: 114 files updated, mostly adding explicit
+`changeDetection: ChangeDetectionStrategy.Eager` (Angular 22 changed the
+default change-detection strategy; this migration opts every existing
+component into the old default explicitly, preserving current behavior
+rather than silently changing it) plus two small `tsconfig.app.json`
+migrations for template-diagnostics defaults. No manual fixes needed
+for this step specifically.
+
+- [ ] **Step 1b: Bump `@angular-builders/custom-webpack` again (same reason as Task 2 Step 2b — `ng update` doesn't manage it)**
+
+```bash
+npm view @angular-builders/custom-webpack@latest peerDependencies --json
+```
+Confirm it now requires `@angular/compiler-cli: ^22.0.0` (this was
+already checked while writing this plan — `22.0.1` is latest and
+matches), then:
+```bash
+npm install @angular-builders/custom-webpack@22.0.1
+```
+
+- [ ] **Step 2: Bump TypeScript to 6.0.3, and bump typescript-eslint alongside it**
+
+TypeScript is still `5.9.3` going into this task (Task 2 kept it there
+after the `@angular-devkit/build-angular@21` peer-dep conflict). Before
+bumping, verify `@angular-devkit/build-angular@22`'s actual TypeScript
+range rather than assuming — the same assumption error happened once
+already in this plan:
+```bash
+npm view @angular-devkit/build-angular@22.1.3 peerDependencies --json
+```
+Expected: a range that includes `6.0.3` (this was independently
+confirmed via `@angular/compiler-cli@22.1.3`'s own peer dep,
+`>=6.0 <6.1`, while writing this plan — this step just double-checks
+`build-angular` agrees before relying on it, the way `compiler-cli`
+alone turned out not to be sufficient evidence in Task 2).
+
+`@typescript-eslint/eslint-plugin`/`@typescript-eslint/parser`/
+`typescript-eslint` at their currently-installed `8.57.2`/`8.36.0`
+versions cap at `typescript <6.0.0` — bump these *before* TypeScript
+itself, to `8.67.0` (the latest, which accepts `>=4.8.4 <6.1.0`):
+```bash
+npm install --save-dev @typescript-eslint/eslint-plugin@8.67.0 @typescript-eslint/parser@8.67.0 typescript-eslint@8.67.0
+npm install --save-dev typescript@6.0.3
+```
+
+Then confirm no "invalid" peer-dep chain resulted:
+```bash
+npm ls typescript 2>&1 | grep -i invalid
+```
+Expected, and **actual result**: no output (nothing invalid) — unlike
+Task 2's TypeScript attempt, this one resolved cleanly on the first try
+because the typescript-eslint bump happened first this time.
 
 - [ ] **Step 3: Bump `@angular-eslint/*` to their v22-compatible versions**
 
@@ -370,10 +471,107 @@ it within-range on its own, which is fine).
 npm install --save-dev @angular-eslint/builder@22.1.0 @angular-eslint/eslint-plugin@22.1.0 @angular-eslint/eslint-plugin-template@22.1.0 @angular-eslint/schematics@22.1.0 @angular-eslint/template-parser@22.1.0
 ```
 
+- [ ] **Step 3b: Fix TypeScript 6.0's `strict` default change (found here, applies going forward)**
+
+**Actual result — this was the real blocker, twice.** Both this task
+and Task 2's first (reverted) TypeScript-6.0.3 attempt hit the identical
+symptom: ~17 of 22 Jest suites failing to compile with widespread
+`strictPropertyInitialization`/`noImplicitAny` errors on code that had
+never been strict-mode clean. Root-caused via `npm ls` (ruled out a
+peer-dep mismatch — none found this time) and direct empirical testing
+of `ts.getDefaultCompilerOptions()` (`strict`/`noImplicitAny`/
+`strictPropertyInitialization` all report `undefined` — TypeScript
+6.0.3's own bare defaults are unchanged) against a plain `npx tsc
+--noEmit -p tsconfig.spec.json` run (which *does* enforce these checks
+with the same tsconfig). Confirmed by testing the fix directly: adding
+`"strict": false` explicitly to `tsconfig.json` makes `tsc --noEmit`
+pass with zero errors. This means TypeScript 6.0 changed how it
+*interprets an absent `strict` key* (not its own reported default) —
+this codebase was never written to be strict-mode clean, so making the
+existing (implicit, pre-6.0) posture explicit is the correct fix, not a
+scope change into "make this codebase strict-mode compliant."
+
+Also needed `"ignoreDeprecations": "6.0"` in the same file first —
+TypeScript 6.0 deprecated `baseUrl` and `downlevelIteration` (both set
+in this project's tsconfig), and without suppressing that, even a plain
+`tsc --noEmit` aborts on a config-validation error before reaching real
+type-checking at all.
+
+```json
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "strict": false,
+    ...
+  }
+}
+```
+(Both keys go in `packages/web/tsconfig.json`, at the top of
+`compilerOptions` — see the actual file for exact placement.)
+
+- [ ] **Step 3c: ag-grid v28→32 bump (scope change approved by user mid-task) + fix its two removed-API/theming fallout points**
+
+**This is the real Task 3 detour.** The production build failed with
+three occurrences of the same root cause — `ComponentFactoryResolver`,
+removed from `@angular/core` in Angular 22, still imported by
+`ag-grid-angular@28.2.1` (2 occurrences) and `ngx-toastr@18.0.0` (1).
+Checked exactly which ag-grid version dropped that import (v30 still has
+it, v32 doesn't — confirmed via unpkg, not guessed) and presented the
+user the real choice: stop at Angular 21, or take on the *minimum*
+ag-grid bump (v32, not latest v36) as part of this task. **User chose to
+include it.**
+
+```bash
+npm install ag-grid-angular@32.3.9 ag-grid-community@32.3.9
+npm install ngx-toastr@20.0.5
+```
+(`ngx-toastr@20.0.5`'s own peer dep still formally only claims
+`@angular/core: ^21.0.0` — installed anyway since the actual build
+error was specifically about the now-removed API, which a well-maintained
+package bumping for Angular 21 would already have had to stop using;
+confirmed this was correct by the build passing afterward.)
+
+ag-grid v32 also dropped the Sass *source* files this repo's
+`src/scss/ag-custom/_ag-custom.scss` imported from (only precompiled CSS
+themes ship now) and moved every theme file from a `dist/styles/` path
+to a flat `styles/` path (`src/styles.scss` had its own separate,
+now-broken references to the old paths too). Fixed by:
+- Removing `_ag-custom.scss`'s `@include ag-theme-material();` call (the
+  mixin no longer exists) — every rule below it in that file is plain
+  CSS, not mixin-dependent, so it still applies unchanged.
+- Importing the precompiled `~ag-grid-community/styles/ag-grid.css` and
+  `~ag-grid-community/styles/ag-theme-material.css` instead (the
+  `~package-name/...` webpack-module-resolution import syntax, not a
+  relative `../../../node_modules/...` path — the relative form resolves
+  incorrectly here because the import chain runs through multiple Sass
+  partials before reaching the entry `styles.scss`, and CSS-file
+  `@import` resolution follows the *bundled* location, not the source
+  partial's own directory).
+- Removing `src/styles.scss`'s own separate, now-redundant
+  `ag-theme-material.css` import (duplicate of the one in
+  `_ag-custom.scss`) and its `ag-theme-alpine`/`ag-theme-alpine-dark`
+  imports entirely — grepped the app and confirmed neither class is
+  referenced by any component (only `ag-theme-material` is, in
+  `manage-users-aggrid`, `pending-aggrid`, `ag-grid-table`), and
+  `ag-theme-alpine-dark.css` no longer exists as a separate file in v32
+  regardless.
+
+Also fixed the one place *this app's own code* used the removed API —
+`src/app/tslen-components/mat-table-dynamic/mat-table-dynamic.component.ts`
+imported `ComponentFactoryResolver`, `Injector`, and `StaticProvider`
+from `@angular/core` but used none of them anywhere in the file (dead
+imports, confirmed by reading the full file) — removed the import, no
+other change needed.
+
 - [ ] **Step 4: Run the full frontend verification**
 
-Same as Task 2 Step 6 (recreate the temporary Karma config, run the
-same targeted specs, run the production build).
+Same as Task 2 Step 6 (`npx jest`, then `npx ng build --configuration production`).
+
+**Actual result:** after Steps 3b and 3c above — 22/22 suites, 99/99
+tests, clean production build. (Getting here took several failed
+attempts at each step; this plan now reflects the working sequence, not
+the exploration order — see the "Actual result" notes throughout Task 3
+for what was actually tried and ruled out.)
 
 - [ ] **Step 5: If anything fails, use systematic-debugging**
 
@@ -381,7 +579,8 @@ Same as Task 2 Step 7 — root-cause any failure before attempting a fix.
 
 - [ ] **Step 6: Run the backend suite as a regression check**
 
-Same as Task 2 Step 8.
+Same as Task 2 Step 8. **Actual result:** 79/79 suites, 350/350 tests —
+unaffected, as expected for a frontend-only dependency bump.
 
 - [ ] **Step 7: Run the root lint (matches what CI actually runs)**
 
@@ -392,22 +591,30 @@ npm run lint
 Expected: passes. (A prior session fixed root lint crashing on
 `packages/web`'s missing plugins — this step confirms that fix still
 holds after two Angular major bumps and the `@angular-eslint/*` updates
-in this plan.)
+in this plan.) **Actual result:** 0 errors, 5 pre-existing unused-var
+warnings in backend files this plan never touched — exit code 0.
 
 - [ ] **Step 8: Commit**
 
 ```bash
 cd /Users/olegteslenko/Desktop/T/tslen-workhub
-git add packages/web/package.json packages/web/package-lock.json
+git add packages/web/package.json packages/web/package-lock.json packages/web/tsconfig.json packages/web/tsconfig.app.json
 git add -u packages/web/src
-git commit -m "chore(web): update Angular to v22"
+git commit -m "chore(web): update Angular to v22, bump ag-grid to v32"
 ```
+(`tsconfig.json`/`tsconfig.app.json` need their own explicit `git add`
+here — neither is under `packages/web/src`, so `git add -u
+packages/web/src` alone misses both the Step 3b `ignoreDeprecations`/
+`strict` change and Step 1's `ng update`-authored `tsconfig.app.json`
+migrations.)
 
 ---
 
 ## Task 4: Manual end-to-end verification
 
-**Files:** None — verification only.
+**Files:**
+- Modify: `packages/web/tsconfig.json` (found live during Step 2, see
+  "Actual result" note below)
 
 **Interfaces:** None.
 
@@ -434,6 +641,21 @@ npm run start:dev
 cd packages/web && npm start
 ```
 
+**Actual result:** `npm start`'s `prestart` hook (`npm run config` →
+`ts-node set-env.ts`) initially failed with `TS2591: Cannot find name
+'require'` / `TS2304: Cannot find name 'process'/'__dirname'`. Reproduced
+directly via `npx ts-node set-env.ts`. Root cause: `tsconfig.app.json` and
+`tsconfig.spec.json` both already set `"types": ["node"]` (`["jest",
+"node"]` for the latter), but the bare root `packages/web/tsconfig.json`
+— which `ts-node` falls back to for this standalone script, since there's
+no dedicated ts-node config — had no explicit `types` field, and the
+automatic-inclusion default no longer picked up `@types/node` correctly
+under TypeScript 6.0. Fix: added `"types": ["node"]` to
+`packages/web/tsconfig.json`, matching the pattern already used in both
+children. Verified via direct re-run (`npx ts-node set-env.ts` succeeds)
+and re-ran `npx jest` and `npx ng build --configuration production` to
+confirm nothing else broke.
+
 Open the app, log in, and check:
 - The task board loads and a task card opens (the detail dialog redesigned
   earlier this session — the area most likely to surface any Angular
@@ -450,3 +672,23 @@ Open the app, log in, and check:
 If anything from Steps 1–2 doesn't match expectations, report it back
 rather than silently reworking earlier tasks — some Angular 21/22
 migration specifics can only really be confirmed by seeing them live.
+
+**Actual result:** Full local CI-equivalent run (Step 1) passed: lint,
+`test:e2e`, `test:unit` all green under Node 24.19.0. Browser smoke-test
+(Step 2, via Claude-in-Chrome) covered: main-wall (clean), tasks-manager
+board list, `/admin/pending` (the ag-grid-based page — chosen specifically
+to verify the ag-grid v28→32 migration renders real data correctly: it
+does, columns and rows render with no console errors), and the task
+detail dialog on `tasks-list` (opened a card, typed into the Assignee
+autocomplete, selected a suggestion and confirmed the removable chip
+renders, posted a comment and saw it appear with author/timestamp, saved
+the dialog and confirmed the card updated with the new assignee avatar).
+No console errors on any page. One fix required, documented above
+(`tsconfig.json` `types: ["node"]`) — committed alongside this note.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add packages/web/tsconfig.json docs/superpowers/plans/2026-08-24-node-angular-version-bump.md
+git commit -m "fix(web): add explicit node types to root tsconfig for ts-node scripts"
+```

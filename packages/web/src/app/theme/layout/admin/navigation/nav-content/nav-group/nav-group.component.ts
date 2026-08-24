@@ -1,14 +1,21 @@
-import {Component, Input, NgZone, OnInit} from '@angular/core';
-import {NavigationItem} from '../../navigation';
-import {Location} from '@angular/common';
-import {NextConfig} from '../../../../../../app-config';
+import {
+  Component,
+  Input,
+  NgZone,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { NavigationItem } from '../../navigation';
+import { Location } from '@angular/common';
+import { NextConfig } from '../../../../../../app-config';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
-    selector: 'app-nav-group',
-    templateUrl: './nav-group.component.html',
-    styleUrls: ['./nav-group.component.scss'],
-    standalone: false
+  selector: 'app-nav-group',
+  templateUrl: './nav-group.component.html',
+  styleUrls: ['./nav-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class NavGroupComponent implements OnInit {
   @Input() item: NavigationItem;
@@ -37,7 +44,7 @@ export class NavGroupComponent implements OnInit {
           parent.classList.add('pcoded-trigger');
         }
         parent.classList.add('active');
-      } else if(up_parent.classList.contains('pcoded-hasmenu')) {
+      } else if (up_parent.classList.contains('pcoded-hasmenu')) {
         if (this.nextConfig['layout'] === 'vertical') {
           up_parent.classList.add('pcoded-trigger');
         }
@@ -50,6 +57,4 @@ export class NavGroupComponent implements OnInit {
       }
     }
   }
-
-
 }

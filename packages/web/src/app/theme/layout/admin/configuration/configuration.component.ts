@@ -1,13 +1,20 @@
-import {Component, NgZone, OnInit, ViewEncapsulation} from '@angular/core';
-import {NextConfig} from '../../../../app-config';
-import {Location} from '@angular/common';
+import {
+  Component,
+  NgZone,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { NextConfig } from '../../../../app-config';
+import { Location } from '@angular/common';
 
 @Component({
-    selector: 'app-configuration',
-    templateUrl: './configuration.component.html',
-    styleUrls: ['./configuration.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'app-configuration',
+  templateUrl: './configuration.component.html',
+  styleUrls: ['./configuration.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class ConfigurationComponent implements OnInit {
   public styleSelectorToggle: boolean; // open configuration menu
@@ -26,8 +33,11 @@ export class ConfigurationComponent implements OnInit {
 
   scroll = (): void => {
     if (this.headerFixedLayout === false) {
-      (document.querySelector('#nav-ps-next') as HTMLElement).style.maxHeight = 'calc(100vh)';
-      const el = document.querySelector('.pcoded-navbar.menupos-fixed') as HTMLElement;
+      (document.querySelector('#nav-ps-next') as HTMLElement).style.maxHeight =
+        'calc(100vh)';
+      const el = document.querySelector(
+        '.pcoded-navbar.menupos-fixed',
+      ) as HTMLElement;
       const scrollPosition = window.pageYOffset;
       if (scrollPosition > 60) {
         el.style.position = 'fixed';
@@ -37,10 +47,15 @@ export class ConfigurationComponent implements OnInit {
         el.style.position = 'absolute';
         el.style.marginTop = '60px';
       }
-    } else if (document.querySelector('.pcoded-navbar') && document.querySelector('.pcoded-navbar').hasAttribute('style')) {
-      document.querySelector('.pcoded-navbar.menupos-fixed').removeAttribute('style');
+    } else if (
+      document.querySelector('.pcoded-navbar') &&
+      document.querySelector('.pcoded-navbar').hasAttribute('style')
+    ) {
+      document
+        .querySelector('.pcoded-navbar.menupos-fixed')
+        .removeAttribute('style');
     }
-  }
+  };
 
   constructor(private zone: NgZone, private location: Location) {
     this.nextConfig = NextConfig.config;
@@ -50,7 +65,7 @@ export class ConfigurationComponent implements OnInit {
   ngOnInit() {
     this.styleSelectorToggle = false;
 
-    this.layoutType =  this.nextConfig.layoutType;
+    this.layoutType = this.nextConfig.layoutType;
     this.setLayout(this.layoutType);
 
     this.headerBackgroundColor = this.nextConfig.headerBackColor;
@@ -192,7 +207,7 @@ export class ConfigurationComponent implements OnInit {
   }
 
   setRtlLayout(e) {
-    const flag = !!(e.target.checked);
+    const flag = !!e.target.checked;
     this.changeRtlLayout(flag);
   }
 
@@ -205,36 +220,45 @@ export class ConfigurationComponent implements OnInit {
   }
 
   setMenuFixedLayout(e) {
-    const flag = !!(e.target.checked);
+    const flag = !!e.target.checked;
     this.changeMenuFixedLayout(flag);
   }
 
   changeMenuFixedLayout(flag) {
     setTimeout(() => {
       if (flag) {
-        document.querySelector('.pcoded-navbar').classList.remove('menupos-static');
+        document
+          .querySelector('.pcoded-navbar')
+          .classList.remove('menupos-static');
         document.querySelector('.pcoded-navbar').classList.add('menupos-fixed');
         if (this.nextConfig.layout === 'vertical') {
-          (document.querySelector('#nav-ps-next') as HTMLElement).style.maxHeight = 'calc(100vh - 60px)'; // calc(100vh - 70px) amit
+          (
+            document.querySelector('#nav-ps-next') as HTMLElement
+          ).style.maxHeight = 'calc(100vh - 60px)'; // calc(100vh - 70px) amit
         }
         window.addEventListener('scroll', this.scroll, true);
         window.scrollTo(0, 0);
       } else {
-        document.querySelector('.pcoded-navbar').classList.add('menupos-static');
-        document.querySelector('.pcoded-navbar').classList.remove('menupos-fixed');
+        document
+          .querySelector('.pcoded-navbar')
+          .classList.add('menupos-static');
+        document
+          .querySelector('.pcoded-navbar')
+          .classList.remove('menupos-fixed');
         if (this.nextConfig.layout === 'vertical') {
-          (document.querySelector('#nav-ps-next') as HTMLElement).style.maxHeight = 'calc(100%)'; // calc(100% - 70px) amit
+          (
+            document.querySelector('#nav-ps-next') as HTMLElement
+          ).style.maxHeight = 'calc(100%)'; // calc(100% - 70px) amit
         }
         if (this.nextConfig.layout === 'vertical') {
           window.removeEventListener('scroll', this.scroll, true);
         }
-
       }
     }, 100);
   }
 
   setHeaderFixedLayout(e) {
-    const flag = !!(e.target.checked);
+    const flag = !!e.target.checked;
     this.changeHeaderFixedLayout(flag);
   }
 
@@ -242,7 +266,9 @@ export class ConfigurationComponent implements OnInit {
     if (flag) {
       document.querySelector('.pcoded-header').classList.add('headerpos-fixed');
     } else {
-      document.querySelector('.pcoded-header').classList.remove('headerpos-fixed');
+      document
+        .querySelector('.pcoded-header')
+        .classList.remove('headerpos-fixed');
       // static
       if (this.nextConfig.layout === 'vertical' && this.menuFixedLayout) {
         window.addEventListener('scroll', this.scroll, true);
@@ -254,7 +280,7 @@ export class ConfigurationComponent implements OnInit {
   }
 
   setBoxLayout(e) {
-    const flag = !!(e.target.checked);
+    const flag = !!e.target.checked;
     this.changeBoxLayout(flag);
   }
 
@@ -293,5 +319,4 @@ export class ConfigurationComponent implements OnInit {
     document.querySelector('.pcoded-header').classList.remove('brand-default');
     document.querySelector('.pcoded-header').classList.add(background);
   }
-
 }

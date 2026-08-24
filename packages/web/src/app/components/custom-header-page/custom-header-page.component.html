@@ -1,48 +1,71 @@
-<ng-container >
-    <ng-container>
-        <div class="page-header">
-            <div class="page-block">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="page-header-title">
-                            <ng-container>
-                                <h5 class="m-b-10">
-                                    {{mainHeader}}
-                                            <mat-icon *ngIf="campaignName"
-                                                      class="custom-icon-settings"
-                                                      [routerLink]="['/campaigns/update/'+id, {campaignName: campaignName}]"
-                                                      color="primary"
-                                                      matTooltip="Edit campaign"
-                                                      matTooltipPosition="right"
-                                            >
-                                                settings
-                                            </mat-icon>
+<ng-container>
+  <ng-container>
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div class="page-header-title">
+              <ng-container>
+                <h5 class="m-b-10">
+                  {{ mainHeader }}
+                  @if (campaignName) {
+                  <mat-icon
+                    class="custom-icon-settings"
+                    [routerLink]="[
+                      '/campaigns/update/' + id,
+                      { campaignName: campaignName }
+                    ]"
+                    color="primary"
+                    matTooltip="Edit campaign"
+                    matTooltipPosition="right"
+                  >
+                    settings
+                  </mat-icon>
+                  }
 
+                  <!--                                    <a *ngIf="campaignName"-->
 
-<!--                                    <a *ngIf="campaignName"-->
-
-<!--                                            [routerLink]="['/campaigns/update/'+id, {campaignName: campaignName}]"-->
-<!--                                    >-->
-<!--                                        <i class="fa fa-edit" ></i> Edit campaign-->
-<!--                                    </a>-->
-                                </h5>
-
-                            </ng-container>
-                        </div>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a [routerLink]="['/dashboard/analytics/']" class="header-link-router"><i class="feather icon-home"></i></a>
-                            </li>
-                            <ng-container *ngFor="let route of headerRoutes">
-                                <!--                <li class="breadcrumb-item" *ngIf="breadcrumb.url !== false"><a [routerLink]="breadcrumb.url">{{breadcrumb.title}}</a></li>-->
-                                <li class="breadcrumb-item" *ngIf="route.type !== 'last' && route.params"><a style="color: royalblue" [routerLink]="[route.url]" [queryParams]="route.params">{{route.value}}</a></li>
-                                <li class="breadcrumb-item" *ngIf="route.type !== 'last' && !route.params"><a style="color: royalblue" [routerLink]="[route.url]">{{route.value}}</a></li>
-                                <li class="breadcrumb-item" *ngIf="route.type === 'last'"><i>{{route.value}}</i></li>
-                            </ng-container>
-                        </ul>
-                    </div>
-                </div>
+                  <!--                                            [routerLink]="['/campaigns/update/'+id, {campaignName: campaignName}]"-->
+                  <!--                                    >-->
+                  <!--                                        <i class="fa fa-edit" ></i> Edit campaign-->
+                  <!--                                    </a>-->
+                </h5>
+              </ng-container>
             </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a
+                  [routerLink]="['/dashboard/analytics/']"
+                  class="header-link-router"
+                  ><i class="feather icon-home"></i
+                ></a>
+              </li>
+              @for (route of headerRoutes; track route) {
+              <!--                <li class="breadcrumb-item" *ngIf="breadcrumb.url !== false"><a [routerLink]="breadcrumb.url">{{breadcrumb.title}}</a></li>-->
+              @if (route.type !== 'last' && route.params) {
+              <li class="breadcrumb-item">
+                <a
+                  style="color: royalblue"
+                  [routerLink]="[route.url]"
+                  [queryParams]="route.params"
+                  >{{ route.value }}</a
+                >
+              </li>
+              } @if (route.type !== 'last' && !route.params) {
+              <li class="breadcrumb-item">
+                <a style="color: royalblue" [routerLink]="[route.url]">{{
+                  route.value
+                }}</a>
+              </li>
+              } @if (route.type === 'last') {
+              <li class="breadcrumb-item">
+                <i>{{ route.value }}</i>
+              </li>
+              } }
+            </ul>
+          </div>
         </div>
-    </ng-container>
+      </div>
+    </div>
+  </ng-container>
 </ng-container>

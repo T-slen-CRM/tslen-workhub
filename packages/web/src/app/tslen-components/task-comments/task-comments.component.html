@@ -1,11 +1,15 @@
 <div class="task-comments">
-  <h4>{{'task_comments.title' | translate}}</h4>
+  <h4>{{ 'task_comments.title' | translate }}</h4>
   <ul class="task-comments-list">
-    <li *ngFor="let comment of comments">
+    @for (comment of comments; track comment) {
+    <li>
       <strong>{{ comment.user.firstName }} {{ comment.user.lastName }}</strong>
-      <span class="task-comments-timestamp">{{ comment.createdAt | date:'short' }}</span>
+      <span class="task-comments-timestamp">{{
+        comment.createdAt | date : 'short'
+      }}</span>
       <p>{{ comment.content }}</p>
     </li>
+    }
   </ul>
   <div class="task-comments-form">
     <textarea
@@ -18,6 +22,8 @@
       type="button"
       (click)="postComment()"
       [disabled]="!newCommentContent.trim()"
-    >{{'task_comments.post' | translate}}</button>
+    >
+      {{ 'task_comments.post' | translate }}
+    </button>
   </div>
 </div>

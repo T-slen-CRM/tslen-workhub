@@ -1,3 +1,5 @@
+@use "sass:list";
+
 /**  =====================
       Generic-class css start
 ========================== **/
@@ -52,55 +54,55 @@ $i: 0;
 
 /*====== text-color, background & border css starts ======*/
 @each $value in $color-name {
-    $i: index($color-name, $value);
+    $i: list.index($color-name, $value);
     .bg-#{""+$value} {
-        background-color: nth($color-color,$i),;
+        background-color: list.nth($color-color,$i),;
     }
     .text-#{""+$value} {
-        color: nth($color-color,$i);
+        color: list.nth($color-color,$i);
     }
     .b-#{""+$value} {
-        border: 1px solid nth($color-color,$i);
+        border: 1px solid list.nth($color-color,$i);
     }
 }
 /*====== text-color, background & border css ends ======*/
 /*====== [ overrides bootstrap color ]text-color, background & border css starts ======*/
 @each $value in $color-bt-name {
-    $i: index($color-bt-name, $value);
+    $i: list.index($color-bt-name, $value);
     .bg-#{""+$value} {
-        background-color: nth($color-bt-color,$i) !important;
+        background-color: list.nth($color-bt-color,$i) !important;
     }
     .text-#{""+$value} {
-        color: nth($color-bt-color,$i) !important;
+        color: list.nth($color-bt-color,$i) !important;
     }
     .b-#{""+$value} {
-        border: 1px solid nth($color-bt-color,$i) !important;
+        border: 1px solid list.nth($color-bt-color,$i) !important;
     }
     .text-h-#{""+$value}:hover {
-        color: nth($color-bt-color,$i) !important;
+        color: list.nth($color-bt-color,$i) !important;
     }
 }
 /*====== [ overrides bootstrap color ]text-color, background & border css ends ======*/
 /*====== border color css starts ======*/
 @each $value in $color-bt-name {
-    $i: index($color-bt-name, $value);
+    $i: list.index($color-bt-name, $value);
     .b-#{""+$value} {
-        border: 1px solid nth($color-bt-color,$i);
+        border: 1px solid list.nth($color-bt-color,$i);
     }
     .border-bottom-#{""+$value} td{
-        border-bottom: 1px solid nth($color-bt-color,$i);
+        border-bottom: 1px solid list.nth($color-bt-color,$i);
     }
     .border-bottom-#{""+$value} th{
-        border-bottom: 1px solid nth($color-bt-color,$i) !important;
+        border-bottom: 1px solid list.nth($color-bt-color,$i) !important;
     }
 }
 /*====== border color css ends ======*/
 
 /*====== Card top border css starts ======*/
 @each $value in $color-name {
-    $i: index($color-name, $value);
+    $i: list.index($color-name, $value);
     .card-border-#{""+$value}{
-        border-top: 4px solid nth($color-color,$i);
+        border-top: 4px solid list.nth($color-color,$i);
     }
 }
 /*====== Card top border ends ======*/
@@ -124,12 +126,12 @@ $i: 100;
 /*====== Font-weight css ends ======*/
 /*====== text-color, background color css starts ======*/
 @each $value in $social-name {
-    $i: index($social-name, $value);
+    $i: list.index($social-name, $value);
     .bg-#{""+$value} {
-        background: nth($social-color,$i);
+        background: list.nth($social-color,$i);
     }
     .text-#{""+$value} {
-        color: nth($social-color,$i);
+        color: list.nth($social-color,$i);
     }
 }
 /*====== text-color css ends ======*/

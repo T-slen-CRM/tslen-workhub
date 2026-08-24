@@ -1,3 +1,5 @@
+@use "sass:list";
+
 /**  =====================
       Switches css start
 ==========================  **/
@@ -63,10 +65,10 @@
         }
     }
     @each $value in $color-bt-name {
-        $i: index($color-bt-name, $value);
+        $i: list.index($color-bt-name, $value);
 
         &.switch-#{""+$value} input[type=checkbox]:checked + .cr:before {
-            background: nth($color-bt-color,$i);
+            background: list.nth($color-bt-color,$i);
         }
     }
 }

@@ -1,0 +1,24 @@
+<div class="audit-log-filters">
+    <app-autocomplete
+            [allData]="userChipData"
+            [selectedData]="selectedUserChips"
+            [nameOfList]="'User'"
+            (selectedItemsForParent)="onUserChipsChanged($event)">
+    </app-autocomplete>
+
+    <app-autocomplete
+            [allData]="resourceChipData"
+            [selectedData]="selectedResourceChips"
+            [nameOfList]="'Resource'"
+            (selectedItemsForParent)="onResourceChipsChanged($event)">
+    </app-autocomplete>
+</div>
+
+<div class="custom-table">
+    <app-ag-grid-table [columnDefs]="columnDefs"
+                       [rowData]="rowData()"
+                       [sizeColumnsToFit]="true"
+                       [rowHeight]="43"
+                       [headerHeight]="50"
+    ></app-ag-grid-table>
+</div>

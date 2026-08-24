@@ -14,6 +14,7 @@ import { UsersRepository } from '../../src/resources/users/users.repository';
 import { TaskNotificationsService } from '../../src/resources/tasks/task-notifications.service';
 import { TaskPhaseRepository } from '../../src/resources/task-phase/task-phase.repository';
 import { ErrorService } from '../../src/common/services/error/error.service';
+import { AuditLogBufferService } from '../../src/resources/audit-log/audit-log-buffer.service';
 
 async function createNestApp (): Promise<INestApplication> {
     const testingModule = await Test.createTestingModule({
@@ -66,6 +67,12 @@ async function createNestApp (): Promise<INestApplication> {
                 provide: TaskPhaseRepository,
                 useValue: {
                     findOne: jest.fn(() => null)
+                }
+            },
+            {
+                provide: AuditLogBufferService,
+                useValue: {
+                    enqueue: jest.fn()
                 }
             }
         ],

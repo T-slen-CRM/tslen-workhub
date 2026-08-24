@@ -18,6 +18,7 @@ import { TaskAttachments } from './entities/task-attachments.entity';
 import { ErrorService } from '../../common/services/error/error.service';
 import { TaskNotificationsModule } from './task-notifications.module';
 import { TaskPhaseModule } from '../task-phase/task-phase.module';
+import { AuditLogModule } from '../audit-log/audit-log.module';
 
 @Module({
     imports: [
@@ -36,7 +37,8 @@ import { TaskPhaseModule } from '../task-phase/task-phase.module';
         FirebaseModule,
         UsersModule,
         TaskNotificationsModule,
-        TaskPhaseModule
+        TaskPhaseModule,
+        AuditLogModule
     ],
     controllers: [TasksController],
     providers: [

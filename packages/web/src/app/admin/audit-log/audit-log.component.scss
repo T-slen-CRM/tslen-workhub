@@ -1,0 +1,21 @@
+.audit-log-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  margin-bottom: 12px;
+
+  app-autocomplete {
+    display: block;
+    width: 240px;
+  }
+
+  // Matches task-create-edit.component.scss's .input-mat-select compacting:
+  // the default MDC outline field reserves more vertical padding than this
+  // filter bar needs.
+  ::ng-deep .example-chip-list .mat-mdc-form-field-infix {
+    min-height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}

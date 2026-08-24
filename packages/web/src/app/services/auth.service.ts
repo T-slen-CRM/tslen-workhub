@@ -1,6 +1,5 @@
 import {Injectable, Signal, signal, WritableSignal} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import add from 'moment';
 import {BehaviorSubject, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {ConfigurationService} from "./ConfigurationService";
@@ -128,7 +127,7 @@ export class AuthenticationService {
                 token: localStorage.token,
                 email: localStorage.token,
                 alias: localStorage.token.split('@')[0],
-                expiration: add(1, 'days').toDate(),
+                expiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 fullName: localStorage.token.split('@')[0],
                 userId: localStorage.userId,
             };

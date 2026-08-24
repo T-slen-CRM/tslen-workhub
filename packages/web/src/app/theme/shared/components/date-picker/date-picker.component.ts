@@ -1,5 +1,36 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import * as moment from 'moment';
+
+interface IDateParts {
+  year: number;
+  month: number;
+  day: number;
+}
+
+function dateParts(date: Date): IDateParts {
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+  };
+}
+
+function daysAgo(days: number): Date {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date;
+}
+
+// Anchored to the 1st of the month before subtracting, so the day-of-month
+// never overflows into an adjacent month (e.g. subtracting a month from
+// March 31 must land on February, not roll over back into March).
+function monthsAgoAnchor(months: number): Date {
+  const date = new Date();
+  return new Date(date.getFullYear(), date.getMonth() - months, 1);
+}
+
+function lastDayOfMonth(year: number, month: number): number {
+  return new Date(year, month, 0).getDate();
+}
 
 @Component({
     selector: 'app-datepicker',
@@ -39,26 +70,23 @@ export class DatePickerComponent implements OnInit {
     const range = {};
     this.invalidRange = false;
     if (type) {
-      const today = {
-        year: parseInt(moment().format('YYYY')),
-        month: parseInt(moment().format('M')),
-        day: parseInt(moment().format('D')),
-      }
+      const today = dateParts(new Date());
       if (type.value === 'today') {
         range['start'] = {
-          year: parseInt(moment().format('YYYY')),
-          month: parseInt(moment().format('M')) - 1,
-          day: parseInt(moment().format('D')),
+          year: today.year,
+          month: today.month - 1,
+          day: today.day,
         }
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
         this.dateStart = inputStartDate;
         this.dateEnd = today;
       } else if (type.value === 'yesterday') {
+        const yesterday = dateParts(daysAgo(1));
         range['start'] = {
-          year: parseInt(moment().subtract(1, "day").format('YYYY')),
-          month: parseInt(moment().subtract(1, "day").format('M')) - 1,
-          day: parseInt(moment().subtract(1, "day").format('D')),
+          year: yesterday.year,
+          month: yesterday.month - 1,
+          day: yesterday.day,
         }
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
@@ -67,10 +95,11 @@ export class DatePickerComponent implements OnInit {
         inputEndDate.day = inputEndDate.day - 1;
         this.dateEnd = inputEndDate;
       } else if (type.value === 'week') {
+        const weekAgo = dateParts(daysAgo(6));
         range['start'] = {
-          year: parseInt(moment().subtract(6, 'days').format('YYYY')),
-          month: parseInt(moment().subtract(6, 'days').format('M')) - 1,
-          day: parseInt(moment().subtract(6, 'days').format('D')),
+          year: weekAgo.year,
+          month: weekAgo.month - 1,
+          day: weekAgo.day,
         }
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month + 1;
@@ -78,8 +107,8 @@ export class DatePickerComponent implements OnInit {
         this.dateEnd = today;
       } else if (type.value === 'month') {
         range['start'] = {
-          year: parseInt(moment().format('YYYY')),
-          month: parseInt(moment().format('M')) - 1,
+          year: today.year,
+          month: today.month - 1,
           day: 1,
         }
         const inputStartDate = Object.assign({}, range['start']);
@@ -87,18 +116,21 @@ export class DatePickerComponent implements OnInit {
         this.dateStart = inputStartDate;
         this.dateEnd = today;
       } else if (type.value === 'priviesMonth')  {
+        const prevAnchor = monthsAgoAnchor(1);
+        const prevYear = prevAnchor.getFullYear();
+        const prevMonth = prevAnchor.getMonth() + 1;
         range['start'] = {
-          year: parseInt(moment().subtract(1, "M").format('YYYY')),
-          month: parseInt(moment().subtract(1, "M").format('M')),
+          year: prevYear,
+          month: prevMonth,
           day: 1,
         };
         const inputStartDate = Object.assign({}, range['start']);
         inputStartDate.month = inputStartDate.month;
         this.dateStart = inputStartDate;
         range['end'] = {
-          year: parseInt(moment().subtract(1, "M").format('YYYY')),
-          month: parseInt(moment().subtract(1, "M").format('M')),
-          day: parseInt(moment(moment().subtract(1, "M")).endOf('M').format('D')),
+          year: prevYear,
+          month: prevMonth,
+          day: lastDayOfMonth(prevYear, prevMonth),
         }
         const inputEndDate = Object.assign({}, range['end']);
         inputEndDate.month = inputEndDate.month;

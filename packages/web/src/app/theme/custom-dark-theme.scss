@@ -510,11 +510,6 @@ $buttons-color: #4051b5;
     color: $main-dark-color;
   }
 
-  //.apexcharts-tooltip {
-  //  background: $main-dark-color;
-  //  color: $side-bar-dark-background-color;
-  //}
-
   .pcoded-navbar .pcoded-inner-navbar li.pcoded-hasmenu.pcoded-trigger > .pcoded-submenu {
     background-color: $custom-active-side-bar-nav-link;
   }
@@ -688,11 +683,5 @@ $buttons-color: #4051b5;
   .mat-raised-button.mat-primary{
     background-color: $buttons-color;
   }
-  .apexcharts-tooltip-y-group{
-    span {
-      color: #000000;
-    }
-  }
-
 }
 

@@ -32,15 +32,10 @@
               "stream",
               "util",
               "babel-runtime",
-              "mediainfo.js",
               "ng2-validation",
               "css-animator",
               "ng-click-outside",
-              "debug",
-              "apexcharts",
-              "lodash",
-              "screenfull",
-              "moment"
+              "debug"
             ],
             "assets": [
               "src/favicon.ico",

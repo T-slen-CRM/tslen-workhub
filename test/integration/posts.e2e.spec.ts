@@ -6,7 +6,7 @@ import { mockedPost } from '../shared/post';
 import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';
 import { PostsRepository } from '../../src/resources/posts/posts.repository';
 import { Posts } from '../../src/resources/posts/entities/post.entity';
-import * as request from 'supertest';
+import request = require('supertest');
 import { PostsController } from '../../src/resources/posts/posts.controller';
 import { PostsService } from '../../src/resources/posts/posts.service';
 import { UploadAbstractService } from '../../src/common/services/upload/upload.abstract.service';

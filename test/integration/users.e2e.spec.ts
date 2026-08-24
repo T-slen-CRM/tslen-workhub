@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common/interfaces/nest-application.interface';
 import { Test } from '@nestjs/testing/test';
 import { UsersService } from '../../src/resources/users/users.service';
-import * as request from 'supertest';
+import request = require('supertest');
 import { Users } from '../../src/resources/users/entities/users.entity';
 import { AuthGuard } from '../../src/resources/auth/guards/auth.guard';
 import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';

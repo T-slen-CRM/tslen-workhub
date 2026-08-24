@@ -8,7 +8,7 @@ import { GoogleCalendarController } from '../../src/resources/google-calendar/go
 import { GoogleCalendarService } from '../../src/resources/google-calendar/google-calendar.service';
 import { GoogleCalendarRepository } from '../../src/resources/google-calendar/google-calendar.repository';
 import { GoogleService } from '../../src/common/services/google/google.service';
-import * as request from 'supertest';
+import request = require('supertest');
 import { ErrorService } from '../../src/common/services/error/error.service';
 import { SlackService } from '../../src/common/services/slack/slack.service';
 import { Test } from '@nestjs/testing/test';

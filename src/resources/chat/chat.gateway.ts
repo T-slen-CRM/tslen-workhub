@@ -36,7 +36,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly liveKitGateway: LiveKitGateway,
   ) {}
 
-  async handleConnection (@ConnectedSocket() client: Socket, ...args: any[]) {
+  async handleConnection (@ConnectedSocket() client: Socket) {
       this.logger.log(`Client connected: ${client.id}`);
       // In a real app, you'd authenticate the user here
       const userId = client.handshake.query.userId as string || `anonymous-${client.id.substring(0, 5)}`;

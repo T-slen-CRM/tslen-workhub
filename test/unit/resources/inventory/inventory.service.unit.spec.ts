@@ -1,7 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { InventoryService } from '../../../../src/resources/inventory/inventory.service';
 import { InventoryRepository } from '../../../../src/resources/inventory/inventory.repository';
-import { ErrorService } from '../../../../src/common/services/error/error.service';
 import { Inventory } from '../../../../src/resources/inventory/entities/inventory.entity';
 import { CreateInventoryDto } from '../../../../src/resources/inventory/dto/create-inventory.dto';
 import { UpdateInventoryDto } from '../../../../src/resources/inventory/dto/update-inventory.dto';
@@ -51,13 +50,11 @@ const makeUpdateDto = (p: Partial<UpdateInventoryDto> = {}): UpdateInventoryDto 
 describe('InventoryService (unit)', () => {
     let service: InventoryService;
     let repo: jest.Mocked<InventoryRepository>;
-    let errorService: jest.Mocked<ErrorService>;
 
     beforeAll(() => {
         const { unit, unitRef } = TestBed.create(InventoryService).compile();
         service = unit;
         repo = unitRef.get(InventoryRepository);
-        errorService = unitRef.get(ErrorService);
     });
 
     afterEach(() => jest.clearAllMocks());

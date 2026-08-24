@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing/test';
 import { AuthGuard } from '../../src/resources/auth/guards/auth.guard';
 import { mockUser } from '../shared/users';
 import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';
-import * as request from 'supertest';
+import request = require('supertest');
 import { UserGroupService } from '../../src/resources/user-group/user-group.service';
 import { UserGroupController } from '../../src/resources/user-group/user-group.controller';
 import { UserGroupRepository } from '../../src/resources/user-group/user-group.repository';

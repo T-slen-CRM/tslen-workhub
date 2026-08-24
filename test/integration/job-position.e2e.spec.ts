@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing/test';
 import { AuthGuard } from '../../src/resources/auth/guards/auth.guard';
 import { mockUser } from '../shared/users';
 import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';
-import * as request from 'supertest';
+import request = require('supertest');
 import { JobPosition } from '../../src/resources/job-position/entities/job-position.entity';
 import { JobPositionController } from '../../src/resources/job-position/job-position.controller';
 import { JobPositionService } from '../../src/resources/job-position/job-position.service';

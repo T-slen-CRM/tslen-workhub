@@ -1,4 +1,3 @@
-import { BaseAbstractRepository } from '../../common/repositories/base/base.abstract.repository';
 import { Message } from './message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

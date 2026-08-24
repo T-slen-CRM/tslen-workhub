@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "strict": false,
+    "moduleResolution": "node10",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,

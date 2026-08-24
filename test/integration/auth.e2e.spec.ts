@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common/interfaces/nest-application.int
 import { TestingModule } from '@nestjs/testing/testing-module';
 import { Test } from '@nestjs/testing/test';
 import { AuthService } from '../../src/resources/auth/auth.service';
-import * as request from 'supertest';
+import request = require('supertest');
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { SignInDto } from '../../src/resources/auth/dto/signIn.dto';
 import { SignInResponseDto } from '../../src/resources/auth/dto/signIn.response.dto';

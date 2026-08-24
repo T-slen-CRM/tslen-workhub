@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common/interfaces/nest-application.interface';
 import { Test } from '@nestjs/testing/test';
-import * as request from 'supertest';
+import request = require('supertest');
 import { AuthGuard } from '../../src/resources/auth/guards/auth.guard';
 import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';
 import { TestingModule } from '@nestjs/testing/testing-module';

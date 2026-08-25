@@ -1,0 +1,2675 @@
+{
+  "src/animations/animations.ts": {
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 4
+    }
+  },
+  "src/app/admin/admin-routing.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/admin/admin.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/admin/audit-log/audit-log.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/admin/company-rules/company-rules.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/admin/inventory/interfaces/inventory.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/admin/inventory/inventory-create/inventory-create.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/admin/inventory/inventory-update/inventory-update.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/admin/inventory/inventory.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/admin/manage-users/manage-user-update/manage-user-update.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/admin/manage-users/manage-users.component.html": {
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 1
+    }
+  },
+  "src/app/admin/manage-users/manage-users.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/admin/pending/pending.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/app.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/app.module.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/components/ag-grid-table/ag-grid-table.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/components/autocomplete/autocomplete/autocomplete.component.ts": {
+    "@angular-eslint/no-input-rename": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-generic-constructors": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.html": {
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 3
+    }
+  },
+  "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.ts": {
+    "@typescript-eslint/consistent-type-assertions": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unsafe-function-type": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/components/autocomplete/multiselect-autocomplete-example.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    },
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 2
+    }
+  },
+  "src/app/components/autocomplete/multiselect-autocomplete-example.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/consistent-generic-constructors": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/no-unsafe-function-type": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 6
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/autocomplete/single-autocomplete/single-autocomplete.component.ts": {
+    "@angular-eslint/no-input-rename": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-generic-constructors": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/components/callButton/buttonRender.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/components/callButton/buttonRender.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/components/custom-header-page/custom-header-page.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/ag-grid-loading.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/all-rows-checked-tt-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/audience-list-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/audience-slide-toggle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/autorules-list-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/autorules-slide-toggle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/campaign-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/components/data-grid/campaign-filter-lists-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/campaign-render.component.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/campaign-slide-toogle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/campaign-supply-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/conversion-slide-toggle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/creative-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 5
+    }
+  },
+  "src/app/components/data-grid/creative-render.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/creative-slide-toogle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/filter-list-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/header-timetargeting-cell-renderer.ts": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/manage-ssp-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/components/data-grid/manage-transactions-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/app/components/data-grid/manage-users-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/multi-value-renderer.component.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/pending-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/pending-change-user-link-renderer.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/pending-date-renderer.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/data-grid/slide-toogle-renderer.component.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/ssp-slide-toggle-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/components/data-grid/time-targeting-checked-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/components/delete-confirm-modal/delete-confirm-modal.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/components/incoming-call/incoming-call.componet.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/manage-users-aggrid/manage-users-aggrid.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/components/modal-dialog-header/modal-dialog-header.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/components/model-live-kit/model-live-kit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/components/pending-aggrid/pending-aggrid.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/components/preview-modal/preview-modal.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/components/table-live-kit/table-live-kit.component.spec.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    }
+  },
+  "src/app/components/table-live-kit/table-live-kit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/components/upload-creative-modal/upload-creative-modal.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/directives/hide-item.directive.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/feature/calendar-dayoff-window/calendar-dayoff-window.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/feature/date-time-input/date-time-input.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/feature/timer-pomodoro/directive/timer-button.directive.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/feature/timer-pomodoro/timer-pane/timer-pane.component.ts": {
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/feature/users/user-dayoff-history/user-dayoff-history.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 3
+    }
+  },
+  "src/app/feature/users/user-on-stage/user-on-stage.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/guards/admin.guard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/guards/auth.guard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/guards/role.guard.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/helpers/loading-logo/loading-logo.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/helpers/utils.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/interceptors/auth.interceptor.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/interceptors/loader.interceptor.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/interfaces/metrics.ts": {
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-object-type": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/interfaces/notifications.ts": {
+    "@typescript-eslint/no-empty-object-type": {
+      "count": 1
+    }
+  },
+  "src/app/interfaces/taskProjectPermission.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/interfaces/tasks.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/interfaces/upload.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/interfaces/userConfig.ts": {
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 1
+    }
+  },
+  "src/app/json-typings.d.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/language/language.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-change-password/auth-change-password.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/pages/authentication/auth-header/auth-header.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/no-input-rename": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/pages/authentication/auth-reset-password/auth-reset-password.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-reset-password/auth-reset-password.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-reset-password/auth-reset-password.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-signin/auth-signin.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-signin/auth-signin.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-signin/auth-signin.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-signup/auth-signup.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/auth-signup/auth-signup.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 2
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/pages/authentication/authentication-routing.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/registration-confirm/registration-confirm.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/reset-password/reset-password.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 1
+    }
+  },
+  "src/app/pages/authentication/reset-password/reset-password.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/pages/call/audio/audio.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/pages/call/video/video.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/call/wellcome/call.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/pages/call/wellcome/call.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-type-definitions": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/pages/chat/chat.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 3
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/pages/chat/chat.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/common-schedule/common-schedule/common-schedule.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 2
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 2
+    }
+  },
+  "src/app/pages/common-schedule/common-schedule/common-schedule.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/ban-tslint-comment": {
+      "count": 1
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/pages/live-kit/live-kit.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 11
+    }
+  },
+  "src/app/pages/live-kit/live-kitWebSocket.service.spec.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/pages/live-kit/live-kitWebSocket.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    }
+  },
+  "src/app/pages/live-kit/picture-in-picture.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/pages/live-kit/picture-in-picture.service.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/pages/main-wall/main-wall/main-wall.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/meet/meet.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/pages/pages.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/personal-schedule/personal-schedule-component/personal-schedule.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/pages/tasks-list/service/tasks-list.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/pages/tasks-list/task-phase/task-phase-create-edit/task-phase-create-edit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/pages/tasks-list/task-phase/task-phase-sort/task-phase-sort.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/pages/tasks-list/taskWebSocket.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/tasks-list/taskWebSocket.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/pages/tasks-list/tasks-list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 10
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/pages/tasks-manager/tasks-manager.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 3
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 3
+    }
+  },
+  "src/app/pages/tasks-manager/tasks-manager.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/pages/users/user-card-info/user-card-info.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/pages/users/user-group/user-group.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/pages/users/user-job-position/user-job-position.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "@typescript-eslint/no-wrapper-object-types": {
+      "count": 1
+    }
+  },
+  "src/app/pages/users/user-profile/user-profile.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    }
+  },
+  "src/app/pages/users/users.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/ConfigurationService.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/auth.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/services/data.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    }
+  },
+  "src/app/services/error.interceptor.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/http-request.interceptor.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/services/image.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/libs.service.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    }
+  },
+  "src/app/services/matTableService.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/notification.service.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/notification.service.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/services/pending.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/services/theme.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/services/upload.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/services/upload/manager-settings-upload.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/services/upload/multiple-upload-creative.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/services/upload/upload.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/services/upload/user-photo-single-upload.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/services/user.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/services/validatorFormGroup.service.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    },
+    "no-useless-escape": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/admin.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/theme/layout/admin/configuration/configuration.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-bar.component.html": {
+    "@angular-eslint/template/alt-text": {
+      "count": 2
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-bar.component.ts": {
+    "@angular-eslint/no-output-on-prefix": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-left/nav-left.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-left/nav-search/nav-search.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-right/nav-right.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/nav-bar/nav-right/nav-right.component.ts": {
+    "@angular-eslint/no-input-rename": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-collapse/nav-collapse.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 3
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-collapse/nav-collapse.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-content.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 2
+    },
+    "@angular-eslint/template/eqeqeq": {
+      "count": 7
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-content.component.ts": {
+    "@angular-eslint/no-output-on-prefix": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 6
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-group/nav-group.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 3
+    },
+    "@angular-eslint/template/label-has-associated-control": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-group/nav-group.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-item/nav-item.component.html": {
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 8
+    }
+  },
+  "src/app/theme/layout/admin/navigation/nav-content/nav-item/nav-item.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 2
+    }
+  },
+  "src/app/theme/layout/admin/navigation/navigation.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/no-output-on-prefix": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/theme/layout/admin/navigation/navigation.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unsafe-declaration-merging": {
+      "count": 2
+    }
+  },
+  "src/app/theme/layout/auth/auth.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/alert/alert.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/breadcrumb/breadcrumb.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/array-type": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 3
+    }
+  },
+  "src/app/theme/shared/components/card/card.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 4
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 4
+    }
+  },
+  "src/app/theme/shared/components/card/card.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/dark-mode-button/dark-mode-button/dark-mode-button.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/data-table/data-filter.pipe.ts": {
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/date-picker/date-picker.component.html": {
+    "@angular-eslint/template/elements-content": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/date-picker/date-picker.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "no-self-assign": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/date-picker/date-picker.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/modal/animation-modal/animation-modal.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/modal/animation-modal/animation-modal.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/modal/ui-modal/ui-modal.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/notification-form/notification-form/notification-form.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/components/notification-modal/notification-modal-component/notification-modal.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/components/spinner/spinner.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/directives/IncrementCounterDirective.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/ban-tslint-comment": {
+      "count": 3
+    },
+    "@typescript-eslint/consistent-indexed-object-style": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 4
+    }
+  },
+  "src/app/theme/shared/directives/creative-preview-style/creativePreviewStyle.directive.ts": {
+    "@angular-eslint/directive-selector": {
+      "count": 1
+    },
+    "@angular-eslint/no-input-rename": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/directives/dynamic-bind.directive.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/directives/google-btn.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/directives/invited-link.directive.ts": {
+    "@angular-eslint/no-input-rename": {
+      "count": 1
+    },
+    "@angular-eslint/no-output-rename": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/theme/shared/directives/prevent-default.directive.ts": {
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/directives/styleCounter.derective.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/theme/shared/full-screen/toggle-full-screen.ts": {
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/absent-user/absent-user.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/add-user/add-user.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/ag-grid/days-header/days-header.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/ag-grid/days-off-cell-renderer/days-off-cell-renderer.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/ag-grid/inventory-render/inventory-render.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/ag-grid/name-avatar-cell-renderer/name-avatar-cell-renderer.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/birthday-list/birthday-list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/create-event-dialog/create-event-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/tslen-components/create-one-event-dialog/create-one-event-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/days-off-form/days-off-form.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/days-off-items/days-off-items.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/directives/copy-text.directive.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/google-calendar/google-calendar.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/google-permissions/google-permissions.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/image-selection/image-selection.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    }
+  },
+  "src/app/tslen-components/info-alert-message/info-alert-message.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/live-chat/component/live-chat.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/live-chat/live-chat.service.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/main-calendar/main-calendar-component/main-calendar.component.html": {
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/main-calendar/main-calendar-component/main-calendar.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 11
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-useless-assignment": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/main-calendar/main-calendar.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/mat-panel-dynamic/mat-panel-dynamic.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/mat-table-dynamic/data-grid/date-transform.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/mat-table-dynamic/data-grid/project-member-action-button/project-member-action-button.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/tslen-components/mat-table-dynamic/data-grid/status-ask-server/status-ask-server.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/mat-table-dynamic/mat-table-dynamic.component.html": {
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 5
+    }
+  },
+  "src/app/tslen-components/mat-table-dynamic/mat-table-dynamic.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/mat-table/mat-table.component.html": {
+    "@angular-eslint/template/alt-text": {
+      "count": 1
+    },
+    "@angular-eslint/template/prefer-control-flow": {
+      "count": 5
+    }
+  },
+  "src/app/tslen-components/mat-table/mat-table.component.ts": {
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/mat-tabs-dynamic/mat-tabs-dynamic.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/messages-list/messages-list.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/notification-bell/notification-bell.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/notification-bell/notification-bell.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/notification-bell/notification-bell.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/posts/posts.component.html": {
+    "@angular-eslint/template/alt-text": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/posts/posts.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/progressbar-bootstrap/progressbar-bootstrap.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/task-comments/task-comments.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/task-comments/task-comments.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/task-create-edit/task-create-edit.component.html": {
+    "@angular-eslint/template/click-events-have-key-events": {
+      "count": 1
+    },
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/task-create-edit/task-create-edit.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/task-create-edit/task-create-edit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-useless-assignment": {
+      "count": 1
+    }
+  },
+  "src/app/tslen-components/task-project-create-edit/task-project-create-edit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/task-project-members/task-project-members.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 8
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    }
+  },
+  "src/app/tslen-components/text-editor/text-editor.component.ts": {
+    "@angular-eslint/no-input-rename": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-inferrable-types": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/upload-files/upload-files.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 2
+    }
+  },
+  "src/app/tslen-components/upload/upload-files/upload-files.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "@typescript-eslint/prefer-for-of": {
+      "count": 1
+    }
+  },
+  "src/polyfills.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  }
+}

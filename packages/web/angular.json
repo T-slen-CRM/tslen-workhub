@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dsp-front_v2": {
+    "tslen-web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -92,18 +92,18 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "dsp-front_v2:build"
+            "buildTarget": "tslen-web:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "dsp-front_v2:build:production"
+              "buildTarget": "tslen-web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "dsp-front_v2:build"
+            "buildTarget": "tslen-web:build"
           }
         },
         "lint": {

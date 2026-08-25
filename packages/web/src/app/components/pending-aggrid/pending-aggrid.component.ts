@@ -49,7 +49,6 @@ export class PendingAggridComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.gridApi.setGridOption('loading', true);
     this.gridApi.sizeColumnsToFit();
   }
   loadTranslations() {

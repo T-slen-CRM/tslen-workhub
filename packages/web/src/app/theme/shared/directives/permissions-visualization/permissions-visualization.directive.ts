@@ -12,11 +12,18 @@ export class PermissionsVisualizationDirective{
   @Input() public set appPermissionsVisualization (permissions: string[]) {
     if (permissions.length) {
       const role = this.authService.authDataSignal().role;
+      const shouldShow = permissions.includes(role);
+      const isShown = this.viewContainer.length > 0;
 
-      if (!permissions.includes(role)) {
-        this.viewContainer.clear();
-      } else {
+      // Inline array literals in the template (e.g. *appPermissionsVisualization="['admin']")
+      // create a new array reference on every change-detection cycle, so this setter fires far
+      // more often than "permissions actually changed" - guard against re-creating (or
+      // re-clearing) a view that's already in the right state, since createEmbeddedView doesn't
+      // dedupe on its own and would otherwise stack up duplicate views on every CD cycle.
+      if (shouldShow && !isShown) {
         this.viewContainer.createEmbeddedView(this.templateRef);
+      } else if (!shouldShow && isShown) {
+        this.viewContainer.clear();
       }
     }
   }

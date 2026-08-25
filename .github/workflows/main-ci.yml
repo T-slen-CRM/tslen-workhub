@@ -36,3 +36,29 @@ jobs:
 
       - name: Run tests unit
         run: npm run test:unit
+
+  web-lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [24.19.0]
+
+    defaults:
+      run:
+        working-directory: packages/web
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Angular lint
+        run: npm run lint

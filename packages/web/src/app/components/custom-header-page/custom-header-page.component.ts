@@ -16,8 +16,6 @@ import { AuthData, AuthenticationService } from '../../services/auth.service';
 export class CustomHeaderPageComponent implements OnInit {
   @Input() headerRoutes: any;
   @Input() mainHeader: string;
-  @Input() campaignName: string;
-  @Input() id: number;
   public isManager: boolean;
   public userId: number;
   public authData: AuthData;

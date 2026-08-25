@@ -28,7 +28,7 @@ export class RegistrationConfirmComponent implements OnInit {
         localStorage.setItem('isLoggedIn', 'true');
         // localStorage.setItem('token', response.body['userEmail']);
         // localStorage.setItem('balance', response.body['balance']);
-        this.router.navigate(['campaigns/create']).catch();
+        this.router.navigate(['/pages/main-wall']).catch();
       }
     });
   }

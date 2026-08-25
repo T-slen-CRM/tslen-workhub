@@ -8,27 +8,6 @@
               <ng-container>
                 <h5 class="m-b-10">
                   {{ mainHeader }}
-                  @if (campaignName) {
-                  <mat-icon
-                    class="custom-icon-settings"
-                    [routerLink]="[
-                      '/campaigns/update/' + id,
-                      { campaignName: campaignName }
-                    ]"
-                    color="primary"
-                    matTooltip="Edit campaign"
-                    matTooltipPosition="right"
-                  >
-                    settings
-                  </mat-icon>
-                  }
-
-                  <!--                                    <a *ngIf="campaignName"-->
-
-                  <!--                                            [routerLink]="['/campaigns/update/'+id, {campaignName: campaignName}]"-->
-                  <!--                                    >-->
-                  <!--                                        <i class="fa fa-edit" ></i> Edit campaign-->
-                  <!--                                    </a>-->
                 </h5>
               </ng-container>
             </div>

@@ -6,7 +6,6 @@ import { DataService } from './data.service';
 import { LiveKitWebSocketService } from '../pages/live-kit/live-kitWebSocket.service';
 
 describe('NotificationService', () => {
-  let service: NotificationService;
   let toastrSpy: jasmine.SpyObj<ToastrService>;
   let notificationSubject: Subject<any>;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
@@ -25,7 +24,7 @@ describe('NotificationService', () => {
       ],
     });
 
-    service = TestBed.inject(NotificationService);
+    TestBed.inject(NotificationService);
   });
 
   it('shows a global toast with the notification title and message when a live notification arrives', () => {

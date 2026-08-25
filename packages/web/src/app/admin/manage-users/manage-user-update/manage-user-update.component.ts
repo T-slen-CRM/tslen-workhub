@@ -89,7 +89,7 @@ export class ManageUserUpdateComponent implements OnInit {
     }
   }
   openUploadDialog(): void {
-    const dialogRef = this.dialog.open(UploadCreativeModalComponent, {
+    this.dialog.open(UploadCreativeModalComponent, {
       width: '50%',
       position: { top: '20%', left: '30%' },
       data: { uploadType: 'user-photo' },

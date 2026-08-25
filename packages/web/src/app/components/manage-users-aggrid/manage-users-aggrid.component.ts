@@ -6,10 +6,8 @@ import {
 } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { ManageUsersActionsRendererComponent } from '../data-grid/manage-users-actions-renderer.component';
-import { Subscription, tap } from 'rxjs';
 import { AuthenticationService } from '../../services/auth.service';
 import { LanguageService } from '../../language/language.service';
-import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-users-aggrid',

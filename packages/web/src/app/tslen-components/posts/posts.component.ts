@@ -73,7 +73,7 @@ export class PostsComponent implements OnInit, OnDestroy {
     post.likesOwners = likesOwnerArray.join('|');
     const updatePost = this.dataService
       .updateData('/posts/', post.id, post)
-      .subscribe((r) => {});
+      .subscribe((_r) => {});
     this.subscription$.add(updatePost);
   }
   addPost(post: IPost) {
@@ -96,7 +96,7 @@ export class PostsComponent implements OnInit, OnDestroy {
           }
         }),
       )
-      .subscribe((res) => {
+      .subscribe((_res) => {
         this.staticPostsArr = this.staticPostsArr.filter(
           (item) => item.id !== post.id,
         );

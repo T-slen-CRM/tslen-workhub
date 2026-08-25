@@ -100,7 +100,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
     this.scrollToCurrentTimeMarker();
   }
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  dayClicked({ date, events: _events }: { date: Date; events: CalendarEvent[] }): void {
     this.openCreateOneEventDialog(0, date, [], this.googleCalendarData);
   }
   hourClicked(date): void {
@@ -152,7 +152,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
   deleteEvent(eventToDelete: CalendarEvent) {
     const deleteEvent: Subscription = this.dataService
       .deleteData('/events-by-user/', +eventToDelete.id)
-      .subscribe((r) => {
+      .subscribe((_r) => {
         this.events = this.events.filter((event) => event !== eventToDelete);
       });
     this.subscription.add(deleteEvent);
@@ -210,7 +210,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
     }, []);
   }
   openCreateOneEventDialog(
-    isRequest: number = 0,
+    isRequest = 0,
     date = new Date(),
     events: CalendarEvent | CalendarEvent[] = [],
     googleCalendarData: IGoogleCalendar,
@@ -256,7 +256,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
           }
         }),
       )
-      .subscribe((r) => {
+      .subscribe((_r) => {
         this.events = this.events.filter((e: CalendarEvent) => e !== event);
       });
   }

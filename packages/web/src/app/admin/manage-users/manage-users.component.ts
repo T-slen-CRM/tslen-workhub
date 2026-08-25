@@ -11,7 +11,6 @@ import {
 import { DataService } from '../../services/data.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
-import { ThemeService } from '../../services/theme.service';
 import { ManageUsersAggridComponent } from '../../components/manage-users-aggrid/manage-users-aggrid.component';
 import { Subscription } from 'rxjs';
 import { UserGroupComponent } from '../../pages/users/user-group/user-group.component';

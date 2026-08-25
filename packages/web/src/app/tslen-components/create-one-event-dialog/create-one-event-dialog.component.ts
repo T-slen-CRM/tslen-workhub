@@ -22,7 +22,6 @@ import {
 } from '../../../animations/animations';
 import { endOfDay, startOfDay, subMinutes } from 'date-fns';
 import { ValidatorFormGroupService } from '../../services/validatorFormGroup.service';
-import { Router } from '@angular/router';
 import { LanguageService } from 'src/app/language/language.service';
 
 /**
@@ -258,7 +257,7 @@ export class CreateOneEventDialogComponent implements OnInit {
     }
   }
 
-  changeDateTimeByRequestType(dateWithHours: boolean = false) {
+  changeDateTimeByRequestType(dateWithHours = false) {
     let formattedDate;
     if (dateWithHours) {
       formattedDate = customFormatDate(

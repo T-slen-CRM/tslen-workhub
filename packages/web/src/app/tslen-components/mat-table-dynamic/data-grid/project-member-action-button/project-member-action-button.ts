@@ -10,10 +10,8 @@ import { DataService } from '../../../../services/data.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { IProjectPermission } from '../../../../interfaces/taskProjectPermission';
 import { MatTableService } from '../../../../services/matTableService';
-import { Subject, Subscription, takeUntil } from 'rxjs';
 import { UnsubscribeOnDestroyAdapter } from '../../../../helpers/UnsubscribeOnDestroyAdapter';
 import { TranslateModule } from '@ngx-translate/core';
 

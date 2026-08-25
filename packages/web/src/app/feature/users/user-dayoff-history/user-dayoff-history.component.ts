@@ -3,7 +3,7 @@ import {
   inject,
   input,
   InputSignal,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnInit,
 } from '@angular/core';
 import { ComponentsModule } from '../../../components/components.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-dayoff-history.component.scss',
 })
-export class UserDayoffHistoryComponent {
+export class UserDayoffHistoryComponent implements OnInit {
   constructor(public translateService: LanguageService) {}
   public eventsByUserRequest: InputSignal<IEvent[]> = input.required();
   private staticDaysOffObject = inject(LibsService).daysOffList;

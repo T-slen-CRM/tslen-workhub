@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Subject} from 'rxjs';
+import { Subject} from 'rxjs';
 import {IProjectPermission} from '../interfaces/taskProjectPermission';
 import {ITaskProject} from "../interfaces/tasks";
 

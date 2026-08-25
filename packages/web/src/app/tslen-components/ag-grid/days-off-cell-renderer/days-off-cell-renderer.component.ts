@@ -74,7 +74,7 @@ export class DaysOffCellRendererComponent implements AgRendererComponent {
     }
   }
 
-  refresh(params: ICellRendererParams): boolean {
+  refresh(_params: ICellRendererParams): boolean {
     return false;
   }
 }

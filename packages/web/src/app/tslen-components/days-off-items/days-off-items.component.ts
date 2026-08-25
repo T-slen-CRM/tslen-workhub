@@ -1,7 +1,6 @@
 import {
   Component,
   Input,
-  OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -70,7 +69,7 @@ export class DaysOffItemsComponent implements ControlValueAccessor, Validator {
     this.mediaQueryMatch =
       mediaMatcher.matchMedia('(min-width: 750px)').matches;
   }
-  onChange = (selectedType) => {};
+  onChange = (_selectedType) => {};
   registerOnChange(onChange: any): void {
     this.onChange = onChange;
   }

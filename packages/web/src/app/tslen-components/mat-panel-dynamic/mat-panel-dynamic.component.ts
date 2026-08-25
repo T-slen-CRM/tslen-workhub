@@ -23,5 +23,5 @@ export class MatPanelDynamicComponent {
   templates: QueryList<any>;
   @ContentChildren(PanelDirective) panels: QueryList<PanelDirective>;
 
-  @Input() public multiExpanded: boolean = false;
+  @Input() public multiExpanded = false;
 }

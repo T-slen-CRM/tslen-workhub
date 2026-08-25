@@ -24,12 +24,12 @@ export class BreadcrumbComponent implements OnInit {
   @Input() type: string;
   public invitedLinkIsClickedRight = false;
   public invitedLinkIsClickedLeft = false;
-  public classLink: string = 'invited-link';
+  public classLink = 'invited-link';
 
   public navigation: any;
-  public currentRoute: string = '';
-  breadcrumbList: Array<any> = [];
-  public navigationList: Array<any> = [];
+  public currentRoute = '';
+  breadcrumbList: any[] = [];
+  public navigationList: any[] = [];
   public isManager: boolean;
   public userId: number;
   public authData: AuthData;
@@ -234,7 +234,7 @@ export class BreadcrumbComponent implements OnInit {
       this.titleService.setTitle(`${translatedTitle} | CRM`);
     });
   }
-  decodeUrlRecursive(url: string, previousUrl: string = '') {
+  decodeUrlRecursive(url: string, previousUrl = '') {
     if (url === previousUrl) {
       return url;
     }

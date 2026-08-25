@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 
 import {WINDOW} from '../injection/window';
 import {environment} from '../../environments/environment';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import {AuthData} from "./auth.service";
 
 @Injectable({

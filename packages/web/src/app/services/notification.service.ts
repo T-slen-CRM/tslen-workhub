@@ -81,7 +81,7 @@ export class NotificationService {
 
     prepareNotificationsForAllUsers(notification: Notification, users: any){
         return users.map(user => {
-            let item = user.data;
+            const item = user.data;
             return {
                 title: notification.title,
                 message: notification.message,

@@ -51,7 +51,7 @@ export class MainWallComponent
   }
 
   openCreateOneEventDialog(
-    isRequest: number = 0,
+    isRequest = 0,
     date = new Date(),
     events: CalendarEvent | CalendarEvent[] = [],
   ): void {
@@ -77,7 +77,7 @@ export class MainWallComponent
     Object.assign(event, eventColors);
     const save: Subscription = this.dataService
       .postData('/events-by-user', event)
-      .subscribe((response: HttpResponse<any>) => {});
+      .subscribe((_response: HttpResponse<any>) => {});
     this.subscription.add(save);
   }
   convertEventColor(color: any) {

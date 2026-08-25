@@ -25,7 +25,7 @@ export const fadeOut =
       ])),
       transition('* => void', [animate("3s ease")])
     ]);
-export function FadeInOut(timingIn: number, timingOut: number, height: boolean = false): AnimationTriggerMetadata  {
+export function FadeInOut(timingIn: number, timingOut: number, height = false): AnimationTriggerMetadata  {
   return trigger('fadeInOut', [
     transition(':enter', [
       style(height ? { opacity: 0 , height: 0, } : { opacity: 0, }),
@@ -36,7 +36,7 @@ export function FadeInOut(timingIn: number, timingOut: number, height: boolean =
     ])
   ]);
 }
-export function FadeInOutByHidden(timingIn: number, timingOut: number, height: boolean = false): AnimationTriggerMetadata  {
+export function FadeInOutByHidden(timingIn: number, timingOut: number, height = false): AnimationTriggerMetadata  {
   return trigger('fadeInOutByHidden', [
     state('true', style({ height: '*' })),
     state('false', style({ height: '0px' })),
@@ -54,7 +54,7 @@ export function FadeInOutByHidden(timingIn: number, timingOut: number, height: b
   ]);
 }
 
-export function FadeIn(timingIn: number, height: boolean = false): AnimationTriggerMetadata  {
+export function FadeIn(timingIn: number, height = false): AnimationTriggerMetadata  {
   return trigger('fadeIn', [
     transition(':enter', [
       style(height ? { opacity: 0 , height: 0, } : { opacity: 0, }),
@@ -268,7 +268,7 @@ export function legendEnter() {
   ]);
 }
 
-export function ExpandCollapseBar(timing: number, width: number = 350): AnimationTriggerMetadata  {
+export function ExpandCollapseBar(timing: number, width = 350): AnimationTriggerMetadata  {
   return trigger('expandCollapseBar', [
     state('open', style({ width: width + 'px', height: '100%', }) ),
     state('close', style({ width: '0px', height: '100%', }) ),

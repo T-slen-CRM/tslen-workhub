@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable, Subject } from 'rxjs';
-import {environment} from "../../../environments/environment";
 import {ConfigurationService} from "../../services/ConfigurationService";
 
 // Define interfaces for message types

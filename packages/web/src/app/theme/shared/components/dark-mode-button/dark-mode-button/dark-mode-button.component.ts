@@ -2,7 +2,7 @@ import {
   Component,
   Input,
   OnInit,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnDestroy,
 } from '@angular/core';
 import { ThemeService } from '../../../../../services/theme.service';
 import { DataService } from '../../../../../services/data.service';
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class DarkModeButtonComponent implements OnInit {
+export class DarkModeButtonComponent implements OnInit, OnDestroy {
   @Input() isDarkTheme: boolean;
   @Input() userId: number;
   subscriptions: Subscription;
@@ -37,7 +37,7 @@ export class DarkModeButtonComponent implements OnInit {
     this.loading = true;
     const updateUser = this.dataService
       .updateData('/users/', this.userId, { useDarkTheme: !this.isDarkTheme })
-      .subscribe((response) => {
+      .subscribe((_response) => {
         this.loading = false;
       });
     this.subscriptions.add(updateUser);

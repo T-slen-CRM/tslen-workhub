@@ -1,11 +1,8 @@
 import {
   Component,
-  Input,
-  OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IDaysOffObject } from '../../interfaces/dashboard';
 import { MatIconModule } from '@angular/material/icon';
 import { LibsService } from '../../services/libs.service';
 import { MatChipsModule } from '@angular/material/chips';
@@ -83,7 +80,7 @@ export class ImageSelectionComponent
     this.mediaQueryMatch =
       mediaMatcher.matchMedia('(min-width: 750px)').matches;
   }
-  onChange = (selectedType) => {};
+  onChange = (_selectedType) => {};
   registerOnChange(onChange: any): void {
     this.onChange = onChange;
   }
@@ -110,7 +107,7 @@ export class ImageSelectionComponent
       this.touched = true;
     }
   }
-  validate(control: AbstractControl): ValidationErrors | null {
+  validate(_control: AbstractControl): ValidationErrors | null {
     return null;
   }
 }

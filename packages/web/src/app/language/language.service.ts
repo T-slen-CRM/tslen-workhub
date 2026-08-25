@@ -6,13 +6,13 @@ import localeUk from '@angular/common/locales/uk';
 import localeRu from '@angular/common/locales/ru';
 import localeFr from '@angular/common/locales/fr';
 import localeEs from '@angular/common/locales/es';
-import { Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthenticationService } from '../services/auth.service';
 import { DataService } from '../services/data.service';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
-  public calendarLocale: string = 'en';
+  public calendarLocale = 'en';
   public masLanguage = ['uk', 'en', 'ru', 'fr', 'es']
 
   constructor(

@@ -6,7 +6,7 @@ import {ComponentsModule} from "../../components/components.module";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {CardModule} from "../../theme/shared/components";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {DaysOffFormComponent} from "../../tslen-components/days-off-form/days-off-form.component";
 import {GoogleCalendarComponent} from "../../tslen-components/google-calendar/google-calendar.component";

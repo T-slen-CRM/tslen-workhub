@@ -10,7 +10,7 @@ export class TimerButtonDirective {
 
   constructor(el: ElementRef<HTMLButtonElement>) {
     const totalSeconds = +(el.nativeElement.dataset['seconds'] || '0');
-    this.click$ = fromEvent(el.nativeElement, 'click').pipe(map((prev) => {
+    this.click$ = fromEvent(el.nativeElement, 'click').pipe(map((_prev) => {
       return totalSeconds
     }));
   }

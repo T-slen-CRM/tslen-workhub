@@ -14,7 +14,6 @@ describe('NotificationBellComponent', () => {
   let fixture: ComponentFixture<NotificationBellComponent>;
   let component: NotificationBellComponent;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
-  let notificationService: NotificationService;
   let notificationSubject: Subject<any>;
   let routerSpy: jasmine.SpyObj<Router>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
@@ -46,7 +45,7 @@ describe('NotificationBellComponent', () => {
 
     // Real singleton service (providedIn: 'root') so multi-instance tests exercise the
     // actual BehaviorSubject-backed shared state, not a mock of it.
-    notificationService = TestBed.inject(NotificationService);
+    TestBed.inject(NotificationService);
 
     fixture = TestBed.createComponent(NotificationBellComponent);
     component = fixture.componentInstance;

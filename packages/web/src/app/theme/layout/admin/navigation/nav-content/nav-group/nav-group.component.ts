@@ -8,7 +8,6 @@ import {
 import { NavigationItem } from '../../navigation';
 import { Location } from '@angular/common';
 import { NextConfig } from '../../../../../../app-config';
-import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
   selector: 'app-nav-group',
@@ -19,7 +18,7 @@ import { LanguageService } from 'src/app/language/language.service';
 })
 export class NavGroupComponent implements OnInit {
   @Input() item: NavigationItem;
-  @Input() layout1: boolean = false;
+  @Input() layout1 = false;
   @Input() activeId: any;
   public nextConfig: any;
 

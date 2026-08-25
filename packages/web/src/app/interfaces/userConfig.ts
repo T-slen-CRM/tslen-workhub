@@ -57,9 +57,7 @@ interface IUserChiefRelationsByName {
     chiefName: string;
 }
 
-export interface IUserChiefRelationsObject {
-    [key: string]: IUserChiefRelationsByName[];
-}
+export type IUserChiefRelationsObject = Record<string, IUserChiefRelationsByName[]>;
 export interface IUsersStageType {
     id: number;
     title: string;

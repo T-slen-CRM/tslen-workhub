@@ -6,7 +6,7 @@ import {
   Input,
   Output,
   ViewChild,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnInit,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -24,12 +24,12 @@ import { map, startWith } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class AutocompleteComponent {
+export class AutocompleteComponent implements OnInit {
   public allData = [];
-  @Output() selectedItemsForParent: EventEmitter<{
+  @Output() selectedItemsForParent = new EventEmitter<{
     name: string;
     data: any[];
-  }> = new EventEmitter();
+  }>();
   @Input('allData') set setAllData(value) {
     this.allData = value ? value : [];
     if (!this.selectedData) {
@@ -73,9 +73,9 @@ export class AutocompleteComponent {
     });
     if (this.selectedData.length > 0) {
       for (let i = 0; i < this.selectedData.length; i++) {
-        let selectedEl = this.selectedData[i];
+        const selectedEl = this.selectedData[i];
         for (let j = 0; j < this.renewData.length; j++) {
-          let allDataEl = this.renewData[j];
+          const allDataEl = this.renewData[j];
           if (allDataEl.value === selectedEl.value) {
             this.renewData.splice(j, 1);
           }

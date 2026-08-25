@@ -19,7 +19,7 @@ import { LanguageService } from 'src/app/language/language.service';
   standalone: false,
 })
 export class AuthSignupComponent implements OnInit, OnDestroy {
-  pageTraslate: { [key: string]: string } = {};
+  pageTraslate: Record<string, string> = {};
   lastLang: string;
   companyForm: FormGroup;
   userForm: FormGroup;
@@ -73,7 +73,7 @@ export class AuthSignupComponent implements OnInit, OnDestroy {
         'auth_signup.links.sign',
         'auth_signup.links.support',
       ])
-      .subscribe((transition: { [key: string]: string }) => {
+      .subscribe((transition: Record<string, string>) => {
         this.pageTraslate = transition;
       });
     this.companyForm = this.fb.group({

@@ -27,7 +27,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   HTTP_INTERCEPTORS,
-  HttpClient,
   provideHttpClient,
   withInterceptorsFromDi,
   withXhr,
@@ -44,9 +43,7 @@ import { LoaderInterceptor } from './interceptors/loader.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { TimerComponent } from './feature/timer-pomodoro/timer/timer.component';
 import { LanguageConfigurationModule } from './language/languageConfiguration.module';
-import { CallButtonRendererComponent } from './components/callButton/buttonRender.component';
 import { LanguageService } from './language/language.service';
-import { IncomingCallComponent } from './components/incoming-call/incoming-call.componet';
 import { LiveKitWebSocketService } from './pages/live-kit/live-kitWebSocket.service';
 import { HelpersModule } from './helpers/helpers.module';
 import { CallComponent } from './pages/call/wellcome/call.component';

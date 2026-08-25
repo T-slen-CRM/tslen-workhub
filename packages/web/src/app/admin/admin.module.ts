@@ -9,7 +9,6 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import { ManageUsersComponent } from './manage-users/manage-users.component';
 import {ManageUserUpdateComponent} from "./manage-users/manage-user-update/manage-user-update.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
@@ -28,9 +27,8 @@ import {MatCardModule} from "@angular/material/card";
 import {MatBadgeModule} from "@angular/material/badge";
 
 import {UserOnStageComponent} from "../feature/users/user-on-stage/user-on-stage.component";
-import {
-    PermissionsVisualizationDirective
-} from "../theme/shared/directives/permissions-visualization/permissions-visualization.directive";
+
+
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({

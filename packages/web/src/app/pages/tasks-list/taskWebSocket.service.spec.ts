@@ -47,7 +47,7 @@ describe('TaskWebSocketService', () => {
   it('leaves a second, independent subscription on the same event unaffected when the first unsubscribes', () => {
     const first = service.getMessages('update').subscribe();
     const secondReceived: any[] = [];
-    const second = service.getMessages('update').subscribe((data) => secondReceived.push(data));
+    service.getMessages('update').subscribe((data) => secondReceived.push(data));
 
     first.unsubscribe();
 

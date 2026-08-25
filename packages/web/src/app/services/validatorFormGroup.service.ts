@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
-import {compareAsc, parseISO} from "date-fns";
+import {compareAsc} from "date-fns";
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +87,7 @@ export class ValidatorFormGroupService {
     };
   }
   public checkDuplicateSspName(name: string, allSsp: any){
-    let filter = allSsp.filter(item => item.name === name);
+    const filter = allSsp.filter(item => item.name === name);
     const isDuplicate = filter.length > 0;
     return isDuplicate
   }

@@ -1,10 +1,9 @@
 import {
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnDestroy,
 } from '@angular/core';
 import { NextConfig } from '../../../../app-config';
 import { DataService } from '../../../../services/data.service';
@@ -19,7 +18,7 @@ import { AuthenticationService } from '../../../../services/auth.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class NavBarComponent implements OnInit {
+export class NavBarComponent implements OnInit, OnDestroy {
   public nextConfig: any;
   public menuClass: boolean;
   public collapseStyle: string;

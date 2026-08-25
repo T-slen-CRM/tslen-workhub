@@ -35,12 +35,12 @@ interface DisplayMessage {
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: DisplayMessage[] = [];
-  newMessageContent: string = '';
+  newMessageContent = '';
   chatRoomId = input<string>(''); // Input property for chat room ID
   localUserId = input<number>(null); // Input property for chat room ID
   senderName = input<string>(''); // Display name of the other participant, for notifications
-  isConnected: boolean = false;
-  errorMessage: string = '';
+  isConnected = false;
+  errorMessage = '';
 
   private subscriptions: Subscription = new Subscription();
   private toastr = inject(ToastrService);

@@ -7,7 +7,6 @@ import {
 import {
   MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogRef,
 } from '@angular/material/dialog';
 
 @Component({
@@ -27,7 +26,7 @@ export class NotificationModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let { title, message } = this.data;
+    const { title, message } = this.data;
     this.title = title;
     this.message = message;
   }

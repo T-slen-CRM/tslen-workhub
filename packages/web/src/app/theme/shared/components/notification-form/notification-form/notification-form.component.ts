@@ -2,7 +2,7 @@ import {
   Component,
   Input,
   OnInit,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnDestroy,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../../../../../services/data.service';
@@ -18,7 +18,7 @@ import { Subscription, take } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class NotificationFormComponent implements OnInit {
+export class NotificationFormComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public loading: boolean;
   @Input() usersData: any;

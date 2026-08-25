@@ -1,9 +1,7 @@
 import {
   Component,
   inject,
-  Input,
   input,
-  InputSignal,
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -30,6 +28,6 @@ export class UserCardInfoComponent implements OnInit {
   ngOnInit() {
     this.user$ = this.dataService
       .getObservableData(`/users/${this.id()}`)
-      .pipe(tap((user) => {}));
+      .pipe(tap((_user) => {}));
   }
 }

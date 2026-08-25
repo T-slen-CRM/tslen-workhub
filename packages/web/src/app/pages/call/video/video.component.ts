@@ -96,7 +96,7 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
       // Debug logging
 
       // Ensure video plays
-      videoEl.nativeElement.play().catch((err) => {
+      videoEl.nativeElement.play().catch((_err) => {
         // console.warn('Video play failed:', err);
       });
     }

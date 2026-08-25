@@ -1,19 +1,4 @@
 {
-  "src/animations/animations.ts": {
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 4
-    }
-  },
-  "src/app/admin/admin-routing.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/admin/admin.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    }
-  },
   "src/app/admin/audit-log/audit-log.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
@@ -25,12 +10,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/admin/inventory/interfaces/inventory.ts": {
@@ -52,12 +31,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/admin/inventory/inventory.component.ts": {
@@ -73,9 +46,6 @@
       "count": 1
     },
     "@angular-eslint/prefer-standalone": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -93,9 +63,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 10
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/admin/pending/pending.component.ts": {
@@ -126,9 +93,6 @@
   "src/app/app.module.ts": {
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
     }
   },
   "src/app/components/ag-grid-table/ag-grid-table.component.ts": {
@@ -152,17 +116,11 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/consistent-generic-constructors": {
-      "count": 1
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 8
     },
     "@typescript-eslint/prefer-for-of": {
       "count": 1
-    },
-    "prefer-const": {
-      "count": 2
     }
   },
   "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.html": {
@@ -171,17 +129,11 @@
     }
   },
   "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.ts": {
-    "@typescript-eslint/consistent-type-assertions": {
-      "count": 3
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
     },
     "@typescript-eslint/no-unsafe-function-type": {
       "count": 4
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/components/autocomplete/multiselect-autocomplete-example.component.html": {
@@ -202,9 +154,6 @@
     "@angular-eslint/prefer-inject": {
       "count": 4
     },
-    "@typescript-eslint/consistent-generic-constructors": {
-      "count": 1
-    },
     "@typescript-eslint/no-empty-function": {
       "count": 2
     },
@@ -213,17 +162,11 @@
     },
     "@typescript-eslint/no-unsafe-function-type": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 6
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/autocomplete/single-autocomplete/single-autocomplete.component.ts": {
     "@angular-eslint/no-input-rename": {
-      "count": 3
+      "count": 1
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
@@ -231,17 +174,11 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/consistent-generic-constructors": {
-      "count": 1
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
     },
     "@typescript-eslint/prefer-for-of": {
       "count": 1
-    },
-    "prefer-const": {
-      "count": 2
     }
   },
   "src/app/components/callButton/buttonRender.component.spec.ts": {
@@ -294,12 +231,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/audience-list-actions-renderer.component.ts": {
@@ -308,12 +239,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/audience-slide-toggle-renderer.component.ts": {
@@ -325,12 +250,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/autorules-list-actions-renderer.component.ts": {
@@ -339,12 +258,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 2
     }
   },
   "src/app/components/data-grid/autorules-slide-toggle-renderer.component.ts": {
@@ -356,12 +269,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/campaign-actions-renderer.component.ts": {
@@ -373,15 +280,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 5
     }
   },
   "src/app/components/data-grid/campaign-filter-lists-renderer.component.ts": {
@@ -391,8 +289,8 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 2
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
+    "unused-imports/no-unused-vars": {
+      "count": 1
     }
   },
   "src/app/components/data-grid/campaign-render.component.ts": {
@@ -406,12 +304,6 @@
   "src/app/components/data-grid/campaign-slide-toogle-renderer.component.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/campaign-supply-renderer.component.ts": {
@@ -421,10 +313,10 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 2
     },
-    "@typescript-eslint/no-unused-vars": {
+    "no-empty": {
       "count": 1
     },
-    "no-empty": {
+    "unused-imports/no-unused-vars": {
       "count": 1
     }
   },
@@ -437,12 +329,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/creative-actions-renderer.component.ts": {
@@ -454,12 +340,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 5
     }
   },
   "src/app/components/data-grid/creative-render.component.ts": {
@@ -479,12 +359,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/filter-list-actions-renderer.component.ts": {
@@ -493,12 +367,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/header-timetargeting-cell-renderer.ts": {
@@ -513,9 +381,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/manage-ssp-actions-renderer.component.ts": {
@@ -523,9 +388,6 @@
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    },
-    "prefer-const": {
       "count": 3
     }
   },
@@ -537,12 +399,6 @@
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
-    "prefer-const": {
       "count": 3
     }
   },
@@ -558,12 +414,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/multi-value-renderer.component.ts": {
@@ -589,9 +439,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     },
     "no-empty": {
       "count": 1
@@ -628,9 +475,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/ssp-slide-toggle-renderer.component.ts": {
@@ -639,20 +483,11 @@
     },
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/components/data-grid/time-targeting-checked-renderer.component.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
     }
   },
   "src/app/components/delete-confirm-modal/delete-confirm-modal.component.ts": {
@@ -660,9 +495,6 @@
       "count": 2
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -689,9 +521,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/components/modal-dialog-header/modal-dialog-header.component.ts": {
@@ -728,9 +557,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/components/preview-modal/preview-modal.component.ts": {
@@ -758,9 +584,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 8
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/components/upload-creative-modal/upload-creative-modal.component.ts": {
@@ -789,14 +612,8 @@
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
     },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 2
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/feature/date-time-input/date-time-input.component.ts": {
@@ -808,16 +625,10 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/feature/timer-pomodoro/directive/timer-button.directive.ts": {
     "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -850,17 +661,11 @@
   "src/app/guards/auth.guard.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/guards/role.guard.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/helpers/loading-logo/loading-logo.component.ts": {
@@ -887,15 +692,9 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/interfaces/metrics.ts": {
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 1
-    },
     "@typescript-eslint/no-empty-object-type": {
       "count": 1
     },
@@ -919,18 +718,7 @@
     }
   },
   "src/app/interfaces/upload.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
     "no-empty": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 2
-    }
-  },
-  "src/app/interfaces/userConfig.ts": {
-    "@typescript-eslint/consistent-indexed-object-style": {
       "count": 1
     }
   },
@@ -942,12 +730,6 @@
   "src/app/language/language.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 3
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/authentication/auth-change-password/auth-change-password.component.ts": {
@@ -967,9 +749,6 @@
   "src/app/pages/authentication/auth-header/auth-header.component.ts": {
     "@angular-eslint/no-empty-lifecycle-method": {
       "count": 1
-    },
-    "@angular-eslint/no-input-rename": {
-      "count": 2
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
@@ -1000,11 +779,6 @@
       "count": 1
     }
   },
-  "src/app/pages/authentication/auth-reset-password/auth-reset-password.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/app/pages/authentication/auth-signin/auth-signin.component.html": {
     "@angular-eslint/template/elements-content": {
       "count": 1
@@ -1020,22 +794,8 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 2
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/pages/authentication/auth-signin/auth-signin.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/authentication/auth-signup/auth-signup.component.html": {
@@ -1053,19 +813,11 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 2
-    },
     "@typescript-eslint/no-empty-function": {
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    }
-  },
-  "src/app/pages/authentication/authentication-routing.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/authentication/registration-confirm/registration-confirm.component.ts": {
@@ -1109,9 +861,6 @@
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/call/wellcome/call.component.spec.ts": {
@@ -1126,19 +875,13 @@
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
     },
-    "@typescript-eslint/consistent-type-definitions": {
-      "count": 1
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
     },
-    "@typescript-eslint/no-inferrable-types": {
+    "no-empty": {
       "count": 1
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
-    "no-empty": {
+    "unused-imports/no-unused-vars": {
       "count": 1
     }
   },
@@ -1152,18 +895,12 @@
     "@typescript-eslint/no-empty-function": {
       "count": 1
     },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 3
-    },
     "no-empty": {
       "count": 1
     }
   },
   "src/app/pages/chat/chat.service.ts": {
     "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -1185,41 +922,21 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/ban-tslint-comment": {
-      "count": 1
-    },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 1
-    },
     "@typescript-eslint/no-empty-function": {
       "count": 2
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 9
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/pages/live-kit/live-kit.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 11
-    }
-  },
-  "src/app/pages/live-kit/live-kitWebSocket.service.spec.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/pages/live-kit/live-kitWebSocket.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 4
-    },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 2
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 6
@@ -1250,12 +967,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/meet/meet.component.ts": {
@@ -1263,14 +974,6 @@
       "count": 3
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    }
-  },
-  "src/app/pages/pages.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -1318,9 +1021,6 @@
   "src/app/pages/tasks-list/taskWebSocket.service.spec.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/tasks-list/taskWebSocket.service.ts": {
@@ -1340,15 +1040,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 10
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/pages/tasks-manager/tasks-manager.component.html": {
@@ -1368,9 +1059,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/pages/users/user-card-info/user-card-info.component.ts": {
@@ -1379,9 +1067,6 @@
     },
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
     }
   },
   "src/app/pages/users/user-group/user-group.component.ts": {
@@ -1410,12 +1095,6 @@
     },
     "@typescript-eslint/no-unused-expressions": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "@typescript-eslint/no-wrapper-object-types": {
-      "count": 1
     }
   },
   "src/app/pages/users/user-profile/user-profile.component.ts": {
@@ -1430,21 +1109,10 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 8
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 5
-    }
-  },
-  "src/app/pages/users/users.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/services/ConfigurationService.ts": {
     "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -1467,9 +1135,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/services/http-request.interceptor.ts": {
@@ -1483,9 +1148,6 @@
   "src/app/services/image.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/services/libs.service.ts": {
@@ -1496,16 +1158,8 @@
       "count": 1
     }
   },
-  "src/app/services/matTableService.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/app/services/notification.service.spec.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -1515,9 +1169,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/services/pending.service.ts": {
@@ -1526,12 +1177,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
-    "prefer-const": {
-      "count": 1
     }
   },
   "src/app/services/theme.service.ts": {
@@ -1540,9 +1185,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/services/upload.service.ts": {
@@ -1585,9 +1227,6 @@
   "src/app/services/user.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/services/validatorFormGroup.service.ts": {
@@ -1597,16 +1236,10 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 1
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
     "@typescript-eslint/prefer-for-of": {
       "count": 1
     },
     "no-useless-escape": {
-      "count": 1
-    },
-    "prefer-const": {
       "count": 1
     }
   },
@@ -1622,9 +1255,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
     }
   },
   "src/app/theme/layout/admin/configuration/configuration.component.ts": {
@@ -1661,9 +1291,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/theme/layout/admin/nav-bar/nav-left/nav-left.component.ts": {
@@ -1703,9 +1330,6 @@
     }
   },
   "src/app/theme/layout/admin/nav-bar/nav-right/nav-right.component.ts": {
-    "@angular-eslint/no-input-rename": {
-      "count": 4
-    },
     "@angular-eslint/prefer-inject": {
       "count": 5
     },
@@ -1713,9 +1337,6 @@
       "count": 1
     },
     "@angular-eslint/prefer-standalone": {
-      "count": 1
-    },
-    "@typescript-eslint/no-inferrable-types": {
       "count": 1
     }
   },
@@ -1792,12 +1413,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/theme/layout/admin/navigation/nav-content/nav-item/nav-item.component.html": {
@@ -1888,14 +1503,8 @@
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
-    "@typescript-eslint/array-type": {
-      "count": 2
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 3
     }
   },
   "src/app/theme/shared/components/card/card.component.html": {
@@ -1932,9 +1541,6 @@
     },
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/theme/shared/components/data-table/data-filter.pipe.ts": {
@@ -1962,11 +1568,6 @@
     },
     "no-self-assign": {
       "count": 2
-    }
-  },
-  "src/app/theme/shared/components/date-picker/date-picker.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/theme/shared/components/modal/animation-modal/animation-modal.component.html": {
@@ -2037,12 +1638,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 2
     }
   },
   "src/app/theme/shared/components/spinner/spinner.component.ts": {
@@ -2060,23 +1655,11 @@
     "@angular-eslint/prefer-inject": {
       "count": 2
     },
-    "@typescript-eslint/ban-tslint-comment": {
-      "count": 3
-    },
-    "@typescript-eslint/consistent-indexed-object-style": {
-      "count": 1
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
     },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
     "prefer-const": {
-      "count": 4
+      "count": 3
     }
   },
   "src/app/theme/shared/directives/creative-preview-style/creativePreviewStyle.directive.ts": {
@@ -2084,7 +1667,7 @@
       "count": 1
     },
     "@angular-eslint/no-input-rename": {
-      "count": 3
+      "count": 2
     },
     "@angular-eslint/prefer-inject": {
       "count": 1
@@ -2104,25 +1687,10 @@
   "src/app/theme/shared/directives/google-btn.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
-    "no-var": {
-      "count": 1
     }
   },
   "src/app/theme/shared/directives/invited-link.directive.ts": {
-    "@angular-eslint/no-input-rename": {
-      "count": 1
-    },
-    "@angular-eslint/no-output-rename": {
-      "count": 1
-    },
     "@angular-eslint/prefer-inject": {
-      "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 2
     }
   },
@@ -2192,9 +1760,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/tslen-components/ag-grid/inventory-render/inventory-render.component.ts": {
@@ -2220,9 +1785,6 @@
     },
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/tslen-components/birthday-list/birthday-list.component.ts": {
@@ -2248,9 +1810,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/tslen-components/create-one-event-dialog/create-one-event-dialog.component.ts": {
@@ -2266,12 +1825,6 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 9
     },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
     "@typescript-eslint/prefer-for-of": {
       "count": 1
     }
@@ -2281,9 +1834,6 @@
       "count": 1
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -2299,9 +1849,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/tslen-components/directives/copy-text.directive.ts": {
@@ -2311,9 +1858,6 @@
   },
   "src/app/tslen-components/google-calendar/google-calendar.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -2337,9 +1881,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 5
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 5
     }
   },
   "src/app/tslen-components/info-alert-message/info-alert-message.component.ts": {
@@ -2350,14 +1891,6 @@
   "src/app/tslen-components/live-chat/component/live-chat.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/tslen-components/live-chat/live-chat.service.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/tslen-components/main-calendar/main-calendar-component/main-calendar.component.html": {
@@ -2381,18 +1914,7 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 11
     },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    },
     "no-useless-assignment": {
-      "count": 1
-    }
-  },
-  "src/app/tslen-components/main-calendar/main-calendar.module.ts": {
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -2401,9 +1923,6 @@
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    },
-    "@typescript-eslint/no-inferrable-types": {
       "count": 1
     }
   },
@@ -2418,9 +1937,6 @@
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
     }
   },
   "src/app/tslen-components/mat-table-dynamic/data-grid/status-ask-server/status-ask-server.component.ts": {
@@ -2445,9 +1961,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 7
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/tslen-components/mat-table/mat-table.component.html": {
@@ -2473,9 +1986,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 4
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/tslen-components/mat-tabs-dynamic/mat-tabs-dynamic.component.ts": {
@@ -2502,9 +2012,6 @@
   "src/app/tslen-components/notification-bell/notification-bell.component.spec.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/tslen-components/notification-bell/notification-bell.component.ts": {
@@ -2529,9 +2036,6 @@
     },
     "@typescript-eslint/no-empty-function": {
       "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/tslen-components/progressbar-bootstrap/progressbar-bootstrap.component.ts": {
@@ -2575,9 +2079,6 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 5
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
     "no-empty": {
       "count": 1
     },
@@ -2608,9 +2109,6 @@
     }
   },
   "src/app/tslen-components/text-editor/text-editor.component.ts": {
-    "@angular-eslint/no-input-rename": {
-      "count": 1
-    },
     "@angular-eslint/prefer-inject": {
       "count": 2
     },
@@ -2622,12 +2120,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    },
-    "@typescript-eslint/no-inferrable-types": {
-      "count": 1
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "src/app/tslen-components/upload-files/upload-files.component.ts": {
@@ -2643,9 +2135,6 @@
     "@typescript-eslint/no-explicit-any": {
       "count": 7
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    },
     "@typescript-eslint/prefer-for-of": {
       "count": 2
     }
@@ -2659,9 +2148,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 3
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     },
     "@typescript-eslint/prefer-for-of": {
       "count": 1

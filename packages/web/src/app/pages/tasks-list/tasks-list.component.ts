@@ -79,7 +79,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   public tasksList: ITask[] = [];
   public taskProject: ITaskProject;
   public projectPermissions: IProjectPermission[];
-  private view: boolean = false;
+  private view = false;
   public globalTask = null;
   private readonly subscriptions$: Subscription;
   private authData: AuthData;
@@ -236,7 +236,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           // return this.concatTaskPhase(this.phases, this.tasksList);
         }),
       )
-      .subscribe((result: ITaskList[]) => {
+      .subscribe((_result: ITaskList[]) => {
         this.addTooltipToTask(this.phases);
         if (this.view) {
           const task = this.tasksList.find(
@@ -319,7 +319,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
       if (res) {
         this.dataService
           .deleteData('/task-phase/', id)
-          .subscribe((result: any) => {
+          .subscribe((_result: any) => {
             this.phases = this.phases.filter((item) => item.id !== id);
             this.projectPhasesRelations = this.projectPhasesRelations.filter(
               (item) => item.phase.id !== id,
@@ -537,7 +537,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     const date = new Date(lastSendReportDate);
     // date must be 2024-10-10 format
     const year = date.getFullYear();
-    let month = date.getMonth() + 1;
+    const month = date.getMonth() + 1;
     const monthToString = month < 10 ? '0' + month : month;
     const day = date.getDate();
     const splitDate = `${year}-${monthToString}-${day}`;

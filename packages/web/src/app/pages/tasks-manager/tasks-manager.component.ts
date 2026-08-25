@@ -218,7 +218,7 @@ export class TasksManagerComponent implements OnInit, OnDestroy {
       this.taskProjects$ = this.dataService
         .deleteData('/task-project/', +project.id)
         .pipe(
-          map((r) => {
+          map((_r) => {
             this.taskProjectDump = this.taskProjectDump.filter(
               (proj: ITaskProject) => proj.id !== project.id,
             );

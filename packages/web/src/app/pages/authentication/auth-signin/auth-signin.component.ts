@@ -19,7 +19,7 @@ export class AuthSigninComponent
   extends UnsubscribeOnDestroyAdapter
   implements OnInit
 {
-  pageTraslate: { [key: string]: string } = {};
+  pageTraslate: Record<string, string> = {};
   hide = true;
   loginForm: FormGroup;
   loading: boolean;
@@ -61,7 +61,7 @@ export class AuthSigninComponent
         'auth_signin.sign_button',
         'auth_signin.create_button',
       ])
-      .subscribe((transition: { [key: string]: string }) => {
+      .subscribe((transition: Record<string, string>) => {
         this.pageTraslate = transition;
       });
     // if route has query params token
@@ -124,7 +124,7 @@ export class AuthSigninComponent
     window.location.href = apiHost + '/auth/google-auth';
   }
 
-  async login(isGoogle: boolean = false, isFacebook: boolean = false) {
+  async login(isGoogle = false, isFacebook = false) {
     if (!isGoogle && !isFacebook && this.loginForm.invalid) {
       return;
     } else {
@@ -139,7 +139,7 @@ export class AuthSigninComponent
               this.router.navigate(['/pages/main-wall']);
             }
           },
-          error: (err) => {
+          error: (_err) => {
             this.loading = false;
             this.message = 'Please check your username and password';
           },

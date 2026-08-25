@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { PendingService } from '../../services/pending.service';
-import { Subscription, take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { DeleteConfirmModalComponent } from '../delete-confirm-modal/delete-confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -140,7 +140,7 @@ export class PendingActionsRendererComponent implements OnDestroy {
         approved: status,
         userId: this.userId,
       })
-      .subscribe((res) => {
+      .subscribe((_res) => {
         this.removeAgGridRow(status);
         this.pendingService.setCreativePendingCount(-1);
         // this.createNotification(status);

@@ -2,7 +2,6 @@ import {
   Component,
   inject,
   OnInit,
-  Signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { DataService } from '../../services/data.service';

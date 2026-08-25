@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import {RouterModule} from "@angular/router";
 
-import {PagesRoutingModule, routes} from './pages-routing.module'
+import {PagesRoutingModule} from './pages-routing.module'
 
 import {DatePickerModule} from "../theme/shared/components/date-picker/date-picker.module";
 import {CommonScheduleModule} from "./common-schedule/common-schedule.module";

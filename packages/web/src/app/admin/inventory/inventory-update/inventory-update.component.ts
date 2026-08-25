@@ -53,7 +53,7 @@ export class InventoryUpdateComponent
   private router = inject(Router);
   private id: number;
   public usersList: IUsers[] = [];
-  public showHistory: boolean = false;
+  public showHistory = false;
   public historyData: IInventoryHistory[] = [];
   private previousUserId: number | null = null;
 
@@ -82,11 +82,11 @@ export class InventoryUpdateComponent
         this.previousUserId,
       )
       .subscribe(
-        (response: any) => {
+        (_response: any) => {
           this.toastr.success('Inventory updated successfully');
           this.router.navigate(['/admin/inventory']);
         },
-        (error) => {
+        (_error) => {
           this.toastr.error('Error updating inventory');
         },
       );

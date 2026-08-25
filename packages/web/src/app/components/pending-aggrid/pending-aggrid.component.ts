@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { PendingActionsRendererComponent } from '../data-grid/pending-actions-renderer.component';
 import { PendingDateRendererComponent } from '../data-grid/pending-date-renderer.component';
-import { tap } from 'rxjs';
 import { LanguageService } from '../../language/language.service';
 
 @Component({

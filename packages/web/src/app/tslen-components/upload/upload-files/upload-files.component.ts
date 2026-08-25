@@ -121,7 +121,7 @@ export class UploadFilesComponent {
               }
             }
           },
-          error: (err: any) => {
+          error: (_err: any) => {
             this.progressInfos[idx].value = 0;
             const msg = 'Could not upload the file: ' + file.name;
             this.message.push(msg);

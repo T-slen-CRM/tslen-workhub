@@ -11,13 +11,13 @@ import {
   getDaysArray,
 } from '../../../helpers/utils';
 import { DaysHeaderComponent } from '../../../tslen-components/ag-grid/days-header/days-header.component';
-import { map, Observable, Subject, tap } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import {
   AuthData,
   AuthenticationService,
 } from '../../../services/auth.service';
-import { endOfDay, endOfMonth, format } from 'date-fns';
+import { endOfDay, endOfMonth } from 'date-fns';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { DaysOffCellRendererComponent } from '../../../tslen-components/ag-grid/days-off-cell-renderer/days-off-cell-renderer.component';
 import { NameAvatarCellRendererComponent } from '../../../tslen-components/ag-grid/name-avatar-cell-renderer/name-avatar-cell-renderer.component';
@@ -48,7 +48,7 @@ export class CommonScheduleComponent implements OnInit {
   public viewDate: Date;
   public events: CalendarEvent[] = [];
   public events$: Observable<CalendarEvent[]>;
-  public eventsByDay: { [key: string]: CalendarEvent[] } = {};
+  public eventsByDay: Record<string, CalendarEvent[]> = {};
   public clickedDate: Date;
 
   activeDayIsOpen = false;
@@ -128,8 +128,7 @@ export class CommonScheduleComponent implements OnInit {
             cellClassRules: {
               // apply green to 2008
               'weekends-columns': (params) => {
-                // tslint:disable-next-line:no-shadowed-variable
-                const weekDay = params.colDef.headerName.split('|')[1];
+                               const weekDay = params.colDef.headerName.split('|')[1];
                 return weekDay === '6' || weekDay === '0';
               },
             },
@@ -278,7 +277,7 @@ export class CommonScheduleComponent implements OnInit {
     this.clickedDate = date;
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {}
+  handleEvent(_action: string, _event: CalendarEvent): void {}
 
   eventTimesChanged(): void {}
 

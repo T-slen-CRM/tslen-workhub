@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ManageUsersComponent} from "./manage-users/manage-users.component";
 import {ManageUserUpdateComponent} from "./manage-users/manage-user-update/manage-user-update.component";
 import {PendingComponent} from "./pending/pending.component";
 import {InventoryComponent} from './inventory/inventory.component';

@@ -17,7 +17,7 @@ export class LoaderInterceptor implements HttpInterceptor {
                     if (event instanceof HttpResponse) {
                         this.loaderService.reqCountDec();
                     }
-                }, (error) => {
+                }, (_error) => {
                     this.loaderService.reqCountDec();
                 })
             );

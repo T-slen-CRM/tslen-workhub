@@ -1,8 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AsyncPipe, NgClass } from '@angular/common';
 import { DataService } from '../../services/data.service';
-import { UnsubscribeOnDestroyAdapter } from '../../helpers/UnsubscribeOnDestroyAdapter';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
 import { CopyTextDirective } from '../../tslen-components/directives/copy-text.directive';

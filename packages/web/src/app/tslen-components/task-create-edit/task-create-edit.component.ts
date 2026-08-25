@@ -305,7 +305,7 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       if (res) {
         this.dataService
           .deleteData(`/tasks/delete-attachment/`, event)
-          .subscribe((response) => {
+          .subscribe((_response) => {
             this.toastr.success('Attachment has been deleted', 'Success');
             this.attachments = this.attachments.filter(
               (item) => item.id !== event,

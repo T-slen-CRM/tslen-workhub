@@ -77,7 +77,7 @@ export class CompanyRulesComponent
     const data: IDaysOffValue = this.defaultDaysOff$.getValue();
     const companyDaysOffRules = data;
 
-    let company: any = this.companyRulesData.company;
+    const company: any = this.companyRulesData.company;
     companyDaysOffRules.useScheduler = this.form.value.useScheduler;
     companyDaysOffRules.resetYearly = this.form.value.resetYearly;
     company.companyDaysOffRules = [companyDaysOffRules];
@@ -86,7 +86,7 @@ export class CompanyRulesComponent
     );
     const saved: Subscription = this.dataService
       .updateData('/company/', company.id, company)
-      .subscribe((r) => {
+      .subscribe((_r) => {
         this.toastService.success('Saved', 'Success');
       });
     this.subscription.add(saved);

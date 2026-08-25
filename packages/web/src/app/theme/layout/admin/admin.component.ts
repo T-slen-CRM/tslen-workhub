@@ -1,7 +1,6 @@
 import {
   Component,
   inject,
-  NgZone,
   OnInit,
   Signal,
   ChangeDetectionStrategy,
@@ -16,7 +15,6 @@ import {
   style,
   transition,
   trigger,
-  useAnimation,
 } from '@angular/animations';
 import { ChildrenOutletContexts, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -141,7 +139,7 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  getState(outlet) {
+  getState(_outlet) {
     return this.contexts.getContext('primary')?.route?.snapshot?.data?.[
       'animation'
     ];

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import {environment} from "../../environments/environment";
-import {BehaviorSubject, Observable, tap} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {ConfigurationService} from "./ConfigurationService";
 
 @Injectable({
@@ -21,7 +20,7 @@ export class PendingService {
         if (firstCreated){
             this.pendingCount.next(count);
         } else {
-            let newValue = this.pendingCount.value + count;
+            const newValue = this.pendingCount.value + count;
             this.pendingCount.next(newValue);
         }
 

@@ -1,9 +1,7 @@
 import {
   Component,
   EventEmitter,
-  inject,
   Input,
-  OnInit,
   Output,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -15,9 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ModalDialogHeaderComponent } from '../../components/modal-dialog-header/modal-dialog-header.component';
 import {
-  IDaysOffStaticList,
   IFullEventList,
-  LibsService,
 } from '../../services/libs.service';
 import { CalendarEvent } from 'angular-calendar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -44,10 +40,10 @@ export class CalendarDayoffWindowComponent {
   );
   @Input() public clickedDate: Date;
   public eventsCategories: any[] = [];
-  public events: { [key: string]: CalendarEvent[] } = {};
+  public events: Record<string, CalendarEvent[]> = {};
 
   @Input()
-  public set setEvents(events: { [key: string]: CalendarEvent[] }) {
+  public set setEvents(events: Record<string, CalendarEvent[]>) {
     this.events = events;
     this.eventsCategories = Object.keys(events);
   }

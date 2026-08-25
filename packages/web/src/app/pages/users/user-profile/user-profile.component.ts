@@ -31,9 +31,6 @@ import { IUploadService } from '../../../services/upload/upload';
 import { UserPhotoSingleUploadService } from '../../../services/upload/user-photo-single-upload.service';
 import { IJobPosition } from '../user-job-position/job-positionin-interface';
 import { IEvent } from '../../../interfaces/events';
-import { ImageService } from '../../../services/image.service';
-import { ConfigurationService } from '../../../services/ConfigurationService';
-import { viewport } from '@popperjs/core';
 import { LanguageService } from 'src/app/language/language.service';
 import { IUserGooglePermissions } from 'src/app/services/auth.service';
 
@@ -331,7 +328,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.setChiefId();
     const save: Subscription = this.dataService
       .postData('/users', { ...this.form.value })
-      .subscribe((response) => {
+      .subscribe((_response) => {
         this.loading = false;
         this.userChanges.emit(true);
         this.toastr.success('User`s settings has been saved', 'Saved');
@@ -345,7 +342,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.setDaysOff();
     const update: Subscription = this.dataService
       .updateData('/users/', this.routerId, { ...this.form.value })
-      .subscribe((response) => {
+      .subscribe((_response) => {
         this.loading = false;
         this.userChanges.emit(true);
         this.toastr.success('User`s settings has been saved', 'Saved');

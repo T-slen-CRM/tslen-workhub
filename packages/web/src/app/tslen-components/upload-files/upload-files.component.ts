@@ -1,9 +1,7 @@
 import {
   Component,
-  EventEmitter,
   forwardRef,
   Input,
-  Output,
   ChangeDetectionStrategy,
 } from '@angular/core';
 

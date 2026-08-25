@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { LiveChatService } from '../../tslen-components/live-chat/live-chat.service';
 import { LiveKitEvents } from './enum/live-kit.enum';
-import { of, Subject } from 'rxjs';
 
 describe('LiveKitWebSocketService', () => {
   let service: LiveKitWebSocketService;

@@ -15,7 +15,7 @@ import {LiveChatService} from "../../tslen-components/live-chat/live-chat.servic
 export class LiveKitWebSocketService {
   private socket: Socket;
 
-  private onlineStatusSignalInternal: WritableSignal<{ [userId: string]: boolean }> = signal({});
+  private onlineStatusSignalInternal: WritableSignal<Record<string, boolean>> = signal({});
   public readonly onlineStatusSignal = this.onlineStatusSignalInternal;
   public readonly onlineStatus$ = toObservable(this.onlineStatusSignalInternal);
 
@@ -79,7 +79,7 @@ export class LiveKitWebSocketService {
         return;
       }
 
-      const statusMap: { [userId: string]: boolean } = {};
+      const statusMap: Record<string, boolean> = {};
       for (const id of online.users) {
         statusMap[id] = true;
       }

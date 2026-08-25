@@ -47,9 +47,9 @@ export class ManageUsersActionsRendererComponent {
     this.gridApi = params.api;
   }
   onDelete(id) {
-    let check = confirm('Do you want to delete selected filter list ?');
+    const check = confirm('Do you want to delete selected filter list ?');
     if (check) {
-      this.dataService.deleteAudience(id).subscribe((res) => {
+      this.dataService.deleteAudience(id).subscribe((_res) => {
         window.location.reload();
       });
     }

@@ -33,7 +33,7 @@ import { LanguageService } from 'src/app/language/language.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./days-off-form.component.scss'],
 })
-export class DaysOffFormComponent extends UnsubscribeOnDestroyAdapter {
+export class DaysOffFormComponent extends UnsubscribeOnDestroyAdapter implements OnInit {
   public form: FormGroup;
   private data: IDaysOffValue;
   public rulesTypes: IDaysOffSettings[] = inject(LibsService).requestTypeList;

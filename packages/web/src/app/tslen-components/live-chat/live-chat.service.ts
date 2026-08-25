@@ -1,5 +1,5 @@
-import {Injectable, input, signal} from '@angular/core';
-import {UserConfig, UserGeneralData} from "../../interfaces/userConfig";
+import {Injectable, signal} from '@angular/core';
+import { UserGeneralData} from "../../interfaces/userConfig";
 
 @Injectable({
   providedIn: 'root'

@@ -71,7 +71,7 @@ export class GoogleCalendarComponent
     const calendarData = this.googleCalendarData$.getValue();
     const postData: Subscription = this.dataService
       .deleteData('/google-calendar/', calendarData.id)
-      .subscribe((deletedCalendarData: IGoogleCalendarData) => {
+      .subscribe((_deletedCalendarData: IGoogleCalendarData) => {
         this.googleCalendarData$.next({} as IGoogleCalendarData);
       });
     this.subscription.add(postData);

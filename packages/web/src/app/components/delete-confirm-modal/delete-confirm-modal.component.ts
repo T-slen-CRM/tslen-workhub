@@ -1,7 +1,6 @@
 import {
   Component,
   Inject,
-  Input,
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';

@@ -23,7 +23,7 @@ export class DateTimeInputComponent implements ControlValueAccessor {
   public disabled = false;
   public currentValue: any;
 
-  onChange = (currentValue) => {};
+  onChange = (_currentValue) => {};
   registerOnChange(onChange: any): void {
     this.onChange = onChange;
   }

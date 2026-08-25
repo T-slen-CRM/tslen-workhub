@@ -12,7 +12,6 @@ import {
 import {
   AngularEditorConfig,
   AngularEditorModule,
-  UploadResponse,
 } from '@kolkov/angular-editor';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -55,11 +54,9 @@ export class TextEditorComponent implements OnInit {
   public userAvatar: string;
   public companyId: number;
   public uploadedImageUrl: string | null = null;
-  customEditorConfig = input<ITextEditor>(undefined, {
-    alias: 'customEditorConfig',
-  });
-  public value: string = '';
-  private onChange = (item: string) => {};
+  customEditorConfig = input<ITextEditor>(undefined);
+  public value = '';
+  private onChange = (_item: string) => {};
   private onTouched = () => {};
 
   editorConfig: AngularEditorConfig = {

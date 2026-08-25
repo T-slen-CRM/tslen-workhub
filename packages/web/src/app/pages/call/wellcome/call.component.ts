@@ -27,7 +27,6 @@ import {
   VideoTrack,
 } from 'livekit-client';
 
-import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { VideoComponent } from '../video/video.component';
 import { AudioComponent } from '../audio/audio.component';
@@ -44,10 +43,10 @@ import {
   PictureInPictureHandles,
 } from '../../live-kit/picture-in-picture.service';
 
-type TrackInfo = {
+interface TrackInfo {
   trackPublication: RemoteTrackPublication;
   participantIdentity: string;
-};
+}
 
 // When running OpenVidu locally, leave these variables empty
 // For other deployment type, configure them with correct URLs depending on your deployment
@@ -317,7 +316,7 @@ export class CallComponent implements OnDestroy, OnInit {
         this.localCameraTrack.set(cameraTrack);
         this.localTrack.set(cameraTrack);
       }
-    } catch (error: any) {
+    } catch (_error: any) {
       await this.leaveRoom();
     }
   }
@@ -422,7 +421,7 @@ export class CallComponent implements OnDestroy, OnInit {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  async ngOnDestroy(event?: Event) {
+  async ngOnDestroy(_event?: Event) {
     this.destroyed = true;
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     this.pip.close();
@@ -517,7 +516,7 @@ export class CallComponent implements OnDestroy, OnInit {
   setMainVideo(
     track: VideoTrack,
     participantIdentity: string,
-    isLocal: boolean = false,
+    isLocal = false,
   ) {
     this.mainVideoTrack.set(track);
     this.mainVideoParticipant.set(participantIdentity);

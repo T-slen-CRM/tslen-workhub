@@ -21,11 +21,11 @@ import { LanguageService } from 'src/app/language/language.service';
 export class NavRightComponent implements OnInit {
   userName: string;
   isLoggedIn: boolean;
-  @Input('userId') userId: number;
-  @Input('userAvatar') userAvatar: string;
-  @Input('firstName') firstName: string;
-  @Input('lastName') lastName: string;
-  public selectedLanguage: string = 'en';
+  @Input() userId: number;
+  @Input() userAvatar: string;
+  @Input() firstName: string;
+  @Input() lastName: string;
+  public selectedLanguage = 'en';
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,

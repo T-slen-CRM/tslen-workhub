@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AgRendererComponent } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 
@@ -22,7 +22,7 @@ export class NameAvatarCellRendererComponent implements AgRendererComponent {
     this.name = valueArr.length > 0 ? valueArr[1] : '';
   }
 
-  refresh(params: ICellRendererParams): boolean {
+  refresh(_params: ICellRendererParams): boolean {
     return false;
   }
 

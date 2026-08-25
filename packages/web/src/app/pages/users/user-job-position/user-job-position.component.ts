@@ -3,7 +3,7 @@ import {
   EventEmitter,
   inject,
   Output,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, OnInit,
 } from '@angular/core';
 import { ComponentsModule } from '../../../components/components.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ColDef } from 'ag-grid-community';
 import { IJobPosition } from './job-positionin-interface';
 import { DataService } from '../../../services/data.service';
-import { Observable, of, Subject, Subscription, takeUntil, tap } from 'rxjs';
+import { Observable, of, Subject, Subscription, tap } from 'rxjs';
 import { UnsubscribeOnDestroyAdapter } from '../../../helpers/UnsubscribeOnDestroyAdapter';
 import { HttpResponse } from '@angular/common/http';
 import { LanguageService } from 'src/app/language/language.service';
@@ -35,7 +35,7 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-job-position.component.scss',
 })
-export class UserJobPositionComponent extends UnsubscribeOnDestroyAdapter {
+export class UserJobPositionComponent extends UnsubscribeOnDestroyAdapter implements OnInit {
   constructor(public translateService: LanguageService) {
     super();
   }
@@ -56,7 +56,7 @@ export class UserJobPositionComponent extends UnsubscribeOnDestroyAdapter {
   onSubmit() {
     const save: Subscription = this.dataService
       .postData('/job-position', { title: this.titleControl.value })
-      .subscribe((r: HttpResponse<Object>) => {
+      .subscribe((r: HttpResponse<object>) => {
         const body = r.body as IJobPosition;
         this.rowData$ = of([...this.currentRows, body]);
         this.addedJobPosition.emit(body);

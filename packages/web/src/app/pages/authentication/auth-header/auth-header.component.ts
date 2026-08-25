@@ -13,8 +13,8 @@ import {
   standalone: false,
 })
 export class AuthHeaderComponent implements OnInit {
-  @Input('signTitle') signTitle: string;
-  @Input('signRouterLink') signRouterLink: string[];
+  @Input() signTitle: string;
+  @Input() signRouterLink: string[];
 
   constructor() {}
 

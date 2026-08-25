@@ -5,7 +5,6 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { AuthenticationService } from './auth.service';
-import {log} from "util";
 import {ToastrService} from "ngx-toastr";
 
 @Injectable()

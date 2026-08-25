@@ -4,7 +4,7 @@ export interface IDaysOffObject{
     timeOff: IDaysOffItem;
     vocation: IDaysOffItem;
 }
-export interface IDaysOffItem{
+interface IDaysOffItem{
     name: string;
     value: number | string;
     color: string;

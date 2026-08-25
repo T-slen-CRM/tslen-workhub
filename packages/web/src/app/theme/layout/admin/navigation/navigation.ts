@@ -26,7 +26,7 @@ export interface NavigationItem {
   customTemplateRoute?: any;
 }
 
-export interface Navigation extends NavigationItem {
+interface Navigation extends NavigationItem {
   children?: NavigationItem[];
 }
 

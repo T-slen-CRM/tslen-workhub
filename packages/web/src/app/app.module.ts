@@ -49,7 +49,7 @@ import { HelpersModule } from './helpers/helpers.module';
 import { CallComponent } from './pages/call/wellcome/call.component';
 import { NotificationBellComponent } from './tslen-components/notification-bell/notification-bell.component';
 
-export function initLang(langService: LanguageService) {
+function initLang(langService: LanguageService) {
   return () => langService.setDefaultLangFromBrowser();
 }
 

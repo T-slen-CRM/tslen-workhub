@@ -6,7 +6,7 @@ import {UserCardInfoComponent} from "./users/user-card-info/user-card-info.compo
 import {MeetComponent} from "./meet/meet.component";
 import {ChatComponent} from "./chat/chat.component";
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: '',
     children: [

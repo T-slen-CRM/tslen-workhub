@@ -46,11 +46,6 @@ export interface IUsers {
     prepay: number;
 }
 
-export interface IDefaultOptions {
-    name: string;
-    value: string | number;
-}
-
 export interface IInventoryHistory {
     id?: number;
     inventoryId?: number;

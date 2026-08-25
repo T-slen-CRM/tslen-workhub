@@ -1,22 +1,10 @@
 import {format} from 'date-fns';
 
-export function rightRound(num: number, dec: number): number{
-  const numSign: number = num >= 0 ? 1 : -1;
-  return parseFloat((Math.round((num * Math.pow(10, dec)) + (numSign * 0.0001)) / Math.pow(10, dec)).toFixed(dec));
-}
 export function setDayHours(numOfHours, date, op) {
   if (op === '+'){
     date.setHours(date.getHours() + numOfHours);
   }
   return date;
-}
-export function mergeObjectArray(a, b, key) {
-  const reduced = a.filter((aitem) => {
-    return !b.find((bitem) => {
-      return aitem[key] === bitem[key];
-    });
-  });
-  return reduced.concat(b);
 }
 export function antiMergeObjectArray(a, b, key) {
   a.forEach(ai => {

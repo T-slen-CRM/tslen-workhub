@@ -1,9 +1,5 @@
 import {IGoogleCalendar} from "./google";
 
-export interface UserConfig{
-    userId: number;
-    userRole: string;
-}
 export interface UserGeneralData {
     id: number;
     firstName: string;
@@ -58,9 +54,3 @@ interface IUserChiefRelationsByName {
 }
 
 export type IUserChiefRelationsObject = Record<string, IUserChiefRelationsByName[]>;
-export interface IUsersStageType {
-    id: number;
-    title: string;
-    type: string;
-    users: UserGeneralData[];
-}

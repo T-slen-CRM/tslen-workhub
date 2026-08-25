@@ -24,7 +24,7 @@ export interface ISessionData {
     language?: string;
 }
 
-export class AuthDataParams implements ISessionData {
+class AuthDataParams implements ISessionData {
 
     userId: number;
     companyId: number;

@@ -1,4 +1,4 @@
-export interface IAuditFieldChange {
+interface IAuditFieldChange {
     field: string;
     from?: unknown;
     fromLabel?: string | null;
@@ -6,7 +6,7 @@ export interface IAuditFieldChange {
     toLabel?: string | null;
 }
 
-export interface IAuditEntityChange {
+interface IAuditEntityChange {
     entityName: string;
     entityId: number | string;
     action: 'insert' | 'update' | 'delete';

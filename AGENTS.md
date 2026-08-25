@@ -45,7 +45,7 @@ file you're touching.
 
 Track significant feature/architectural work (not small bug fixes) as a
 task in the production Workhub instance itself
-(`https://tslen.ds.bidscube.com`), created via its own external API —
+(`https://<your-workhub-instance>`), created via its own external API —
 not by hand through the UI.
 - Endpoint: `POST {baseUrl}/api/v{API_VERSION}/external/tasks` (see
   `src/resources/external-tasks/`). Auth: `Authorization: Bearer
@@ -65,7 +65,7 @@ not by hand through the UI.
 - **Link the task from the commit(s) that do the work**: once a task
   exists for the work, append a footer line `Task: <task URL>` to the
   relevant commit message(s) (after a blank line, like any other
-  trailer) — e.g. `Task: https://tslen.ds.bidscube.com/pages/tasks-list/10;title=T-slen%2520Workhub;task=413`.
+  trailer) — e.g. `Task: https://<your-workhub-instance>/pages/tasks-list/10;title=T-slen%2520Workhub;task=413`.
   Skip it only when no task exists yet for that work.
 
 ## Git workflow

@@ -476,7 +476,7 @@ git commit -m "chore: apply non-breaking npm audit fixes"
 
 **Interfaces:** none.
 
-The user opted to delete this script outright rather than genericize it — it hardcoded real production infra (`tslen.ds.bidscube.com`, the internal `bds-infra` Docker network) and isn't needed for a public, self-hosted-by-others project; `Dockerfile` alone plus the README's existing generic `docker build`/`docker run` steps are enough.
+The user opted to delete this script outright rather than genericize it — it hardcoded real production infra (an internal production hostname and Docker network name) and isn't needed for a public, self-hosted-by-others project; `Dockerfile` alone plus the README's existing generic `docker build`/`docker run` steps are enough.
 
 - [ ] **Step 1: Delete the file**
 

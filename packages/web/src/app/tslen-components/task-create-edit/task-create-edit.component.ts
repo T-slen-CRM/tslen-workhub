@@ -241,13 +241,6 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       return { userId: item.value };
     });
     this.form.get('taskUserAssignmentRelations').patchValue(currentAssignees);
-    // if (this.selectedAssignee.length === 1) {
-    //   this.form.patchValue({assignessEmail: this.selectedAssignee[0].value});
-    // }
-    // else if (this.selectedAssignee.length > 1) {
-    //   const joinedValue = this.selectedAssignee.map(item => item.value).join('|');
-    //   this.form.patchValue({assignessEmail: joinedValue});
-    // }
   }
   patchAdditionalFormValues(isNewTask: boolean) {
     this.form.patchValue({ updatedAt: new Date() });

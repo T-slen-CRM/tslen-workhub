@@ -105,11 +105,6 @@ export class AuthenticationService {
         //remove jwt token from local storage
         localStorage.removeItem('jwtToken');
         this.authData$.next(new AuthData({}));
-        // return this.http.get(this.apiHost + '/auth/logout').pipe(
-        //     switchMap(() => {
-        //         return this.socialAuthService.signOut();
-        //     })
-        // );
     }
 
     login(data: Record<string, unknown>): Observable<HttpResponse<unknown>> {

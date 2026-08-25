@@ -260,8 +260,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       id: null,
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      // email: ['', Validators.required],
-      // password: [this.randomPassword, Validators.required],
       country: [''],
       company: [''],
       address: [],

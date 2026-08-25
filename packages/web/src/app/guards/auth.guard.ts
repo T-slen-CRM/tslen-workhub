@@ -24,11 +24,6 @@ export class AuthGuard  {
           return of(false);
       })));
 
-    // const isLoggedIn = this.isLoggedIn();
-    // if (!isLoggedIn){
-    //   this.router.navigate(['/login'])
-    // }
-    // return isLoggedIn
   }
   public isLoggedIn(): boolean {
     let status = false;

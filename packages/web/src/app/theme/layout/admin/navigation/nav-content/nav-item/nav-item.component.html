@@ -23,12 +23,6 @@
     <span *ngIf="item.icon" class="pcoded-micon"><i class="" [ngClass]="item.icon"></i></span>
   </ng-template>
   <ng-template #itemBadge>
-<!--    <span *ngIf="item.badge && themeLayout === 'vertical'" class="pcoded-badge badge" [ngClass]="item.badge.type">-->
-<!--      {{item.badge.title}}-->
-<!--    </span>-->
-<!--    <span *ngIf="item.badge && themeLayout === 'horizontal'" class="badge label" [ngClass]="item.badge.type">-->
-<!--      {{item.badge.title}}-->
-<!--    </span>-->
     <span *ngIf="item.badge && item.badge.title" class="badge label" >
 
       <span *ngIf="item.badge.title === 'new'; else defaultBadge" class="badge-new">{{item.badge.title}}</span>

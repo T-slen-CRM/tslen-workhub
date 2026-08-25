@@ -242,11 +242,6 @@ export class TaskProjectMembersComponent implements OnInit, OnDestroy {
     this.selectedUserPermission = [];
   }
 
-  // onDelete() {
-  //   if (this.incomingProject) {
-  //     this.closeDialog('delete', this.incomingProject);
-  //   }
-  // }
 
   getPermissionEntity(): IProjectPermission {
     return {

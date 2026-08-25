@@ -298,8 +298,6 @@ export class CommonScheduleComponent implements OnInit {
               : currentItem.primaryColor,
         },
         cssClass: 'calendar-event',
-        // actions: this.actions,
-        // allDay: true,
         resizable: {
           beforeStart: true,
           afterEnd: true,

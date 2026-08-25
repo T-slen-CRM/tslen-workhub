@@ -42,7 +42,5 @@ export class LiveChatComponent {
       const sortedIds = [+localUserId, +remoteUserId].sort((a, b) => a - b);
       return `${sortedIds[0]}_${sortedIds[1]}`;
     });
-    // effect(() => {
-    // });
   }
 }

@@ -55,19 +55,6 @@ export class ProjectMemberActionButton
         action: 'delete',
         row: this.inputRow,
       });
-      // const deletedRow: Subscription = this.dataService.deleteData('/project-permission/', this.inputRow.id)
-      //     .subscribe({
-      //         next: (res) => {
-      //             this.toastService.success('Project member deleted', 'Deleted');
-      //
-      //             this.loading = false;
-      //         },
-      //         error: (error) => {
-      //             this.toastService.error('Something went wrong', 'Error');
-      //             this.loading = false;
-      //         }
-      //     });
-      // this.subscription.add(deletedRow);
     } else {
       this.toastService.success('Project member deleted', 'Deleted');
       this.matTableService.setChangedMembersRow({

@@ -23,12 +23,6 @@ export class PendingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.dataService.getAllUsers().subscribe(response => {
-    //   let body = response.body;
-    //   this.preparedUsersData = body;
-    //   this.selectedUser = this.prepareSelectedUser(body);
-    //   this.selectedUserId = this.selectedUser[0]?.value;
-    // })
     this.loadTranslations();
     this.translateService.onLangChange.subscribe(() => this.loadTranslations());
   }

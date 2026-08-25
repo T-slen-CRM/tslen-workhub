@@ -1,28 +1,3 @@
-<!--@if (!room()) {-->
-<!--<div id="join">-->
-<!--    <div id="join-dialog">-->
-<!--        <form [formGroup]="roomForm" (ngSubmit)="joinRoom()">-->
-<!--            <div class="form-group">-->
-<!--                <label for="participant-name">Your name and lastname</label>-->
-<!--                <input formControlName="participantName" id="participant-name" class="form-control" type="text" />-->
-<!--            </div>-->
-<!--&lt;!&ndash;            @if (!id()) {&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="form-group">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <label for="room-name">Room name</label>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <input formControlName="roomName" id="room-name" class="form-control" type="text" />&ndash;&gt;-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--&lt;!&ndash;            }&ndash;&gt;-->
-<!--            <button mat-stroked-button-->
-<!--                    class="make-request-btn"-->
-<!--                    type="submit"-->
-<!--                    [disabled]="!roomForm.valid"-->
-<!--            >-->
-<!--                Join!-->
-<!--            </button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-<!--} @else {-->
 <div class="call-window" id="room"
      cdkDrag
      cdkDragBoundary="body"
@@ -78,64 +53,11 @@
                 </button>
             }
 
-            <!-- Main Video Selection Dropdown -->
-<!--            <div class="dropdown">-->
-<!--                <button class="btn btn-sm btn-secondary dropdown-toggle"-->
-<!--                        type="button"-->
-<!--                        id="mainVideoDropdown"-->
-<!--                        data-bs-toggle="dropdown"-->
-<!--                        aria-expanded="false"-->
-<!--                        title="Select Main Video">-->
-<!--                    <i class="fas fa-expand-arrows-alt"></i> Main Video-->
-<!--                </button>-->
-<!--                <ul class="dropdown-menu" aria-labelledby="mainVideoDropdown">-->
-<!--                    &lt;!&ndash; Auto selection option &ndash;&gt;-->
-<!--                    <li>-->
-<!--                        <a  href="#" class="dropdown-item"-->
-<!--                           [class.active]="!mainVideoTrack()"-->
-<!--                           (click)="resetMainVideoSelection()">-->
-<!--                            <i class="fas fa-magic"></i> Auto Select-->
-<!--                        </a>-->
-<!--                    </li>-->
 
 <!--                    <li><hr class="dropdown-divider"></li>-->
 
-<!--                    &lt;!&ndash; Local camera option &ndash;&gt;-->
-<!--                    @if (localCameraTrack()) {-->
-<!--                        <li>-->
-<!--                            <a href="#" class="dropdown-item"-->
-<!--                               [class.active]="mainVideoTrack() === localCameraTrack()"-->
-<!--                               (click)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)">-->
-<!--                                <i class="fas fa-video"></i> Your Camera-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                    }-->
 
-<!--                    &lt;!&ndash; Screen share option &ndash;&gt;-->
-<!--                    @if (screenShareEnabled() && localTrack()) {-->
-<!--                        <li>-->
-<!--                            <a href="#" class="dropdown-item"-->
-<!--                               [class.active]="mainVideoTrack() === localTrack()"-->
-<!--                               (click)="setMainVideo(localTrack()!, 'You (Screen Share)', true)">-->
-<!--                                <i class="fas fa-desktop"></i> Your Screen-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                    }-->
 
-<!--                    &lt;!&ndash; Remote participants &ndash;&gt;-->
-<!--                    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {-->
-<!--                        @if (remoteTrack.trackPublication.kind === 'video') {-->
-<!--                            <li>-->
-<!--                                <a href="#" class="dropdown-item"-->
-<!--                                   [class.active]="mainVideoTrack() === remoteTrack.trackPublication.videoTrack"-->
-<!--                                   (click)="setMainVideo(remoteTrack.trackPublication.videoTrack!, remoteTrack.participantIdentity, false)">-->
-<!--                                    <i class="fas fa-user"></i> {{ remoteTrack.participantIdentity }}-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                        }-->
-<!--                    }-->
-<!--                </ul>-->
-<!--            </div>-->
 
             <button class="btn btn-sm btn-danger" (click)="leaveRoom()" [title]="'call_room.leave_room' | translate">
                 <i class="fas fa-sign-out-alt"></i>

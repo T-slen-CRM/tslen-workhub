@@ -61,8 +61,6 @@ export class ChatService implements OnDestroy {
       this.socket.disconnect();
     }
 
-    //  const userId = 'angular_user_' + Math.random().toString(36).substring(7); // Dynamic user ID
-    // const chatRoomId = 'general'; // Default room
     const jwtToken = localStorage.getItem("jwtToken");
     const url = this.configService.getApiHost(false);
     const socketOptions = {

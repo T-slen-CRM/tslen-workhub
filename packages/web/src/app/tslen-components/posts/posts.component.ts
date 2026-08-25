@@ -106,12 +106,4 @@ export class PostsComponent implements OnInit, OnDestroy {
   showPostEditor() {
     this.showEditor.update((value) => !value);
   }
-  // deletePost(post: IPost) {
-  //   const deletePost: Subscription = this.dataService.deleteData('/posts/', +post.id)
-  //       .subscribe(r => {
-  //         this.staticPostsArr = this.staticPostsArr.filter(item => item.id !== post.id);
-  //         this.posts = of(this.staticPostsArr);
-  //       });
-  //   this.subscription$.add(deletePost);
-  // }
 }

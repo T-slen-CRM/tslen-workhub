@@ -146,18 +146,8 @@ export class CallComponent implements OnDestroy, OnInit {
   mainVideoTrack = signal<VideoTrack | null>(null);
   mainVideoParticipant = signal<string>('');
   isLocalMainVideo = signal<boolean>(true);
-  // roomName = computed(() => {
-  //   const caller = this.callerId();
-  //   const callee = this.calleeId();
-  //   if (!caller || !callee) return '';
-  //   const participants = [caller, callee].sort();
-  //   return `room-${participants[0]}-${participants[1]}`;
-  // });
 
   ngOnInit() {
-    // this.route.paramMap.subscribe((params) => {
-    //   const caller = params.get('callerId');
-    //   const callee = params.get('calleeId');
     const user = this.auth.authDataSignal();
 
     if (!this.callerId() || !this.calleeId() || !user?.id) {
@@ -165,8 +155,6 @@ export class CallComponent implements OnDestroy, OnInit {
       return;
     }
 
-    // this.callerId.set(caller);
-    // this.calleeId.set(callee);
 
     // const participants = [this.callerId(), this.calleeId()].sort();
     const roomName = `room-${this.callerId()}-${this.calleeId()}`;
@@ -299,11 +287,6 @@ export class CallComponent implements OnDestroy, OnInit {
       // Connect to the room with the LiveKit URL and the token
       await room.connect(LIVEKIT_URL, token);
 
-      // Publish your camera and microphone
-      // await room.localParticipant.enableMicr();
-      // this.localTrack.set(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
-      // add this.id to url params
-      // window.history.pushState({}, '', `/${roomName}`);
       this.currentRoomLink.set(
         window.location.origin +
           `/pages/call/${this.callerId()}/${this.calleeId()}/?id=` +

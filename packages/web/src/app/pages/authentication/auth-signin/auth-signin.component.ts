@@ -72,45 +72,6 @@ export class AuthSigninComponent
       this.router.navigate(['/pages/main-wall']);
     }
 
-    // this.cookieService.delete('jwt');
-    // const jwtToken = this.cookieService.get('jwt');
-    // this.cookieService.set('jwt', '');
-    // const jwtToken2 = this.cookieService.get('jwt');
-    // if (jwtToken) {
-    //     localStorage.setItem('jwtToken', jwtToken);
-    //     localStorage.setItem('isLoggedIn', 'true');
-    //
-    //     //this.router.navigate(['/pages/main-wall']);
-    // }
-    // const googleState: Subscription = this.socialAuthService.authState.pipe(
-    //     mergeMap((user) => {
-    //       if (!user){
-    //         this.authenticationService.isGoogleLogged$.next(false);
-    //       }
-    //           if (user){
-    //             this.setEmailToForm(user);
-    //             this.authenticationService.setGoogleLogged(true);
-    //             return this.authenticationService.login(this.loginForm.value);
-    //           } else {
-    //             return EMPTY;
-    //           }
-    //         }
-    //     )).subscribe(
-    //     {
-    //       next: (response: { body: any; status: number; }) => {
-    //         const data: any = response.body;
-    //         if (response.status === 200 && data.userId) {
-    //           localStorage.setItem('isLoggedIn', 'true');
-    //           this.router.navigate(['/pages/main-wall']);
-    //         }
-    //       },
-    //       error: () => {
-    //         this.loading = false;
-    //         this.message = 'Please check your username and password';
-    //       }
-    //     }
-    // );
-    // this.subscription.add(googleState);
 
     this.hideGoogleLogin$ =
       this.authenticationService.isGoogleLogged$.asObservable();

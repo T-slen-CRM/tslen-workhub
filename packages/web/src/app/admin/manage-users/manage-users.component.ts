@@ -135,18 +135,6 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
   actionAfterSavingUser() {
     this.usersAgGridComp?.loadColumnDefs();
   }
-  // loadGroupsAgGridComponent(){
-  //   this.loading = true;
-  //   this.groupsAgGrid.clear();
-  //   this.groupsAgGridComponentRef = this.groupsAgGrid.createComponent(UserGroupComponent);
-  //   this.loading = false;
-  // }
-  // onTabChanged(event){
-  //   const index = event.index;
-  //   if (index === 2){
-  //     this.loadGroupsAgGridComponent();
-  //   }
-  // }
   prepareUserChiefRelationsObject(preparedUsersData: UserGeneralData[]) {
     const usersObjectFromEntries = Object.fromEntries(
       this.preparedUsersData.map((user: any) => [user.email, user]),

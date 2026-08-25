@@ -217,6 +217,18 @@ export class BreadcrumbComponent implements OnInit {
         }
       }
     });
+    if (id && id > 0 && result.length) {
+      // The current-page entry was matched against navigation.ts's templated
+      // ':id' url (see the `activeLink += '/:id'` above), so it still carries
+      // the literal ':id' placeholder rather than the real id - substitute it
+      // back in so this entry's routerLink resolves to the actual page
+      // instead of a broken '/pages/tasks-list/:id' navigation.
+      const currentEntry = result[result.length - 1];
+      if (typeof currentEntry.url === 'string') {
+        currentEntry.url = currentEntry.url.replace(':id', String(id));
+      }
+    }
+
     this.navigationList = result;
     this.translateService.get(title).subscribe((translatedTitle) => {
       this.titleService.setTitle(`${translatedTitle} | CRM`);

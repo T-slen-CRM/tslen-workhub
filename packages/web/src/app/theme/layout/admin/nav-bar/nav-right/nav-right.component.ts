@@ -69,7 +69,7 @@ export class NavRightComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
-    this.router.navigate(['/pages/auth/signin']);
+    this.router.navigate(['/auth/login']);
     //     .subscribe({
     //     next: () => {
     //         this.router.navigate(['/pages/auth/signin']);

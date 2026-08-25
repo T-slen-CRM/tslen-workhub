@@ -148,7 +148,7 @@ export class AuthenticationService {
                 return true;
             }
             if (router){
-                router.navigate(['login']);
+                router.navigate(['auth/login']);
             }
             return false;
         }));

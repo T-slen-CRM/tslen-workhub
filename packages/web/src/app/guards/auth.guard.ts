@@ -17,10 +17,10 @@ export class AuthGuard  {
           if (isSession && this.isLoggedIn()) {
                   return isSession;
               }
-              this.router.navigate(['login']);
+              this.router.navigate(['auth/login']);
               return isSession;
       }), catchError(e => {
-          this.router.navigate(['login']);
+          this.router.navigate(['auth/login']);
           return of(false);
       })));
 

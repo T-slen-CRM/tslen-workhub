@@ -156,7 +156,7 @@ export class AuthSignupComponent implements OnInit, OnDestroy {
             this.message = response.body['error'];
           }
           this.toastrService.success('User created successfully');
-          this.router.navigate(['/auth/signin']);
+          this.router.navigate(['/auth/login']);
         },
         error: (err) => {
           this.loading = false;

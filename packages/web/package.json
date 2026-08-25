@@ -10,8 +10,7 @@
     "preprod": "npm run config",
     "prod": "ng build --configuration production && cp .htaccess dist/",
     "test": "jest",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {

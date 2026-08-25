@@ -9,7 +9,7 @@ See `README.md` for the product/feature overview and tech stack.
 ## Repo layout
 
 - `src/` — NestJS backend (TypeORM + PostgreSQL, WebSockets).
-- `packages/web/` — Angular 17 frontend, its own `package.json`.
+- `packages/web/` — Angular 22 frontend, its own `package.json`.
 - `test/` — backend Jest tests (`unit/`, `integration/`).
 - Frontend tests live next to the file they cover (`*.spec.ts`), run via Jest.
 
@@ -18,14 +18,28 @@ Two separate npm projects: `npm install` at repo root **and** inside
 
 ## Environment
 
-- Backend requires **Node >= 22** (see `engines` in `package.json`,
-  `.nvmrc` pins `22.22.2`). The default shell `node` on this machine may
-  be older — check with `node -v` first. If it's not 22.x:
+- Backend requires **Node >= 24** (see `engines` in `package.json`,
+  `.nvmrc` pins `24.19.0` — this also matches the Node version CI uses).
+  The default shell `node` on this machine may be older — check with
+  `node -v` first. If it's not 24.x:
   ```bash
-  export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use v22.2.0
+  export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use 24.19.0
   ```
   Running tests/build under an old Node version fails with cryptic
   `ERR_UNKNOWN_BUILTIN_MODULE` errors from `npx jest` — that's the tell.
+
+## CI
+
+`.github/workflows/main-ci.yml` runs on every push/PR against `main`:
+backend lint + e2e + unit tests (repo root), and Angular lint
+(`packages/web`, `npm run lint` → `ng lint`) as a separate job. The
+frontend lint job only fails on **new** violations — `ng lint` applies
+`packages/web/eslint-suppressions.json`, a snapshot of the pre-existing
+backlog taken when the lint setup was fixed, so it doesn't block PRs on
+old, unrelated violations. Regenerate that file (from `packages/web/`,
+via `./node_modules/.bin/eslint "src/**/*.ts" "src/**/*.html"
+--suppress-all`) if you clear out a rule's suppressed violations in a
+file you're touching.
 
 ## Task tracking
 
@@ -77,7 +91,7 @@ before the change (TDD red/green). Don't hand-wave "manually verified" for
 things a test can cover — see `superpowers:test-driven-development` and
 `superpowers:systematic-debugging` skills for the full process.
 
-**Backend (Jest, from repo root, after `nvm use v22.2.0`):**
+**Backend (Jest, from repo root, after `nvm use 24.19.0`):**
 ```bash
 npm run test:unit   # unit tests only, --config test/jest-unit.json, matches *.unit.spec.ts
 npm run test:e2e    # integration tests, --config test/jest-e2e.json

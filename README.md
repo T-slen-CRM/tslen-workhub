@@ -18,7 +18,7 @@ Open source, self-hosted CRM and team workspace platform for small and medium bu
 ## Tech stack
 
 - **Backend:** NestJS, TypeORM + PostgreSQL, JWT auth, WebSockets, Swagger
-- **Frontend:** Angular 20
+- **Frontend:** Angular 22
 - **Integrations:** Google Calendar & Meet APIs, LiveKit, Slack API, Firebase (storage), Nodemailer
 - **Deployment:** Docker multi-stage build
 
@@ -72,6 +72,33 @@ full reference.
    `start.sh.example` to `start.sh` (gitignored, same idea as
    `.env.example` → `.env`), set `DOMAIN` and customize as needed, then
    `chmod +x start.sh && ./start.sh`.
+
+## CI checks
+
+Every push and pull request against `main` runs via GitHub Actions
+([`.github/workflows/main-ci.yml`](.github/workflows/main-ci.yml)):
+
+- **Backend** (repo root): lint (`npm run lint`), e2e tests
+  (`npm run test:e2e`), unit tests (`npm run test:unit`)
+- **Frontend** (`packages/web`): Angular lint (`npm run lint`, i.e.
+  `ng lint`)
+
+Run the same checks locally before pushing:
+
+```bash
+npm run lint && npm run test:unit && npm run test:e2e   # backend, from repo root
+cd packages/web && npm run lint                          # frontend
+```
+
+The frontend lint gate uses ESLint's bulk-suppressions feature
+(`packages/web/eslint-suppressions.json`) so it only fails on **new**
+lint violations, not the pre-existing backlog. If you touch a file
+enough to clear a rule's suppressed violations there, regenerate the
+suppressions file from `packages/web/`:
+
+```bash
+./node_modules/.bin/eslint "src/**/*.ts" "src/**/*.html" --suppress-all
+```
 
 ## License
 

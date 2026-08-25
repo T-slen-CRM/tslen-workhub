@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ComponentRef,
   inject,
@@ -51,12 +50,10 @@ import { TranslateModule } from '@ngx-translate/core';
     NgIf,
   ],
 })
-export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('usersAgGrid', { read: ViewContainerRef })
-  usersAgGrid: ViewContainerRef;
+export class ManageUsersComponent implements OnInit, OnDestroy {
+  @ViewChild('usersAgGridComp') usersAgGridComp: ManageUsersAggridComponent;
   @ViewChild('groupsAgGrid', { read: ViewContainerRef })
   groupsAgGrid: ViewContainerRef;
-  private agGridComponentRef: ComponentRef<ManageUsersAggridComponent>;
   private groupsAgGridComponentRef: ComponentRef<UserGroupComponent>;
   public preparedUsersData: UserGeneralData[];
 
@@ -108,12 +105,6 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscription.add(getUsers);
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.loadAgGridComponent();
-    }, 0);
-  }
-
   prepareSelectedUser(data: any) {
     return data.filter((item: any) => {
       return item.currentUser;
@@ -143,15 +134,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
   actionAfterSavingUser() {
-    this.loadAgGridComponent();
-  }
-  loadAgGridComponent() {
-    this.loading = true;
-    this.usersAgGrid.clear();
-    this.agGridComponentRef = this.usersAgGrid.createComponent(
-      ManageUsersAggridComponent,
-    );
-    this.loading = false;
+    this.usersAgGridComp?.loadColumnDefs();
   }
   // loadGroupsAgGridComponent(){
   //   this.loading = true;

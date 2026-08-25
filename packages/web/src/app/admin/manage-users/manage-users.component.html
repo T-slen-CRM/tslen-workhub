@@ -4,14 +4,25 @@
   <!--    </div>-->
   <br />
   <ng-container *appPermissionsVisualization="['user']">
-    <ng-template #usersAgGrid></ng-template>
+    <ng-template #userOnlyAgGrid></ng-template>
   </ng-container>
 
   <ng-container *appPermissionsVisualization="['admin', 'manager']">
     <mat-tab-group>
       <mat-tab [label]="'people.user_list.name' | translate">
-        <app-card [hidHeader]="true">
-          <div>
+        <!--
+          NOTE: intentionally NOT using <app-card> here. Angular Material
+          wraps each mat-tab's content in an internal lazy-loaded template
+          (CdkPortalOutlet); <app-card>'s own view, when instantiated inside
+          that portal-attached content, ends up fully detached from the live
+          DOM (confirmed via isConnected === false on its host element,
+          independent of app-card's animations/[@cardRemove] trigger and
+          independent of its ChangeDetectionStrategy). Plain markup with the
+          same card/card-body classes avoids the defect while keeping the
+          same visual styling.
+        -->
+        <div class="card">
+          <div class="card-body">
             <div *ngIf="preparedUsersData">
               <app-single-autocomplete
                 (selectedItemsForParent)="getSelectedValues($event)"
@@ -28,11 +39,10 @@
             </div>
             <br />
             <div>
-              <ng-template #usersAgGrid></ng-template>
-              <!--                        <app-manage-users-aggrid></app-manage-users-aggrid>-->
+              <app-manage-users-aggrid #usersAgGridComp></app-manage-users-aggrid>
             </div>
           </div>
-        </app-card>
+        </div>
       </mat-tab>
 
       @if (usersOnBoarding?.length > 0){

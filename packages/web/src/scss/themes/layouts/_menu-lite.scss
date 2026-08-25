@@ -1,3 +1,5 @@
+@use "src/scss/settings/theme-tokens" as *;
+
 @use "sass:list";
 @use "sass:color";
 
@@ -266,8 +268,8 @@
 
         &.open {
             .input-group {
-                background: $body-bg;
-                border: 0 solid $body-bg;
+                background: #fff /* Bootstrap $body-bg default */;
+                border: 0 solid #fff /* Bootstrap $body-bg default */;
                 padding: 0 0 0 20px;
 
                 .search-close {
@@ -2301,7 +2303,7 @@ $style-block-width: 400px;
     .m-style-scroller {
         padding: 15px 20px;
         box-shadow: none;
-        background-color: $body-bg;
+        background-color: #fff /* Bootstrap $body-bg default */;
         border-radius: 4px;
         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.24);
     }
@@ -2941,7 +2943,7 @@ $style-block-width: 400px;
                         border: 0 solid rgba(255, 255, 255, 0.25);
                         padding: 2px 2px 2px 20px;
                         @media only screen and (max-width: 991px) {
-                            background: $body-bg;
+                            background: #fff /* Bootstrap $body-bg default */;
                         }
                         @media only screen and (min-width: 992px) {
                             .form-control {

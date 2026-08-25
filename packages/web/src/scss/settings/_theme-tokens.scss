@@ -1,0 +1,69 @@
+// Trimmed replacement for the archived settings/_custom-variables.scss and
+// settings/_theme-variables.scss (see docs/archive/bootstrap-custom-theme/
+// for the full originals and why they were archived). Those files declared
+// ~700 variables to override Bootstrap's own defaults; a full grep across
+// the codebase before deletion found only these ones actually referenced
+// by our own theme partials (the rest were dead, unused Bootstrap-brand
+// overrides). Bootstrap-native variable names (e.g. $success, $body-bg)
+// are intentionally NOT re-declared here - those now resolve to
+// Bootstrap's own stock defaults, loaded directly by whichever file needs
+// them, per this migration's design decision to drop custom Bootstrap
+// branding and keep Bootstrap on defaults.
+@use "sass:color";
+
+$header-height: 60px;
+$Menu-width: 270px;
+$Menu-collapsed-width: 70px;
+
+$primary-color: #212121;
+$warning-color: #ffa21d;
+$danger-color: #ff5252;
+$success-color: #11c15b;
+$purple-color: #7759de;
+$info-color: #00ACC1;
+$dark-color: #263238;
+$inverse-color: $dark-color;
+$theme-border: #e2e5e8;
+
+$header-dark-background: #101b33;
+$header-dark-text-color: $primary-color;
+$custom-side-bar-nav-link: #97a7c1;
+$custom-dark-side-bar-nav-link: #97a7c1;
+$header-light-background: #fff;
+$header-light-text-color: #101b33;
+$notification-header-background: #fafafa;
+$notification-footer-background: #fafafa;
+
+$menu-dark-background: #fff;
+$menu-dark-text-color: #97a7c1;
+$menu-light-background: #fff;
+$menu-light-text-color: #535763;
+
+$dark-layout: color.adjust(#101b33, $lightness: -8%, $space: hsl);
+$buttons-color: #212121;
+
+$color-header-name: blue, red, purple, info, dark;
+$color-header-color: #212121, #ff5252, #7759de, #00ACC1, #101b33;
+$color-menu-name: blue, red, purple, info, dark;
+$color-menu-color: #212121, #ff5252, #7759de, #00ACC1, #101b33;
+$color-active-name: blue, red, purple, info, dark;
+$color-active-color: #212121, #ff5252, #7759de, #00ACC1, $dark-color;
+
+$theme-font-family: 'Mada', sans-serif;
+$theme-font-size: 14px;
+$theme-background: #fff;
+$theme-font-color: #535763;
+$theme-heading-color: #202124;
+
+$color-name: c-blue, c-red, c-green, c-yellow, c-purple;
+$color-color: $primary-color, $danger-color, $success-color, $warning-color, $purple-color;
+$color-bt-name: primary, danger, success, warning, info, purple;
+$color-bt-color: $primary-color, $danger-color, $success-color, $warning-color, $info-color, $purple-color;
+
+$form-bg: #f0f3f6;
+
+$social-name: facebook, twitter, dribbble, pinterest, youtube, googleplus, instagram, viber, behance, dropbox, linkedin;
+$social-color: #3C5A99, #42C0FB, #EC4A89, #BF2131, #E0291D, #C73E2E, #AA7C62, #7B519D, #0057ff, #3380FF, #0077B5;
+
+$card-shadow: 0 1px 3px 0 rgba(54, 80, 138, 0.30);
+$card-header-border: 0px solid #e2e5e8;

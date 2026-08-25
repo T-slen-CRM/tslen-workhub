@@ -45,3 +45,4 @@ credentials/*.json
 docs/*
 !docs/superpowers/
 !docs/api/
+!docs/archive/

@@ -11,13 +11,13 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* SCSS */
-@import "src/app/theme/custom-dark-theme.scss";
-@import "scss/angular-calendar/angular-calendar.scss";
-@import "scss/style";
-@import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
+@use "src/app/theme/custom-dark-theme.scss";
+@use "scss/angular-calendar/angular-calendar.scss";
+@use "scss/style";
+@use "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
 /* angular-cli file: src/styles.css */
-@import "../node_modules/angular-calendar/css/angular-calendar.css";
-@import "../node_modules/flatpickr/dist/flatpickr.css";
+@use "../node_modules/angular-calendar/css/angular-calendar.css" as angular-calendar-css;
+@use "../node_modules/flatpickr/dist/flatpickr.css";
 
 $auth-text-color: color.adjust(#7a7d87, $lightness: -10%, $space: hsl);
 html, body { height: 100%; }

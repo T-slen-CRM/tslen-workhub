@@ -4,7 +4,7 @@
 
 .auth-wrapper {
     &.maintenance {
-        background: $body-bg;
+        background: #fff; // Bootstrap's own $body-bg default
     }
 
     &.offline {

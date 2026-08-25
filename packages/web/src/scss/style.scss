@@ -22,63 +22,57 @@ File: style.css
 
 
 // Theme Font
-@import "themes/font/theme-font";
+@use "themes/font/theme-font";
 
 // theme scrollbar
-@import "themes/plugin/perfect-scrollbar";
+@use "themes/plugin/perfect-scrollbar";
 
-// main framework
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "settings/custom-variables";
-@import "settings/theme-variables";
-
-// bootstrap
-@import "bootstrap/scss/bootstrap";
-
+// bootstrap (stock defaults - the custom variable overrides that used to
+// live in settings/custom-variables.scss and settings/theme-variables.scss
+// were archived to docs/archive/bootstrap-custom-theme/ during the @use
+// migration; see that folder's README for why and how to restore them)
+@use "bootstrap/scss/bootstrap";
 
 // icon
-@import "themes/font/datta-icon";
-@import "themes/font/feather";
-@import "themes/font/fontawesome";
+@use "themes/font/datta-icon";
+@use "themes/font/feather";
+@use "themes/font/fontawesome";
 
 // bootstrap css
-@import "themes/bootstrap-overlay/card";
-@import "themes/bootstrap-overlay/button";
-@import "themes/bootstrap-overlay/radiobox-checkbox";
-@import "themes/bootstrap-overlay/switches";
-@import "themes/bootstrap-overlay/badge";
+@use "themes/bootstrap-overlay/card";
+@use "themes/bootstrap-overlay/button";
+@use "themes/bootstrap-overlay/radiobox-checkbox";
+@use "themes/bootstrap-overlay/switches";
+@use "themes/bootstrap-overlay/badge";
 
-@import "themes/general";
-@import "themes/generic";
-@import "themes/plugin/animate";
+@use "themes/general";
+@use "themes/generic";
+@use "themes/plugin/animate";
 
 // theme layouts
-@import "themes/layouts/menu-lite";
-@import "themes/layouts/menu-ng";
+@use "themes/layouts/menu-lite";
+@use "themes/layouts/menu-ng";
 
 // Dashboard Widgets
-@import "themes/dashboard/widget";
-
-
+@use "themes/dashboard/widget";
 
 // pages
-@import "themes/pages/authentication";
-@import "themes/pages/maintaince";
-@import "themes/pages/pages";
-@import "themes/pages/user";
+@use "themes/pages/authentication";
+@use "themes/pages/maintaince";
+@use "themes/pages/pages";
+@use "themes/pages/user";
 
 // custom
-@import "themes/custom";
+@use "themes/custom";
 
 //mat-custom
-@import "mat-custom/mat-custom";
+@use "mat-custom/mat-custom";
 
 //ag-custom
-@import "ag-custom/ag-custom";
+@use "ag-custom/ag-custom";
 
 // modal view
-@import "modal-view/modal-view";
+@use "modal-view/modal-view";
 
 //mat-mdc
-@import "mat-custom/_mat-mdc-format.scss";
+@use "mat-custom/mat-mdc-format";

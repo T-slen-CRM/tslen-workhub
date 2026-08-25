@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   effect,
   input,
@@ -15,7 +14,7 @@ import { AgGridAngular } from 'ag-grid-angular';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class AgGridTableComponent implements AfterViewInit {
+export class AgGridTableComponent {
   @ViewChild('agGrid') agGrid: AgGridAngular;
   columnDefs = input<any>([]);
   components = input<any>();
@@ -38,9 +37,5 @@ export class AgGridTableComponent implements AfterViewInit {
         }, 200);
       }
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.agGrid.api.sizeColumnsToFit();
   }
 }

@@ -266,7 +266,7 @@ git commit -m "ci(release): add tag-triggered changelog and release workflow"
 
 **Interfaces:** exercises the full pipeline built in Tasks 1–3 against a real GitHub Actions run.
 
-This step pushes an actual tag and lets real CI run against GitHub — unlike Tasks 1–3, it's **not reversible without follow-up cleanup** (it creates a real tag, a real commit on `main`, and a real GitHub Release). Confirm with the user before running Step 2, and use an obviously-throwaway version like `v0.0.1-test` so it can't be confused with a real release. Clean up in Step 5 regardless of outcome.
+This step pushes an actual tag and lets real CI run against GitHub — unlike Tasks 1–3, it's **not reversible without follow-up cleanup** (it creates a real tag, a real commit on `main`, and a real GitHub Release). Confirm with the user before running Step 2, and use an obviously-throwaway version like `v0.0.1` so it can't be confused with a real release. Clean up in Step 5 regardless of outcome.
 
 - [ ] **Step 1: Push this branch and merge Tasks 1–3 to `main`**
 
@@ -277,8 +277,8 @@ This workflow only fires on `main` (the `Checkout`/`Commit` steps in Task 3 assu
 ```bash
 git checkout main
 git pull
-git tag v0.0.1-test
-git push origin v0.0.1-test
+git tag v0.0.1
+git push origin v0.0.1
 ```
 
 - [ ] **Step 3: Watch the workflow run**
@@ -291,17 +291,17 @@ Expected: the `Release` workflow run succeeds (all steps green).
 - [ ] **Step 4: Verify the outputs**
 
 ```bash
-gh release view v0.0.1-test
-git log --oneline -1 origin/main   # expect: a "chore(changelog): update CHANGELOG.md for v0.0.1-test" commit
+gh release view v0.0.1
+git log --oneline -1 origin/main   # expect: a "chore(changelog): update CHANGELOG.md for v0.0.1" commit
 ```
-Expected: a GitHub Release exists on `v0.0.1-test` with a non-empty body, and `CHANGELOG.md` on `main` now has a `## [0.0.1-test]` section.
+Expected: a GitHub Release exists on `v0.0.1` with a non-empty body, and `CHANGELOG.md` on `main` now has a `## [0.0.1]` section.
 
 - [ ] **Step 5: Clean up the test tag and release**
 
 ```bash
-gh release delete v0.0.1-test --yes
-git push origin :refs/tags/v0.0.1-test
-git tag -d v0.0.1-test
+gh release delete v0.0.1 --yes
+git push origin :refs/tags/v0.0.1
+git tag -d v0.0.1
 ```
 
 Leave the `chore(changelog): ...` commit it made on `main` in place — reverting it isn't necessary (it's a real, harmless, empty-ish changelog entry) and reverting risks a messier history than just cutting the real first release next).

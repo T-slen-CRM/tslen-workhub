@@ -11,7 +11,16 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.ref_name }}
     steps:
+      - name: Validate tag format
+        run: |
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '$TAG_NAME' does not match required format vX.Y.Z (must match cliff.toml's tag_pattern)"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -33,7 +42,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
-          git diff --cached --quiet || git commit -m "chore(changelog): update CHANGELOG.md for ${{ github.ref_name }}"
+          git diff --cached --quiet || git commit -m "chore(changelog): update CHANGELOG.md for $TAG_NAME"
           git push origin HEAD:main
 
       - name: Generate release notes

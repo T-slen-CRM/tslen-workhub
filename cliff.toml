@@ -1,15 +1,16 @@
-[remote.github]
-owner = "T-slen-CRM"
-repo = "tslen-workhub"
-
 [changelog]
 header = """
 # Changelog
+
+All notable changes to this project are documented here. Entries are
+generated automatically by [git-cliff](https://git-cliff.org/) from
+Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
+see `cliff.toml` and `.github/workflows/release.yml`.
 """
 body = """
 {% if version %}\
     {% if previous.version %}\
-        ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/{{ previous.version }}...{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+        ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/T-slen-CRM/tslen-workhub/compare/{{ previous.version }}...{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
     {% else %}\
         ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
     {% endif %}\

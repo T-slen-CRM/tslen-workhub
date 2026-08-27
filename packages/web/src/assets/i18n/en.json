@@ -83,7 +83,8 @@
         "admin": "ADMIN",
         "pending": "Pending",
         "company_rules": "Company rules",
-        "tslen_meet": "T-slen Meet"
+        "tslen_meet": "T-slen Meet",
+        "meeting_links": "Meeting links"
     },
     "calendar": {
       "header":{
@@ -588,5 +589,30 @@
     },
     "common_schedule": {
         "name_column": "Name"
+    },
+    "meeting_room": {
+      "leave": "Leave",
+      "you_suffix": "(You)",
+      "chat_placeholder": "Type a message…",
+      "send": "Send"
+    },
+    "guest_meeting": {
+      "loading": "Loading meeting…",
+      "invalid_link": "This meeting link is no longer valid.",
+      "untitled": "Untitled meeting",
+      "hosted_by": "Hosted by {{name}}",
+      "your_name": "Your name",
+      "join": "Join meeting",
+      "join_error": "We couldn't join the meeting. Please try again."
+    },
+    "meeting_links": {
+      "title": "Meeting links",
+      "name_placeholder": "Meeting name (optional)",
+      "create": "Create link",
+      "copy": "Copy",
+      "active": "Active",
+      "revoked": "Revoked",
+      "join": "Join",
+      "revoke": "Revoke"
     }
 }

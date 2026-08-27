@@ -1,0 +1,48 @@
+@if (activeRoom()) {
+  <app-meeting-room
+    [livekitToken]="activeRoom()!.livekitToken"
+    [roomName]="activeRoom()!.roomName"
+    [displayName]="activeRoom()!.displayName"
+    (leaveRoomOutput)="onLeaveOwnMeeting()"
+  ></app-meeting-room>
+} @else {
+  <div class="meeting-links-manager">
+    <h2>{{ 'meeting_links.title' | translate }}</h2>
+
+    <div class="create-form">
+      <input type="text" [(ngModel)]="titleDraft" [placeholder]="'meeting_links.name_placeholder' | translate" />
+      <input type="datetime-local" [(ngModel)]="expiresAtDraft" />
+      <button class="btn btn-primary" (click)="create()">{{ 'meeting_links.create' | translate }}</button>
+    </div>
+
+    @if (justCreatedLink()) {
+      <div class="just-created-banner">
+        <input type="text" [value]="justCreatedLink()" readonly />
+        <button class="btn btn-sm btn-outline-secondary" (click)="copyJustCreatedLink()">
+          {{ 'meeting_links.copy' | translate }}
+        </button>
+      </div>
+    }
+
+    <table class="meeting-links-table">
+      <tbody>
+        @for (link of links(); track link.id) {
+          <tr [class.revoked]="link.revokedAt">
+            <td>{{ link.title || ('guest_meeting.untitled' | translate) }}</td>
+            <td>{{ link.revokedAt ? ('meeting_links.revoked' | translate) : ('meeting_links.active' | translate) }}</td>
+            <td>
+              @if (!link.revokedAt) {
+                <button class="btn btn-sm btn-outline-primary" (click)="joinOwnMeeting(link)">
+                  {{ 'meeting_links.join' | translate }}
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="revoke(link.id)">
+                  {{ 'meeting_links.revoke' | translate }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

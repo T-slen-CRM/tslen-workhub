@@ -25,6 +25,7 @@ import { InventoryModule } from './resources/inventory/inventory.module';
 import { AppThrottlerModule } from './common/throttler/throttler.module';
 import { ApiTokensModule } from './resources/api-tokens/api-tokens.module';
 import { ExternalTasksModule } from './resources/external-tasks/external-tasks.module';
+import { MeetingLinksModule } from './resources/meeting-links/meeting-links.module';
 import { NotificationsModule } from './resources/notifications/notifications.module';
 import { AuditLogModule } from './resources/audit-log/audit-log.module';
 import { AuditLogMiddleware } from './common/middlewares/audit-log.middleware';
@@ -48,6 +49,7 @@ import { AuditLogMiddleware } from './common/middlewares/audit-log.middleware';
         TaskCommentsModule,
         ApiTokensModule,
         ExternalTasksModule,
+        MeetingLinksModule,
         NotificationsModule,
         CompanyDaysOffRulesModule,
         CompanyModule,

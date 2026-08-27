@@ -1,0 +1,35 @@
+<div class="guest-meeting-page">
+  @switch (state()) {
+    @case ('loading') {
+      <p>{{ 'guest_meeting.loading' | translate }}</p>
+    }
+    @case ('invalid') {
+      <p>{{ 'guest_meeting.invalid_link' | translate }}</p>
+    }
+    @case ('ready') {
+      <div class="guest-join-card">
+        <h2>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</h2>
+        <p>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</p>
+        <input
+          type="text"
+          [formControl]="displayNameControl"
+          [placeholder]="'guest_meeting.your_name' | translate"
+        />
+        <button class="btn btn-primary" [disabled]="displayNameControl.invalid" (click)="join()">
+          {{ 'guest_meeting.join' | translate }}
+        </button>
+        @if (joinError()) {
+          <p class="guest-join-error">{{ 'guest_meeting.join_error' | translate }}</p>
+        }
+      </div>
+    }
+    @case ('in-call') {
+      <app-meeting-room
+        [livekitToken]="connection()!.livekitToken"
+        [roomName]="connection()!.roomName"
+        [displayName]="connection()!.displayName"
+        (leaveRoomOutput)="onLeave()"
+      ></app-meeting-room>
+    }
+  }
+</div>

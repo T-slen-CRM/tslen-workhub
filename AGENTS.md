@@ -41,33 +41,6 @@ via `./node_modules/.bin/eslint "src/**/*.ts" "src/**/*.html"
 --suppress-all`) if you clear out a rule's suppressed violations in a
 file you're touching.
 
-## Task tracking
-
-Track significant feature/architectural work (not small bug fixes) as a
-task in the production Workhub instance itself
-(`https://<your-workhub-instance>`), created via its own external API —
-not by hand through the UI.
-- Endpoint: `POST {baseUrl}/api/v{API_VERSION}/external/tasks` (see
-  `src/resources/external-tasks/`). Auth: `Authorization: Bearer
-  <api-token>`, where the token is minted via `POST /api-tokens` while
-  logged in (see `src/resources/api-tokens/`).
-- Required body field: `title`, `phaseId` (the Kanban column to file
-  into). Resolve it via `GET /api/v{API_VERSION}/external/projects`
-  (same auth), which returns each project with its nested
-  `phases: [{id, name}]` — match the phase by name (e.g. "In progress")
-  under the target project. **Don't infer `phaseId` from the numeric id
-  in a `tasks-list/<id>` UI URL** — that id is the *project* id, not a
-  phase id (confirmed: task 413 files under project 10 "T-slen Workhub",
-  phase 22 "In progress" — the two ids are unrelated numbers).
-- Never guess the API token or `phaseId` against production — ask the
-  user for the token, and either ask which phase or resolve it via the
-  `external/projects` lookup above, before calling this endpoint.
-- **Link the task from the commit(s) that do the work**: once a task
-  exists for the work, append a footer line `Task: <task URL>` to the
-  relevant commit message(s) (after a blank line, like any other
-  trailer) — e.g. `Task: https://<your-workhub-instance>/pages/tasks-list/10;title=T-slen%2520Workhub;task=413`.
-  Skip it only when no task exists yet for that work.
-
 ## Git workflow
 
 - **Conventional Commits** for every commit message: `<type>(<scope>): <description>`

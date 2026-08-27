@@ -1,0 +1,19 @@
+.meeting-links-manager {
+  padding: 16px;
+}
+.create-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.just-created-banner {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.just-created-banner input {
+  flex: 1;
+}
+tr.revoked {
+  opacity: 0.5;
+}

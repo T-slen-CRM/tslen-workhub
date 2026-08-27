@@ -100,6 +100,13 @@ const NavigationItems = [
         icon: 'feather icon-video'
       },
       {
+        id: 'meeting-links',
+        title: 'navigation.meeting_links',
+        type: 'item',
+        url: '/pages/meeting-links',
+        icon: 'feather icon-link'
+      },
+      {
         id: 'google-meet',
         title: 'navigation.meet',
         type: 'item',

@@ -53,7 +53,11 @@ const routes: Routes = [
       },
       {
         path: 'chat', component: ChatComponent, data: { animation: 'ChatComponent' }
-      }
+      },
+      {
+        path: 'meeting-links',
+        loadComponent: () => import('./meeting-links/meeting-links-manager.component').then(module => module.MeetingLinksManagerComponent),
+      },
       ]
   },
 ];

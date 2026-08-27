@@ -20,6 +20,31 @@ export class DataService {
     sendToken<T extends { roomName: string, participantName: string}>(url: string, data: T){
         return this.http.post<{ token: string }>(this.apiHost + url, data);
     }
+    getPublicMeetingLink(token: string) {
+        return this.http.get<{ title: string | null; hostName: string; roomName: string }>(
+            this.apiHost + '/meeting-links/public/' + token,
+        );
+    }
+    joinMeetingAsGuest(token: string, displayName: string) {
+        return this.http.post<{ livekitToken: string; roomName: string }>(
+            this.apiHost + '/meeting-links/' + token + '/join',
+            { displayName },
+        );
+    }
+    createMeetingLink(data: { title?: string; expiresAt?: string }) {
+        return this.http.post<{ id: number; token: string; roomName: string; title: string | null; expiresAt: string | null }>(
+            this.apiHost + '/meeting-links',
+            data,
+        );
+    }
+    listMeetingLinks() {
+        return this.http.get<{ id: number; title: string | null; roomName: string; expiresAt: string | null; revokedAt: string | null; createdAt: string }[]>(
+            this.apiHost + '/meeting-links',
+        );
+    }
+    revokeMeetingLink(id: number) {
+        return this.http.delete<void>(this.apiHost + '/meeting-links/' + id);
+    }
     deleteSsp(id: number) {
         return this.http.delete(this.apiHost + `/ssp/${id}`)
     }

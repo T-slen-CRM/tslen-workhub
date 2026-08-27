@@ -1,0 +1,53 @@
+[changelog]
+header = """
+# Changelog
+
+All notable changes to this project are documented here. Entries are
+generated automatically by [git-cliff](https://git-cliff.org/) from
+Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
+see `cliff.toml` and `.github/workflows/release.yml`.
+"""
+body = """
+{% if version %}\
+    {% if previous.version %}\
+        ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/T-slen-CRM/tslen-workhub/compare/{{ previous.version }}...{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% else %}\
+        ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+    {% endif %}\
+{% else %}\
+    ## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | striptags | trim | upper_first }}
+    {% for commit in commits %}
+        - {% if commit.scope %}*({{ commit.scope }})* {% endif %}{{ commit.message | upper_first }}
+    {% endfor %}
+{% endfor %}
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+protect_breaking_commits = true
+commit_parsers = [
+  { footer = "BREAKING CHANGE", group = "<!-- 0 -->Breaking Changes" },
+  { message = "^[a-zA-Z]+(\\([^)]+\\))?!:", group = "<!-- 0 -->Breaking Changes" },
+  { message = "^feat", group = "<!-- 1 -->Features" },
+  { message = "^fix", group = "<!-- 2 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 3 -->Performance" },
+  { message = "^refactor", group = "<!-- 4 -->Refactor" },
+  { message = "^doc", group = "<!-- 5 -->Other" },
+  { message = "^test", group = "<!-- 5 -->Other" },
+  { message = "^build", group = "<!-- 5 -->Other" },
+  { message = "^ci", group = "<!-- 5 -->Other" },
+  { message = "^style", group = "<!-- 5 -->Other" },
+  { message = "^chore", skip = true },
+  { message = ".*", group = "<!-- 5 -->Other" },
+]
+filter_commits = false
+tag_pattern = "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+topo_order = false
+sort_commits = "oldest"

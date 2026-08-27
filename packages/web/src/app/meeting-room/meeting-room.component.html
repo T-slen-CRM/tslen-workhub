@@ -1,0 +1,64 @@
+<div class="meeting-room">
+  <div class="meeting-header">
+    <span class="meeting-room-name">{{ roomName() }}</span>
+    <div class="meeting-controls">
+      <button
+        class="btn btn-sm"
+        [ngClass]="cameraIsEnable() ? 'btn-success' : 'btn-danger'"
+        (click)="setCameraEnabled(!cameraIsEnable())"
+      >
+        <i class="fas" [ngClass]="cameraIsEnable() ? 'fa-video' : 'fa-video-slash'"></i>
+      </button>
+      <button
+        class="btn btn-sm"
+        [ngClass]="microphoneEnabled() ? 'btn-success' : 'btn-danger'"
+        (click)="setMicrophoneEnabled(!microphoneEnabled())"
+      >
+        <i class="fas" [ngClass]="microphoneEnabled() ? 'fa-microphone' : 'fa-microphone-slash'"></i>
+      </button>
+      <button
+        class="btn btn-sm"
+        [ngClass]="screenShareEnabled() ? 'btn-warning' : 'btn-info'"
+        (click)="setScreenShareEnabled(!screenShareEnabled())"
+      >
+        <i class="fas" [ngClass]="screenShareEnabled() ? 'fa-stop' : 'fa-desktop'"></i>
+      </button>
+      <button class="btn btn-sm" (click)="chatOpen.set(!chatOpen())">
+        <i class="fas fa-comment"></i>
+      </button>
+      <button class="btn btn-sm btn-danger" (click)="leaveRoom()">
+        <i class="fas fa-sign-out-alt"></i> {{ 'meeting_room.leave' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="meeting-video-grid">
+    @if (localTrack()) {
+      <video-component
+        [track]="localTrack()!"
+        [participantIdentity]="displayName() + ' ' + ('meeting_room.you_suffix' | translate)"
+        [local]="true"
+      ></video-component>
+    }
+    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
+      @if (remoteTrack.trackPublication.kind === 'video') {
+        <video-component
+          [track]="remoteTrack.trackPublication.videoTrack!"
+          [participantIdentity]="remoteTrack.participantIdentity"
+          [local]="false"
+        ></video-component>
+      } @else if (remoteTrack.trackPublication.kind === 'audio') {
+        <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+      }
+    }
+  </div>
+
+  <!-- Kept mounted at all times and only hidden: the message history lives in this
+       component, but destroying the panel would still lose the draft and scroll
+       position, and `chatOpen()` is purely a visibility toggle now. -->
+  <app-meeting-chat
+    [class.meeting-chat-hidden]="!chatOpen()"
+    [messages]="messages()"
+    (messageSent)="sendChatMessage($event)"
+  ></app-meeting-chat>
+</div>

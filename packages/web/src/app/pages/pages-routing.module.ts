@@ -53,7 +53,7 @@ const routes: Routes = [
       },
       {
         path: 'chat', component: ChatComponent, data: { animation: 'ChatComponent' }
-      }
+      },
       ]
   },
 ];

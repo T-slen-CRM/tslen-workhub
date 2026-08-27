@@ -1,0 +1,23 @@
+.meeting-room {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1b1b1f;
+  color: #fff;
+}
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+app-meeting-chat.meeting-chat-hidden {
+  display: none;
+}
+.meeting-video-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+  padding: 8px;
+}

@@ -1,0 +1,38 @@
+.meeting-links-manager {
+  padding: 16px;
+}
+.create-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.clear-expires-icon {
+  cursor: pointer;
+}
+.just-created-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.just-created-field {
+  flex: 1;
+}
+.meeting-links-table {
+  display: block;
+  width: 100%;
+}
+/*
+ * app-ag-grid-table's own template wraps ag-grid-angular in a div with
+ * id="meeting-links-table" and class "ag-grid-full-height", which
+ * globally defaults to 85vh (sized for dedicated full-page grids). This
+ * panel sits inside a tab alongside a compact create-form, so it needs a
+ * bounded height instead - ::ng-deep is required since that div belongs
+ * to the child component's own template, outside this component's style
+ * encapsulation.
+ */
+::ng-deep #meeting-links-table.ag-grid-full-height {
+  height: 400px;
+}

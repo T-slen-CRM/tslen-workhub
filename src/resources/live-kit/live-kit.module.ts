@@ -8,22 +8,22 @@ import { LiveKitWebhookController } from './live-kit-webhook.controller';
 import { LiveKitGateway } from './gateway/live-kit.gateway';
 import { JwtService } from '@nestjs/jwt';
 
+const liveKitClientModule = ClientsModule.register([
+    {
+        name: 'LIVEKIT_PACKAGE',
+        transport: Transport.GRPC,
+        options: {
+            package: 'livekit',
+            protoPath: join(process.cwd(), 'proto/live-kit.proto'),
+            url: process.env.LIVE_KIT_SERVER
+        },
+    },
+]);
+
 @Module({
-    imports: [
-        ClientsModule.register([
-            {
-                name: 'LIVEKIT_PACKAGE',
-                transport: Transport.GRPC,
-                options: {
-                    package: 'livekit',
-                    protoPath: join(process.cwd(), 'proto/live-kit.proto'),
-                    url: process.env.LIVE_KIT_SERVER
-                },
-            },
-        ]),
-    ],
+    imports: [liveKitClientModule],
     controllers: [LiveKitTokenController, LiveKitGrpcController, LiveKitWebhookController],
     providers: [LiveKitGrpcService, LiveKitGateway, JwtService],
-    exports: [LiveKitGateway],
+    exports: [LiveKitGateway, liveKitClientModule],
 })
 export class LiveKitModule {}

@@ -103,7 +103,7 @@
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 4
+      "count": 5
     }
   },
   "src/app/components/autocomplete/autocomplete/autocomplete.component.ts": {
@@ -416,6 +416,14 @@
       "count": 3
     }
   },
+  "src/app/components/data-grid/meeting-links-actions-renderer.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
   "src/app/components/data-grid/multi-value-renderer.component.ts": {
     "@typescript-eslint/no-empty-function": {
       "count": 1
@@ -668,6 +676,11 @@
       "count": 1
     }
   },
+  "src/app/guest-meeting/guest-meeting-landing.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
   "src/app/helpers/loading-logo/loading-logo.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
@@ -730,6 +743,26 @@
   "src/app/language/language.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 3
+    }
+  },
+  "src/app/meeting-room/meeting-chat/meeting-chat.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/meeting-room/meeting-chat/meeting-chat.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/meeting-room/meeting-room.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/meeting-room/meeting-room.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
     }
   },
   "src/app/pages/authentication/auth-change-password/auth-change-password.component.ts": {

@@ -1,11 +1,16 @@
-<!--<h2 class="user_title">{{'meet.all_user_name'| translate}}</h2>-->
-
-<div class="live-kit-main-container">
-    <div class="live-kit-user-list">
+<mat-tab-group class="live-kit-tabs">
+  <mat-tab [label]="'navigation.tslen_meet' | translate">
+    <div class="live-kit-main-container">
+      <div class="live-kit-user-list">
         <app-live-kit-table></app-live-kit-table>
-    </div>
-    <div class="live-chat-container">
+      </div>
+      <div class="live-chat-container">
         <!-- chat container -->
         <app-live-chat></app-live-chat>
+      </div>
     </div>
-</div>
+  </mat-tab>
+  <mat-tab [label]="'meeting_links.title' | translate">
+    <app-meeting-links-manager></app-meeting-links-manager>
+  </mat-tab>
+</mat-tab-group>

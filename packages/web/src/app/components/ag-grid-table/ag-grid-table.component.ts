@@ -19,6 +19,7 @@ export class AgGridTableComponent {
   columnDefs = input<any>([]);
   components = input<any>();
   rowData = input<any>();
+  context = input<any>();
   sizeColumnsToFit = input<boolean>(false);
   headerHeight = input<number>(81);
   rowHeight = input<number>(38);

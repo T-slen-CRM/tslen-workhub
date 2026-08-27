@@ -1,0 +1,18 @@
+<div class="meeting-chat">
+  <div class="meeting-chat-messages">
+    @for (message of messages(); track $index) {
+      <div class="meeting-chat-message">
+        <strong>{{ message.senderName }}:</strong> {{ message.text }}
+      </div>
+    }
+  </div>
+  <div class="meeting-chat-input">
+    <input
+      type="text"
+      [(ngModel)]="draft"
+      (keydown.enter)="send()"
+      [placeholder]="'meeting_room.chat_placeholder' | translate"
+    />
+    <button class="btn btn-sm btn-primary" (click)="send()">{{ 'meeting_room.send' | translate }}</button>
+  </div>
+</div>

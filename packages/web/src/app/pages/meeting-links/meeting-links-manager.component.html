@@ -1,0 +1,51 @@
+@if (activeRoom()) {
+  <app-meeting-room
+    [livekitToken]="activeRoom()!.livekitToken"
+    [roomName]="activeRoom()!.roomName"
+    [displayName]="activeRoom()!.displayName"
+    (leaveRoomOutput)="onLeaveOwnMeeting()"
+  ></app-meeting-room>
+} @else {
+  <div class="meeting-links-manager">
+    <div class="create-form">
+      <mat-form-field class="mat-field-standard" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'meeting_links.name_placeholder' | translate }}</mat-label>
+        <input matInput type="text" [(ngModel)]="titleDraft" />
+      </mat-form-field>
+
+      <mat-form-field class="mat-field-standard" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'meeting_links.expires_at' | translate }}</mat-label>
+        <input matInput [matDatepicker]="expiresAtPicker" [(ngModel)]="expiresAtDraft" />
+        <mat-datepicker-toggle matSuffix [for]="expiresAtPicker"></mat-datepicker-toggle>
+        @if (expiresAtDraft) {
+          <mat-icon matSuffix (click)="clearExpiresAt()" class="clear-expires-icon">remove</mat-icon>
+        }
+        <mat-datepicker #expiresAtPicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="create()">
+        {{ 'meeting_links.create' | translate }}
+      </button>
+    </div>
+
+    @if (justCreatedLink()) {
+      <div class="just-created-banner">
+        <mat-form-field class="input-mat-select just-created-field" appearance="outline" subscriptSizing="dynamic">
+          <input matInput type="text" [value]="justCreatedLink()" readonly />
+        </mat-form-field>
+        <button mat-icon-button [matTooltip]="'meeting_links.copy' | translate" (click)="copyJustCreatedLink()">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+    }
+
+    <app-ag-grid-table
+      class="meeting-links-table"
+      tableId="meeting-links-table"
+      [rowData]="links()"
+      [columnDefs]="columnDefs"
+      [components]="components"
+      [context]="context"
+    ></app-ag-grid-table>
+  </div>
+}

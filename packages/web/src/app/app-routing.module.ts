@@ -45,6 +45,10 @@ const routes: Routes = [
     canActivate : [AuthGuard]
   },
   {
+    path: 'meet/:token',
+    loadComponent: () => import('./guest-meeting/guest-meeting-landing.component').then(m => m.GuestMeetingLandingComponent),
+  },
+  {
     path: '**',
     redirectTo: 'auth/login'
   },

@@ -38,6 +38,7 @@ import {PendingActionsRendererComponent} from "./data-grid/pending-actions-rende
 import {MatTableModule} from "@angular/material/table";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {PendingChangeUserLinkRendererComponent} from "./data-grid/pending-change-user-link-renderer.component";
+import {MeetingLinksActionsRendererComponent} from "./data-grid/meeting-links-actions-renderer.component";
 
 import {SingleAutocompleteComponent} from "./autocomplete/single-autocomplete/single-autocomplete.component";
 
@@ -66,6 +67,7 @@ import { TranslateModule } from '@ngx-translate/core';
       PendingAggridComponent,
       PendingActionsRendererComponent,
       PendingChangeUserLinkRendererComponent,
+      MeetingLinksActionsRendererComponent,
 
       SingleAutocompleteComponent,
 
@@ -111,6 +113,7 @@ import { TranslateModule } from '@ngx-translate/core';
         PendingAggridComponent,
         PendingActionsRendererComponent,
         PendingChangeUserLinkRendererComponent,
+        MeetingLinksActionsRendererComponent,
 
         AgGridLoading,
         AgGridTableComponent,

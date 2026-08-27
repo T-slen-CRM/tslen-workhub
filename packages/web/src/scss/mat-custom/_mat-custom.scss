@@ -1,3 +1,12 @@
+// Standard width for a single mat-form-field, matching the size of the
+// task dialog's Priority/Estimate fields (task-create-edit.component) so
+// any new form built with outlined Material fields matches that look
+// without re-measuring it each time.
+.mat-field-standard {
+  width: 300px;
+  max-width: 100%;
+}
+
 .split-columns-dropdown {
   button.mat-menu-item {
     width: 50%!important;

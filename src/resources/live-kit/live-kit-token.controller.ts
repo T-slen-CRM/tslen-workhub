@@ -3,7 +3,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
 import { CreateLiveKitDto } from './dto/create-live-kit.dto';
 
-interface LiveKitTokenMicroservice {
+export interface LiveKitTokenMicroservice {
   LiveKitToken(data: { roomName: string; participantName: string }): Observable<{ token: string }>;
 }
 

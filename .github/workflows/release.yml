@@ -23,7 +23,7 @@ jobs:
         with:
           version: v2.13.1
           config: cliff.toml
-          args: --config cliff.toml --output CHANGELOG.md
+          args: --output CHANGELOG.md
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
@@ -42,7 +42,7 @@ jobs:
         with:
           version: v2.13.1
           config: cliff.toml
-          args: --config cliff.toml --latest --strip header
+          args: --latest --strip header
         env:
           OUTPUT: RELEASE_NOTES.md
           GITHUB_REPO: ${{ github.repository }}

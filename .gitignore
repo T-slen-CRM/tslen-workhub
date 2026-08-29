@@ -37,6 +37,9 @@ lerna-debug.log*
 #configs
 .env
 /start.sh
+/provision-vps.sh
+/docker-compose.traefik.yml
+/docker-compose.postgres.yml
 /upload
 #credentials/t-slen-firebase-adminsdk.json
 #/credentials/*.json

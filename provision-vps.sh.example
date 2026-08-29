@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# Copy this file to provision-vps.sh (gitignored, same idea as
+# .env.example -> .env) and customize if needed, then:
+#
+#   git clone <this repo> && cd tslen-workhub
+#   chmod +x provision-vps.sh && sudo ./provision-vps.sh
+#
+# One-time setup for a FRESH Ubuntu VPS: OS hardening basics, Docker, the
+# tslen-net network, and (once you've copied the two compose .example files
+# and filled in .env - see README step 7) Postgres and Traefik. It does NOT
+# build or start the app itself - that's still ./start.sh, run manually
+# after you've reviewed .env and placed your credentials/*.json files.
+#
+# Safe to re-run: every step checks whether it already did its job before
+# doing it again.
+set -euo pipefail
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Run this as root (e.g. via sudo): sudo ./provision-vps.sh" >&2
+  exit 1
+fi
+
+# Set HARDEN_SSH=true only after you've confirmed you can log in with an SSH
+# key (not a password) in a SEPARATE terminal - this disables root login and
+# password auth, and getting it wrong before verifying key access locks you
+# out with no way back in except your VPS provider's console.
+HARDEN_SSH="${HARDEN_SSH:-false}"
+SSH_PORT="${SSH_PORT:-22}"
+
+echo "==> [1/7] Updating packages"
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get upgrade -y
+
+echo "==> [2/7] Installing base tools (ufw, fail2ban, unattended-upgrades, git, curl)"
+apt-get install -y ufw fail2ban unattended-upgrades git curl ca-certificates gnupg
+
+echo "==> [3/7] Enabling automatic security updates"
+dpkg-reconfigure -f noninteractive unattended-upgrades
+
+echo "==> [4/7] Firewall: allow SSH/HTTP/HTTPS, deny everything else"
+ufw allow "${SSH_PORT}/tcp"
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw --force enable
+
+echo "==> [5/7] fail2ban (protects sshd against brute-force login attempts)"
+systemctl enable --now fail2ban
+
+echo "==> [6/7] Docker Engine + Compose plugin"
+if ! command -v docker >/dev/null 2>&1; then
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  # shellcheck source=/etc/os-release
+  . /etc/os-release
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu ${VERSION_CODENAME} stable" \
+    > /etc/apt/sources.list.d/docker.list
+  apt-get update
+  apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+else
+  echo "    docker already installed, skipping"
+fi
+systemctl enable --now docker
+
+echo "==> [7/7] tslen-net Docker network (shared by Traefik, Postgres and the app)"
+docker network inspect tslen-net >/dev/null 2>&1 || docker network create tslen-net
+
+if [ "${HARDEN_SSH}" = "true" ]; then
+  echo "==> Hardening sshd (root login + password auth disabled)"
+  echo "    You confirmed key-based login already works (HARDEN_SSH=true) - proceeding."
+  sed -i \
+    -e 's/^#\?PermitRootLogin.*/PermitRootLogin no/' \
+    -e 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' \
+    /etc/ssh/sshd_config
+  systemctl restart sshd
+else
+  echo "==> Skipping sshd hardening (HARDEN_SSH is not 'true')"
+  echo "    Confirm SSH key login works from a separate terminal, then re-run"
+  echo "    with HARDEN_SSH=true ./provision-vps.sh to disable root/password login."
+fi
+
+cat <<'EOF'
+
+==> Server provisioning done. Remaining steps (from the repo root):
+    1. Point this domain's DNS A/AAAA record at this server's public IP.
+    2. Copy docker-compose.postgres.yml.example -> docker-compose.postgres.yml
+       and docker-compose.traefik.yml.example -> docker-compose.traefik.yml.
+    3. Copy .env.example -> .env and fill in real values (DB_USER/DB_PASSWORD/
+       DB_SCHEMA, ACME_EMAIL, your domain, LiveKit Cloud keys, etc.) - DB_HOST
+       should be tslen-postgres for this deployment path.
+    4. Place your credential JSON files under ./credentials/.
+    5. Bring up the database and reverse proxy:
+         docker compose -f docker-compose.postgres.yml up -d
+         docker compose -f docker-compose.traefik.yml up -d
+    6. Copy start.sh.example -> start.sh, set DOMAIN, then:
+         chmod +x start.sh && ./start.sh
+EOF

@@ -1,0 +1,46 @@
+# Production Postgres for this app - copy this file to
+# docker-compose.postgres.yml (gitignored, same idea as .env.example -> .env)
+# and start it BEFORE running start.sh.
+#
+# Deliberately separate from the app's own docker-compose.yml, which is a
+# local-dev-only quickstart (POSTGRES_HOST_AUTH_METHOD: trust, no real
+# password) - never use that one in production.
+#
+# Run from the repo root so Compose auto-loads DB_USER/DB_PASSWORD/DB_SCHEMA
+# from the .env file that's already there (see .env.example): this is the
+# SAME .env start.sh passes to the app container, so the two are
+# guaranteed to agree on credentials - no second place to keep them in sync.
+#
+#   docker network create tslen-net   # once, before either compose file
+#   docker compose -f docker-compose.postgres.yml up -d
+#
+# Then in your real .env, set DB_HOST=tslen-postgres (this container's
+# name) before running start.sh - .env.example's DB_HOST=127.0.0.1 default
+# is only correct for bare-metal dev against a locally-installed Postgres.
+services:
+  postgres:
+    image: postgres:16
+    container_name: tslen-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:?Set DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env - do not deploy with the .env.example placeholder}
+      POSTGRES_DB: ${DB_SCHEMA:?Set DB_SCHEMA in .env}
+    volumes:
+      - tslen-pgdata:/var/lib/postgresql/data
+    networks:
+      - tslen-net
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_SCHEMA}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # No `ports:` here on purpose - this database must never be reachable
+    # from outside tslen-net, only from the app container at DB_HOST.
+
+networks:
+  tslen-net:
+    external: true
+
+volumes:
+  tslen-pgdata:

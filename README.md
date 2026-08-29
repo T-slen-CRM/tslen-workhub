@@ -68,10 +68,32 @@ full reference.
    default `MODE=DEV`); for a `MODE=PROD` deployment, migrations run
    automatically instead (`npm run migration:run` is only needed manually
    for bare-metal dev, and only once your schema already exists).
-7. For a production deployment behind Traefik with automatic HTTPS, copy
-   `start.sh.example` to `start.sh` (gitignored, same idea as
-   `.env.example` → `.env`), set `DOMAIN` and customize as needed, then
-   `chmod +x start.sh && ./start.sh`.
+7. For a production deployment behind Traefik with automatic HTTPS, on a
+   fresh Ubuntu VPS:
+   1. Clone this repo on the server, copy `provision-vps.sh.example` to
+      `provision-vps.sh` (gitignored, same idea as `.env.example` → `.env`),
+      then `chmod +x provision-vps.sh && sudo ./provision-vps.sh`. One-time
+      OS setup: firewall (ufw), fail2ban, automatic security updates,
+      Docker Engine + Compose plugin, and the `tslen-net` Docker network
+      that Traefik, Postgres and the app all share. It does **not** start
+      the app itself, and it does not touch SSH's root/password login
+      unless you explicitly opt in (see the script's `HARDEN_SSH` comment)
+      - confirm key-based SSH login works before ever disabling password
+      auth.
+   2. Point the domain's DNS A/AAAA record at the server's IP.
+   3. Copy `docker-compose.postgres.yml.example` and
+      `docker-compose.traefik.yml.example` to their real (gitignored)
+      names, and `.env.example` to `.env` - fill in real values
+      (`DB_USER`/`DB_PASSWORD`/`DB_SCHEMA`, `ACME_EMAIL`, your domain,
+      LiveKit keys, etc.); set `DB_HOST=tslen-postgres`. Place credential
+      JSON files under `./credentials/`.
+   4. From the repo root (so Compose picks up `.env` automatically):
+      ```bash
+      docker compose -f docker-compose.postgres.yml up -d
+      docker compose -f docker-compose.traefik.yml up -d
+      ```
+   5. Copy `start.sh.example` to `start.sh`, set `DOMAIN`, then
+      `chmod +x start.sh && ./start.sh`.
 
 ## CI checks
 

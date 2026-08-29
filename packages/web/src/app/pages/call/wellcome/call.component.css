@@ -144,6 +144,7 @@
     align-items: center;
     gap: 0.5rem;
     overflow: hidden;
+    min-width: 0;
 }
 
 .room-link-label {
@@ -152,7 +153,14 @@
 }
 
 .call-link-field {
+    /* A flexible min/preferred/max instead of a fixed width - on a narrow
+       phone-width header this shrinks along with its siblings instead of
+       forcing the row to overflow (min-width:0 lets a flex item shrink below
+       its content's natural width, which the default `auto` would prevent). */
     width: 200px;
+    max-width: 100%;
+    flex: 1 1 100px;
+    min-width: 0;
 }
 /* Material's default outline/text colors assume a light surrounding page;
    #room-header is always dark (see above) - same treatment as
@@ -243,6 +251,26 @@
     width: 18px;
     height: 18px;
     font-size: 18px;
+}
+/* Collapsed mode is a small glance view (see collapsible-call-window.css) -
+   same compaction treatment as MeetingRoomComponent's collapsed header:
+   hide the room-link row and tighten the control row so it doesn't wrap
+   awkwardly inside the tiny window. */
+#room.collapsible-call-window--collapsed #room-header {
+    padding: 4px 8px;
+}
+#room.collapsible-call-window--collapsed .room-info {
+    display: none;
+}
+#room.collapsible-call-window--collapsed .video-controls {
+    gap: 0;
+}
+/* Mobile: shrink the device-picker dropdowns so the header's control row
+   fits a phone-width viewport without overflowing. */
+@media (max-width: 600px) {
+    .call-device-select {
+        width: 96px;
+    }
 }
 .call-body {
     position: relative;

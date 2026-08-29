@@ -36,6 +36,26 @@
   display: flex;
   gap: 16px;
   align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.pre-join-control mat-button-toggle-group {
+  flex-wrap: wrap;
+}
+/* Mobile: narrower gaps and a smaller preview/device-select so the lobby
+   fits a phone-width viewport without any element forcing horizontal
+   overflow. */
+@media (max-width: 480px) {
+  .pre-join-lobby {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+  .pre-join-controls {
+    gap: 12px;
+  }
+  .pre-join-device-select {
+    width: 130px;
+  }
 }
 .pre-join-control {
   display: flex;

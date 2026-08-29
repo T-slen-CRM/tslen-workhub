@@ -4,6 +4,11 @@
   top: 0;
   bottom: 0;
   width: 280px;
+  /* On a phone-width call window this panel is wider than its container -
+     clamped so it never forces the window to scroll horizontally; it simply
+     takes over the full width instead, same as a real video app's mobile
+     chat overlay. */
+  max-width: 100%;
   background: #fff;
   color: #000;
   display: flex;

@@ -4,10 +4,14 @@
   top: 0;
   bottom: 0;
   width: 220px;
+  /* See meeting-chat.component.css's identical comment - clamped so it never
+     forces the (possibly phone-width) call window to scroll horizontally. */
+  max-width: 100%;
   background: #fff;
   color: #000;
   padding: 12px;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .raised-hands-empty {
   color: #666;

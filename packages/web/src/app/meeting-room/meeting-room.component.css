@@ -13,8 +13,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 4px;
   padding: 8px 16px;
   cursor: move;
+}
+.meeting-room-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 /* Collapsed mode is a small 300x220 glance view (see
    collapsible-call-window.css) - both selectors below target the same
@@ -93,7 +101,21 @@ app-meeting-chat.meeting-chat-hidden {
 .meeting-controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
+}
+/* Mobile: shrink the device-picker dropdowns and the video-tile minimum size
+   so the header controls and grid both fit a phone-width viewport without
+   forcing horizontal overflow. */
+@media (max-width: 600px) {
+  .meeting-device-select {
+    width: 96px;
+  }
+  .meeting-video-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 4px;
+    padding: 4px;
+  }
 }
 .meeting-hand-count {
   display: inline-block;

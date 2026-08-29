@@ -32,3 +32,27 @@
   width: calc(100vw - 150px);
   height: calc(100vh - 105px);
 }
+
+/* Mobile: the desktop expanded size assumes a fixed side nav taking up the
+   left 75px plus a mirrored right margin - on a phone-width viewport that
+   wastes most of the already-scarce screen, and the collapsed glance view's
+   fixed 300px would itself overflow a narrow viewport. Both are widened to
+   use nearly the full screen instead, matching how a real video app's call
+   window behaves on mobile. */
+@media (max-width: 700px) {
+  .collapsible-call-window {
+    top: 56px;
+    right: 8px;
+  }
+  .collapsible-call-window--collapsed {
+    width: min(260px, calc(100vw - 16px));
+    height: 190px;
+  }
+  .collapsible-call-window--expanded {
+    top: 56px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    height: calc(100vh - 72px);
+  }
+}

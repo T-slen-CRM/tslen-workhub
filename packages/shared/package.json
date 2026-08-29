@@ -1,0 +1,16 @@
+{
+  "name": "@tslen-workhub/shared",
+  "version": "1.0.0",
+  "description": "Framework-agnostic TypeScript types shared between the NestJS backend and the Angular frontend.",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

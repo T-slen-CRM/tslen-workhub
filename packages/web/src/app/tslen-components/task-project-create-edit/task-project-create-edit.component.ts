@@ -86,10 +86,13 @@ export class TaskProjectCreateEditComponent implements OnInit {
             ? this.form.value.slackChannel.trim()
             : this.form.value.slackChannel,
         );
+      // isPrivate is stored as an int (0/1) column, but the checkbox's
+      // change event emits a real boolean once the user has toggled it.
+      const value = { ...this.form.value, isPrivate: this.form.value.isPrivate ? 1 : 0 };
       if (this.incomingProject) {
-        this.closeDialog('edit', this.form.value);
+        this.closeDialog('edit', value);
       } else {
-        this.closeDialog('save', this.form.value);
+        this.closeDialog('save', value);
       }
     }
   }

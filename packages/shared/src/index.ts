@@ -3,3 +3,4 @@
 export * from './role';
 export * from './google';
 export * from './current-user';
+export * from './task';

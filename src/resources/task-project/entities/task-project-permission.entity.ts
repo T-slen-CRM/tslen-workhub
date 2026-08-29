@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Users } from '../../users/entities/users.entity';
 import { TaskProject } from './task-project.entity';
+import { ProjectPermissionLevel } from '@tslen-workhub/shared';
 
 @Index("taskProjectPermission_users_id_fk", ["userId"], {})
 @Entity("taskProjectPermission")
@@ -26,7 +27,7 @@ export class TaskProjectPermission {
       nullable: true,
       enum: ["read", "write", "admin"],
   })
-      permission: "read" | "write" | "admin" | null;
+      permission: ProjectPermissionLevel | null;
 
   @ManyToOne(
       () => TaskProject,

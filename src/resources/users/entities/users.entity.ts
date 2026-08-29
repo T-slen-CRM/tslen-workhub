@@ -5,6 +5,7 @@ import {
   OneToMany,
   OneToOne
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { UserRelationToGroup } from './user-relation-to-group.entity';
 import { DaysOffEntity } from '../../company-days-off-rules/entities/days-off.entity';
 import { UserChiefRelationEntity } from './user-chief-relation.entity';
@@ -44,6 +45,7 @@ export class Users extends BaseAbstractEntity<Users> {
   @Column("varchar", { name: "country", nullable: true, length: 255 })
   country: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "password", length: 255 })
   password: string;
 
@@ -65,9 +67,11 @@ export class Users extends BaseAbstractEntity<Users> {
   @Column("varchar", { name: "emailSpare", nullable: true, length: 255 })
   emailSpare: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "tokenActivation", nullable: true, length: 255 })
   tokenActivation: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "tokenReset", nullable: true, length: 255 })
   tokenReset: string | null;
 

@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { CorsMiddleware } from './common/middlewares/cors.middlewares';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
@@ -22,7 +22,7 @@ async function bootstrap () {
     app.use(new CorsMiddleware().use);
     app.setGlobalPrefix('/api/v' + app.get(ConfigService).get('API_VERSION')); // Setting base path
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
-    app.useGlobalInterceptors(new TimeoutInterceptor());
+    app.useGlobalInterceptors(new TimeoutInterceptor(), new ClassSerializerInterceptor(app.get(Reflector)));
 
     if (!isProduction) {
         const options = new DocumentBuilder()

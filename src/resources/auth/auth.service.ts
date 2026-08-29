@@ -174,8 +174,6 @@ export interface IUserPayloadJwt{
     phone: string;
     skype: string;
     emailSpare: string;
-    tokenActivation: string;
-    tokenReset: string;
     isActive: number;
     companyId: number;
     chiefId: number;
@@ -200,8 +198,6 @@ export class UserPayloadJwt implements IUserPayloadJwt{
     phone: string;
     skype: string;
     emailSpare: string;
-    tokenActivation: string;
-    tokenReset: string;
     isActive: number;
     companyId: number;
     chiefId: number;
@@ -225,8 +221,6 @@ export class UserPayloadJwt implements IUserPayloadJwt{
         this.phone = user.phone;
         this.skype = user.skype;
         this.emailSpare = user.emailSpare;
-        this.tokenActivation = user.tokenActivation;
-        this.tokenReset = user.tokenReset;
         this.isActive = user.isActive;
         this.companyId = user.companyId;
         this.chiefId = user.chiefId;

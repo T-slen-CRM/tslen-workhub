@@ -573,7 +573,12 @@
         "switch_to_camera": "Switch to camera",
         "turn_off_camera": "Turn off camera",
         "exit_fullscreen": "Exit Fullscreen",
-        "click_to_make_main_video": "Click to make main video"
+        "click_to_make_main_video": "Click to make main video",
+        "unnamed_camera": "Camera",
+        "unnamed_microphone": "Microphone",
+        "toggle_raise_hand": "Raise/lower hand",
+        "raised_hands": "Raised hands",
+        "toggle_chat": "Toggle chat"
     },
     "autocomplete": {
         "item_selection": "Item selection"
@@ -593,7 +598,25 @@
       "leave": "Leave",
       "you_suffix": "(You)",
       "chat_placeholder": "Type a message…",
-      "send": "Send"
+      "send": "Send",
+      "unnamed_camera": "Camera",
+      "unnamed_microphone": "Microphone",
+      "raised_hands_title": "Raised hands",
+      "no_raised_hands": "No one has raised their hand yet."
+    },
+    "pre_join_lobby": {
+      "camera_unavailable": "Camera unavailable",
+      "microphone_unavailable": "Microphone unavailable",
+      "background_none": "None",
+      "blur": "Blur",
+      "background_image": "Image",
+      "background_office": "Office",
+      "background_gradient": "Blue gradient",
+      "background_solid": "Solid gray",
+      "blur_unavailable": "Background effects aren't supported in this browser",
+      "unnamed_camera": "Camera",
+      "unnamed_microphone": "Microphone",
+      "join": "Join meeting"
     },
     "guest_meeting": {
       "loading": "Loading meeting…",

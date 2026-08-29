@@ -1,64 +1,110 @@
-<div class="meeting-room">
-  <div class="meeting-header">
+<div class="meeting-room" appCollapsibleCallWindow #win="appCollapsibleCallWindow" cdkDrag cdkDragBoundary="body">
+  <div class="meeting-header" cdkDragHandle>
     <span class="meeting-room-name">{{ roomName() }}</span>
     <div class="meeting-controls">
-      <button
-        class="btn btn-sm"
-        [ngClass]="cameraIsEnable() ? 'btn-success' : 'btn-danger'"
-        (click)="setCameraEnabled(!cameraIsEnable())"
-      >
-        <i class="fas" [ngClass]="cameraIsEnable() ? 'fa-video' : 'fa-video-slash'"></i>
+      <button mat-icon-button type="button" [color]="cameraIsEnable() ? 'primary' : 'warn'" (click)="setCameraEnabled(!cameraIsEnable())">
+        <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
       </button>
-      <button
-        class="btn btn-sm"
-        [ngClass]="microphoneEnabled() ? 'btn-success' : 'btn-danger'"
-        (click)="setMicrophoneEnabled(!microphoneEnabled())"
-      >
-        <i class="fas" [ngClass]="microphoneEnabled() ? 'fa-microphone' : 'fa-microphone-slash'"></i>
+      @if (!win.collapsed() && videoDevices().length > 0) {
+        <mat-form-field class="meeting-device-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select panelClass="meeting-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
+            @for (device of videoDevices(); track device.deviceId) {
+              <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_camera' | translate) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      <button mat-icon-button type="button" [color]="microphoneEnabled() ? 'primary' : 'warn'" (click)="setMicrophoneEnabled(!microphoneEnabled())">
+        <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
       </button>
-      <button
-        class="btn btn-sm"
-        [ngClass]="screenShareEnabled() ? 'btn-warning' : 'btn-info'"
-        (click)="setScreenShareEnabled(!screenShareEnabled())"
-      >
-        <i class="fas" [ngClass]="screenShareEnabled() ? 'fa-stop' : 'fa-desktop'"></i>
+      @if (!win.collapsed() && audioDevices().length > 0) {
+        <mat-form-field class="meeting-device-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select panelClass="meeting-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
+            @for (device of audioDevices(); track device.deviceId) {
+              <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_microphone' | translate) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      @if (!win.collapsed()) {
+        <button mat-icon-button type="button" [color]="screenShareEnabled() ? 'accent' : undefined" (click)="setScreenShareEnabled(!screenShareEnabled())">
+          <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
+        </button>
+      }
+      <button mat-icon-button type="button" [color]="ownHandRaised() ? 'accent' : undefined" (click)="toggleRaiseHand()">
+        <mat-icon>back_hand</mat-icon>
+        @if (handsRaised().length > 0) {
+          <span class="meeting-hand-count">{{ handsRaised().length }}</span>
+        }
       </button>
-      <button class="btn btn-sm" (click)="chatOpen.set(!chatOpen())">
-        <i class="fas fa-comment"></i>
+      @if (!win.collapsed()) {
+        <button mat-icon-button type="button" (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())">
+          <mat-icon>format_list_numbered</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="chatOpen.set(!chatOpen())">
+          <mat-icon>chat</mat-icon>
+        </button>
+      }
+      <button mat-icon-button type="button" (click)="win.toggle()">
+        <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
       </button>
-      <button class="btn btn-sm btn-danger" (click)="leaveRoom()">
-        <i class="fas fa-sign-out-alt"></i> {{ 'meeting_room.leave' | translate }}
+      <button mat-icon-button type="button" color="warn" (click)="leaveRoom()">
+        <mat-icon>logout</mat-icon>
       </button>
     </div>
   </div>
 
-  <div class="meeting-video-grid">
-    @if (localTrack()) {
-      <video-component
-        [track]="localTrack()!"
-        [participantIdentity]="displayName() + ' ' + ('meeting_room.you_suffix' | translate)"
-        [local]="true"
-      ></video-component>
-    }
-    @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
-      @if (remoteTrack.trackPublication.kind === 'video') {
-        <video-component
-          [track]="remoteTrack.trackPublication.videoTrack!"
-          [participantIdentity]="remoteTrack.participantIdentity"
-          [local]="false"
-        ></video-component>
-      } @else if (remoteTrack.trackPublication.kind === 'audio') {
-        <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+  <!-- position:relative here (not on .meeting-room) so the absolutely-positioned
+       side panels below are constrained to this area only and can never cover
+       .meeting-header's controls above - previously they had no positioned
+       ancestor to bound them, stretched to top:0 of the whole page, and sat on
+       top of the header in paint order, making their own open/close buttons
+       unreachable once a panel was open. -->
+  <div class="meeting-body">
+    <div class="meeting-video-grid" [class.meeting-video-grid--collapsed]="win.collapsed()">
+      @if (localTrack()) {
+        <div class="meeting-video-tile">
+          <video-component
+            [track]="localTrack()!"
+            [participantIdentity]="displayName() + ' ' + ('meeting_room.you_suffix' | translate)"
+            [local]="true"
+          ></video-component>
+          @if (ownHandRaised()) {
+            <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+          }
+        </div>
       }
+      @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
+        @if (remoteTrack.trackPublication.kind === 'video') {
+          <div class="meeting-video-tile">
+            <video-component
+              [track]="remoteTrack.trackPublication.videoTrack!"
+              [participantIdentity]="remoteTrack.participantIdentity"
+              [local]="false"
+            ></video-component>
+            @if (isHandRaised(remoteTrack.participantIdentity)) {
+              <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+            }
+          </div>
+        } @else if (remoteTrack.trackPublication.kind === 'audio') {
+          <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
+        }
+      }
+    </div>
+
+    @if (!win.collapsed()) {
+      @if (raisedHandsPanelOpen()) {
+        <app-raised-hands-panel [entries]="handsRaised()"></app-raised-hands-panel>
+      }
+
+      <!-- Kept mounted at all times and only hidden: the message history lives in this
+           component, but destroying the panel would still lose the draft and scroll
+           position, and `chatOpen()` is purely a visibility toggle now. -->
+      <app-meeting-chat
+        [class.meeting-chat-hidden]="!chatOpen()"
+        [messages]="messages()"
+        (messageSent)="sendChatMessage($event)"
+      ></app-meeting-chat>
     }
   </div>
-
-  <!-- Kept mounted at all times and only hidden: the message history lives in this
-       component, but destroying the panel would still lose the draft and scroll
-       position, and `chatOpen()` is purely a visibility toggle now. -->
-  <app-meeting-chat
-    [class.meeting-chat-hidden]="!chatOpen()"
-    [messages]="messages()"
-    (messageSent)="sendChatMessage($event)"
-  ></app-meeting-chat>
 </div>

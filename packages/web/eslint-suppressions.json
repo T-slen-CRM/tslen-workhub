@@ -123,47 +123,6 @@
       "count": 1
     }
   },
-  "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.html": {
-    "@angular-eslint/template/prefer-control-flow": {
-      "count": 3
-    }
-  },
-  "src/app/components/autocomplete/input-autocomplete/input-autocomplete.component.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 4
-    },
-    "@typescript-eslint/no-unsafe-function-type": {
-      "count": 4
-    }
-  },
-  "src/app/components/autocomplete/multiselect-autocomplete-example.component.html": {
-    "@angular-eslint/template/click-events-have-key-events": {
-      "count": 1
-    },
-    "@angular-eslint/template/interactive-supports-focus": {
-      "count": 1
-    },
-    "@angular-eslint/template/prefer-control-flow": {
-      "count": 2
-    }
-  },
-  "src/app/components/autocomplete/multiselect-autocomplete-example.component.ts": {
-    "@angular-eslint/component-selector": {
-      "count": 1
-    },
-    "@angular-eslint/prefer-inject": {
-      "count": 4
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 2
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 8
-    },
-    "@typescript-eslint/no-unsafe-function-type": {
-      "count": 3
-    }
-  },
   "src/app/components/autocomplete/single-autocomplete/single-autocomplete.component.ts": {
     "@angular-eslint/no-input-rename": {
       "count": 1
@@ -219,189 +178,6 @@
       "count": 1
     }
   },
-  "src/app/components/data-grid/all-rows-checked-tt-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@angular-eslint/template/click-events-have-key-events": {
-      "count": 1
-    },
-    "@angular-eslint/template/interactive-supports-focus": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/audience-list-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
-  "src/app/components/data-grid/audience-slide-toggle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/autorules-list-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 3
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
-  "src/app/components/data-grid/autorules-slide-toggle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/campaign-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 2
-    },
-    "@angular-eslint/template/prefer-control-flow": {
-      "count": 4
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/campaign-filter-lists-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "unused-imports/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/campaign-render.component.ts": {
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/campaign-slide-toogle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/campaign-supply-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "no-empty": {
-      "count": 1
-    },
-    "unused-imports/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/conversion-slide-toggle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/creative-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 3
-    },
-    "@angular-eslint/template/prefer-control-flow": {
-      "count": 4
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/creative-render.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/creative-slide-toogle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/filter-list-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
-  "src/app/components/data-grid/header-timetargeting-cell-renderer.ts": {
-    "@angular-eslint/template/click-events-have-key-events": {
-      "count": 1
-    },
-    "@angular-eslint/template/interactive-supports-focus": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/manage-ssp-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
-  "src/app/components/data-grid/manage-transactions-actions-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@angular-eslint/template/prefer-control-flow": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
   "src/app/components/data-grid/manage-users-actions-renderer.component.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 1
@@ -421,17 +197,6 @@
       "count": 1
     },
     "@angular-eslint/prefer-standalone": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/multi-value-renderer.component.ts": {
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    },
-    "no-empty": {
       "count": 1
     }
   },
@@ -475,27 +240,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
-    }
-  },
-  "src/app/components/data-grid/slide-toogle-renderer.component.ts": {
-    "@typescript-eslint/no-empty-function": {
-      "count": 2
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/components/data-grid/ssp-slide-toggle-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    }
-  },
-  "src/app/components/data-grid/time-targeting-checked-renderer.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
     }
   },
   "src/app/components/delete-confirm-modal/delete-confirm-modal.component.ts": {
@@ -661,11 +405,6 @@
       "count": 1
     }
   },
-  "src/app/guards/admin.guard.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    }
-  },
   "src/app/guards/auth.guard.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 2
@@ -707,14 +446,6 @@
       "count": 1
     }
   },
-  "src/app/interfaces/metrics.ts": {
-    "@typescript-eslint/no-empty-object-type": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 3
-    }
-  },
   "src/app/interfaces/notifications.ts": {
     "@typescript-eslint/no-empty-object-type": {
       "count": 1
@@ -730,11 +461,6 @@
       "count": 4
     }
   },
-  "src/app/interfaces/upload.ts": {
-    "no-empty": {
-      "count": 1
-    }
-  },
   "src/app/json-typings.d.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -745,22 +471,22 @@
       "count": 3
     }
   },
-  "src/app/meeting-room/meeting-chat/meeting-chat.component.spec.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
   "src/app/meeting-room/meeting-chat/meeting-chat.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
     }
   },
-  "src/app/meeting-room/meeting-room.component.spec.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
+  "src/app/meeting-room/meeting-room.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
     }
   },
-  "src/app/meeting-room/meeting-room.component.ts": {
+  "src/app/meeting-room/pre-join-lobby/pre-join-lobby.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    }
+  },
+  "src/app/meeting-room/raised-hands-panel/raised-hands-panel.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
     }
@@ -1178,11 +904,6 @@
       "count": 2
     }
   },
-  "src/app/services/image.service.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    }
-  },
   "src/app/services/libs.service.ts": {
     "@typescript-eslint/no-empty-function": {
       "count": 1
@@ -1215,22 +936,6 @@
   "src/app/services/theme.service.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 2
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/services/upload.service.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
-  "src/app/services/upload/manager-settings-upload.service.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -1684,59 +1389,11 @@
       "count": 1
     }
   },
-  "src/app/theme/shared/directives/IncrementCounterDirective.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 2
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    },
-    "prefer-const": {
-      "count": 3
-    }
-  },
-  "src/app/theme/shared/directives/creative-preview-style/creativePreviewStyle.directive.ts": {
-    "@angular-eslint/directive-selector": {
-      "count": 1
-    },
-    "@angular-eslint/no-input-rename": {
-      "count": 2
-    },
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/theme/shared/directives/dynamic-bind.directive.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/theme/shared/directives/google-btn.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    }
-  },
-  "src/app/theme/shared/directives/invited-link.directive.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 2
-    }
-  },
   "src/app/theme/shared/directives/prevent-default.directive.ts": {
     "@angular-eslint/prefer-standalone": {
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "src/app/theme/shared/directives/styleCounter.derective.ts": {
-    "@angular-eslint/prefer-inject": {
       "count": 1
     }
   },
@@ -1959,22 +1616,12 @@
       "count": 1
     }
   },
-  "src/app/tslen-components/mat-table-dynamic/data-grid/date-transform.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    }
-  },
   "src/app/tslen-components/mat-table-dynamic/data-grid/project-member-action-button/project-member-action-button.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 3
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1
-    }
-  },
-  "src/app/tslen-components/mat-table-dynamic/data-grid/status-ask-server/status-ask-server.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 2
     }
   },
   "src/app/tslen-components/mat-table-dynamic/mat-table-dynamic.component.html": {

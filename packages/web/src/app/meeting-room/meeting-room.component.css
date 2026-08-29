@@ -1,7 +1,11 @@
 .meeting-room {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* width/height/position come from the shared [appCollapsibleCallWindow]
+     classes (collapsible-call-window.css) - this is now a floating overlay,
+     not a full-page takeover. */
+  width: 100%;
+  height: 100%;
   background: #1b1b1f;
   color: #fff;
 }
@@ -10,9 +14,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
+  cursor: move;
+}
+/* Collapsed mode is a small 300x220 glance view (see
+   collapsible-call-window.css) - both selectors below target the same
+   element (this component's own .meeting-room class plus the directive's
+   host-bound state class), trimmed here rather than in the template so the
+   compaction stays purely presentational. */
+.meeting-room.collapsible-call-window--collapsed .meeting-room-name {
+  display: none;
+}
+.meeting-room.collapsible-call-window--collapsed .meeting-header {
+  padding: 4px 8px;
+}
+.meeting-room.collapsible-call-window--collapsed .meeting-controls {
+  gap: 0;
 }
 app-meeting-chat.meeting-chat-hidden {
   display: none;
+}
+.meeting-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 .meeting-video-grid {
   flex: 1;
@@ -20,4 +46,85 @@ app-meeting-chat.meeting-chat-hidden {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 8px;
   padding: 8px;
+}
+.meeting-video-grid--collapsed {
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 4px;
+  padding: 4px;
+}
+.meeting-device-select {
+  width: 140px;
+}
+/* Material's default outline/label/value colors assume a light surrounding
+   page - this room's background is always dark regardless of the app's own
+   light/dark-mode toggle, so these are styled locally rather than relying on
+   that toggle. Sizing matches the compact treatment already used for
+   mat-select fields elsewhere in the app (see task-create-edit.component.scss's
+   .input-mat-select) so this reads consistently, just smaller since it sits
+   inline in a toolbar next to icon buttons rather than a full form. */
+::ng-deep .meeting-device-select .mat-mdc-form-field-infix {
+  min-height: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+::ng-deep .meeting-device-select .mat-mdc-text-field-wrapper {
+  font-size: 0.8rem;
+}
+::ng-deep .meeting-device-select .mdc-notched-outline__leading,
+::ng-deep .meeting-device-select .mdc-notched-outline__notch,
+::ng-deep .meeting-device-select .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+::ng-deep .meeting-device-select .mat-mdc-select-value,
+::ng-deep .meeting-device-select .mat-mdc-select-arrow,
+::ng-deep .meeting-device-select .mat-mdc-select-placeholder {
+  color: #fff;
+}
+/* The select's dropdown panel is rendered into a CDK overlay appended to
+   <body>, outside this component's DOM - the ancestor-scoped ::ng-deep rules
+   above can't reach it, so it needs its own bare (unscoped) ::ng-deep rule
+   targeting the panelClass set on each <mat-select> below. */
+::ng-deep .meeting-device-select-panel {
+  background: #2b2b30;
+}
+::ng-deep .meeting-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: #fff;
+}
+.meeting-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.meeting-hand-count {
+  display: inline-block;
+  min-width: 16px;
+  margin-left: 4px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  font-size: 0.7rem;
+  line-height: 16px;
+}
+.meeting-video-tile {
+  position: relative;
+}
+.meeting-hand-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background: rgba(255, 193, 7, 0.9);
+  color: #000;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.meeting-hand-badge mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 }

@@ -2,15 +2,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
+import { LocalVideoTrack } from 'livekit-client';
 import { MeetingLinksManagerComponent } from './meeting-links-manager.component';
 import { DataService } from '../../services/data.service';
 import { AuthenticationService } from '../../services/auth.service';
+import { ActiveMeetingCallService } from '../live-kit/active-meeting-call.service';
 
 describe('MeetingLinksManagerComponent', () => {
   let component: MeetingLinksManagerComponent;
   let fixture: ComponentFixture<MeetingLinksManagerComponent>;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
   let toastrSpy: jasmine.SpyObj<ToastrService>;
+  let activeMeetingCall: ActiveMeetingCallService;
 
   const existingLink = { id: 1, title: 'Standup', roomName: 'meeting-abc', expiresAt: null, revokedAt: null, createdAt: '2026-08-27T00:00:00.000Z', token: 'existing-plain-token' };
 
@@ -30,6 +33,7 @@ describe('MeetingLinksManagerComponent', () => {
 
     fixture = TestBed.createComponent(MeetingLinksManagerComponent);
     component = fixture.componentInstance;
+    activeMeetingCall = TestBed.inject(ActiveMeetingCallService);
     fixture.detectChanges();
   });
 
@@ -57,13 +61,25 @@ describe('MeetingLinksManagerComponent', () => {
     expect(dataServiceSpy.listMeetingLinks).toHaveBeenCalledTimes(2);
   });
 
-  it('joining an existing link mints a host LiveKit token for that roomName', () => {
-    dataServiceSpy.sendToken.and.returnValue(of({ token: 'host-livekit-jwt' }));
-
+  it('opens the pre-join lobby for the clicked link without minting a token yet', () => {
     component.joinOwnMeeting(existingLink);
 
+    expect(component.lobbyLink()).toEqual(existingLink);
+    expect(dataServiceSpy.sendToken).not.toHaveBeenCalled();
+  });
+
+  it('mints a host LiveKit token once the lobby hands off, carrying its tracks into the call', () => {
+    dataServiceSpy.sendToken.and.returnValue(of({ token: 'host-livekit-jwt' }));
+    component.joinOwnMeeting(existingLink);
+    const fakeVideoTrack = { sid: 'v1' } as unknown as LocalVideoTrack;
+
+    component.onLobbyJoined({ videoTrack: fakeVideoTrack, audioTrack: undefined, backgroundEffect: 'none' });
+
     expect(dataServiceSpy.sendToken).toHaveBeenCalledWith('/api/token', { roomName: 'meeting-abc', participantName: 'Ada-Lovelace' });
-    expect(component.activeRoom()).toEqual({ livekitToken: 'host-livekit-jwt', roomName: 'meeting-abc', displayName: 'Ada-Lovelace' });
+    expect(activeMeetingCall.activeCall()).toEqual({
+      livekitToken: 'host-livekit-jwt', roomName: 'meeting-abc', displayName: 'Ada-Lovelace', videoTrack: fakeVideoTrack, audioTrack: undefined,
+    });
+    expect(component.lobbyLink()).toBeNull();
   });
 
   it('warns via toastr when refreshing the list fails', () => {
@@ -90,12 +106,16 @@ describe('MeetingLinksManagerComponent', () => {
     expect(toastrSpy.warning).toHaveBeenCalled();
   });
 
-  it('warns via toastr when joining a meeting fails', () => {
+  it('warns via toastr when joining a meeting fails, keeps the lobby open, and tells the lobby to resume', () => {
     dataServiceSpy.sendToken.and.returnValue(throwError(() => new Error('server error')));
-
     component.joinOwnMeeting(existingLink);
+    const lobbyStub = jasmine.createSpyObj('PreJoinLobbyComponent', ['resumeAfterFailedJoin']);
+
+    component.onLobbyJoined({ videoTrack: undefined, audioTrack: undefined, backgroundEffect: 'none' }, lobbyStub);
 
     expect(toastrSpy.warning).toHaveBeenCalled();
+    expect(component.lobbyLink()).toEqual(existingLink);
+    expect(lobbyStub.resumeAfterFailedJoin).toHaveBeenCalled();
   });
 
   it('clears the just-created banner when that same link is revoked', () => {

@@ -131,11 +131,12 @@
 #room-header {
     display: flex;
     flex-direction: column;
-    /*justify-content: space-between;*/
-    /*align-items: center;*/
-    padding: 1rem;
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+    /* Matches MeetingRoomComponent's dark header, so the two call windows
+       read as the same visual family now that both use Material controls. */
+    background: #1b1b1f;
+    color: #fff;
+    cursor: move;
 }
 
 .room-info {
@@ -145,25 +146,113 @@
     overflow: hidden;
 }
 
-.link-input {
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    background: #fff;
-    font-size: 0.875rem;
-    min-width: 300px;
+.room-link-label {
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.call-link-field {
+    width: 200px;
+}
+/* Material's default outline/text colors assume a light surrounding page;
+   #room-header is always dark (see above) - same treatment as
+   .meeting-device-select in meeting-room.component.css. */
+::ng-deep .call-link-field .mat-mdc-form-field-infix {
+    min-height: auto;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+::ng-deep .call-link-field .mat-mdc-text-field-wrapper {
+    font-size: 0.8rem;
+}
+::ng-deep .call-link-field .mdc-notched-outline__leading,
+::ng-deep .call-link-field .mdc-notched-outline__notch,
+::ng-deep .call-link-field .mdc-notched-outline__trailing {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+::ng-deep .call-link-field input {
+    color: #fff;
 }
 
 .video-controls {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.25rem;
     flex-wrap: wrap;
 }
 
-.video-controls .btn {
+.call-device-select {
+    width: 140px;
+}
+/* Material's default outline/label/value colors assume a light surrounding
+   page - #room-header is always dark (see above), same treatment as
+   .meeting-device-select in meeting-room.component.css. */
+::ng-deep .call-device-select .mat-mdc-form-field-infix {
+    min-height: auto;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+::ng-deep .call-device-select .mat-mdc-text-field-wrapper {
+    font-size: 0.8rem;
+}
+::ng-deep .call-device-select .mdc-notched-outline__leading,
+::ng-deep .call-device-select .mdc-notched-outline__notch,
+::ng-deep .call-device-select .mdc-notched-outline__trailing {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+::ng-deep .call-device-select .mat-mdc-select-value,
+::ng-deep .call-device-select .mat-mdc-select-arrow,
+::ng-deep .call-device-select .mat-mdc-select-placeholder {
+    color: #fff;
+}
+/* The select's dropdown panel is rendered into a CDK overlay appended to
+   <body>, outside this component's DOM - needs its own bare (unscoped)
+   ::ng-deep rule targeting the panelClass set on each <mat-select> above. */
+::ng-deep .call-device-select-panel {
+    background: #2b2b30;
+}
+::ng-deep .call-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
+    color: #fff;
+}
+.call-hand-count {
+    display: inline-block;
+    min-width: 16px;
+    margin-left: 4px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: #fff;
+    color: #000;
+    font-size: 0.7rem;
+    line-height: 16px;
+}
+.call-hand-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 12;
+    background: rgba(255, 193, 7, 0.9);
+    color: #000;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    justify-content: center;
+}
+.call-hand-badge mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+.call-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+app-meeting-chat.meeting-chat-hidden {
+    display: none;
 }
 
 #layout-container {
@@ -290,8 +379,11 @@
   gap: 8px;
 }
 
-.main-video-label i {
+.main-video-label mat-icon {
   color: #ffd700;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 }
 
 .fullscreen-btn {
@@ -318,6 +410,12 @@
 .no-main-video p {
   margin-top: 16px;
   font-size: 1.1rem;
+}
+
+.no-main-video-icon {
+  width: 3rem;
+  height: 3rem;
+  font-size: 3rem;
 }
 
 /* Thumbnail Videos Grid */
@@ -361,6 +459,10 @@
   opacity: 0;
   transition: opacity 0.2s ease;
   color: white;
+}
+.thumbnail-overlay mat-icon {
+  width: 1.2rem;
+  height: 1.2rem;
   font-size: 1.2rem;
 }
 
@@ -435,19 +537,23 @@
   opacity: 1;
 }
 
-.pip-btn {
-  background: rgba(0, 0, 0, 0.7);
-  border: none;
-  color: white;
+/* mat-icon-button's default footprint (40px, 24px icon) is too big for this
+   tiny corner overlay - shrunk down, matching the size the plain <button>
+   version used before. Targets this component's own elements directly (not
+   a CDK overlay), so no ::ng-deep is needed here. */
+.pip-btn.mat-mdc-icon-button {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  cursor: pointer;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
   transition: background-color 0.2s ease;
+}
+
+.pip-btn .mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
 }
 
 .pip-btn:hover {
@@ -478,6 +584,8 @@
   z-index: 20;
   opacity: 0.8;
   transition: opacity 0.3s ease;
+  background: #000;
+  color: #fff;
 }
 
 .fullscreen-exit-btn:hover {
@@ -530,40 +638,12 @@
       width: 100%;
       box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
     }
+/* Positioning/collapsed-vs-expanded sizing now lives in the shared
+   collapsible-call-window.css (via [appCollapsibleCallWindow]) - this file
+   only adds what's specific to the 1:1 call: a dark background fill inside
+   that shared shape. */
 .call-window {
-  position: fixed;
-  top: 65px;
-  right: 16px;
-    width: 300px;
   background: #121212;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  z-index: 1000;
-  transition: all 0.3s ease-in-out;
-}
-
-/* cdkDrag moves the window by updating this element's `transform` inline
-   style on every pointer-move frame. The transition above (needed for the
-   minimize/expand size change) would otherwise ease each of those frames
-   over 0.3s too, making the window visibly lag behind the cursor while
-   dragging. */
-.call-window.cdk-drag-dragging {
-  transition: none;
-}
-
-.call-small {
-  width: 280px;
-  /*height: 160px;*/
-}
-
-.call-fullscreen {
-  position: absolute;
-  top: 65px;
-  /*right: 16px;*/
-    left: 75px;
-  width: 100%;
-  height: 100%;
 }
 
 .call-header {

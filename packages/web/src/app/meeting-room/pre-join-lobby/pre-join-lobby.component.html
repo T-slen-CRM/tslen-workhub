@@ -1,0 +1,97 @@
+<div class="pre-join-lobby">
+  <div class="pre-join-preview">
+    @if (videoTrack()) {
+      <video-component
+        [track]="videoTrack()!"
+        [participantIdentity]="displayName()"
+        [local]="true"
+        [isPreview]="true"
+      ></video-component>
+    } @else {
+      <div class="pre-join-preview-placeholder">
+        <mat-icon>videocam_off</mat-icon>
+      </div>
+    }
+  </div>
+
+  <div class="pre-join-controls">
+    <div class="pre-join-control">
+      <button
+        mat-icon-button
+        type="button"
+        [color]="cameraEnabled() ? 'primary' : 'warn'"
+        (click)="setCameraEnabled(!cameraEnabled())"
+      >
+        <mat-icon>{{ cameraEnabled() ? 'videocam' : 'videocam_off' }}</mat-icon>
+      </button>
+      @if (videoDevices().length > 0) {
+        <mat-form-field class="pre-join-device-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select panelClass="pre-join-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="selectVideoDevice($event.value)">
+            @for (device of videoDevices(); track device.deviceId) {
+              <mat-option [value]="device.deviceId">{{ device.label || ('pre_join_lobby.unnamed_camera' | translate) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      @if (cameraError()) {
+        <span class="pre-join-error">{{ 'pre_join_lobby.camera_unavailable' | translate }}</span>
+      }
+    </div>
+
+    <div class="pre-join-control">
+      <button
+        mat-icon-button
+        type="button"
+        [color]="microphoneEnabled() ? 'primary' : 'warn'"
+        (click)="setMicrophoneEnabled(!microphoneEnabled())"
+      >
+        <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
+      </button>
+      @if (microphoneEnabled()) {
+        <div class="pre-join-level-meter">
+          <div class="pre-join-level-fill" [style.width.%]="audioLevel() * 100"></div>
+        </div>
+      }
+      @if (audioDevices().length > 0) {
+        <mat-form-field class="pre-join-device-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select panelClass="pre-join-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="selectMicrophoneDevice($event.value)">
+            @for (device of audioDevices(); track device.deviceId) {
+              <mat-option [value]="device.deviceId">{{ device.label || ('pre_join_lobby.unnamed_microphone' | translate) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      @if (microphoneError()) {
+        <span class="pre-join-error">{{ 'pre_join_lobby.microphone_unavailable' | translate }}</span>
+      }
+    </div>
+
+    <div class="pre-join-control">
+      <mat-button-toggle-group
+        [value]="backgroundEffect()"
+        [disabled]="!videoTrack() || backgroundUnavailable()"
+        (change)="onBackgroundEffectChange($event)"
+      >
+        <mat-button-toggle value="none">{{ 'pre_join_lobby.background_none' | translate }}</mat-button-toggle>
+        <mat-button-toggle value="blur">{{ 'pre_join_lobby.blur' | translate }}</mat-button-toggle>
+        <mat-button-toggle value="image">{{ 'pre_join_lobby.background_image' | translate }}</mat-button-toggle>
+      </mat-button-toggle-group>
+      @if (backgroundEffect() === 'image') {
+        <mat-form-field class="pre-join-device-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select panelClass="pre-join-device-select-panel" [value]="selectedBackgroundImage()" (selectionChange)="selectBackgroundImage($event.value)">
+            @for (preset of backgroundImagePresets; track preset.id) {
+              <mat-option [value]="preset.path">{{ preset.labelKey | translate }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      @if (backgroundUnavailable()) {
+        <span class="pre-join-error">{{ 'pre_join_lobby.blur_unavailable' | translate }}</span>
+      }
+    </div>
+  </div>
+
+  <button mat-raised-button type="button" color="primary" class="pre-join-join-btn" [disabled]="initializing()" (click)="join()">
+    {{ 'pre_join_lobby.join' | translate }}
+  </button>
+</div>

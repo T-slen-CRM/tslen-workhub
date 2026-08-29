@@ -14,7 +14,8 @@ import { MeetingLinksActionsRendererComponent } from '../../components/data-grid
 import { DataService } from '../../services/data.service';
 import { AuthenticationService } from '../../services/auth.service';
 import { LanguageService } from '../../language/language.service';
-import { MeetingRoomComponent } from '../../meeting-room/meeting-room.component';
+import { PreJoinLobbyComponent, PreJoinResult } from '../../meeting-room/pre-join-lobby/pre-join-lobby.component';
+import { ActiveMeetingCallService } from '../live-kit/active-meeting-call.service';
 
 interface MeetingLinkRow {
   id: number;
@@ -24,12 +25,6 @@ interface MeetingLinkRow {
   revokedAt: string | null;
   createdAt: string;
   token: string | null;
-}
-
-interface HostConnection {
-  livekitToken: string;
-  roomName: string;
-  displayName: string;
 }
 
 @Component({
@@ -46,7 +41,7 @@ interface HostConnection {
     MatIconModule,
     MatTooltipModule,
     ComponentsModule,
-    MeetingRoomComponent,
+    PreJoinLobbyComponent,
   ],
   templateUrl: './meeting-links-manager.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,11 +52,12 @@ export class MeetingLinksManagerComponent implements OnInit {
   private auth = inject(AuthenticationService);
   private toastr = inject(ToastrService);
   private languageService = inject(LanguageService);
+  private activeMeetingCall = inject(ActiveMeetingCallService);
 
   links = signal<MeetingLinkRow[]>([]);
   justCreatedLink = signal<string | null>(null);
   justCreatedLinkId = signal<number | null>(null);
-  activeRoom = signal<HostConnection | null>(null);
+  lobbyLink = signal<MeetingLinkRow | null>(null);
   titleDraft = '';
   expiresAtDraft: Date | null = null;
 
@@ -180,18 +176,39 @@ export class MeetingLinksManagerComponent implements OnInit {
   }
 
   joinOwnMeeting(link: MeetingLinkRow): void {
-    const user = this.auth.authDataSignal();
-    const participantName = `${user.firstName}-${user.lastName}`;
-    this.dataService.sendToken('/api/token', { roomName: link.roomName, participantName }).subscribe({
-      next: (result) => {
-        this.activeRoom.set({ livekitToken: result.token, roomName: link.roomName, displayName: participantName });
-      },
-      error: () => this.toastr.warning('Could not join meeting'),
-    });
+    this.lobbyLink.set(link);
   }
 
-  onLeaveOwnMeeting(): void {
-    this.activeRoom.set(null);
+  hostDisplayName(): string {
+    const user = this.auth.authDataSignal();
+    return `${user.firstName}-${user.lastName}`;
+  }
+
+  onLobbyJoined(result: PreJoinResult, lobby?: PreJoinLobbyComponent): void {
+    const link = this.lobbyLink();
+    if (!link) {
+      return;
+    }
+    const participantName = this.hostDisplayName();
+    this.dataService.sendToken('/api/token', { roomName: link.roomName, participantName }).subscribe({
+      next: (tokenResult) => {
+        // Handed off to AdminComponent's own overlay (see ActiveMeetingCallService)
+        // rather than rendered inline here, so the call survives navigating
+        // away from this page instead of being destroyed with it.
+        this.activeMeetingCall.start({
+          livekitToken: tokenResult.token,
+          roomName: link.roomName,
+          displayName: participantName,
+          videoTrack: result.videoTrack,
+          audioTrack: result.audioTrack,
+        });
+        this.lobbyLink.set(null);
+      },
+      error: () => {
+        this.toastr.warning('Could not join meeting');
+        lobby?.resumeAfterFailedJoin();
+      },
+    });
   }
 
   clearExpiresAt(): void {

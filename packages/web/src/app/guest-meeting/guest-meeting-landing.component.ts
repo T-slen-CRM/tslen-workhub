@@ -1,8 +1,10 @@
 import { Component, OnInit, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 import { DataService } from '../services/data.service';
 import { MeetingRoomComponent } from '../meeting-room/meeting-room.component';
+import { PreJoinLobbyComponent, PreJoinResult } from '../meeting-room/pre-join-lobby/pre-join-lobby.component';
 
 interface MeetingInfo {
   title: string | null;
@@ -14,12 +16,14 @@ interface GuestConnection {
   livekitToken: string;
   roomName: string;
   displayName: string;
+  videoTrack: LocalVideoTrack | undefined;
+  audioTrack: LocalAudioTrack | undefined;
 }
 
 @Component({
   selector: 'app-guest-meeting-landing',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule, MeetingRoomComponent],
+  imports: [ReactiveFormsModule, TranslateModule, MeetingRoomComponent, PreJoinLobbyComponent],
   templateUrl: './guest-meeting-landing.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './guest-meeting-landing.component.css',
@@ -29,7 +33,7 @@ export class GuestMeetingLandingComponent implements OnInit {
 
   token = input<string>('');
 
-  state = signal<'loading' | 'invalid' | 'ready' | 'in-call'>('loading');
+  state = signal<'loading' | 'invalid' | 'ready' | 'lobby' | 'in-call'>('loading');
   meetingInfo = signal<MeetingInfo | null>(null);
   connection = signal<GuestConnection | null>(null);
   joinError = signal(false);
@@ -45,18 +49,32 @@ export class GuestMeetingLandingComponent implements OnInit {
     });
   }
 
-  join(): void {
+  continueToLobby(): void {
     if (this.displayNameControl.invalid) {
       return;
     }
+    this.joinError.set(false);
+    this.state.set('lobby');
+  }
+
+  onLobbyJoined(result: PreJoinResult, lobby?: PreJoinLobbyComponent): void {
     const displayName = this.displayNameControl.value;
     this.joinError.set(false);
     this.dataService.joinMeetingAsGuest(this.token(), displayName).subscribe({
-      next: (result) => {
-        this.connection.set({ livekitToken: result.livekitToken, roomName: result.roomName, displayName });
+      next: (joinResult) => {
+        this.connection.set({
+          livekitToken: joinResult.livekitToken,
+          roomName: joinResult.roomName,
+          displayName,
+          videoTrack: result.videoTrack,
+          audioTrack: result.audioTrack,
+        });
         this.state.set('in-call');
       },
-      error: () => this.joinError.set(true),
+      error: () => {
+        this.joinError.set(true);
+        lobby?.resumeAfterFailedJoin();
+      },
     });
   }
 

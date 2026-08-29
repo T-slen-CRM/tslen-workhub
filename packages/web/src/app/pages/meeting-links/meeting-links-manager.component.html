@@ -1,10 +1,9 @@
-@if (activeRoom()) {
-  <app-meeting-room
-    [livekitToken]="activeRoom()!.livekitToken"
-    [roomName]="activeRoom()!.roomName"
-    [displayName]="activeRoom()!.displayName"
-    (leaveRoomOutput)="onLeaveOwnMeeting()"
-  ></app-meeting-room>
+@if (lobbyLink()) {
+  <app-pre-join-lobby
+    #lobby
+    [displayName]="hostDisplayName()"
+    (joined)="onLobbyJoined($event, lobby)"
+  ></app-pre-join-lobby>
 } @else {
   <div class="meeting-links-manager">
     <div class="create-form">

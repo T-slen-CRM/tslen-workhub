@@ -1,71 +1,131 @@
 <div class="call-window" id="room"
+     appCollapsibleCallWindow
+     #win="appCollapsibleCallWindow"
      cdkDrag
-     cdkDragBoundary="body"
-     [ngClass]="{ 'call-small': minimized, 'call-fullscreen': !minimized }">
-<!--     [ngClass]="{'fullscreen-mode': isFullscreen()}"-->
+     cdkDragBoundary="body">
     <!-- Room Header -->
     <div id="room-header" cdkDragHandle [class.hidden]="isFullscreen()">
         <div class="room-info">
-            <span class="room-link">{{'call_room.room_link' | translate}}
-                <input type="text" [value]="currentRoomLink()" readonly class="link-input" />
-                <button class="btn btn-sm btn-outline-secondary" (click)="copyLink()">{{'call_room.copy' | translate}}</button>
-            </span>
+            <span class="room-link-label">{{'call_room.room_link' | translate}}</span>
+            <mat-form-field class="call-link-field" appearance="outline" subscriptSizing="dynamic">
+                <input matInput type="text" [value]="currentRoomLink()" readonly />
+            </mat-form-field>
+            <button mat-icon-button type="button" [matTooltip]="'call_room.copy' | translate" (click)="copyLink()">
+                <mat-icon>content_copy</mat-icon>
+            </button>
         </div>
 
         <!-- Control Buttons -->
         <div class="video-controls">
             <button
-                class="btn btn-sm"
-                [ngClass]="cameraIsEnable() ? 'btn-success' : 'btn-danger'"
+                mat-icon-button
+                type="button"
+                [color]="cameraIsEnable() ? 'primary' : 'warn'"
                 (click)="setCameraEnabled(!cameraIsEnable())"
-                [title]="'call_room.toggle_camera' | translate">
-                <i class="fas" [ngClass]="cameraIsEnable() ? 'fa-video' : 'fa-video-slash'"></i>
+                [matTooltip]="'call_room.toggle_camera' | translate">
+                <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
             </button>
 
+            @if (!win.collapsed() && videoDevices().length > 0) {
+                <mat-form-field class="call-device-select" appearance="outline" subscriptSizing="dynamic">
+                    <mat-select panelClass="call-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
+                        @for (device of videoDevices(); track device.deviceId) {
+                            <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_camera' | translate) }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            }
+
             <button
-                class="btn btn-sm"
-                [ngClass]="screenShareEnabled() ? 'btn-warning' : 'btn-info'"
+                mat-icon-button
+                type="button"
+                [color]="screenShareEnabled() ? 'accent' : undefined"
                 (click)="setScreenShareEnabled(!screenShareEnabled())"
-                [title]="'call_room.toggle_screen_share' | translate">
-                <i class="fas" [ngClass]="screenShareEnabled() ? 'fa-stop' : 'fa-desktop'"></i>
+                [matTooltip]="'call_room.toggle_screen_share' | translate">
+                <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
             </button>
 
             <button
-                class="btn btn-sm"
-                [ngClass]="microphoneEnabled() ? 'btn-success' : 'btn-danger'"
+                mat-icon-button
+                type="button"
+                [color]="microphoneEnabled() ? 'primary' : 'warn'"
                 (click)="setMicrophoneEnabled(!microphoneEnabled())"
-                [title]="'call_room.toggle_microphone' | translate">
-                <i class="fas" [ngClass]="microphoneEnabled() ? 'fa-microphone' : 'fa-microphone-slash'"></i>
+                [matTooltip]="'call_room.toggle_microphone' | translate">
+                <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
             </button>
+
+            @if (!win.collapsed() && audioDevices().length > 0) {
+                <mat-form-field class="call-device-select" appearance="outline" subscriptSizing="dynamic">
+                    <mat-select panelClass="call-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
+                        @for (device of audioDevices(); track device.deviceId) {
+                            <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_microphone' | translate) }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            }
+
             <button
-                class="btn btn-sm"
-                (click)="minimized = !minimized"
-                [title]="'call_room.expand_window' | translate">
-                🔍
+                mat-icon-button
+                type="button"
+                [color]="ownHandRaised() ? 'accent' : undefined"
+                (click)="toggleRaiseHand()"
+                [matTooltip]="'call_room.toggle_raise_hand' | translate">
+                <mat-icon>back_hand</mat-icon>
+                @if (handsRaised().length > 0) {
+                    <span class="call-hand-count">{{ handsRaised().length }}</span>
+                }
+            </button>
+
+            @if (!win.collapsed()) {
+                <button
+                    mat-icon-button
+                    type="button"
+                    (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())"
+                    [matTooltip]="'call_room.raised_hands' | translate">
+                    <mat-icon>format_list_numbered</mat-icon>
+                </button>
+                <button
+                    mat-icon-button
+                    type="button"
+                    (click)="chatOpen.set(!chatOpen())"
+                    [matTooltip]="'call_room.toggle_chat' | translate">
+                    <mat-icon>chat</mat-icon>
+                </button>
+            }
+
+            <button
+                mat-icon-button
+                type="button"
+                (click)="win.toggle()"
+                [matTooltip]="'call_room.expand_window' | translate">
+                <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
             </button>
 
             @if (pip.isSupported) {
                 <button
-                    class="btn btn-sm"
+                    mat-icon-button
+                    type="button"
                     (click)="popOutToPictureInPicture()"
-                    [title]="'call_room.pop_out' | translate">
-                    <i class="fas fa-external-link-alt"></i>
+                    [matTooltip]="'call_room.pop_out' | translate">
+                    <mat-icon>picture_in_picture_alt</mat-icon>
                 </button>
             }
 
-
-<!--                    <li><hr class="dropdown-divider"></li>-->
-
-
-
-
-            <button class="btn btn-sm btn-danger" (click)="leaveRoom()" [title]="'call_room.leave_room' | translate">
-                <i class="fas fa-sign-out-alt"></i>
-                {{'call_room.leave' | translate}}
+            <button
+                mat-icon-button
+                type="button"
+                color="warn"
+                (click)="leaveRoom()"
+                [matTooltip]="'call_room.leave_room' | translate">
+                <mat-icon>logout</mat-icon>
             </button>
         </div>
     </div>
 
+    <!-- position:relative here (not on #room) so the absolutely-positioned side
+         panels below are constrained to this area only and can never cover
+         #room-header's controls above. -->
+    <div class="call-body">
     <!-- Video Layout -->
     <div id="layout-container" [ngClass]="getVideoSizeClass()">
         <!-- Main Video Section -->
@@ -75,12 +135,12 @@
                     <!-- Main video header with participant name and fullscreen button -->
                     <div class="main-video-header" [class.hidden]="isFullscreen()">
                         <span class="main-video-label">
-                            <i class="fas fa-star"></i> {{ getCurrentMainVideoLabel() }}
+                            <mat-icon>star</mat-icon> {{ getCurrentMainVideoLabel() }}
                         </span>
-                        <button class="btn btn-sm btn-outline-light fullscreen-btn"
+                        <button mat-icon-button class="fullscreen-btn"
                                 (click)="toggleMainVideoFullscreen()"
-                                [title]="'call_room.toggle_fullscreen' | translate">
-                            <i class="fas" [ngClass]="isFullscreen() ? 'fa-compress' : 'fa-expand'"></i>
+                                [matTooltip]="'call_room.toggle_fullscreen' | translate">
+                            <mat-icon>{{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
                         </button>
                     </div>
 
@@ -91,6 +151,9 @@
                         [local]="isCurrentMainVideoLocal()"
                         [isMainVideo]="true">
                     </video-component>
+                    @if (isCurrentMainVideoHandRaised()) {
+                        <span class="call-hand-badge"><mat-icon>back_hand</mat-icon></span>
+                    }
 
                     <!-- Camera preview overlay when screen sharing (Picture-in-Picture) -->
                     @if (screenShareEnabled() && localCameraTrack() && getCurrentMainVideoTrack() !== localCameraTrack()) {
@@ -103,15 +166,15 @@
                             </video-component>
                             <!-- PiP controls -->
                             <div class="pip-controls">
-                                <button class="pip-btn"
+                                <button mat-icon-button class="pip-btn"
                                         (click)="setMainVideo(localCameraTrack()!, 'You (Camera)', true)"
-                                        [title]="'call_room.switch_to_camera' | translate">
-                                    <i class="fas fa-expand-arrows-alt"></i>
+                                        [matTooltip]="'call_room.switch_to_camera' | translate">
+                                    <mat-icon>open_in_full</mat-icon>
                                 </button>
-                                <button class="pip-btn"
+                                <button mat-icon-button class="pip-btn"
                                         (click)="setCameraEnabled(false)"
-                                        [title]="'call_room.turn_off_camera' | translate">
-                                    <i class="fas fa-times"></i>
+                                        [matTooltip]="'call_room.turn_off_camera' | translate">
+                                    <mat-icon>close</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -119,15 +182,15 @@
 
                     <!-- Fullscreen exit button (only visible in fullscreen) -->
                     @if (isFullscreen()) {
-                        <button class="fullscreen-exit-btn btn btn-sm btn-dark" (click)="exitFullscreen()">
-                            <i class="fas fa-times"></i> {{'call_room.exit_fullscreen' | translate}}
+                        <button mat-raised-button class="fullscreen-exit-btn" (click)="exitFullscreen()">
+                            <mat-icon>close</mat-icon> {{'call_room.exit_fullscreen' | translate}}
                         </button>
                     }
                 </div>
             } @else {
                 <!-- Placeholder when no video is available -->
                 <div class="no-main-video">
-                    <i class="fas fa-video-slash fa-3x"></i>
+                    <mat-icon class="no-main-video-icon">videocam_off</mat-icon>
                     <p>{{'call_room.no_video_available' | translate}}</p>
                 </div>
             }
@@ -149,8 +212,11 @@
                         [isThumbnail]="true">
                     </video-component>
                     <div class="thumbnail-overlay">
-                        <i class="fas fa-thumbtack"></i>
+                        <mat-icon>push_pin</mat-icon>
                     </div>
+                    @if (ownHandRaised()) {
+                        <span class="call-hand-badge"><mat-icon>back_hand</mat-icon></span>
+                    }
                 </div>
             }
 
@@ -168,7 +234,7 @@
                         [isThumbnail]="true">
                     </video-component>
                     <div class="thumbnail-overlay">
-                        <i class="fas fa-thumbtack"></i>
+                        <mat-icon>push_pin</mat-icon>
                     </div>
                 </div>
             }
@@ -188,8 +254,11 @@
                             [isThumbnail]="true">
                         </video-component>
                         <div class="thumbnail-overlay">
-                            <i class="fas fa-thumbtack"></i>
+                            <mat-icon>push_pin</mat-icon>
                         </div>
+                        @if (isHandRaised(remoteTrack.participantIdentity)) {
+                            <span class="call-hand-badge"><mat-icon>back_hand</mat-icon></span>
+                        }
                     </div>
                 } @else if (remoteTrack.trackPublication.kind === 'audio') {
                     <audio-component [track]="remoteTrack.trackPublication.audioTrack!" hidden></audio-component>
@@ -197,5 +266,19 @@
             }
         </div>
     </div>
+
+    @if (!win.collapsed()) {
+        @if (raisedHandsPanelOpen()) {
+            <app-raised-hands-panel [entries]="handsRaised()"></app-raised-hands-panel>
+        }
+
+        <!-- Kept mounted at all times and only hidden: chatOpen() is purely a
+             visibility toggle so the draft/scroll position survive closing it. -->
+        <app-meeting-chat
+            [class.meeting-chat-hidden]="!chatOpen()"
+            [messages]="messages()"
+            (messageSent)="sendChatMessage($event)"
+        ></app-meeting-chat>
+    }
+    </div>
 </div>
-<!--}-->

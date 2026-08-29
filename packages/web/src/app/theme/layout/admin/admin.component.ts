@@ -23,6 +23,7 @@ import { IncomingCallComponent } from '../../../components/incoming-call/incomin
 import { LiveKitEvents } from '../../../pages/live-kit/enum/live-kit.enum';
 import { LiveChatService } from '../../../tslen-components/live-chat/live-chat.service';
 import { LoaderService } from '../../../services/loader.service';
+import { ActiveMeetingCallService } from '../../../pages/live-kit/active-meeting-call.service';
 
 @Component({
   selector: 'app-admin',
@@ -69,8 +70,10 @@ export class AdminComponent implements OnInit {
   private dialogRef?: MatDialogRef<IncomingCallComponent>;
   private liveChatService: LiveChatService = inject(LiveChatService);
   public loaderService: LoaderService = inject(LoaderService);
+  private activeMeetingCallService: ActiveMeetingCallService = inject(ActiveMeetingCallService);
   public activeCallData: Signal<{ callerId: number; calleeId: number }> =
     this.liveChatService.getActiveCallData();
+  public activeMeetingCall = this.activeMeetingCallService.activeCall;
   public showCall = false;
   public callMinimized = true;
 
@@ -189,5 +192,9 @@ export class AdminComponent implements OnInit {
 
   onCloseCall() {
     this.liveChatService.setActiveCallData(null);
+  }
+
+  onCloseMeetingCall() {
+    this.activeMeetingCallService.clear();
   }
 }

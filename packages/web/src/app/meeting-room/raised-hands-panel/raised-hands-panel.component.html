@@ -1,0 +1,12 @@
+<div class="raised-hands-panel">
+  <h4>{{ 'meeting_room.raised_hands_title' | translate }}</h4>
+  @if (entries().length === 0) {
+    <p class="raised-hands-empty">{{ 'meeting_room.no_raised_hands' | translate }}</p>
+  } @else {
+    <ol>
+      @for (entry of entries(); track entry.identity) {
+        <li>{{ entry.name }}</li>
+      }
+    </ol>
+  }
+</div>

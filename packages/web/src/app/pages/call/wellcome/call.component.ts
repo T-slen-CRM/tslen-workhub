@@ -33,6 +33,11 @@ import { AudioComponent } from '../audio/audio.component';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { DataService } from 'src/app/services/data.service';
@@ -42,6 +47,9 @@ import {
   PictureInPictureService,
   PictureInPictureHandles,
 } from '../../live-kit/picture-in-picture.service';
+import { CollapsibleCallWindowDirective } from '../../live-kit/collapsible-call-window.directive';
+import { MeetingChatComponent, MeetingChatMessage } from '../../../meeting-room/meeting-chat/meeting-chat.component';
+import { RaisedHandEntry, RaisedHandsPanelComponent } from '../../../meeting-room/raised-hands-panel/raised-hands-panel.component';
 
 interface TrackInfo {
   trackPublication: RemoteTrackPublication;
@@ -66,12 +74,20 @@ setLogLevel(LogLevel.warn);
     AudioComponent,
     NgClass,
     MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
     TranslateModule,
     DragDropModule,
+    CollapsibleCallWindowDirective,
+    MeetingChatComponent,
+    RaisedHandsPanelComponent,
   ],
   templateUrl: './call.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './call.component.css',
+  styleUrls: ['./call.component.css', '../../live-kit/collapsible-call-window.css'],
 })
 export class CallComponent implements OnDestroy, OnInit {
   constructor(
@@ -85,7 +101,6 @@ export class CallComponent implements OnDestroy, OnInit {
 
   callerId = input<number | null>(null);
   calleeId = input<number | null>(null);
-  minimized = true;
   leaveRoomOutput = output();
   private destroyed = false;
 
@@ -146,6 +161,63 @@ export class CallComponent implements OnDestroy, OnInit {
   mainVideoTrack = signal<VideoTrack | null>(null);
   mainVideoParticipant = signal<string>('');
   isLocalMainVideo = signal<boolean>(true);
+
+  chatOpen = signal<boolean>(false);
+  messages = signal<MeetingChatMessage[]>([]);
+  raisedHandsPanelOpen = signal<boolean>(false);
+  handsRaised = signal<RaisedHandEntry[]>([]);
+  ownHandRaised = signal<boolean>(false);
+  videoDevices = signal<MediaDeviceInfo[]>([]);
+  audioDevices = signal<MediaDeviceInfo[]>([]);
+  selectedVideoDeviceId = signal<string | undefined>(undefined);
+  selectedAudioDeviceId = signal<string | undefined>(undefined);
+
+  private encoder = new TextEncoder();
+  private decoder = new TextDecoder();
+
+  private handleDeviceChange = (): void => {
+    void this.refreshDevices();
+  };
+
+  private onDataReceived = (payload: Uint8Array, participant?: RemoteParticipant): void => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(this.decoder.decode(payload));
+    } catch {
+      // Ignore a malformed payload from a misbehaving client - never crash the chat over it.
+      return;
+    }
+    const type = (parsed as { type?: unknown } | null)?.type;
+    if (type === 'hand-raised' || type === 'hand-lowered') {
+      this.applyHandRaiseEvent(type, participant);
+      return;
+    }
+    const text = (parsed as { text?: unknown } | null)?.text;
+    if (typeof text !== 'string' || !text.trim()) {
+      // Missing/blank/non-string body - drop it rather than render `undefined`.
+      return;
+    }
+    // The display name comes from LiveKit's own participant record, never from
+    // the payload: anyone in the room can publish a payload claiming to be anyone.
+    const senderName = participant?.name || participant?.identity || 'Unknown';
+    this.messages.update((list) => [...list, { senderName, text, ts: Date.now() }]);
+  };
+
+  private applyHandRaiseEvent(type: 'hand-raised' | 'hand-lowered', participant?: RemoteParticipant): void {
+    if (!participant) {
+      return;
+    }
+    const identity = participant.identity;
+    if (type === 'hand-raised') {
+      this.handsRaised.update((list) => (
+        list.some((entry) => entry.identity === identity)
+          ? list
+          : [...list, { identity, name: participant.name || identity, ts: Date.now() }]
+      ));
+    } else {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== identity));
+    }
+  }
 
   ngOnInit() {
     const user = this.auth.authDataSignal();
@@ -276,6 +348,22 @@ export class CallComponent implements OnDestroy, OnInit {
       }
     });
 
+    room.on(RoomEvent.DataReceived, this.onDataReceived);
+
+    // A participant who joins after others already raised their hand never
+    // saw those earlier (unreplayed) data-channel messages - so whoever
+    // currently has a hand raised re-sends their own state once per new
+    // arrival, keeping every client's queue consistent for latecomers.
+    room.on(RoomEvent.ParticipantConnected, () => {
+      if (!this.ownHandRaised()) {
+        return;
+      }
+      this.room()?.localParticipant.publishData(this.encoder.encode(JSON.stringify({ type: 'hand-raised' })), { reliable: true });
+    });
+    room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== participant.identity));
+    });
+
     try {
       // Get the room name and participant name from the form
       const roomName = this.roomForm.value.roomName!;
@@ -299,19 +387,120 @@ export class CallComponent implements OnDestroy, OnInit {
         this.localCameraTrack.set(cameraTrack);
         this.localTrack.set(cameraTrack);
       }
+
+      navigator.mediaDevices.addEventListener('devicechange', this.handleDeviceChange);
+      await this.refreshDevices();
     } catch (_error: any) {
       await this.leaveRoom();
     }
   }
 
+  async switchVideoDevice(deviceId: string): Promise<void> {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    this.selectedVideoDeviceId.set(deviceId);
+    await room.switchActiveDevice('videoinput', deviceId);
+    const cameraTrack = Array.from(
+      room.localParticipant.videoTrackPublications.values(),
+    ).find((pub) => pub.source === 'camera')?.videoTrack;
+    if (cameraTrack) {
+      this.localCameraTrack.set(cameraTrack);
+      if (!this.screenShareEnabled()) {
+        this.localTrack.set(cameraTrack);
+      }
+    }
+  }
+
+  async switchAudioDevice(deviceId: string): Promise<void> {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    this.selectedAudioDeviceId.set(deviceId);
+    await room.switchActiveDevice('audioinput', deviceId);
+  }
+
+  async refreshDevices(): Promise<void> {
+    try {
+      const [videoDevices, audioDevices] = await Promise.all([
+        Room.getLocalDevices('videoinput'),
+        Room.getLocalDevices('audioinput'),
+      ]);
+      if (this.destroyed) {
+        return;
+      }
+      this.videoDevices.set(videoDevices);
+      this.audioDevices.set(audioDevices);
+    } catch {
+      // Device enumeration is a nice-to-have; leave whatever list we already have.
+    }
+  }
+
+  toggleRaiseHand(): void {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    const nextValue = !this.ownHandRaised();
+    this.ownHandRaised.set(nextValue);
+    room.localParticipant.publishData(
+      this.encoder.encode(JSON.stringify({ type: nextValue ? 'hand-raised' : 'hand-lowered' })),
+      { reliable: true },
+    );
+    const identity = room.localParticipant.identity;
+    const name = this.roomForm.value.participantName || identity;
+    if (nextValue) {
+      this.handsRaised.update((list) => (
+        list.some((entry) => entry.identity === identity)
+          ? list
+          : [...list, { identity, name, ts: Date.now() }]
+      ));
+    } else {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== identity));
+    }
+  }
+
+  isHandRaised(identity: string): boolean {
+    return this.handsRaised().some((entry) => entry.identity === identity);
+  }
+
+  isCurrentMainVideoHandRaised(): boolean {
+    if (this.isCurrentMainVideoLocal()) {
+      return this.ownHandRaised();
+    }
+    return this.isHandRaised(this.getCurrentMainVideoLabel());
+  }
+
+  sendChatMessage(rawText: string): void {
+    const text = rawText.trim();
+    const room = this.room();
+    if (!text || !room) {
+      return;
+    }
+    // Only the body goes on the wire - receivers take the sender's name from
+    // LiveKit's participant record, so shipping one here would be dead weight
+    // that merely invites spoofing.
+    room.localParticipant.publishData(this.encoder.encode(JSON.stringify({ text })), { reliable: true });
+    const senderName = this.roomForm.value.participantName || 'You';
+    this.messages.update((list) => [...list, { senderName, text, ts: Date.now() }]);
+  }
+
   async leaveRoom() {
+    const room = this.room();
+    room?.off(RoomEvent.DataReceived, this.onDataReceived);
+
     // Leave the room by calling 'disconnect' method over the Room object
-    await this.room()?.disconnect();
+    await room?.disconnect();
 
     // Reset all variables
     this.room.set(undefined);
     this.localTrack.set(undefined);
     this.remoteTracksMap.set(new Map());
+    this.messages.set([]);
+    this.handsRaised.set([]);
+    this.ownHandRaised.set(false);
     if (!this.destroyed) {
       this.leaveRoomOutput.emit(); // Emit leave event
     }
@@ -332,11 +521,15 @@ export class CallComponent implements OnDestroy, OnInit {
           ).find((pub) => pub.source === 'camera')?.videoTrack;
           if (cameraTrack) {
             this.localTrack.set(cameraTrack);
+            this.selectedVideoDeviceId.set(cameraTrack.mediaStreamTrack?.getSettings().deviceId);
           }
         } else {
           this.localTrack.set(undefined);
         }
       }
+      // Device labels are only populated by the browser once permission has
+      // actually been granted - re-enumerate now that camera access happened.
+      void this.refreshDevices();
     }
   }
 
@@ -400,6 +593,13 @@ export class CallComponent implements OnDestroy, OnInit {
       const p = room.localParticipant;
       await p.setMicrophoneEnabled(value);
       this.microphoneEnabled.set(value);
+      if (value) {
+        const micTrack = Array.from(
+          p.audioTrackPublications.values(),
+        ).find((pub) => pub.source === 'microphone')?.audioTrack;
+        this.selectedAudioDeviceId.set(micTrack?.mediaStreamTrack?.getSettings().deviceId);
+      }
+      void this.refreshDevices();
     }
   }
 
@@ -407,6 +607,7 @@ export class CallComponent implements OnDestroy, OnInit {
   async ngOnDestroy(_event?: Event) {
     this.destroyed = true;
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    navigator.mediaDevices.removeEventListener('devicechange', this.handleDeviceChange);
     this.pip.close();
     // On window closed or component destroyed, leave the room
     await this.leaveRoom();

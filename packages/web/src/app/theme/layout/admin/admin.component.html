@@ -45,3 +45,13 @@
   (leaveRoomOutput)="onCloseCall()"
 ></app-live-kit-call>
 }
+@if (activeMeetingCall(); as call) {
+<app-meeting-room
+  [livekitToken]="call.livekitToken"
+  [roomName]="call.roomName"
+  [displayName]="call.displayName"
+  [initialVideoTrack]="call.videoTrack"
+  [initialAudioTrack]="call.audioTrack"
+  (leaveRoomOutput)="onCloseMeetingCall()"
+></app-meeting-room>
+}

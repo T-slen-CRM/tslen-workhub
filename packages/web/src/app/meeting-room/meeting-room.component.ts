@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { CollapsibleCallWindowDirective } from '../pages/live-kit/collapsible-call-window.directive';
 import {
+  LocalAudioTrack,
   LocalTrackPublication,
   LocalVideoTrack,
   RemoteParticipant,
@@ -14,6 +20,7 @@ import {
 import { VideoComponent } from '../pages/call/video/video.component';
 import { AudioComponent } from '../pages/call/audio/audio.component';
 import { MeetingChatComponent, MeetingChatMessage } from './meeting-chat/meeting-chat.component';
+import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel/raised-hands-panel.component';
 import { environment } from '../../environments/environment';
 
 interface TrackInfo {
@@ -24,15 +31,17 @@ interface TrackInfo {
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
-  imports: [NgClass, TranslateModule, VideoComponent, AudioComponent, MeetingChatComponent],
+  imports: [DragDropModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule, TranslateModule, VideoComponent, AudioComponent, MeetingChatComponent, RaisedHandsPanelComponent, CollapsibleCallWindowDirective],
   templateUrl: './meeting-room.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './meeting-room.component.css',
+  styleUrls: ['./meeting-room.component.css', '../pages/live-kit/collapsible-call-window.css'],
 })
 export class MeetingRoomComponent implements OnInit, OnDestroy {
   livekitToken = input.required<string>();
   roomName = input.required<string>();
   displayName = input.required<string>();
+  initialVideoTrack = input<LocalVideoTrack | undefined>(undefined);
+  initialAudioTrack = input<LocalAudioTrack | undefined>(undefined);
   leaveRoomOutput = output();
 
   room = signal<Room | undefined>(undefined);
@@ -41,14 +50,25 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   localTrack = signal<LocalVideoTrack | undefined>(undefined);
   remoteTracksMap = signal<Map<string, TrackInfo>>(new Map());
   cameraIsEnable = signal<boolean>(false);
-  microphoneEnabled = signal<boolean>(true);
+  microphoneEnabled = signal<boolean>(false);
   screenShareEnabled = signal<boolean>(false);
   chatOpen = signal<boolean>(false);
   messages = signal<MeetingChatMessage[]>([]);
+  raisedHandsPanelOpen = signal<boolean>(false);
+  handsRaised = signal<RaisedHandEntry[]>([]);
+  ownHandRaised = signal<boolean>(false);
+  videoDevices = signal<MediaDeviceInfo[]>([]);
+  audioDevices = signal<MediaDeviceInfo[]>([]);
+  selectedVideoDeviceId = signal<string | undefined>(undefined);
+  selectedAudioDeviceId = signal<string | undefined>(undefined);
 
   private destroyed = false;
   private encoder = new TextEncoder();
   private decoder = new TextDecoder();
+
+  private handleDeviceChange = (): void => {
+    void this.refreshDevices();
+  };
 
   private onDataReceived = (payload: Uint8Array, participant?: RemoteParticipant): void => {
     let parsed: unknown;
@@ -56,6 +76,11 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
       parsed = JSON.parse(this.decoder.decode(payload));
     } catch {
       // Ignore a malformed payload from a misbehaving client - never crash the chat over it.
+      return;
+    }
+    const type = (parsed as { type?: unknown } | null)?.type;
+    if (type === 'hand-raised' || type === 'hand-lowered') {
+      this.applyHandRaiseEvent(type, participant);
       return;
     }
     const text = (parsed as { text?: unknown } | null)?.text;
@@ -68,6 +93,22 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     const senderName = participant?.name || participant?.identity || 'Unknown';
     this.messages.update((list) => [...list, { senderName, text, ts: Date.now() }]);
   };
+
+  private applyHandRaiseEvent (type: 'hand-raised' | 'hand-lowered', participant?: RemoteParticipant): void {
+    if (!participant) {
+      return;
+    }
+    const identity = participant.identity;
+    if (type === 'hand-raised') {
+      this.handsRaised.update((list) => (
+        list.some((entry) => entry.identity === identity)
+          ? list
+          : [...list, { identity, name: participant.name || identity, ts: Date.now() }]
+      ));
+    } else {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== identity));
+    }
+  }
 
   ngOnInit(): void {
     this.joinRoom();
@@ -84,16 +125,99 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
     try {
       await room.connect(environment.livekitUrl, this.livekitToken());
-      await room.localParticipant.setCameraEnabled(true);
-      await room.localParticipant.setMicrophoneEnabled(true);
+    } catch {
+      // Neither lobby-provided track was ever handed to the room, so
+      // leaveRoom()'s disconnect() won't stop them - do it explicitly.
+      this.stopUnpublishedInitialTracks();
+      await this.leaveRoom();
+      return;
+    }
+
+    try {
+      await this.publishInitialTracks(room);
+    } catch {
+      await this.leaveRoom();
+      return;
+    }
+
+    navigator.mediaDevices.addEventListener('devicechange', this.handleDeviceChange);
+  }
+
+  stopUnpublishedInitialTracks (): void {
+    this.initialVideoTrack()?.stop();
+    this.initialAudioTrack()?.stop();
+  }
+
+  async publishInitialTracks (room: Room): Promise<void> {
+    const videoTrack = this.initialVideoTrack();
+    if (videoTrack) {
+      try {
+        await room.localParticipant.publishTrack(videoTrack);
+      } catch (err) {
+        videoTrack.stop();
+        this.initialAudioTrack()?.stop();
+        throw err;
+      }
       this.cameraIsEnable.set(true);
+      this.selectedVideoDeviceId.set(videoTrack.mediaStreamTrack?.getSettings().deviceId);
       const cameraTrack = this.findLocalVideoTrack(room, 'camera');
       if (cameraTrack) {
         this.localCameraTrack.set(cameraTrack);
         this.localTrack.set(cameraTrack);
       }
+    }
+    const audioTrack = this.initialAudioTrack();
+    if (audioTrack) {
+      try {
+        await room.localParticipant.publishTrack(audioTrack);
+      } catch (err) {
+        audioTrack.stop();
+        throw err;
+      }
+      this.microphoneEnabled.set(true);
+      this.selectedAudioDeviceId.set(audioTrack.mediaStreamTrack?.getSettings().deviceId);
+    }
+    await this.refreshDevices();
+  }
+
+  async switchVideoDevice (deviceId: string): Promise<void> {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    this.selectedVideoDeviceId.set(deviceId);
+    await room.switchActiveDevice('videoinput', deviceId);
+    const cameraTrack = this.findLocalVideoTrack(room, 'camera');
+    if (cameraTrack) {
+      this.localCameraTrack.set(cameraTrack);
+      if (!this.screenShareEnabled()) {
+        this.localTrack.set(cameraTrack);
+      }
+    }
+  }
+
+  async switchAudioDevice (deviceId: string): Promise<void> {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    this.selectedAudioDeviceId.set(deviceId);
+    await room.switchActiveDevice('audioinput', deviceId);
+  }
+
+  async refreshDevices (): Promise<void> {
+    try {
+      const [videoDevices, audioDevices] = await Promise.all([
+        Room.getLocalDevices('videoinput'),
+        Room.getLocalDevices('audioinput'),
+      ]);
+      if (this.destroyed) {
+        return;
+      }
+      this.videoDevices.set(videoDevices);
+      this.audioDevices.set(audioDevices);
     } catch {
-      await this.leaveRoom();
+      // Device enumeration is a nice-to-have; leave whatever list we already have.
     }
   }
 
@@ -151,6 +275,47 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     });
 
     room.on(RoomEvent.DataReceived, this.onDataReceived);
+
+    // A participant who joins after others already raised their hand never
+    // saw those earlier (unreplayed) data-channel messages - so whoever
+    // currently has a hand raised re-sends their own state once per new
+    // arrival, keeping every client's queue consistent for latecomers.
+    room.on(RoomEvent.ParticipantConnected, () => {
+      if (!this.ownHandRaised()) {
+        return;
+      }
+      this.room()?.localParticipant.publishData(this.encoder.encode(JSON.stringify({ type: 'hand-raised' })), { reliable: true });
+    });
+    room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== participant.identity));
+    });
+  }
+
+  toggleRaiseHand (): void {
+    const room = this.room();
+    if (!room) {
+      return;
+    }
+    const nextValue = !this.ownHandRaised();
+    this.ownHandRaised.set(nextValue);
+    room.localParticipant.publishData(
+      this.encoder.encode(JSON.stringify({ type: nextValue ? 'hand-raised' : 'hand-lowered' })),
+      { reliable: true },
+    );
+    const identity = room.localParticipant.identity;
+    if (nextValue) {
+      this.handsRaised.update((list) => (
+        list.some((entry) => entry.identity === identity)
+          ? list
+          : [...list, { identity, name: this.displayName(), ts: Date.now() }]
+      ));
+    } else {
+      this.handsRaised.update((list) => list.filter((entry) => entry.identity !== identity));
+    }
+  }
+
+  isHandRaised (identity: string): boolean {
+    return this.handsRaised().some((entry) => entry.identity === identity);
   }
 
   async leaveRoom(): Promise<void> {
@@ -163,6 +328,8 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     this.localScreenTrack.set(undefined);
     this.remoteTracksMap.set(new Map());
     this.messages.set([]);
+    this.handsRaised.set([]);
+    this.ownHandRaised.set(false);
     if (!this.destroyed) {
       this.leaveRoomOutput.emit();
     }
@@ -228,6 +395,7 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    navigator.mediaDevices.removeEventListener('devicechange', this.handleDeviceChange);
     this.leaveRoom();
   }
 }

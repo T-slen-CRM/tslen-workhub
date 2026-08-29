@@ -47,6 +47,7 @@ import { LanguageService } from './language/language.service';
 import { LiveKitWebSocketService } from './pages/live-kit/live-kitWebSocket.service';
 import { HelpersModule } from './helpers/helpers.module';
 import { CallComponent } from './pages/call/wellcome/call.component';
+import { MeetingRoomComponent } from './meeting-room/meeting-room.component';
 import { NotificationBellComponent } from './tslen-components/notification-bell/notification-bell.component';
 
 function initLang(langService: LanguageService) {
@@ -88,6 +89,7 @@ function initLang(langService: LanguageService) {
     LanguageConfigurationModule,
     HelpersModule,
     CallComponent,
+    MeetingRoomComponent,
     NotificationBellComponent,
   ],
   providers: [

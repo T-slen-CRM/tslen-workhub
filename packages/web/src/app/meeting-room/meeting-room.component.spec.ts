@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RoomEvent } from 'livekit-client';
+import { LocalAudioTrack, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
 import { MeetingRoomComponent } from './meeting-room.component';
 
 type FakeRoom = ReturnType<typeof createFakeRoom>;
@@ -21,15 +21,18 @@ function createFakeRoom () {
     }),
     off: jasmine.createSpy('off'),
     connect: jasmine.createSpy('connect').and.resolveTo(undefined),
+    switchActiveDevice: jasmine.createSpy('switchActiveDevice').and.resolveTo(true),
     // TestBed's automatic fixture teardown calls ngOnDestroy -> leaveRoom() after every test,
     // so any fake room installed via component.room.set(...) needs a disconnect stub too.
     disconnect: jasmine.createSpy('disconnect').and.resolveTo(undefined),
     localParticipant: {
+      identity: 'ada-host',
       videoTrackPublications,
       setCameraEnabled: jasmine.createSpy('setCameraEnabled').and.resolveTo(undefined),
       setMicrophoneEnabled: jasmine.createSpy('setMicrophoneEnabled').and.resolveTo(undefined),
       setScreenShareEnabled: jasmine.createSpy('setScreenShareEnabled').and.resolveTo(undefined),
       publishData: jasmine.createSpy('publishData'),
+      publishTrack: jasmine.createSpy('publishTrack').and.resolveTo(undefined),
     },
   };
 }
@@ -41,13 +44,14 @@ function fireData (room: FakeRoom, payload: unknown, participant?: { name?: stri
 
 describe('MeetingRoomComponent', () => {
   let component: MeetingRoomComponent;
+  let fixture: ComponentFixture<MeetingRoomComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [MeetingRoomComponent, TranslateModule.forRoot()],
     });
 
-    const fixture = TestBed.createComponent(MeetingRoomComponent);
+    fixture = TestBed.createComponent(MeetingRoomComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('livekitToken', 'fake-token');
     fixture.componentRef.setInput('roomName', 'meeting-abc');
@@ -284,6 +288,294 @@ describe('MeetingRoomComponent', () => {
 
       expect(component.localCameraTrack()).toBeUndefined();
       expect(component.localTrack()).toBeUndefined();
+    });
+  });
+
+  describe('publishing lobby-provided tracks', () => {
+    it('publishes the given video track, marks the camera enabled, and points the local tile at it', async () => {
+      const room = attachFakeRoom();
+      const fakeVideoTrack = { sid: 'v1' } as unknown as LocalVideoTrack;
+      room.videoTrackPublications.set('cam', { source: 'camera', kind: 'video', videoTrack: fakeVideoTrack });
+      fixture.componentRef.setInput('initialVideoTrack', fakeVideoTrack);
+
+      await component.publishInitialTracks(room as never);
+
+      expect(room.localParticipant.publishTrack).toHaveBeenCalledWith(fakeVideoTrack);
+      expect(component.cameraIsEnable()).toBe(true);
+      expect(component.localTrack()).toBe(fakeVideoTrack as never);
+    });
+
+    it('publishes the given audio track and marks the microphone enabled', async () => {
+      const room = attachFakeRoom();
+      const fakeAudioTrack = { sid: 'a1' } as unknown as LocalAudioTrack;
+      fixture.componentRef.setInput('initialAudioTrack', fakeAudioTrack);
+
+      await component.publishInitialTracks(room as never);
+
+      expect(room.localParticipant.publishTrack).toHaveBeenCalledWith(fakeAudioTrack);
+      expect(component.microphoneEnabled()).toBe(true);
+    });
+
+    it('publishes nothing and leaves both devices off when the lobby handed over no tracks', async () => {
+      const room = attachFakeRoom();
+
+      await component.publishInitialTracks(room as never);
+
+      expect(room.localParticipant.publishTrack).not.toHaveBeenCalled();
+      expect(component.cameraIsEnable()).toBe(false);
+      expect(component.microphoneEnabled()).toBe(false);
+    });
+  });
+
+  describe('failure cleanup for lobby-provided tracks', () => {
+    it('stopUnpublishedInitialTracks stops both lobby-provided tracks', () => {
+      const fakeVideoTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalVideoTrack;
+      const fakeAudioTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalAudioTrack;
+      fixture.componentRef.setInput('initialVideoTrack', fakeVideoTrack);
+      fixture.componentRef.setInput('initialAudioTrack', fakeAudioTrack);
+
+      component.stopUnpublishedInitialTracks();
+
+      expect(fakeVideoTrack.stop).toHaveBeenCalled();
+      expect(fakeAudioTrack.stop).toHaveBeenCalled();
+    });
+
+    it('publishInitialTracks stops both tracks and rethrows if the video publish fails, without ever attempting to publish audio', async () => {
+      const room = attachFakeRoom();
+      const fakeVideoTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalVideoTrack;
+      const fakeAudioTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalAudioTrack;
+      fixture.componentRef.setInput('initialVideoTrack', fakeVideoTrack);
+      fixture.componentRef.setInput('initialAudioTrack', fakeAudioTrack);
+      room.localParticipant.publishTrack = jasmine.createSpy('publishTrack').and.rejectWith(new Error('video publish failed'));
+
+      let thrown: unknown;
+      try {
+        await component.publishInitialTracks(room as never);
+      } catch (err) {
+        thrown = err;
+      }
+
+      expect(thrown).toBeDefined();
+      expect(fakeVideoTrack.stop).toHaveBeenCalled();
+      expect(fakeAudioTrack.stop).toHaveBeenCalled();
+      expect(component.cameraIsEnable()).toBe(false);
+      expect(room.localParticipant.publishTrack).toHaveBeenCalledTimes(1);
+    });
+
+    it('publishInitialTracks stops only the audio track if it fails to publish, leaving an already-published video track for the room to own', async () => {
+      const room = attachFakeRoom();
+      const fakeVideoTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalVideoTrack;
+      const fakeAudioTrack = { stop: jasmine.createSpy('stop') } as unknown as LocalAudioTrack;
+      room.videoTrackPublications.set('cam', { source: 'camera', kind: 'video', videoTrack: fakeVideoTrack });
+      fixture.componentRef.setInput('initialVideoTrack', fakeVideoTrack);
+      fixture.componentRef.setInput('initialAudioTrack', fakeAudioTrack);
+      room.localParticipant.publishTrack = jasmine.createSpy('publishTrack').and.callFake((track: unknown) => {
+        if (track === fakeAudioTrack) {
+          return Promise.reject(new Error('audio publish failed'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      let thrown: unknown;
+      try {
+        await component.publishInitialTracks(room as never);
+      } catch (err) {
+        thrown = err;
+      }
+
+      expect(thrown).toBeDefined();
+      expect(component.cameraIsEnable()).toBe(true);
+      expect(fakeVideoTrack.stop).not.toHaveBeenCalled();
+      expect(fakeAudioTrack.stop).toHaveBeenCalled();
+      expect(component.microphoneEnabled()).toBe(false);
+    });
+  });
+
+  describe('device switching', () => {
+    it('switchVideoDevice calls room.switchActiveDevice and re-reads the published camera track', async () => {
+      const room = attachFakeRoom();
+      const freshTrack = { sid: 'v2' } as unknown as LocalVideoTrack;
+      room.videoTrackPublications.set('cam', { source: 'camera', kind: 'video', videoTrack: freshTrack });
+
+      await component.switchVideoDevice('cam-b');
+
+      expect(room.switchActiveDevice).toHaveBeenCalledWith('videoinput', 'cam-b');
+      expect(component.selectedVideoDeviceId()).toBe('cam-b');
+      expect(component.localCameraTrack()).toBe(freshTrack);
+      expect(component.localTrack()).toBe(freshTrack);
+    });
+
+    it('switchVideoDevice is a no-op when there is no room yet', async () => {
+      await component.switchVideoDevice('cam-b');
+
+      expect(component.selectedVideoDeviceId()).toBeUndefined();
+    });
+
+    it('switchAudioDevice calls room.switchActiveDevice', async () => {
+      const room = attachFakeRoom();
+
+      await component.switchAudioDevice('mic-b');
+
+      expect(room.switchActiveDevice).toHaveBeenCalledWith('audioinput', 'mic-b');
+      expect(component.selectedAudioDeviceId()).toBe('mic-b');
+    });
+
+    it('switchAudioDevice is a no-op when there is no room yet', async () => {
+      await component.switchAudioDevice('mic-b');
+
+      expect(component.selectedAudioDeviceId()).toBeUndefined();
+    });
+
+    it('refreshDevices populates videoDevices/audioDevices via Room.getLocalDevices', async () => {
+      const videoDeviceA = { deviceId: 'cam-a', kind: 'videoinput', label: 'Camera A' } as MediaDeviceInfo;
+      const audioDeviceA = { deviceId: 'mic-a', kind: 'audioinput', label: 'Mic A' } as MediaDeviceInfo;
+      spyOn(Room, 'getLocalDevices').and.callFake((kind?: MediaDeviceKind) =>
+        Promise.resolve(kind === 'videoinput' ? [videoDeviceA] : [audioDeviceA]));
+
+      await component.refreshDevices();
+
+      expect(component.videoDevices()).toEqual([videoDeviceA]);
+      expect(component.audioDevices()).toEqual([audioDeviceA]);
+    });
+
+    it('publishInitialTracks seeds selected device ids from the published tracks and refreshes the device lists', async () => {
+      const room = attachFakeRoom();
+      const fakeVideoTrack = { mediaStreamTrack: { getSettings: () => ({ deviceId: 'cam-a' }) } } as unknown as LocalVideoTrack;
+      const fakeAudioTrack = { mediaStreamTrack: { getSettings: () => ({ deviceId: 'mic-a' }) } } as unknown as LocalAudioTrack;
+      fixture.componentRef.setInput('initialVideoTrack', fakeVideoTrack);
+      fixture.componentRef.setInput('initialAudioTrack', fakeAudioTrack);
+      const videoDeviceA = { deviceId: 'cam-a', kind: 'videoinput', label: 'Camera A' } as MediaDeviceInfo;
+      spyOn(Room, 'getLocalDevices').and.callFake((kind?: MediaDeviceKind) =>
+        Promise.resolve(kind === 'videoinput' ? [videoDeviceA] : []));
+
+      await component.publishInitialTracks(room as never);
+
+      expect(component.selectedVideoDeviceId()).toBe('cam-a');
+      expect(component.selectedAudioDeviceId()).toBe('mic-a');
+      expect(component.videoDevices()).toEqual([videoDeviceA]);
+    });
+
+    it('removes the devicechange listener on destroy', () => {
+      const removeSpy = spyOn(navigator.mediaDevices, 'removeEventListener').and.callThrough();
+
+      component.ngOnDestroy();
+
+      expect(removeSpy).toHaveBeenCalledWith('devicechange', jasmine.any(Function));
+    });
+  });
+
+  describe('raise hand', () => {
+    it('toggleRaiseHand broadcasts hand-raised and adds self to the list', () => {
+      const room = attachFakeRoom();
+
+      component.toggleRaiseHand();
+
+      expect(component.ownHandRaised()).toBe(true);
+      expect(room.localParticipant.publishData).toHaveBeenCalledTimes(1);
+      const [payload, options] = room.localParticipant.publishData.calls.mostRecent().args;
+      expect(JSON.parse(new TextDecoder().decode(payload as Uint8Array))).toEqual({ type: 'hand-raised' });
+      expect(options).toEqual({ reliable: true });
+      expect(component.handsRaised().map((entry) => entry.identity)).toEqual(['ada-host']);
+    });
+
+    it('toggling again broadcasts hand-lowered and removes self from the list', () => {
+      const room = attachFakeRoom();
+      component.toggleRaiseHand();
+
+      component.toggleRaiseHand();
+
+      expect(component.ownHandRaised()).toBe(false);
+      const [payload] = room.localParticipant.publishData.calls.mostRecent().args;
+      expect(JSON.parse(new TextDecoder().decode(payload as Uint8Array))).toEqual({ type: 'hand-lowered' });
+      expect(component.handsRaised()).toEqual([]);
+    });
+
+    it('toggleRaiseHand is a no-op when there is no room', () => {
+      component.toggleRaiseHand();
+
+      expect(component.ownHandRaised()).toBe(false);
+    });
+
+    it('a remote hand-raised message adds that participant to the list, in raise order', () => {
+      const room = attachFakeRoom();
+
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+      fireData(room, { type: 'hand-raised' }, { identity: 'carol', name: 'Carol' });
+
+      expect(component.handsRaised().map((entry) => entry.name)).toEqual(['Bob', 'Carol']);
+    });
+
+    it('a remote hand-lowered message removes that participant', () => {
+      const room = attachFakeRoom();
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+
+      fireData(room, { type: 'hand-lowered' }, { identity: 'bob', name: 'Bob' });
+
+      expect(component.handsRaised()).toEqual([]);
+    });
+
+    it('a duplicate hand-raised message from the same participant does not add them twice', () => {
+      const room = attachFakeRoom();
+
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+
+      expect(component.handsRaised().length).toBe(1);
+    });
+
+    it('does not treat a hand-raised/hand-lowered message as a chat message', () => {
+      const room = attachFakeRoom();
+
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+
+      expect(component.messages()).toEqual([]);
+    });
+
+    it('re-broadcasts hand-raised when a new participant connects, if the hand is currently raised', () => {
+      const room = attachFakeRoom();
+      component.toggleRaiseHand();
+      (room.localParticipant.publishData as jasmine.Spy).calls.reset();
+
+      room.handlers.get(RoomEvent.ParticipantConnected)!({ identity: 'dave', name: 'Dave' });
+
+      expect(room.localParticipant.publishData).toHaveBeenCalledTimes(1);
+      const [payload] = (room.localParticipant.publishData as jasmine.Spy).calls.mostRecent().args;
+      expect(JSON.parse(new TextDecoder().decode(payload as Uint8Array))).toEqual({ type: 'hand-raised' });
+    });
+
+    it('does not re-broadcast on a new participant connecting if no hand is raised', () => {
+      const room = attachFakeRoom();
+
+      room.handlers.get(RoomEvent.ParticipantConnected)!({ identity: 'dave', name: 'Dave' });
+
+      expect(room.localParticipant.publishData).not.toHaveBeenCalled();
+    });
+
+    it('removes a participant from the raised-hands list when they disconnect', () => {
+      const room = attachFakeRoom();
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+
+      room.handlers.get(RoomEvent.ParticipantDisconnected)!({ identity: 'bob', name: 'Bob' });
+
+      expect(component.handsRaised()).toEqual([]);
+    });
+
+    it('isHandRaised reflects whether a given identity is currently in the list', () => {
+      const room = attachFakeRoom();
+      fireData(room, { type: 'hand-raised' }, { identity: 'bob', name: 'Bob' });
+
+      expect(component.isHandRaised('bob')).toBe(true);
+      expect(component.isHandRaised('carol')).toBe(false);
+    });
+
+    it('leaveRoom clears the raised-hands list and resets ownHandRaised', async () => {
+      attachFakeRoom();
+      component.toggleRaiseHand();
+
+      await component.leaveRoom();
+
+      expect(component.handsRaised()).toEqual([]);
+      expect(component.ownHandRaised()).toBe(false);
     });
   });
 });

@@ -15,9 +15,18 @@
           [formControl]="displayNameControl"
           [placeholder]="'guest_meeting.your_name' | translate"
         />
-        <button class="btn btn-primary" [disabled]="displayNameControl.invalid" (click)="join()">
+        <button class="btn btn-primary" [disabled]="displayNameControl.invalid" (click)="continueToLobby()">
           {{ 'guest_meeting.join' | translate }}
         </button>
+      </div>
+    }
+    @case ('lobby') {
+      <div class="guest-lobby-wrap">
+        <app-pre-join-lobby
+          #lobby
+          [displayName]="displayNameControl.value"
+          (joined)="onLobbyJoined($event, lobby)"
+        ></app-pre-join-lobby>
         @if (joinError()) {
           <p class="guest-join-error">{{ 'guest_meeting.join_error' | translate }}</p>
         }
@@ -28,6 +37,8 @@
         [livekitToken]="connection()!.livekitToken"
         [roomName]="connection()!.roomName"
         [displayName]="connection()!.displayName"
+        [initialVideoTrack]="connection()!.videoTrack"
+        [initialAudioTrack]="connection()!.audioTrack"
         (leaveRoomOutput)="onLeave()"
       ></app-meeting-room>
     }

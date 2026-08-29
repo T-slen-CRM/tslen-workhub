@@ -1,0 +1,34 @@
+/* Shared by CallComponent (.call-window) and MeetingRoomComponent
+   (.meeting-room) via [appCollapsibleCallWindow] - kept as its own file
+   rather than either component's own stylesheet, since Angular's view
+   encapsulation would otherwise prevent the two components from sharing it.
+   Values match CallComponent's original .call-window/.call-small/
+   .call-fullscreen, which this replaces. */
+.collapsible-call-window {
+  position: fixed;
+  top: 65px;
+  right: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  transition: width 0.3s ease-in-out, height 0.3s ease-in-out, top 0.3s ease-in-out, left 0.3s ease-in-out, right 0.3s ease-in-out;
+}
+/* cdkDrag moves the window by updating this element's `transform` inline
+   style on every pointer-move frame - the transition above (needed for the
+   collapse/expand size change) would otherwise ease each of those frames
+   too, making the window visibly lag behind the cursor while dragging. */
+.collapsible-call-window.cdk-drag-dragging {
+  transition: none;
+}
+.collapsible-call-window--collapsed {
+  width: 300px;
+  height: 220px;
+}
+.collapsible-call-window--expanded {
+  top: 65px;
+  right: auto;
+  left: 75px;
+  width: calc(100vw - 150px);
+  height: calc(100vh - 105px);
+}

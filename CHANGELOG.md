@@ -4,6 +4,12 @@ All notable changes to this project are documented here. Entries are
 generated automatically by [git-cliff](https://git-cliff.org/) from
 Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
 see `cliff.toml` and `.github/workflows/release.yml`.
+## [0.2.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.1.0...v0.2.0) - 2026-08-29
+
+### Features
+
+- *(meeting-room)* Add pre-join lobby, device picker, raise hand and chat
+
 ## [0.1.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.0.1...v0.1.0) - 2026-08-27
 
 ### Features

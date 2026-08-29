@@ -78,6 +78,7 @@ describe('MeetingLinksManagerComponent', () => {
     expect(dataServiceSpy.sendToken).toHaveBeenCalledWith('/api/token', { roomName: 'meeting-abc', participantName: 'Ada-Lovelace' });
     expect(activeMeetingCall.activeCall()).toEqual({
       livekitToken: 'host-livekit-jwt', roomName: 'meeting-abc', displayName: 'Ada-Lovelace', videoTrack: fakeVideoTrack, audioTrack: undefined,
+      backgroundEffect: 'none', backgroundImage: undefined,
     });
     expect(component.lobbyLink()).toBeNull();
   });

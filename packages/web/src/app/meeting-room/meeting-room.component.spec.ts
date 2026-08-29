@@ -1,7 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalAudioTrack, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
+import * as trackProcessors from '@livekit/track-processors';
 import { MeetingRoomComponent } from './meeting-room.component';
+import { BACKGROUND_IMAGE_PRESETS } from './pre-join-lobby/pre-join-lobby.component';
+
+jest.mock('@livekit/track-processors', () => ({
+  ...jest.requireActual('@livekit/track-processors'),
+  BackgroundProcessor: jasmine.createSpy('BackgroundProcessor'),
+}));
 
 type FakeRoom = ReturnType<typeof createFakeRoom>;
 
@@ -576,6 +583,162 @@ describe('MeetingRoomComponent', () => {
 
       expect(component.handsRaised()).toEqual([]);
       expect(component.ownHandRaised()).toBe(false);
+    });
+  });
+
+  describe('in-call background effect', () => {
+    it('setBackgroundEffect(blur) applies a BackgroundProcessor to the local camera track', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      const fakeProcessor = {} as trackProcessors.BackgroundProcessorWrapper;
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue(fakeProcessor);
+
+      await component.setBackgroundEffect('blur');
+
+      expect(trackProcessors.BackgroundProcessor).toHaveBeenCalledWith({ mode: 'background-blur', blurRadius: 10 });
+      expect(cameraTrack.setProcessor).toHaveBeenCalledWith(fakeProcessor);
+      expect(component.backgroundEffect()).toBe('blur');
+    });
+
+    it('setBackgroundEffect(image, path) applies a virtual-background processor and remembers the path', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+      const preset = BACKGROUND_IMAGE_PRESETS[0];
+
+      await component.setBackgroundEffect('image', preset.path);
+
+      expect(trackProcessors.BackgroundProcessor).toHaveBeenCalledWith({ mode: 'virtual-background', imagePath: preset.path });
+      expect(component.backgroundEffect()).toBe('image');
+      expect(component.selectedBackgroundImage()).toBe(preset.path);
+    });
+
+    it('setBackgroundEffect(none) stops the processor and clears state', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        stopProcessor: jasmine.createSpy('stopProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      component.backgroundEffect.set('blur');
+
+      await component.setBackgroundEffect('none');
+
+      expect(cameraTrack.stopProcessor).toHaveBeenCalled();
+      expect(component.backgroundEffect()).toBe('none');
+      expect(component.selectedBackgroundImage()).toBeUndefined();
+    });
+
+    it('setBackgroundEffect is a no-op when there is no local camera track', async () => {
+      await component.setBackgroundEffect('blur');
+
+      expect(component.backgroundEffect()).toBe('none');
+    });
+
+    it('falls back to none and marks the effect unavailable when applying the processor throws', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.rejectWith(new Error('no worker support')),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+
+      await component.setBackgroundEffect('blur');
+
+      expect(component.backgroundEffect()).toBe('none');
+      expect(component.backgroundUnavailable()).toBe(true);
+    });
+
+    it('onBackgroundEffectChange applies blur directly', () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+
+      component.onBackgroundEffectChange({ value: 'blur' } as never);
+
+      expect(trackProcessors.BackgroundProcessor).toHaveBeenCalledWith({ mode: 'background-blur', blurRadius: 10 });
+    });
+
+    it('onBackgroundEffectChange defaults to the first preset when switching to image with none previously selected', () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+
+      component.onBackgroundEffectChange({ value: 'image' } as never);
+
+      expect(trackProcessors.BackgroundProcessor).toHaveBeenCalledWith({ mode: 'virtual-background', imagePath: BACKGROUND_IMAGE_PRESETS[0].path });
+    });
+
+    it('selectBackgroundImage applies a virtual-background processor for the chosen preset', () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+      const preset = BACKGROUND_IMAGE_PRESETS[1];
+
+      component.selectBackgroundImage(preset.path);
+
+      expect(trackProcessors.BackgroundProcessor).toHaveBeenCalledWith({ mode: 'virtual-background', imagePath: preset.path });
+    });
+
+    it('publishInitialTracks seeds backgroundEffect/selectedBackgroundImage from the initial* inputs', async () => {
+      const room = attachFakeRoom();
+      const preset = BACKGROUND_IMAGE_PRESETS[0];
+      fixture.componentRef.setInput('initialBackgroundEffect', 'image');
+      fixture.componentRef.setInput('initialBackgroundImage', preset.path);
+
+      await component.publishInitialTracks(room as never);
+
+      expect(component.backgroundEffect()).toBe('image');
+      expect(component.selectedBackgroundImage()).toBe(preset.path);
+    });
+
+    it('reapplies the active background effect when LiveKit republishes a new camera track (e.g. after a device switch)', () => {
+      const room = attachFakeRoom();
+      component.backgroundEffect.set('blur');
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+      const freshTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+
+      room.handlers.get(RoomEvent.LocalTrackPublished)!({ kind: 'video', source: 'camera', videoTrack: freshTrack });
+
+      expect(freshTrack.setProcessor).toHaveBeenCalled();
+    });
+
+    it('does not reapply anything on a new camera publication when no background effect is active', () => {
+      const room = attachFakeRoom();
+      const freshTrack = {
+        setProcessor: jasmine.createSpy('setProcessor'),
+      } as unknown as LocalVideoTrack;
+
+      room.handlers.get(RoomEvent.LocalTrackPublished)!({ kind: 'video', source: 'camera', videoTrack: freshTrack });
+
+      expect(freshTrack.setProcessor).not.toHaveBeenCalled();
+    });
+
+    it('leaveRoom resets the background effect state', async () => {
+      attachFakeRoom();
+      component.backgroundEffect.set('blur');
+      component.selectedBackgroundImage.set(BACKGROUND_IMAGE_PRESETS[0].path);
+
+      await component.leaveRoom();
+
+      expect(component.backgroundEffect()).toBe('none');
+      expect(component.selectedBackgroundImage()).toBeUndefined();
     });
   });
 });

@@ -39,6 +39,8 @@
         [displayName]="connection()!.displayName"
         [initialVideoTrack]="connection()!.videoTrack"
         [initialAudioTrack]="connection()!.audioTrack"
+        [initialBackgroundEffect]="connection()!.backgroundEffect"
+        [initialBackgroundImage]="connection()!.backgroundImage"
         (leaveRoomOutput)="onLeave()"
       ></app-meeting-room>
     }

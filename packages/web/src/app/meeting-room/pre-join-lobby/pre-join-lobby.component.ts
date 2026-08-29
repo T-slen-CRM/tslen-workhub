@@ -29,6 +29,11 @@ export interface PreJoinResult {
   videoTrack: LocalVideoTrack | undefined;
   audioTrack: LocalAudioTrack | undefined;
   backgroundEffect: BackgroundEffect;
+  // Which preset is active, when backgroundEffect is 'image' - the receiving
+  // call component needs this to pre-select the right option in its own
+  // in-call background picker, matching what the lobby already baked into
+  // the handed-off track.
+  backgroundImage?: string;
 }
 
 interface PreJoinLobbyPrefs {
@@ -327,6 +332,7 @@ export class PreJoinLobbyComponent implements OnInit, OnDestroy {
       videoTrack: this.videoTrack(),
       audioTrack: this.audioTrack(),
       backgroundEffect: this.backgroundEffect(),
+      backgroundImage: this.selectedBackgroundImage(),
     });
   }
 

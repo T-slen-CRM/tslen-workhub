@@ -21,6 +21,8 @@ describe('ActiveMeetingCallService', () => {
       displayName: 'Ada',
       videoTrack: { sid: 'v1' } as unknown as LocalVideoTrack,
       audioTrack: { sid: 'a1' } as unknown as LocalAudioTrack,
+      backgroundEffect: 'none',
+      backgroundImage: undefined,
     };
 
     service.start(call);
@@ -35,6 +37,8 @@ describe('ActiveMeetingCallService', () => {
       displayName: 'Ada',
       videoTrack: undefined,
       audioTrack: undefined,
+      backgroundEffect: 'none',
+      backgroundImage: undefined,
     });
 
     service.clear();

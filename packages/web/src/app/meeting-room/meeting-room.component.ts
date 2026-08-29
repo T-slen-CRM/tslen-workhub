@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { CollapsibleCallWindowDirective } from '../pages/live-kit/collapsible-call-window.directive';
 import {
@@ -17,10 +19,12 @@ import {
   RoomEvent,
   VideoPresets,
 } from 'livekit-client';
+import { BackgroundProcessor } from '@livekit/track-processors';
 import { VideoComponent } from '../pages/call/video/video.component';
 import { AudioComponent } from '../pages/call/audio/audio.component';
 import { MeetingChatComponent, MeetingChatMessage } from './meeting-chat/meeting-chat.component';
 import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel/raised-hands-panel.component';
+import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect } from './pre-join-lobby/pre-join-lobby.component';
 import { environment } from '../../environments/environment';
 
 interface TrackInfo {
@@ -31,7 +35,7 @@ interface TrackInfo {
 @Component({
   selector: 'app-meeting-room',
   standalone: true,
-  imports: [DragDropModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule, TranslateModule, VideoComponent, AudioComponent, MeetingChatComponent, RaisedHandsPanelComponent, CollapsibleCallWindowDirective],
+  imports: [DragDropModule, MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatIconModule, MatSelectModule, MatTooltipModule, TranslateModule, VideoComponent, AudioComponent, MeetingChatComponent, RaisedHandsPanelComponent, CollapsibleCallWindowDirective],
   templateUrl: './meeting-room.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./meeting-room.component.css', '../pages/live-kit/collapsible-call-window.css'],
@@ -42,6 +46,11 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   displayName = input.required<string>();
   initialVideoTrack = input<LocalVideoTrack | undefined>(undefined);
   initialAudioTrack = input<LocalAudioTrack | undefined>(undefined);
+  // What the pre-join lobby already baked into initialVideoTrack's processor -
+  // purely to seed this component's own picker's displayed state; the lobby
+  // has already applied the actual effect to the track itself.
+  initialBackgroundEffect = input<BackgroundEffect>('none');
+  initialBackgroundImage = input<string | undefined>(undefined);
   leaveRoomOutput = output();
 
   room = signal<Room | undefined>(undefined);
@@ -61,6 +70,11 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   audioDevices = signal<MediaDeviceInfo[]>([]);
   selectedVideoDeviceId = signal<string | undefined>(undefined);
   selectedAudioDeviceId = signal<string | undefined>(undefined);
+  backgroundPanelOpen = signal<boolean>(false);
+  backgroundEffect = signal<BackgroundEffect>('none');
+  selectedBackgroundImage = signal<string | undefined>(undefined);
+  backgroundUnavailable = signal<boolean>(false);
+  backgroundImagePresets = BACKGROUND_IMAGE_PRESETS;
 
   private destroyed = false;
   private encoder = new TextEncoder();
@@ -178,6 +192,13 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
       this.selectedAudioDeviceId.set(audioTrack.mediaStreamTrack?.getSettings().deviceId);
     }
     await this.refreshDevices();
+    // Seeds this component's own picker to reflect what the lobby already
+    // applied to the track's processor - done last, after the track is
+    // already published, so the LocalTrackPublished handler below (which
+    // reapplies whenever backgroundEffect is non-'none') doesn't fire a
+    // redundant re-application against the very same processor on first join.
+    this.backgroundEffect.set(this.initialBackgroundEffect());
+    this.selectedBackgroundImage.set(this.initialBackgroundImage());
   }
 
   async switchVideoDevice (deviceId: string): Promise<void> {
@@ -252,6 +273,13 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
         if (!this.screenShareEnabled()) {
           this.localTrack.set(publication.videoTrack);
         }
+        // LiveKit hands out a brand-new LocalVideoTrack (with no processor of
+        // its own) on every device switch and every disable/re-enable cycle -
+        // reapply whatever background effect is currently selected so it
+        // survives those, instead of silently reverting to the raw camera feed.
+        if (this.backgroundEffect() !== 'none' && publication.videoTrack) {
+          void this.setBackgroundEffect(this.backgroundEffect(), this.selectedBackgroundImage());
+        }
       } else if (publication.source === 'screen_share') {
         this.localScreenTrack.set(publication.videoTrack);
         this.localTrack.set(publication.videoTrack);
@@ -318,6 +346,45 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     return this.handsRaised().some((entry) => entry.identity === identity);
   }
 
+  onBackgroundEffectChange (change: MatButtonToggleChange): void {
+    const value = change.value as BackgroundEffect;
+    if (value === 'image') {
+      void this.setBackgroundEffect('image', this.selectedBackgroundImage() ?? BACKGROUND_IMAGE_PRESETS[0].path);
+    } else {
+      void this.setBackgroundEffect(value);
+    }
+  }
+
+  selectBackgroundImage (path: string): void {
+    void this.setBackgroundEffect('image', path);
+  }
+
+  async setBackgroundEffect (effect: BackgroundEffect, imagePath?: string): Promise<void> {
+    const track = this.localCameraTrack();
+    if (!track) {
+      return;
+    }
+    if (effect === 'none') {
+      await track.stopProcessor();
+      this.backgroundEffect.set('none');
+      this.selectedBackgroundImage.set(undefined);
+      return;
+    }
+    try {
+      const processor = effect === 'blur'
+        ? BackgroundProcessor({ mode: 'background-blur', blurRadius: 10 })
+        : BackgroundProcessor({ mode: 'virtual-background', imagePath: imagePath! });
+      await track.setProcessor(processor);
+      this.backgroundEffect.set(effect);
+      this.selectedBackgroundImage.set(effect === 'image' ? imagePath : undefined);
+      this.backgroundUnavailable.set(false);
+    } catch {
+      this.backgroundEffect.set('none');
+      this.selectedBackgroundImage.set(undefined);
+      this.backgroundUnavailable.set(true);
+    }
+  }
+
   async leaveRoom(): Promise<void> {
     const room = this.room();
     room?.off(RoomEvent.DataReceived, this.onDataReceived);
@@ -330,6 +397,8 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     this.messages.set([]);
     this.handsRaised.set([]);
     this.ownHandRaised.set(false);
+    this.backgroundEffect.set('none');
+    this.selectedBackgroundImage.set(undefined);
     if (!this.destroyed) {
       this.leaveRoomOutput.emit();
     }

@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
+import { BackgroundEffect } from '../../meeting-room/pre-join-lobby/pre-join-lobby.component';
 
 export interface ActiveMeetingCall {
   livekitToken: string;
@@ -7,6 +8,8 @@ export interface ActiveMeetingCall {
   displayName: string;
   videoTrack: LocalVideoTrack | undefined;
   audioTrack: LocalAudioTrack | undefined;
+  backgroundEffect: BackgroundEffect;
+  backgroundImage: string | undefined;
 }
 
 /**

@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 import { DataService } from '../services/data.service';
 import { MeetingRoomComponent } from '../meeting-room/meeting-room.component';
-import { PreJoinLobbyComponent, PreJoinResult } from '../meeting-room/pre-join-lobby/pre-join-lobby.component';
+import { BackgroundEffect, PreJoinLobbyComponent, PreJoinResult } from '../meeting-room/pre-join-lobby/pre-join-lobby.component';
 
 interface MeetingInfo {
   title: string | null;
@@ -18,6 +18,8 @@ interface GuestConnection {
   displayName: string;
   videoTrack: LocalVideoTrack | undefined;
   audioTrack: LocalAudioTrack | undefined;
+  backgroundEffect: BackgroundEffect;
+  backgroundImage: string | undefined;
 }
 
 @Component({
@@ -68,6 +70,8 @@ export class GuestMeetingLandingComponent implements OnInit {
           displayName,
           videoTrack: result.videoTrack,
           audioTrack: result.audioTrack,
+          backgroundEffect: result.backgroundEffect,
+          backgroundImage: result.backgroundImage,
         });
         this.state.set('in-call');
       },

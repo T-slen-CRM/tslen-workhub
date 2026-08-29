@@ -78,6 +78,7 @@ describe('GuestMeetingLandingComponent', () => {
     expect(component.state()).toBe('in-call');
     expect(component.connection()).toEqual({
       livekitToken: 'guest-jwt', roomName: 'meeting-abc', displayName: 'Visiting Guest', videoTrack: fakeVideoTrack, audioTrack: undefined,
+      backgroundEffect: 'blur', backgroundImage: undefined,
     });
   });
 

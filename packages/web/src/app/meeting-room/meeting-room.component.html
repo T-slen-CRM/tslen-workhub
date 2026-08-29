@@ -30,6 +30,16 @@
         <button mat-icon-button type="button" [color]="screenShareEnabled() ? 'accent' : undefined" (click)="setScreenShareEnabled(!screenShareEnabled())">
           <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
         </button>
+        <button
+          mat-icon-button
+          type="button"
+          [disabled]="!localCameraTrack()"
+          [color]="backgroundEffect() !== 'none' ? 'accent' : undefined"
+          (click)="backgroundPanelOpen.set(!backgroundPanelOpen())"
+          [matTooltip]="'meeting_room.background_effect' | translate"
+        >
+          <mat-icon>blur_on</mat-icon>
+        </button>
       }
       <button mat-icon-button type="button" [color]="ownHandRaised() ? 'accent' : undefined" (click)="toggleRaiseHand()">
         <mat-icon>back_hand</mat-icon>
@@ -93,6 +103,27 @@
     </div>
 
     @if (!win.collapsed()) {
+      @if (backgroundPanelOpen()) {
+        <div class="meeting-background-panel">
+          <mat-button-toggle-group [value]="backgroundEffect()" [disabled]="!localCameraTrack()" (change)="onBackgroundEffectChange($event)">
+            <mat-button-toggle value="none">{{ 'pre_join_lobby.background_none' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="blur">{{ 'pre_join_lobby.blur' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="image">{{ 'pre_join_lobby.background_image' | translate }}</mat-button-toggle>
+          </mat-button-toggle-group>
+          @if (backgroundEffect() === 'image') {
+            <mat-form-field class="meeting-device-select" appearance="outline" subscriptSizing="dynamic">
+              <mat-select panelClass="meeting-device-select-panel" [value]="selectedBackgroundImage()" (selectionChange)="selectBackgroundImage($event.value)">
+                @for (preset of backgroundImagePresets; track preset.id) {
+                  <mat-option [value]="preset.path">{{ preset.labelKey | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+          @if (backgroundUnavailable()) {
+            <span class="meeting-background-error">{{ 'pre_join_lobby.blur_unavailable' | translate }}</span>
+          }
+        </div>
+      }
       @if (raisedHandsPanelOpen()) {
         <app-raised-hands-panel [entries]="handsRaised()"></app-raised-hands-panel>
       }

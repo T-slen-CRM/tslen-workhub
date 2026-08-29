@@ -201,6 +201,8 @@ export class MeetingLinksManagerComponent implements OnInit {
           displayName: participantName,
           videoTrack: result.videoTrack,
           audioTrack: result.audioTrack,
+          backgroundEffect: result.backgroundEffect,
+          backgroundImage: result.backgroundImage,
         });
         this.lobbyLink.set(null);
       },

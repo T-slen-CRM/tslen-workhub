@@ -1,27 +1,40 @@
-# Stage 1: Build Angular frontend
-FROM node:24 AS web-build
-WORKDIR /app/packages/web
-COPY packages/web/package.json packages/web/package-lock.json ./
+# Stage 1: install the npm workspace (root + packages/*) once from the
+# single root lockfile, and build the shared types package everything else
+# needs at compile/run time.
+FROM node:24 AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY packages/web/package.json packages/web/package.json
+COPY packages/web/scripts/ packages/web/scripts/
+COPY packages/shared/package.json packages/shared/package.json
 RUN npm ci --legacy-peer-deps
+COPY packages/shared/ packages/shared/
+RUN npm run build:shared
+
+# Stage 2: build Angular frontend
+FROM deps AS web-build
+WORKDIR /app/packages/web
 COPY packages/web/ .
 COPY .env /app/.env
 RUN npm run config && npx ng build --configuration production
 
-# Stage 2: Build NestJS backend
-FROM node:24 AS api-build
+# Stage 3: build NestJS backend
+FROM deps AS api-build
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
 COPY src/ src/
 COPY tsconfig*.json nest-cli.json ./
 COPY proto/ proto/
 RUN npm run build
 
-# Stage 3: Production image
+# Stage 4: production image
 FROM node:24-slim
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY packages/web/package.json packages/web/package.json
+COPY packages/web/scripts/ packages/web/scripts/
+COPY packages/shared/package.json packages/shared/package.json
 RUN npm ci --legacy-peer-deps
+COPY --from=deps /app/packages/shared/dist ./packages/shared/dist
 COPY --from=api-build /app/dist ./dist
 COPY --from=web-build /app/packages/web/dist ./packages/web/dist
 COPY proto/ proto/

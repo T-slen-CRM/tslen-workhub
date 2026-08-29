@@ -10,11 +10,30 @@ See `README.md` for the product/feature overview and tech stack.
 
 - `src/` — NestJS backend (TypeORM + PostgreSQL, WebSockets).
 - `packages/web/` — Angular 22 frontend, its own `package.json`.
+- `packages/shared/` — `@tslen-workhub/shared`, framework-agnostic
+  TypeScript types/enums shared between the backend and frontend. No
+  NestJS/TypeORM/Angular dependency here, so both sides can import it
+  freely. `npm run build:shared` (or the `prebuild` hook on `npm run
+  build`/`npm run build --workspace=packages/web`) compiles it to `dist/`;
+  nothing consumes its raw `.ts` source directly.
 - `test/` — backend Jest tests (`unit/`, `integration/`).
 - Frontend tests live next to the file they cover (`*.spec.ts`), run via Jest.
 
-Two separate npm projects: `npm install` at repo root **and** inside
-`packages/web/` are both required.
+This is an npm workspaces monorepo (root `package.json`'s `"workspaces":
+["packages/*"]`) with a single root `package-lock.json` — one `npm install`
+at the repo root installs everything, including `packages/web`. Don't run
+`npm install` inside `packages/web/` separately; it has no lockfile of its
+own.
+
+`packages/web/package.json`'s `postinstall` runs two workaround scripts
+(`scripts/link-local-eslint.js`, `scripts/copy-vendor-assets.js`) needed
+because npm's hoisting of shared deps between this workspace and the root
+isn't stable across installs — see the comments in those files for why. If
+a future `npm install` reshuffles hoisting again and something in
+`packages/web` that used to "just work" breaks (an `ng build`/`ng lint`
+failure mentioning `node_modules`), that's almost certainly the cause —
+extend those scripts rather than hand-editing `angular.json`/`styles.scss`
+node_modules paths again.
 
 ## Environment
 

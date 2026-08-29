@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "config": "ts-node set-env.ts",
-    "prestart": "npm run config",
+    "postinstall": "node scripts/link-local-eslint.js && node scripts/copy-vendor-assets.js",
+    "prestart": "npm run config && cd ../shared && npm run build",
     "start": "ng serve",
+    "prebuild": "cd ../shared && npm run build && cd ../web && node scripts/copy-vendor-assets.js",
     "build": "ng build",
     "preprod": "npm run config",
     "prod": "ng build --configuration production && cp .htaccess dist/",
@@ -14,6 +16,7 @@
   },
   "private": true,
   "dependencies": {
+    "@tslen-workhub/shared": "*",
     "@angular/animations": "^22.1.3",
     "@angular/cdk": "^22.1.3",
     "@angular/common": "^22.1.3",

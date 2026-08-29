@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build shared package
+        run: npm run build:shared
+
       - name: Run linter
         run: npm run lint
 
@@ -44,10 +47,6 @@ jobs:
       matrix:
         node-version: [24.19.0]
 
-    defaults:
-      run:
-        working-directory: packages/web
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -60,5 +59,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build shared package
+        run: npm run build:shared
+
       - name: Run Angular lint
-        run: npm run lint
+        run: npm run lint --workspace=packages/web

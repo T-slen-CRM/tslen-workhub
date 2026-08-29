@@ -41,15 +41,15 @@
               "src/fake-data",
               {
                 "glob": "**/*",
-                "input": "./node_modules/@kolkov/angular-editor/assets/icons",
+                "input": "./.vendor-assets/ae-icons",
                 "output": "./assets/ae-icons/"
               }
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": ["node_modules/jquery/dist/jquery.min.js"],
+            "scripts": ["jquery/dist/jquery.min.js"],
             "extractLicenses": false,
             "aot": false,
             "sourceMap": true,

@@ -1,6 +1,6 @@
 import { IsDate, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Role } from '../../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { DaysOffEntityDto } from '../../company-days-off-rules/dto/daysOffEntity.dto';
 import { CreateEventsByUserDto } from 'src/resources/events-by-user/dto/create-events-by-user.dto';
 import { CreateGoogleCalendarDto } from '../../google-calendar/dto/create-google-calendar.dto';

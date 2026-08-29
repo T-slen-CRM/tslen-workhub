@@ -1,5 +1,5 @@
 import { Users } from '../../resources/users/entities/users.entity';
-import { Role } from '../guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 export function hasPermissionById (userId: number, entityUserId: number, user: Users,) {
     if (!entityUserId) {

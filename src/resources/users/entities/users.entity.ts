@@ -14,7 +14,7 @@ import { BaseAbstractEntity } from '../../../common/entities/base/base.abstract.
 import { EventsByUser } from '../../events-by-user/entities/events-by-user.entity';
 import { JobPosition } from '../../job-position/entities/job-position.entity';
 import { TaskUserAssignmentRelation } from '../../tasks/entities/taskUserAssignment.entity';
-import { Role } from '../../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { GoogleCalendar } from '../../google-calendar/entities/google-calendar.entity';
 import { UserGooglePermission } from './user-google-permission.entity';
 import { Inventory } from '../../inventory/entities/inventory.entity';

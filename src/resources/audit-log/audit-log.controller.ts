@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { AuditLogService } from './audit-log.service';
 import { AuditLog } from './entities/audit-log.entity';
 import { Roles } from '../../common/guards/roles/roles.decorator';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { ListAuditLogsQueryDto } from './dto/list-audit-logs-query.dto';
 
 @Controller('audit-log')

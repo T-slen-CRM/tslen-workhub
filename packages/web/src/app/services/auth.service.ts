@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import {BehaviorSubject, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {ConfigurationService} from "./ConfigurationService";
+import {Role} from "@tslen-workhub/shared";
 
 export interface ISessionData {
     userId?: number;
     companyId?: number;
     userEmail?: string;
-    userRole?: string;
+    userRole?: Role;
     balance?: string;
     firstName?: string;
     lastName?: string;
@@ -17,7 +18,7 @@ export interface ISessionData {
     changedUserRole?: string;
     useDarkTheme?: number;
     id?: number;
-    role?: string;
+    role?: Role;
     avatar?: string;
     email?: string;
     googlePermissions?: IUserGooglePermissions;
@@ -29,7 +30,7 @@ class AuthDataParams implements ISessionData {
     userId: number;
     companyId: number;
     userEmail: string;
-    userRole: string;
+    userRole: Role;
     balance: string;
     firstName: string;
     lastName: string;
@@ -37,7 +38,7 @@ class AuthDataParams implements ISessionData {
     changedUserRole: string;
     useDarkTheme: number;
     id: number;
-    role: string;
+    role: Role;
     avatar: string;
     email: string;
     googlePermissions: IUserGooglePermissions;

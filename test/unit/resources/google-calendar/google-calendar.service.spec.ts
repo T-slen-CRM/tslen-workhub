@@ -6,7 +6,7 @@ import { mockUser } from '../../../shared/users';
 import { GoogleCalendarRepository } from '../../../../src/resources/google-calendar/google-calendar.repository';
 import { ErrorExceptionMethod, ErrorService, IThrowErrorObject } from '../../../../src/common/services/error/error.service';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Role } from '../../../../src/common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 describe('GoogleCalendarService', () => {
     let service: GoogleCalendarService;

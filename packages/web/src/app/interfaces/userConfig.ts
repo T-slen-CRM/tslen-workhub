@@ -1,4 +1,5 @@
 import {IGoogleCalendar} from "./google";
+import {Role} from "@tslen-workhub/shared";
 
 export interface UserGeneralData {
     id: number;
@@ -16,7 +17,7 @@ export interface UserGeneralData {
     companyId: number;
     company: string;
     isActive: number;
-    role: string;
+    role: Role;
     managerId: number;
     chiefId: number;
     useDarkTheme: number;

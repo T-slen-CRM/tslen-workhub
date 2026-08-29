@@ -112,10 +112,23 @@
 /* The select's dropdown panel is rendered into a CDK overlay appended to
    <body>, outside this component's DOM - the ancestor-scoped ::ng-deep rules
    above can't reach it, so it needs its own bare (unscoped) ::ng-deep rule
-   targeting the panelClass set on each <mat-select> below. */
+   targeting the panelClass set on each <mat-select> below.
+   !important is required throughout this block: Angular's own Material
+   theme CSS targets the same elements at equal specificity
+   (e.g. plain `.mat-mdc-select-panel { background-color: ... }`), so which
+   one wins is purely a function of stylesheet injection order - without
+   !important this panel silently stayed the theme's default white/light
+   background with near-invisible text, which is exactly the "selected
+   option unreadable" bug this was reported for. */
 ::ng-deep .pre-join-device-select-panel {
-  background: #2b2b30;
+  background: #2b2b30 !important;
 }
 ::ng-deep .pre-join-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
-  color: #fff;
+  color: #fff !important;
+}
+::ng-deep .pre-join-device-select-panel .mat-mdc-option.mdc-list-item--selected {
+  background-color: #3a3a42 !important;
+}
+::ng-deep .pre-join-device-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background-color: #35353c !important;
 }

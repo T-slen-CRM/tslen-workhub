@@ -39,8 +39,12 @@ export function getWeekDays() {
   };
 }
 export function getDaysArray(start, end) {
+  // UTC getters/setters throughout - start/end are calendar-day boundaries
+  // (a day-off's start/end), not viewer-relative instants, so walking them
+  // with local Date methods would make the resulting day count depend on
+  // whichever browser happens to view it.
   const arr = [];
-  for (const dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)){
+  for (const dt = new Date(start); dt <= new Date(end); dt.setUTCDate(dt.getUTCDate() + 1)){
     arr.push(new Date(dt));
   }
   return arr;

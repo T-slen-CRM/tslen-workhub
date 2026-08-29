@@ -20,7 +20,6 @@ import {
   FadeInOut,
   FadeInOutByHidden,
 } from '../../../animations/animations';
-import { endOfDay, startOfDay, subMinutes } from 'date-fns';
 import { ValidatorFormGroupService } from '../../services/validatorFormGroup.service';
 import { LanguageService } from 'src/app/language/language.service';
 
@@ -275,14 +274,20 @@ export class CreateOneEventDialogComponent implements OnInit {
 
   checkDateTime() {
     if (this.form.value.isRequest && !this.form.value.dateWithHours) {
-      const end = subMinutes(endOfDay(new Date(this.form.value.end)), 1);
-      const start = startOfDay(new Date(this.form.value.start));
-      this.form
-        .get('start')
-        .patchValue(customFormatDate(start, 'yyyy-MM-dd HH:mm:ss'));
-      this.form
-        .get('end')
-        .patchValue(customFormatDate(end, 'yyyy-MM-dd HH:mm:ss'));
+      // form.value.start/end are already the exact calendar day the user
+      // picked (a bare 'yyyy-MM-dd' string, from the native date input or
+      // from changeDateTimeByRequestType()). Routing that through
+      // `new Date(...)` here would re-parse a bare date-only string as UTC
+      // midnight (per the ES spec) and then reformat it with local-time
+      // getters (startOfDay/endOfDay/customFormatDate) - for any timezone
+      // behind UTC that silently shifts the request onto the wrong
+      // calendar day. Slicing the string directly instead never
+      // constructs a Date from an ambiguous bare date string, so the
+      // result can't drift with the browser's timezone.
+      const startDay = String(this.form.value.start).slice(0, 10);
+      const endDay = String(this.form.value.end).slice(0, 10);
+      this.form.get('start').patchValue(`${startDay} 00:00:00`);
+      this.form.get('end').patchValue(`${endDay} 23:59:00`);
     }
   }
 

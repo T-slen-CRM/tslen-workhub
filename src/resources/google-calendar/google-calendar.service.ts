@@ -63,9 +63,3 @@ export class GoogleCalendarService extends BaseAbstractService<GoogleCalendar>{
         return this.delete(id);
     }
 }
-export interface IGoogleCalendar {
-    id: number;
-    userId: number;
-    calendarId: string;
-    timezone: string;
-}

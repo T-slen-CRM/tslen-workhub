@@ -23,7 +23,7 @@ export class CustomHeaderPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.authData = this.AuthService.authData;
-    this.isManager = this.authData.userRole === 'manager';
-    this.userId = this.authData.userId;
+    this.isManager = this.authData.role === 'manager';
+    this.userId = this.authData.id;
   }
 }

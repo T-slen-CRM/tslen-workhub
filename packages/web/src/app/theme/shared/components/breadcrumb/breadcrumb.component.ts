@@ -54,8 +54,8 @@ export class BreadcrumbComponent implements OnInit {
       }
     });
     this.authData = this.AuthService.authData;
-    this.isManager = this.authData.userRole === 'manager';
-    this.userId = this.authData.userId;
+    this.isManager = this.authData.role === 'manager';
+    this.userId = this.authData.id;
     this.setBreadcrumb();
   }
   loadTranslations(): void {

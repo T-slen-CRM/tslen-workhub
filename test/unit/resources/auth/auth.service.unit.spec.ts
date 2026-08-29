@@ -1,4 +1,5 @@
-import { AuthService, IUserGooglePermissions } from '../../../../src/resources/auth/auth.service';
+import { AuthService } from '../../../../src/resources/auth/auth.service';
+import { GooglePermissions } from '@tslen-workhub/shared';
 import { UsersService } from '../../../../src/resources/users/users.service';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { mockUser } from '../../../shared/users';
@@ -70,7 +71,7 @@ describe('AuthService signIn', () => {
 
     it('should return Google permissions for a valid scope', async () => {
         const scope = 'https://www.googleapis.com/auth/calendar';
-        const mockPermissions: IUserGooglePermissions = {
+        const mockPermissions: GooglePermissions = {
             email: 1,
             calendar: 1,
             meetingSpace: 1,

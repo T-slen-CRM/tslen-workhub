@@ -1,5 +1,4 @@
-import {IGoogleCalendar} from "./google";
-import {Role} from "@tslen-workhub/shared";
+import {GoogleCalendarInfo, Role} from "@tslen-workhub/shared";
 
 export interface UserGeneralData {
     id: number;
@@ -21,20 +20,17 @@ export interface UserGeneralData {
     managerId: number;
     chiefId: number;
     useDarkTheme: number;
-    tokenReset: string;
-    tokenActivation: string;
     loginCount: number;
     lastLogin: string;
     firstDayInCompany: string;
     lastDayInCompany: string;
     emailSpare: string;
-    password: string;
     daysOff: object;
     eventsByUsers: object;
     eventsByUsersRequest: object;
     userChiefRelations: object;
     userRelationToGroups: object;
-    googleCalendars: IGoogleCalendar;
+    googleCalendars: GoogleCalendarInfo;
     group: string;
     value: number;
     userProbation: IUserProbation;

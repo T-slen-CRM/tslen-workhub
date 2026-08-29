@@ -101,7 +101,7 @@ export class ManageUsersAggridComponent implements OnInit {
           },
         ];
 
-        if (['admin', 'manager'].includes(authData.userRole)) {
+        if (['admin', 'manager'].includes(authData.role)) {
           this.columnDefs.push({
             headerName: translations['manage_users.actions'],
             field: 'actions',

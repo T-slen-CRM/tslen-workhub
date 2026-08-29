@@ -140,7 +140,7 @@ export class CallUsersOnlineComponent
         //   }
         // ];
 
-        if (['admin', 'manager'].includes(this.user.userRole)) {
+        if (['admin', 'manager'].includes(this.user.role)) {
           this.columnDefs.push({
             headerName: translations['manage_users.actions'],
             field: 'actions',

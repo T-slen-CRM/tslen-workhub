@@ -11,8 +11,8 @@ import { GooglePermissionsComponent } from '../../tslen-components/google-permis
 import {
   AuthData,
   AuthenticationService,
-  IUserGooglePermissions,
 } from '../../services/auth.service';
+import { GooglePermissions } from '@tslen-workhub/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/language/language.service';
 
@@ -35,7 +35,7 @@ import { LanguageService } from 'src/app/language/language.service';
 export class MeetComponent {
   public meeting$: Observable<{ uri: string }>;
   public authData: AuthData;
-  public googlePermissions: IUserGooglePermissions;
+  public googlePermissions: GooglePermissions;
   constructor(
     private dataService: DataService,
     private authService: AuthenticationService,

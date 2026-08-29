@@ -47,4 +47,37 @@ describe('CallUsersOnlineComponent', () => {
     expect(() => component.ngOnInit()).not.toThrow();
     expect(component.rowData).toEqual([]);
   });
+
+  describe('as an admin', () => {
+    let adminComponent: CallUsersOnlineComponent;
+
+    beforeEach(() => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: DataService, useValue: { getAgGridData: () => of([]) } },
+          { provide: AuthenticationService, useValue: { authDataSignal: () => ({ id: 1, role: 'admin' }) } },
+          {
+            provide: LanguageService,
+            useValue: { currentLang: 'en', onLangChange: new Subject(), get: () => of({}) },
+          },
+          { provide: LiveKitWebSocketService, useValue: liveKitWebSocketServiceSpy },
+          { provide: LiveChatService, useValue: { setSelectedChatId: jasmine.createSpy('setSelectedChatId') } },
+        ],
+      });
+      adminComponent = TestBed.runInInjectionContext(() => new CallUsersOnlineComponent(
+        TestBed.inject(DataService),
+        TestBed.inject(LanguageService),
+        TestBed.inject(LiveKitWebSocketService),
+      ));
+    });
+
+    it('adds the actions column (regression: columnDefs was declared but never initialized, so pushing the actions column for admin/manager threw "Cannot read properties of undefined (reading \'push\')" and the column was silently dropped)', () => {
+      adminComponent.ngOnInit();
+
+      expect(adminComponent.columnDefs).toEqual([
+        jasmine.objectContaining({ field: 'actions' }),
+      ]);
+    });
+  });
 });

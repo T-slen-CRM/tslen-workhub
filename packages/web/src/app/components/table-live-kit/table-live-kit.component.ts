@@ -38,7 +38,7 @@ export class CallUsersOnlineComponent
   implements OnInit
 {
   lastLang: string;
-  columnDefs: any[];
+  columnDefs: any[] = [];
   defaultColDef: any;
   rowSelection: string;
   gridApi: any;

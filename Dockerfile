@@ -28,6 +28,11 @@ RUN npm run build
 
 # Stage 4: production image
 FROM node:24-slim
+# Pinned so the app server's own interpretation of "no time zone" Postgres
+# timestamp columns is deterministic regardless of the host - without this,
+# a day-off request's start/end can silently land on the wrong calendar day
+# whenever the container's ambient timezone differs from whoever created it.
+ENV TZ=UTC
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY packages/web/package.json packages/web/package.json

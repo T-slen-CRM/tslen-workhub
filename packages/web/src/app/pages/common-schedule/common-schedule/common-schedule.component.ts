@@ -5,7 +5,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {
-  customFormatDate,
   dayByWeek,
   daysInMonth,
   getDaysArray,
@@ -17,7 +16,6 @@ import {
   AuthData,
   AuthenticationService,
 } from '../../../services/auth.service';
-import { endOfDay, endOfMonth } from 'date-fns';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { DaysOffCellRendererComponent } from '../../../tslen-components/ag-grid/days-off-cell-renderer/days-off-cell-renderer.component';
 import { NameAvatarCellRendererComponent } from '../../../tslen-components/ag-grid/name-avatar-cell-renderer/name-avatar-cell-renderer.component';
@@ -138,21 +136,29 @@ export class CommonScheduleComponent implements OnInit {
   }
 
   addExtensionDays(array) {
+    // UTC getters throughout - event.start/end are calendar-day boundaries,
+    // not viewer-relative instants. Reading them with local Date methods
+    // makes the computed day-of-month depend on whichever browser is
+    // viewing the grid, which is exactly how a correctly single-day request
+    // could still land on the wrong column (or, combined with the backend
+    // not agreeing on the same day, get expanded across two).
     return array.reduce((newArr, event) => {
       if (event.dateDiff > 1) {
         const extensionDateArray = getDaysArray(event.start, event.end);
         extensionDateArray.forEach((day) => {
           const oneDate = new Date(day);
-          if (oneDate.getMonth() + 1 === this.month) {
+          if (oneDate.getUTCMonth() + 1 === this.month) {
             const newEvent = Object.assign({}, event);
             newEvent.start = day;
-            newEvent.end = endOfDay(oneDate);
-            newEvent.monthDay = oneDate.getDate();
+            const utcEndOfDay = new Date(oneDate);
+            utcEndOfDay.setUTCHours(23, 59, 59, 999);
+            newEvent.end = utcEndOfDay;
+            newEvent.monthDay = oneDate.getUTCDate();
             newArr.push(newEvent);
           }
         });
       } else {
-        event.monthDay = new Date(event.start).getDate();
+        event.monthDay = new Date(event.start).getUTCDate();
         newArr.push(event);
       }
       return newArr;
@@ -434,8 +440,16 @@ export class CommonScheduleComponent implements OnInit {
   getDatesForRequest() {
     const month = this.month < 10 ? '0' + this.month : this.month;
     const startDate = `${this.year}-${month}-01`;
-    const endDate = endOfMonth(new Date(startDate));
-    const formattedEndDate = customFormatDate(endDate, 'yyyy-MM-dd');
+    // startDate is a zero-padded ISO date-only string, which the spec
+    // parses as UTC - computing the month's end via date-fns' endOfMonth
+    // (which uses local getters) on that UTC instant lands on the wrong
+    // month for any timezone behind UTC (UTC midnight of the 1st is still
+    // the last day of the PREVIOUS month there). Date.UTC keeps this
+    // consistently UTC end to end: day 0 of next month is the last day of
+    // this.month (JS Date months are 0-indexed, so passing the 1-indexed
+    // this.month as the "next month" argument is intentional).
+    const endDate = new Date(Date.UTC(this.year, this.month, 0));
+    const formattedEndDate = endDate.toISOString().slice(0, 10);
     return { startDate, endDate: formattedEndDate };
   }
   setTotalStaticIconList() {

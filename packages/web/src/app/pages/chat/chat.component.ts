@@ -13,15 +13,12 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateModule } from '@ngx-translate/core';
+import { ChatMessage } from '@tslen-workhub/shared';
 
 const MESSAGE_PREVIEW_LENGTH = 60;
 
-// Interface for messages to display in the UI
-interface DisplayMessage {
-  id?: string;
-  senderId: string;
-  content: string;
-  timestamp: Date; // Convert ISO string to Date object for display
+interface DisplayMessage extends Omit<ChatMessage, 'timestamp'> {
+  timestamp: Date; // converted from the wire's ISO string, for display
   isMine: boolean;
   senderName?: string;
 }

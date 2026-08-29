@@ -1,10 +1,13 @@
+import {TaskAttachment, TaskPriority, TaskStatus, TaskUserAssignmentRelation} from "@tslen-workhub/shared";
 import {IProjectPermission} from "./taskProjectPermission";
 
 export interface ITaskProject {
     id: number;
     companyId: number;
     name: string;
-    isPrivate: boolean;
+    // Stored as 0/1 (an int column, not a boolean one) - see
+    // packages/shared/src/task.ts's TaskProject.isPrivate.
+    isPrivate: number;
     logo?: string;
     members?: string;
     permission?: string;
@@ -35,13 +38,13 @@ export interface ITask{
     description: string;
     estimate: Date;
     label: string;
-    taskAttachments?: any[] | null;
+    taskAttachments?: TaskAttachment[] | null;
     phaseId: number;
     projectId: number;
     actorUserId?: number;
     phaseName?: string;
     projectName?: string;
-    status?: string;
+    status?: TaskStatus;
     createdAt?: Date;
     updatedAt?: Date;
     orderId: number;
@@ -55,9 +58,9 @@ export interface ITask{
     estimateViewDate?: string;
     estimateColor?: string;
     url?: string;
-    taskUserAssignmentRelations?: any[];
-    previousTaskAttachments?: any[];
-    priority?: string;
+    taskUserAssignmentRelations?: TaskUserAssignmentRelation[];
+    previousTaskAttachments?: TaskAttachment[];
+    priority?: TaskPriority;
 }
 export interface ITaskList {
     id: number;

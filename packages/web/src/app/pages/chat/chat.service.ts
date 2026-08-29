@@ -2,19 +2,11 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable, Subject } from 'rxjs';
 import {ConfigurationService} from "../../services/ConfigurationService";
+import {ChatMessage} from "@tslen-workhub/shared";
 
-// Define interfaces for message types
 interface OutgoingChatMessage {
   chatRoomId: string;
   content: string;
-}
-
-interface IncomingChatMessage {
-  id?: string; // Optional, server might assign it
-  senderId: string;
-  chatRoomId: string;
-  content: string;
-  timestamp: string; // ISO string
 }
 
 @Injectable({
@@ -22,8 +14,8 @@ interface IncomingChatMessage {
 })
 export class ChatService implements OnDestroy {
   private socket: Socket;
-  private messageSubject: Subject<IncomingChatMessage> = new Subject<IncomingChatMessage>();
-  private chatHistorySubject: Subject<IncomingChatMessage[]> = new Subject<IncomingChatMessage[]>();
+  private messageSubject: Subject<ChatMessage> = new Subject<ChatMessage>();
+  private chatHistorySubject: Subject<ChatMessage[]> = new Subject<ChatMessage[]>();
   private connectedSubject: Subject<boolean> = new Subject<boolean>();
   private errorSubject: Subject<string> = new Subject<string>();
 
@@ -102,11 +94,11 @@ export class ChatService implements OnDestroy {
       this.errorSubject.next(`Server error: ${errorMessage}`);
     });
 
-    this.socket.on('message', (message: IncomingChatMessage) => {
+    this.socket.on('message', (message: ChatMessage) => {
       this.messageSubject.next(message);
     });
 
-    this.socket.on('chatHistory', (history: IncomingChatMessage[]) => {
+    this.socket.on('chatHistory', (history: ChatMessage[]) => {
       this.chatHistorySubject.next(history);
     });
 
@@ -116,11 +108,11 @@ export class ChatService implements OnDestroy {
   // --- Public methods for components to interact with ---
 
   // Get observables for events
-  getMessages(): Observable<IncomingChatMessage> {
+  getMessages(): Observable<ChatMessage> {
     return this.messageSubject.asObservable();
   }
 
-  getChatHistory(): Observable<IncomingChatMessage[]> {
+  getChatHistory(): Observable<ChatMessage[]> {
     return this.chatHistorySubject.asObservable();
   }
 

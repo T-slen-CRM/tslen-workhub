@@ -26,13 +26,12 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
 import { decrypt, encrypt } from '../../../helpers/crypto';
 import { IDaysOffValue } from '../../../interfaces/daysOff';
-import { IGoogleCalendarData } from '../../../interfaces/google-api';
 import { IUploadService } from '../../../services/upload/upload';
 import { UserPhotoSingleUploadService } from '../../../services/upload/user-photo-single-upload.service';
 import { IJobPosition } from '../user-job-position/job-positionin-interface';
 import { IEvent } from '../../../interfaces/events';
 import { LanguageService } from 'src/app/language/language.service';
-import { IUserGooglePermissions } from 'src/app/services/auth.service';
+import { GoogleCalendarInfo, GooglePermissions } from '@tslen-workhub/shared';
 
 @Component({
   selector: 'app-user-profile',
@@ -73,8 +72,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   @Output() userChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
   public userDaysOff: IDaysOffValue;
   public savedForm$ = new BehaviorSubject<IDaysOffValue>({} as IDaysOffValue);
-  public googleCalendarData$ = new BehaviorSubject<IGoogleCalendarData>(
-    {} as IGoogleCalendarData,
+  public googleCalendarData$ = new BehaviorSubject<GoogleCalendarInfo>(
+    {} as GoogleCalendarInfo,
   );
 
   public acceptedFileTypes = `image/png, image/jpeg`;
@@ -85,7 +84,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   public userAvatar: any;
   hidePassword = true;
   hideConfirmPassword = true;
-  public googlePermissions: IUserGooglePermissions;
+  public googlePermissions: GooglePermissions;
 
   @Input() set inputUserGroups(value: any) {
     if (this.userGroups && value) {
@@ -180,7 +179,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           environment.ftpDomain +
           this.authData.companyId +
           '-' +
-          this.authData.userId +
+          this.authData.id +
           '-' +
           result.fileName;
         this.form.get('avatar').patchValue(fileUrl);

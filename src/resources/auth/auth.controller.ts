@@ -17,7 +17,7 @@ import { SignInResponseDto } from './dto/signIn.response.dto';
 import { User } from '../users/decorators/user.decorator';
 import { Users } from '../users/entities/users.entity';
 import { Roles } from '../../common/guards/roles/roles.decorator';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 @Controller('auth')
 export class AuthController {

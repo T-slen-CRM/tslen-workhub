@@ -4,56 +4,24 @@ import { Router } from '@angular/router';
 import {BehaviorSubject, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {ConfigurationService} from "./ConfigurationService";
+import {CurrentUser} from "@tslen-workhub/shared";
 
-export interface ISessionData {
-    userId?: number;
-    companyId?: number;
-    userEmail?: string;
-    userRole?: string;
-    balance?: string;
-    firstName?: string;
-    lastName?: string;
-    userAvatar?: string;
-    changedUserRole?: string;
-    useDarkTheme?: number;
-    id?: number;
-    role?: string;
-    avatar?: string;
-    email?: string;
-    googlePermissions?: IUserGooglePermissions;
-    language?: string;
-}
+class AuthDataParams implements Partial<CurrentUser> {
 
-class AuthDataParams implements ISessionData {
-
-    userId: number;
     companyId: number;
-    userEmail: string;
-    userRole: string;
-    balance: string;
     firstName: string;
     lastName: string;
-    userAvatar: string;
-    changedUserRole: string;
-    useDarkTheme: number;
     id: number;
-    role: string;
+    role: CurrentUser['role'];
     avatar: string;
     email: string;
-    googlePermissions: IUserGooglePermissions;
+    googlePermissions: CurrentUser['googlePermissions'];
     language: string;
 
-    constructor(authData: ISessionData) {
+    constructor(authData: Partial<CurrentUser>) {
         if (Object.keys(authData).length) {
-            ({  userId: this.userId,
-                userEmail: this.userEmail,
-                userRole: this.userRole,
-                balance: this.balance,
-                firstName: this.firstName,
+            ({  firstName: this.firstName,
                 lastName: this.lastName,
-                userAvatar: this.userAvatar,
-                changedUserRole: this.changedUserRole,
-                useDarkTheme: this.useDarkTheme,
                 companyId: this.companyId,
                 id: this.id,
                 role: this.role,
@@ -68,7 +36,7 @@ class AuthDataParams implements ISessionData {
 
 export class AuthData extends AuthDataParams  {
 
-    constructor(authData: ISessionData) {
+    constructor(authData: Partial<CurrentUser>) {
         super(authData);
     }
 
@@ -148,14 +116,9 @@ export class AuthenticationService {
             return false;
         }));
     }
-    public updateAuthDataSignal(authData: ISessionData) {
+    public updateAuthDataSignal(authData: Partial<CurrentUser>) {
         const nextAuthData = new AuthData(authData);
         this.authData$.next(nextAuthData);
         this._authDataSignal.set(nextAuthData);
     }
-}
-export interface IUserGooglePermissions {
-    email: number;
-    calendar: number;
-    meetingSpace: number;
 }

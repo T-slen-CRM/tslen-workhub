@@ -6,7 +6,7 @@ import { Notification } from '../../../../src/resources/notifications/entities/n
 import { Users } from '../../../../src/resources/users/entities/users.entity';
 import { mockUser } from '../../../shared/users';
 import { ROLES_KEY } from '../../../../src/common/guards/roles/roles.decorator';
-import { Role } from '../../../../src/common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 describe('NotificationsController', () => {
     let controller: NotificationsController;

@@ -8,7 +8,7 @@ import { GoogleService } from '../../common/services/google/google.service';
 import { configDotenv } from 'dotenv';
 import * as path from 'path';
 import { MoreThanOrEqual, IsNull } from 'typeorm';
-import { IGoogleCalendar } from '../google-calendar/google-calendar.service';
+import { CurrentUser, GoogleCalendarInfo, GooglePermissions, Role } from '@tslen-workhub/shared';
 configDotenv();
 @Injectable()
 export class AuthService {
@@ -46,7 +46,7 @@ export class AuthService {
     // Only ever called internally, after `getAuthClientData(code)` has already verified the
     // caller's identity via a server-side Google OAuth code exchange - never bind these
     // arguments to a client-facing DTO/request body directly.
-    async signInWithGoogle (email: string, googleAccessToken: string, googleRefreshToken: string, googlePermissions: IUserGooglePermissions): Promise<SignInResponseDto> {
+    async signInWithGoogle (email: string, googleAccessToken: string, googleRefreshToken: string, googlePermissions: GooglePermissions): Promise<SignInResponseDto> {
         try {
             const user: Users = await this.findActiveUserByEmail(email);
             const tokenPath = path.join(process.cwd(), `credentials/token_${user.id}.json`);
@@ -93,8 +93,8 @@ export class AuthService {
     }
 
     private async issueAccessToken (user: Users): Promise<SignInResponseDto> {
-        const userPayload: IUserPayloadJwt = new UserPayloadJwt(user);
-        const payload: { user: IUserPayloadJwt } = { user: userPayload };
+        const userPayload: CurrentUser = new UserPayloadJwt(user);
+        const payload: { user: CurrentUser } = { user: userPayload };
         const accessToken = await this.jwtService.signAsync(payload);
         return {
             accessToken
@@ -115,8 +115,8 @@ export class AuthService {
             }
             // change user by changing jwt token and payload
             user.role = adminUser.role;
-            const userPayload: IUserPayloadJwt = new UserPayloadJwt(user);
-            const payload: { user: IUserPayloadJwt } = { user: userPayload };
+            const userPayload: CurrentUser = new UserPayloadJwt(user);
+            const payload: { user: CurrentUser } = { user: userPayload };
             const accessToken = await this.jwtService.signAsync(payload);
             return {
                 user,
@@ -148,7 +148,7 @@ export class AuthService {
     async getAuthClientData (code: string): Promise<{ email: string; refreshToken: string; accessToken: string }> {
         return await this.googleService.getAuthClientData(code);
     }
-    async getGooglePermissions (scope: string): Promise<IUserGooglePermissions> {
+    async getGooglePermissions (scope: string): Promise<GooglePermissions> {
         try {
             return this.googleService.getGooglePermissions(scope);
         } catch (e) {
@@ -161,9 +161,9 @@ export class AuthService {
         }
     }
 }
-export interface IUserPayloadJwt{
+export class UserPayloadJwt implements CurrentUser{
     id: number;
-    role: string;
+    role: Role;
     firstName: string;
     lastName: string;
     email: string;
@@ -174,8 +174,6 @@ export interface IUserPayloadJwt{
     phone: string;
     skype: string;
     emailSpare: string;
-    tokenActivation: string;
-    tokenReset: string;
     isActive: number;
     companyId: number;
     chiefId: number;
@@ -183,34 +181,8 @@ export interface IUserPayloadJwt{
     birthDay: Date;
     firstDayInCompany: Date;
     lastDayInCompany: Date;
-    googlePermissions: IUserGooglePermissions;
-    googleCalendars: IGoogleCalendar;
-    language: string;
-}
-export class UserPayloadJwt implements IUserPayloadJwt{
-    id: number;
-    role: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    country: string;
-    avatar: string;
-    company: string;
-    address: string;
-    phone: string;
-    skype: string;
-    emailSpare: string;
-    tokenActivation: string;
-    tokenReset: string;
-    isActive: number;
-    companyId: number;
-    chiefId: number;
-    mentorId: number;
-    birthDay: Date;
-    firstDayInCompany: Date;
-    lastDayInCompany: Date;
-    googlePermissions: IUserGooglePermissions;
-    googleCalendars: IGoogleCalendar;
+    googlePermissions: GooglePermissions;
+    googleCalendars: GoogleCalendarInfo;
     language: string;
     constructor (user: Users) {
         this.id = user.id;
@@ -225,8 +197,6 @@ export class UserPayloadJwt implements IUserPayloadJwt{
         this.phone = user.phone;
         this.skype = user.skype;
         this.emailSpare = user.emailSpare;
-        this.tokenActivation = user.tokenActivation;
-        this.tokenReset = user.tokenReset;
         this.isActive = user.isActive;
         this.companyId = user.companyId;
         this.chiefId = user.chiefId;
@@ -238,9 +208,4 @@ export class UserPayloadJwt implements IUserPayloadJwt{
         this.googleCalendars = user.googleCalendars;
         this.language = user.language;
     }
-}
-export interface IUserGooglePermissions {
-    email: number;
-    calendar: number;
-    meetingSpace: number;
 }

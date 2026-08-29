@@ -10,6 +10,7 @@ import {
 import { DataService } from '../../services/data.service';
 import { EMPTY, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import { AuthData } from '../../services/auth.service';
+import { Role } from '@tslen-workhub/shared';
 import { DeleteConfirmModalComponent } from '../../components/delete-confirm-modal/delete-confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IPost } from '../../interfaces/post';
@@ -34,7 +35,7 @@ export class PostsComponent implements OnInit, OnDestroy {
   public showCountOfPost = 5;
   public isAdmin: boolean;
   public userId: number;
-  public userRole: string;
+  public userRole: Role;
   private subscription$: Subscription;
   @Input() public authData: AuthData;
   private staticPostsArr: IPost[] = [];
@@ -47,9 +48,9 @@ export class PostsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userId = this.authData.userId;
-    this.userRole = this.authData.userRole;
-    this.isAdmin = this.userRole === 'admin' || this.userRole === 'manager';
+    this.userId = this.authData.id;
+    this.userRole = this.authData.role;
+    this.isAdmin = this.userRole === Role.Admin || this.userRole === Role.Manager;
     this.posts = this.dataService.getObservableData('/posts').pipe(
       map((r: IPost[]) => {
         this.staticPostsArr = r;

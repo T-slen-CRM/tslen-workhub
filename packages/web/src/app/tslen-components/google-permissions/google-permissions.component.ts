@@ -10,7 +10,7 @@ import { ComponentsModule } from '../../components/components.module';
 import { ConfigurationService } from '../../services/ConfigurationService';
 import { GoogleCalendarComponent } from '../google-calendar/google-calendar.component';
 import { MatButtonModule } from '@angular/material/button';
-import { IGoogleCalendarData } from '../../interfaces/google-api';
+import { GoogleCalendarInfo } from '@tslen-workhub/shared';
 import { BehaviorSubject } from 'rxjs';
 import { InfoAlertMessageComponent } from '../info-alert-message/info-alert-message.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -32,7 +32,7 @@ import { LanguageService } from '../../language/language.service';
 export class GooglePermissionsComponent implements OnInit {
   // add input  googlePermissions
   public googlePermissions = input({ email: 0, calendar: 0, meetingSpace: 0 });
-  public googleCalendarData: InputSignal<BehaviorSubject<IGoogleCalendarData>> =
+  public googleCalendarData: InputSignal<BehaviorSubject<GoogleCalendarInfo>> =
     input();
   public showGoogleCalendar = input(true);
   public infoAlertMessage = '';

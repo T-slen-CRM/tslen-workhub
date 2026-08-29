@@ -22,7 +22,7 @@ import { CreateOneEventDialogComponent } from '../../create-one-event-dialog/cre
 import { DeleteConfirmModalComponent } from '../../../components/delete-confirm-modal/delete-confirm-modal.component';
 import { ToastrService } from 'ngx-toastr';
 import { UserGeneralData } from '../../../interfaces/userConfig';
-import { IGoogleCalendar } from '../../../interfaces/google';
+import { GoogleCalendarInfo } from '@tslen-workhub/shared';
 import { LanguageService } from 'src/app/language/language.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
   private eventsByUser: any;
   private generaUserData: any;
-  private googleCalendarData: IGoogleCalendar;
+  private googleCalendarData: GoogleCalendarInfo;
   public usersList: any;
   @Input() public set setEventsByUser(userData: UserGeneralData) {
     if (userData) {
@@ -199,7 +199,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
     isRequest = 0,
     date = new Date(),
     events: CalendarEvent | CalendarEvent[] = [],
-    googleCalendarData: IGoogleCalendar,
+    googleCalendarData: GoogleCalendarInfo,
   ): void {
     const dialogRef = this.dialog.open(CreateOneEventDialogComponent, {
       width: '400px',

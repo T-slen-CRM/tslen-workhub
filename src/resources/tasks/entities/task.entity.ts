@@ -11,6 +11,7 @@ import { TaskProject } from '../../task-project/entities/task-project.entity';
 import { TaskAttachments } from './task-attachments.entity';
 import { OrderInPhase } from '../../task-phase/entities/order-in-phase.entity';
 import { TaskUserAssignmentRelation } from './taskUserAssignment.entity';
+import { TaskPriority, TaskStatus } from '@tslen-workhub/shared';
 
 @Index("tasks_taskPhase_id_fk", ["phaseId"], {})
 @Index("tasks_taskProject_id_fk", ["projectId"], {})
@@ -29,7 +30,7 @@ export class Tasks {
       assignessEmail: string | null;
 
   @Column("varchar", { name: "priority", length: 100 })
-      priority: string | null;
+      priority: TaskPriority | null;
 
   @Column("timestamp", { name: "estimate", nullable: true })
       estimate: Date | null;
@@ -67,14 +68,7 @@ export class Tasks {
       nullable: true,
       enum: ["unStatus", "inProgress", "hold", "test", "release", "done"],
   })
-      status:
-    | "unStatus"
-    | "inProgress"
-    | "hold"
-    | "test"
-    | "release"
-    | "done"
-    | null;
+      status: TaskStatus | null;
 
   @ManyToOne(() => TaskPhase, (taskPhase) => taskPhase.tasks,
       {

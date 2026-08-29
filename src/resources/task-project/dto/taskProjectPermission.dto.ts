@@ -2,6 +2,7 @@ import { IsEnum, IsInt, IsOptional, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateTaskProjectDto } from './create-task-project.dto';
 import { CreateUserDto } from 'src/resources/users/dto/create-user.dto';
+import { ProjectPermissionLevel } from '@tslen-workhub/shared';
 
 export class TaskProjectPermissionDto {
 
@@ -20,7 +21,7 @@ export class TaskProjectPermissionDto {
 
   @IsOptional()
   @IsEnum(['read', 'write', 'admin'])
-      permission: 'read' | 'write' | 'admin';
+      permission: ProjectPermissionLevel;
 
 
   @IsOptional()

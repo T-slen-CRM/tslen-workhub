@@ -15,7 +15,7 @@ import { PanelDirective } from '../directives/panel.directive';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { IGoogleCalendarData } from '../../interfaces/google-api';
+import { GoogleCalendarInfo } from '@tslen-workhub/shared';
 import { UnsubscribeOnDestroyAdapter } from '../../helpers/UnsubscribeOnDestroyAdapter';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -44,13 +44,13 @@ export class GoogleCalendarComponent
 {
   public dataService = inject(DataService);
   public calendarId: string;
-  public calendarTimezone: number;
-  @Input() public googleCalendarData$: BehaviorSubject<IGoogleCalendarData>;
+  public calendarTimezone: string;
+  @Input() public googleCalendarData$: BehaviorSubject<GoogleCalendarInfo>;
   ngOnInit() {
     this.calendarId = this.googleCalendarData$.getValue().calendarId;
-    this.calendarTimezone = this.googleCalendarData$.getValue().timezone || 0;
+    this.calendarTimezone = this.googleCalendarData$.getValue().timezone || '';
     const calendarData: Subscription = this.googleCalendarData$.subscribe(
-      (data: IGoogleCalendarData) => {
+      (data: GoogleCalendarInfo) => {
         this.calendarId = data.calendarId;
       },
     );
@@ -60,7 +60,7 @@ export class GoogleCalendarComponent
   googleAuth() {
     const postData: Subscription = this.dataService
       .getObservableData('/google-calendar/authorize')
-      .subscribe((response: IGoogleCalendarData) => {
+      .subscribe((response: GoogleCalendarInfo) => {
         if (response.calendarId) {
           this.googleCalendarData$.next(response);
         }
@@ -71,8 +71,8 @@ export class GoogleCalendarComponent
     const calendarData = this.googleCalendarData$.getValue();
     const postData: Subscription = this.dataService
       .deleteData('/google-calendar/', calendarData.id)
-      .subscribe((_deletedCalendarData: IGoogleCalendarData) => {
-        this.googleCalendarData$.next({} as IGoogleCalendarData);
+      .subscribe((_deletedCalendarData: GoogleCalendarInfo) => {
+        this.googleCalendarData$.next({} as GoogleCalendarInfo);
       });
     this.subscription.add(postData);
   }

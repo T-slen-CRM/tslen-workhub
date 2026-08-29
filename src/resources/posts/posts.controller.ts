@@ -7,7 +7,7 @@ import { Users } from '../users/entities/users.entity';
 import { Posts } from './entities/post.entity';
 import { DeleteResult } from 'typeorm';
 import { Roles } from '../../common/guards/roles/roles.decorator';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';

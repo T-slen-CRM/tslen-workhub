@@ -13,7 +13,7 @@ export const mockedTask: CreateTaskDto = {
     orderId: 1,
     actorUserId: null,
     status: 'unStatus',
-    priority: 'test',
+    priority: 'medium',
     estimate: new Date(date),
     createdBy: 'test',
     label: 'test',

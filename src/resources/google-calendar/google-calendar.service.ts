@@ -8,7 +8,7 @@ import { GoogleCalendarRepository } from './google-calendar.repository';
 import { GoogleService } from '../../common/services/google/google.service';
 import { Users } from '../users/entities/users.entity';
 import { EventsByUser } from '../events-by-user/entities/events-by-user.entity';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 @Injectable()
 export class GoogleCalendarService extends BaseAbstractService<GoogleCalendar>{
@@ -62,10 +62,4 @@ export class GoogleCalendarService extends BaseAbstractService<GoogleCalendar>{
         }
         return this.delete(id);
     }
-}
-export interface IGoogleCalendar {
-    id: number;
-    userId: number;
-    calendarId: string;
-    timezone: string;
 }

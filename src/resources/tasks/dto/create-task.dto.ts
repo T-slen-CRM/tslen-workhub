@@ -5,6 +5,7 @@ import { CreateTaskProjectDto } from '../../task-project/dto/create-task-project
 import { OrderInPhaseDto } from '../../task-phase/dto/orderInPhase.dto';
 import { TaskAttachmentsDto } from './taskAttachments.dto';
 import { TaskUserAssignmentDto } from './taskUserAssignment.dto';
+import { TaskPriority, TaskStatus } from '@tslen-workhub/shared';
 
 
 export class CreateTaskDto {
@@ -25,8 +26,8 @@ export class CreateTaskDto {
         assignessEmail: string | null;
 
     @IsOptional()
-    @IsString()
-        priority: string | null;
+    @IsIn(['low', 'medium', 'high'])
+        priority: TaskPriority | null;
 
     @IsOptional()
     @Type(() => Date)
@@ -73,7 +74,7 @@ export class CreateTaskDto {
 
     @IsOptional()
     @IsIn(['unStatus', 'inProgress', 'hold', 'test', 'release', 'done'])
-        status: 'unStatus' | 'inProgress' | 'hold' | 'test' | 'release' | 'done' | null;
+        status: TaskStatus | null;
 
     @IsOptional()
         phases: CreateTaskPhaseDto;

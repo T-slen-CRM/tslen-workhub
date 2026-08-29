@@ -5,7 +5,7 @@ import { User } from '../users/decorators/user.decorator';
 import { Users } from '../users/entities/users.entity';
 import { Notification } from './entities/notification.entity';
 import { Roles } from '../../common/guards/roles/roles.decorator';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 
 @Controller('notifications')
 export class NotificationsController {

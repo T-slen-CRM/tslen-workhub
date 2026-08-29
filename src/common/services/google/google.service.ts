@@ -17,7 +17,7 @@ import * as fsPromises from 'fs/promises';
 import * as path from 'path';
 import { ImpersonatedJWTInput, JWTInput } from 'google-auth-library/build/src/auth/credentials';
 import { EventAttendees } from '../../../resources/events-by-user/entities/event-attendees.entity';
-import { IUserGooglePermissions } from '../../../resources/auth/auth.service';
+import { GooglePermissions } from '@tslen-workhub/shared';
 
 @Injectable()
 export class GoogleService {
@@ -284,14 +284,14 @@ export class GoogleService {
             return Object.assign(new EventAttendees({}), { userEmail: attendee.email });
         });
     }
-    getGooglePermissions (scope: string): IUserGooglePermissions {
+    getGooglePermissions (scope: string): GooglePermissions {
         const scopes = {
             calendar: 'https://www.googleapis.com/auth/calendar',
             meetingSpace: 'https://www.googleapis.com/auth/meetings.space.created',
             email: 'https://www.googleapis.com/auth/userinfo.email',
         };
 
-        const googlePermissions: IUserGooglePermissions = {
+        const googlePermissions: GooglePermissions = {
             calendar: 0,
             meetingSpace: 0,
             email: 0,
@@ -300,7 +300,7 @@ export class GoogleService {
         if (scope) {
             Object.entries(scopes).forEach(([key, value]) => {
                 if (scope.includes(value)) {
-                    googlePermissions[key as keyof IUserGooglePermissions] = 1;
+                    googlePermissions[key as keyof GooglePermissions] = 1;
                 }
             });
         }

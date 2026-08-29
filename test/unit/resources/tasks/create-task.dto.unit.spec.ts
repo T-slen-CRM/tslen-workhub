@@ -28,4 +28,20 @@ describe('CreateTaskDto', () => {
 
         expect(errors.some((e) => e.property === 'actorUserId')).toBe(true);
     });
+
+    it('accepts a valid priority', async () => {
+        const dto = plainToInstance(CreateTaskDto, { title: 'test', priority: 'high' });
+
+        const errors = await validate(dto);
+
+        expect(errors.some((e) => e.property === 'priority')).toBe(false);
+    });
+
+    it('rejects a priority outside low/medium/high', async () => {
+        const dto = plainToInstance(CreateTaskDto, { title: 'test', priority: 'urgent' });
+
+        const errors = await validate(dto);
+
+        expect(errors.some((e) => e.property === 'priority')).toBe(true);
+    });
 });

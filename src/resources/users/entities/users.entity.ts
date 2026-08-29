@@ -5,6 +5,7 @@ import {
   OneToMany,
   OneToOne
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { UserRelationToGroup } from './user-relation-to-group.entity';
 import { DaysOffEntity } from '../../company-days-off-rules/entities/days-off.entity';
 import { UserChiefRelationEntity } from './user-chief-relation.entity';
@@ -14,7 +15,7 @@ import { BaseAbstractEntity } from '../../../common/entities/base/base.abstract.
 import { EventsByUser } from '../../events-by-user/entities/events-by-user.entity';
 import { JobPosition } from '../../job-position/entities/job-position.entity';
 import { TaskUserAssignmentRelation } from '../../tasks/entities/taskUserAssignment.entity';
-import { Role } from '../../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { GoogleCalendar } from '../../google-calendar/entities/google-calendar.entity';
 import { UserGooglePermission } from './user-google-permission.entity';
 import { Inventory } from '../../inventory/entities/inventory.entity';
@@ -44,6 +45,7 @@ export class Users extends BaseAbstractEntity<Users> {
   @Column("varchar", { name: "country", nullable: true, length: 255 })
   country: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "password", length: 255 })
   password: string;
 
@@ -65,9 +67,11 @@ export class Users extends BaseAbstractEntity<Users> {
   @Column("varchar", { name: "emailSpare", nullable: true, length: 255 })
   emailSpare: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "tokenActivation", nullable: true, length: 255 })
   tokenActivation: string | null;
 
+  @Exclude()
   @Column("varchar", { name: "tokenReset", nullable: true, length: 255 })
   tokenReset: string | null;
 

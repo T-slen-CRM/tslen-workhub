@@ -6,7 +6,7 @@ import { BaseAbstractService } from '../../common/services/base/base.abstract.se
 import { BaseInterfaceService } from '../../common/services/base/base.interface.service';
 import { DatesRangeDto } from '../../common/dto/dates-range.dto';
 import { ConfigService } from '@nestjs/config';
-import { Role } from '../../common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
 import { ErrorExceptionMethod, ErrorService } from '../../common/services/error/error.service';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -3,6 +3,6 @@
   "testEnvironment": "node",
   "testRegex": ".unit.spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.ts$": "ts-jest"
   }
 }

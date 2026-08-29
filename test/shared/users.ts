@@ -1,4 +1,4 @@
-import { Role } from '../../src/common/guards/roles/role.enum';
+import { Role } from '@tslen-workhub/shared';
 import { CreateUserDto } from 'src/resources/users/dto/create-user.dto';
 import { UserProbationDto } from 'src/resources/users/dto/userProbation.dto';
 

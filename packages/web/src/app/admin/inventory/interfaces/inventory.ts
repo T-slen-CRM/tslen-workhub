@@ -1,3 +1,5 @@
+import {Role} from "@tslen-workhub/shared";
+
 export interface IInventory {
     id: number;
     name: string;
@@ -20,7 +22,6 @@ export interface IUsers {
     email: string;
     emailSpare: string | null;
     country: string;
-    password: string;
     avatar: string | null;
     company: string;
     address: string | null;
@@ -38,10 +39,8 @@ export interface IUsers {
     loginCount: number;
     managerId: number;
     ownerId: number;
-    tokenReset: string | null;
     useDarkTheme: number;
-    tokenActivation: string | null;
-    role: "admin" | "advert" | "wlsowner" | "manager";
+    role: Role;
     userProbation: string | null;
     prepay: number;
 }

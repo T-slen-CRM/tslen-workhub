@@ -1,3 +1,5 @@
+import {ProjectPermissionLevel} from "@tslen-workhub/shared";
+
 export interface IPermissionTableColumn {
     field: string;
     headerName: string;
@@ -6,7 +8,7 @@ export interface IPermissionTableColumn {
 }
 export interface IProjectPermission {
     id?: number | null;
-    permission: string;
+    permission: ProjectPermissionLevel;
     projectId?: number;
     userId: number;
     userName?: string;

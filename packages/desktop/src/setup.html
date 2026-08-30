@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Connect to your server</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 32px;
+      background: #1b1b1f;
+      color: #fff;
+      margin: 0;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 8px;
+    }
+    p {
+      color: #aaa;
+      font-size: 13px;
+      margin: 0 0 20px;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #2b2b30;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background: #4051b5;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #34419a;
+    }
+    #error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Connect to your T-Slen Workhub server</h1>
+  <p>Enter the address of the server you (or your team) run this app on.</p>
+  <form id="form">
+    <input id="url" type="url" placeholder="https://crm.example.com" required />
+    <button type="submit">Connect</button>
+    <div id="error"></div>
+  </form>
+  <script src="setup-renderer.js"></script>
+</body>
+</html>

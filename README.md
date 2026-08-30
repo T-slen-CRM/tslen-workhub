@@ -14,11 +14,13 @@ Open source, self-hosted CRM and team workspace platform for small and medium bu
 - **Inventory management**
 - **Slack notifications** for application errors/warnings/info
 - **Pomodoro timer** for focus tracking
+- **macOS desktop app** — an Electron shell (`packages/desktop`) that loads your own server in a native window; see that package's README
 
 ## Tech stack
 
 - **Backend:** NestJS, TypeORM + PostgreSQL, JWT auth, WebSockets, Swagger
 - **Frontend:** Angular 22
+- **Desktop:** Electron (macOS shell, `packages/desktop`)
 - **Integrations:** Google Calendar & Meet APIs, LiveKit, Slack API, Firebase (storage), Nodemailer
 - **Deployment:** Docker multi-stage build
 

@@ -50,6 +50,31 @@ people who aren't building it themselves - add `mac.identity` and
 `afterSign` notarization config to this package's `package.json` `build`
 key when that's ready; nothing else needs to change.
 
+## Troubleshooting: white screen after entering a server URL
+
+This almost always means the shell loaded fine but every API call the app
+then made failed. Open View → Toggle Developer Tools (already wired into
+the app menu) and check the Console/Network tabs for the actual error
+before guessing further.
+
+The most common cause when pointing this at a **local** backend
+(`http://localhost:4004`) instead of a real deployment: `packages/web/dist`
+was built with `ng build --configuration production`, which always
+hardcodes `protocol: 'https://'` in `environment.prod.ts`
+(`packages/web/set-env.ts` - correct for a real deployment behind Traefik,
+since that's what terminates TLS there). Loading that build against a
+plain-HTTP local backend makes every API request go out as `https://`,
+which fails outright. Fix: rebuild without the production flag so it uses
+`environment.ts` instead (already `http://` + whatever `BACKEND_DOMAIN` is
+in your root `.env`):
+
+```bash
+cd packages/web && npx ng build
+```
+
+No need to restart the backend - `ServeStaticModule` reads `packages/web/dist`
+from disk per request. Just reload the Electron window (Cmd+R) or relaunch.
+
 ## Tests
 
 `npm test --workspace=packages/desktop` - covers `config-store.ts`'s

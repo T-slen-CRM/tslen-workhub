@@ -75,6 +75,31 @@ cd packages/web && npx ng build
 No need to restart the backend - `ServeStaticModule` reads `packages/web/dist`
 from disk per request. Just reload the Electron window (Cmd+R) or relaunch.
 
+### 403 Forbidden on main.js / fonts / other static assets
+
+This is `CorsMiddleware` (`src/common/middlewares/cors.middlewares.ts`)
+rejecting the request, not a shell bug. It 403s any request whose `Origin`
+header doesn't exactly match `.env`'s `FRONT_DOMAIN` - and Chromium sends
+an `Origin` header even for same-origin `<script src>`/font loads, which
+this shell's requests always are (it loads the whole app from one origin,
+your backend's own port).
+
+`.env`'s `FRONT_DOMAIN` normally points at the separate `ng serve` dev
+server (`http://localhost:4200`) for the usual cross-origin browser-based
+dev workflow - that won't match the single origin this shell actually
+loads from. `docker-compose.yml` hits the same issue for its own
+single-origin setup and works around it the same way this needs to:
+temporarily set, in your root `.env`:
+
+```
+FRONT_DOMAIN=http://localhost:4004
+```
+
+**Restart the backend** (unlike the static `dist` files, `.env` is only
+read at process startup) and reload the Electron window. Switch
+`FRONT_DOMAIN` back to `http://localhost:4200` when you go back to normal
+`ng serve`-based browser development.
+
 ## Tests
 
 `npm test --workspace=packages/desktop` - covers `config-store.ts`'s

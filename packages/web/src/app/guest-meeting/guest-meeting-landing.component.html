@@ -6,6 +6,18 @@
     @case ('invalid') {
       <p>{{ 'guest_meeting.invalid_link' | translate }}</p>
     }
+    @case ('choose') {
+      <div class="guest-join-card">
+        <h2>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</h2>
+        <p>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</p>
+        <button class="btn btn-primary" (click)="chooseLogin()">
+          {{ 'guest_meeting.login_to_join' | translate }}
+        </button>
+        <button class="btn btn-secondary" (click)="continueAsGuest()">
+          {{ 'guest_meeting.continue_as_guest' | translate }}
+        </button>
+      </div>
+    }
     @case ('ready') {
       <div class="guest-join-card">
         <h2>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</h2>

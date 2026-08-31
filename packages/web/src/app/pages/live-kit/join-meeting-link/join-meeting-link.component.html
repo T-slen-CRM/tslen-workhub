@@ -1,0 +1,20 @@
+<div class="join-meeting-link-page">
+  @switch (state()) {
+    @case ('loading') {
+      <p>{{ 'guest_meeting.loading' | translate }}</p>
+    }
+    @case ('invalid') {
+      <p>{{ 'guest_meeting.invalid_link' | translate }}</p>
+    }
+    @case ('lobby') {
+      <app-pre-join-lobby
+        #lobby
+        [displayName]="hostDisplayName()"
+        (joined)="onLobbyJoined($event, lobby)"
+      ></app-pre-join-lobby>
+      @if (joinError()) {
+        <p class="join-meeting-link-error">{{ 'guest_meeting.join_error' | translate }}</p>
+      }
+    }
+  }
+</div>

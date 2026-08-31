@@ -7,6 +7,11 @@ const routes: Routes = [
     path: '',
     component: LiveKitComponent,
     data: { animation: 'LiveKitComponent' }
+  },
+  {
+    path: 'join/:token',
+    loadComponent: () => import('./join-meeting-link/join-meeting-link.component').then(m => m.JoinMeetingLinkComponent),
+    data: { animation: 'JoinMeetingLinkComponent' }
   }
 ];
 

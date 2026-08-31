@@ -69,7 +69,7 @@ export class AuthSigninComponent
     if (token) {
       localStorage.setItem('jwtToken', token);
       localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigate(['/pages/main-wall']);
+      this.router.navigate([this.takePostLoginRedirect()]);
     }
 
 
@@ -97,7 +97,7 @@ export class AuthSigninComponent
             if (response.status === 200 && data.accessToken) {
               localStorage.setItem('jwtToken', data.accessToken);
               localStorage.setItem('isLoggedIn', 'true');
-              this.router.navigate(['/pages/main-wall']);
+              this.router.navigate([this.takePostLoginRedirect()]);
             }
           },
           error: (_err) => {
@@ -108,6 +108,12 @@ export class AuthSigninComponent
       this.subscription.add(login);
     }
   }
+  private takePostLoginRedirect(): string {
+    const redirect = sessionStorage.getItem('postLoginRedirect');
+    sessionStorage.removeItem('postLoginRedirect');
+    return redirect || '/pages/main-wall';
+  }
+
   setEmailToForm(user) {
     this.loginForm.get('email').patchValue(user.email);
     this.loginForm.get('isSocial').patchValue(true);

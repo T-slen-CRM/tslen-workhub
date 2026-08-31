@@ -626,7 +626,9 @@
       "hosted_by": "Hosted by {{name}}",
       "your_name": "Your name",
       "join": "Join meeting",
-      "join_error": "We couldn't join the meeting. Please try again."
+      "join_error": "We couldn't join the meeting. Please try again.",
+      "login_to_join": "Log in to join as yourself",
+      "continue_as_guest": "Continue as guest"
     },
     "meeting_links": {
       "title": "Meeting links",

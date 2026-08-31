@@ -1,10 +1,13 @@
 import { Component, OnInit, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 import { DataService } from '../services/data.service';
 import { MeetingRoomComponent } from '../meeting-room/meeting-room.component';
 import { BackgroundEffect, PreJoinLobbyComponent, PreJoinResult } from '../meeting-room/pre-join-lobby/pre-join-lobby.component';
+
+const POST_LOGIN_REDIRECT_KEY = 'postLoginRedirect';
 
 interface MeetingInfo {
   title: string | null;
@@ -32,10 +35,11 @@ interface GuestConnection {
 })
 export class GuestMeetingLandingComponent implements OnInit {
   private dataService = inject(DataService);
+  private router = inject(Router);
 
   token = input<string>('');
 
-  state = signal<'loading' | 'invalid' | 'ready' | 'lobby' | 'in-call'>('loading');
+  state = signal<'loading' | 'invalid' | 'choose' | 'ready' | 'lobby' | 'in-call'>('loading');
   meetingInfo = signal<MeetingInfo | null>(null);
   connection = signal<GuestConnection | null>(null);
   joinError = signal(false);
@@ -45,10 +49,27 @@ export class GuestMeetingLandingComponent implements OnInit {
     this.dataService.getPublicMeetingLink(this.token()).subscribe({
       next: (info) => {
         this.meetingInfo.set(info);
-        this.state.set('ready');
+        this.enterAppOrChoose();
       },
       error: () => this.state.set('invalid'),
     });
+  }
+
+  private enterAppOrChoose(): void {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      this.router.navigate(['/pages/live-kit/join', this.token()]);
+      return;
+    }
+    this.state.set('choose');
+  }
+
+  chooseLogin(): void {
+    sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, `/meet/${this.token()}`);
+    this.router.navigate(['auth/login']);
+  }
+
+  continueAsGuest(): void {
+    this.state.set('ready');
   }
 
   continueToLobby(): void {

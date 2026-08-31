@@ -1,0 +1,42 @@
+{
+  "name": "@tslen-workhub/desktop",
+  "version": "1.0.0",
+  "description": "Electron desktop shell for T-Slen Workhub - a native window that loads your own self-hosted server, the same way the Mattermost/Rocket.Chat desktop clients work. Bare shell for now: no bundled frontend build, no native notifications/dock badge yet.",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && cp src/setup.html src/setup-renderer.js dist/",
+    "start": "npm run build && electron .",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "test": "jest",
+    "clean": "rimraf dist release"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.0.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.4.12",
+    "typescript": "^6.0.3"
+  },
+  "build": {
+    "appId": "com.tslen.workhub.desktop",
+    "productName": "T-Slen Workhub",
+    "files": [
+      "dist/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
+  }
+}

@@ -41,6 +41,16 @@
 }
 .pre-join-control mat-button-toggle-group {
   flex-wrap: wrap;
+  /* Material's default theme (indigo-pink, light) sets the selected-toggle
+     text/background to near-black tokens; on this always-dark card (see
+     .pre-join-lobby above) that reads as unreadable black-on-black. These
+     are theming custom properties, so - unlike the mat-select panel
+     overrides below, which need ::ng-deep + !important because that panel
+     renders into a CDK overlay outside this component's DOM subtree -
+     setting them here is enough: custom properties inherit through the DOM
+     tree into mat-button-toggle's internals regardless of view encapsulation. */
+  --mat-button-toggle-selected-state-text-color: #fff;
+  --mat-button-toggle-selected-state-background-color: #3a3a42;
 }
 /* Mobile: narrower gaps and a smaller preview/device-select so the lobby
    fits a phone-width viewport without any element forcing horizontal

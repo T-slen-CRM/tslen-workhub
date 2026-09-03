@@ -144,6 +144,17 @@ app-meeting-chat.meeting-chat-hidden {
   max-width: calc(100% - 16px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
+/* Material's default theme (indigo-pink, light) sets the selected-toggle
+   text/background to near-black tokens; on this always-dark panel that
+   reads as unreadable black-on-black. Custom properties inherit through
+   the DOM tree into mat-button-toggle's internals regardless of view
+   encapsulation, so setting them here (unlike the mat-select panel
+   overrides above, which need ::ng-deep + !important because that panel
+   renders into a CDK overlay outside this component's DOM subtree) is enough. */
+.meeting-background-panel mat-button-toggle-group {
+  --mat-button-toggle-selected-state-text-color: #fff;
+  --mat-button-toggle-selected-state-background-color: #3a3a42;
+}
 .meeting-background-error {
   font-size: 0.75rem;
   color: #ff8a80;

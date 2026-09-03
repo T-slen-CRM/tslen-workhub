@@ -4,6 +4,7 @@
         <mwl-demo-component
                 [setEventsByUser]="userData$ | async"
                 [setUsersList]="usersList$ | async"
+                (monthChanged)="onMonthChanged($event)"
         ></mwl-demo-component>
     </div>
 </div>

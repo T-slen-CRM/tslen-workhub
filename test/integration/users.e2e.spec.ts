@@ -27,6 +27,7 @@ describe('UsersController (e2e)', () => {
         req.user = mockedUserObject;
         return true;
     } };
+    const findOneByIdMock = jest.fn(() => mockedUsers[0]);
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test
             .createTestingModule({
@@ -78,7 +79,7 @@ describe('UsersController (e2e)', () => {
             .overrideProvider(UsersService)
             .useValue({
                 getProfileAvatar: jest.fn(() => ({ file: '1_test.jpg', settings: { root: 'test/shared' } })),
-                findOneById: jest.fn(() => mockedUsers[0]),
+                findOneById: findOneByIdMock,
                 create: jest.fn(() => mockedUsers[0]),
                 findAll: jest.fn(() => mockedUsers),
                 getBirthdayAnniversary: jest.fn(() => mockedUsers[0]),
@@ -144,6 +145,28 @@ describe('UsersController (e2e)', () => {
             .expect(({ body }) => {
                 expect(body).toEqual(mockUser);
             });
+    });
+    it('/users/:id (GET) with a date range forwards the query params to the service', async () => {
+        // This test app doesn't wire up the global ValidationPipe from main.ts
+        // (like the rest of this file, guards/pipes here are minimal test
+        // doubles), so startDate/endDate arrive as the raw query strings
+        // rather than transformed Dates - that transform is the same
+        // @Type(() => Date) mechanism DatesRangeDto already uses in
+        // production for /events-by-user/events-by-month. What this test
+        // verifies is that the controller now reads startDate/endDate off
+        // the query string at all and forwards them to the service, which
+        // it didn't do before this change.
+        findOneByIdMock.mockClear();
+        await request(app.getHttpServer())
+            .get('/users/1?startDate=2026-06-01&endDate=2026-06-30')
+            .expect(200)
+            .expect(({ body }) => {
+                expect(body).toEqual(mockedUsers[0]);
+            });
+        expect(findOneByIdMock).toHaveBeenCalledWith(1, undefined, {
+            startDate: '2026-06-01',
+            endDate: '2026-06-30',
+        });
     });
     it('/birthday-anniversary (GET)', async () => {
         const mockUser = { id: 1, firstName: 'John', lastName: 'Doe' };

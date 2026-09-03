@@ -1,4 +1,4 @@
-import { getDaysArray } from './utils';
+import { getDaysArray, getMonthDateRange } from './utils';
 
 describe('getDaysArray', () => {
   it('walks UTC calendar days, not local ones - a single day yields exactly one entry', () => {
@@ -20,5 +20,25 @@ describe('getDaysArray', () => {
     const result = getDaysArray('2026-08-31T00:00:00.000Z', '2026-09-01T23:59:00.000Z');
 
     expect(result.map((d) => `${d.getUTCMonth()}-${d.getUTCDate()}`)).toEqual(['7-31', '8-1']);
+  });
+});
+
+describe('getMonthDateRange', () => {
+  it('returns the first and last day of the given month as ISO date strings', () => {
+    const result = getMonthDateRange(2026, 6);
+
+    expect(result).toEqual({ startDate: '2026-06-01', endDate: '2026-06-30' });
+  });
+
+  it('zero-pads single-digit months', () => {
+    const result = getMonthDateRange(2026, 3);
+
+    expect(result.startDate).toBe('2026-03-01');
+  });
+
+  it('handles the December -> next year rollover', () => {
+    const result = getMonthDateRange(2026, 12);
+
+    expect(result).toEqual({ startDate: '2026-12-01', endDate: '2026-12-31' });
   });
 });

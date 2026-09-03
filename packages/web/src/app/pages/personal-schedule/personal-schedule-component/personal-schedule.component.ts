@@ -7,6 +7,7 @@ import {
 } from '../../../services/auth.service';
 import { DataService } from '../../../services/data.service';
 import { ThemeService } from '../../../services/theme.service';
+import { getMonthDateRange } from '../../../helpers/utils';
 
 @Component({
   selector: 'app-personal-schedule',
@@ -55,12 +56,24 @@ export class PersonalScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userData$ = this.dataService.getObservableData(
-      '/users/' + this.userId,
-    );
+    this.fetchUserData(new Date());
     this.usersList$ = this.dataService.getObservableData('/users');
     this.themeService.isDarkTheme.subscribe((value) => {
       this.isDarkTheme = value;
     });
+  }
+
+  fetchUserData(date: Date) {
+    const { startDate, endDate } = getMonthDateRange(
+      date.getFullYear(),
+      date.getMonth() + 1,
+    );
+    this.userData$ = this.dataService.getObservableData(
+      `/users/${this.userId}?startDate=${startDate}&endDate=${endDate}`,
+    );
+  }
+
+  onMonthChanged(date: Date) {
+    this.fetchUserData(date);
   }
 }

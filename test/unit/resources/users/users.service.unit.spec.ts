@@ -1,13 +1,16 @@
 import { TestBed } from '@automock/jest';
 import { UsersService } from '../../../../src/resources/users/users.service';
+import { UsersRepository } from '../../../../src/resources/users/users.repository';
 import { mockUser } from '../../../shared/users';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
 
 describe('Users Service Unit Test', () => {
     let userService: UsersService;
+    let usersRepository: UsersRepository;
     beforeAll(() => {
-        const { unit } = TestBed.create(UsersService).compile();
+        const { unit, unitRef } = TestBed.create(UsersService).compile();
         userService = unit;
+        usersRepository = unitRef.get(UsersRepository);
     });
     it('should be defined', () => {
         expect(userService).toBeDefined();
@@ -50,6 +53,16 @@ describe('Users Service Unit Test', () => {
         jest.spyOn(userService, 'getProfileAvatar').mockReturnValue(result);
         expect(userService.getProfileAvatar(mockUser as unknown as Users, fileName)).toEqual(result);
     });
+    it('forwards the date range to the repository when finding a user by id', async () => {
+        const startDate = new Date('2026-06-01T00:00:00.000Z');
+        const endDate = new Date('2026-06-30T00:00:00.000Z');
+        jest.spyOn(usersRepository, 'getOneWithRelations').mockResolvedValue(mockUser as unknown as Users);
+
+        await userService.findOneById(1, mockUser as unknown as Users, { startDate, endDate });
+
+        expect(usersRepository.getOneWithRelations).toHaveBeenCalledWith(1, mockUser, { startDate, endDate });
+    });
+
     it('should get profile avatar path', () => {
         const fileName = '1_avatar.jpg';
         const result = 'http://localhost:3000/api/v1/profile-avatar/1_avatar.jpg';

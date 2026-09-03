@@ -15,7 +15,7 @@
                     mwlCalendarPreviousView
                     [view]="view"
                     [(viewDate)]="viewDate"
-                    (viewDateChange)="closeOpenMonthViewDay()"
+                    (viewDateChange)="onViewDateChange()"
             >
                 <button mat-icon-button class="navigate-arrow-btn">
                     <mat-icon class="navigate-arrow left-margin">keyboard_arrow_left</mat-icon>
@@ -30,7 +30,7 @@
                     mwlCalendarNextView
                     [view]="view"
                     [(viewDate)]="viewDate"
-                    (viewDateChange)="closeOpenMonthViewDay()"
+                    (viewDateChange)="onViewDateChange()"
             >
                 <button mat-icon-button class="navigate-arrow-btn">
                     <mat-icon class="navigate-arrow">keyboard_arrow_right</mat-icon>
@@ -45,6 +45,7 @@
                     class="make-request-btn"
                     mwlCalendarToday
                     [(viewDate)]="viewDate"
+                    (viewDateChange)="onViewDateChange()"
             >
                 {{"personals_chedule.button.today" | translate}}
             </button>

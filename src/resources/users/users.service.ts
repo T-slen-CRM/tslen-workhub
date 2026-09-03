@@ -5,6 +5,7 @@ import { UsersRepository } from './users.repository';
 import { BaseAbstractService } from '../../common/services/base/base.abstract.service';
 import { BaseInterfaceService } from '../../common/services/base/base.interface.service';
 import { DatesRangeDto } from '../../common/dto/dates-range.dto';
+import { OptionalDatesRangeDto } from '../../common/dto/optional-dates-range.dto';
 import { ConfigService } from '@nestjs/config';
 import { Role } from '@tslen-workhub/shared';
 import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
@@ -36,6 +37,15 @@ export class UsersService extends BaseAbstractService<Users> implements BaseInte
         } catch (err) {
             const errorMessage = `getBirthdayAnniversary: ${user.id}, class: ${this.constructor.name}. Message: ${err.message}`;
             const throwError = { method: ErrorExceptionMethod.NotFound, message: `Cannot get birthday anniversary for user: ${user.id}` };
+            await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
+        }
+    }
+    async findOneById (id: number, user: Users, dateRange?: OptionalDatesRangeDto): Promise<Users> {
+        try {
+            return await this.currentRepository.getOneWithRelations(id, user, dateRange);
+        } catch (err) {
+            const errorMessage = `findOneById: ${id}, class: ${this.constructor.name}. Message: ${err.message}`;
+            const throwError = { method: ErrorExceptionMethod.NotFound, message: `Cannot find the entity for ${id}` };
             await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
         }
     }

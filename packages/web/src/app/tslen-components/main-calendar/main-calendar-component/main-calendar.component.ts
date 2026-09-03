@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
+  Output,
   TemplateRef,
   ViewChild,
   ChangeDetectionStrategy,
@@ -52,6 +54,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
       this.usersList = usersList;
     }
   }
+  @Output() monthChanged = new EventEmitter<Date>();
   private subscription: Subscription;
   view: CalendarView = CalendarView.Week;
 
@@ -155,6 +158,10 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
 
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
+  }
+  onViewDateChange(): void {
+    this.closeOpenMonthViewDay();
+    this.monthChanged.emit(this.viewDate);
   }
   generateCalendarEvents(events: any) {
     return events.reduce((newArr, currentItem) => {

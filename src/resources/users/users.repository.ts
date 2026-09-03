@@ -19,7 +19,7 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
         super(usersRepository);
     }
 
-    public async getOneWithRelations (id: number, user: Users): Promise<Users> {
+    public async getOneWithRelations (id: number, user: Users, dateRange?: { startDate?: Date, endDate?: Date }): Promise<Users> {
         const companyId: number = user.companyId;
         const userRole: string = user.role;
         let userId: number = user.id;
@@ -30,11 +30,23 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
         }
         whereCondition.id = userId;
 
+        let eventsByUsersCondition = 'eventsByUsers.approved != -1';
+        let eventsByUsersParams: { startDate: Date, endDate: Date };
+        if (dateRange?.startDate && dateRange?.endDate) {
+            // endDate arrives as a date-only value (midnight UTC) - normalize to
+            // end-of-day so the last calendar day of the range isn't silently
+            // excluded, unlike the sibling getUsersWithRelationsByDateRange below.
+            const endOfEndDate = new Date(dateRange.endDate);
+            endOfEndDate.setUTCHours(23, 59, 59, 999);
+            eventsByUsersCondition += ' AND (eventsByUsers.start BETWEEN :startDate AND :endDate OR eventsByUsers.end BETWEEN :startDate AND :endDate)';
+            eventsByUsersParams = { startDate: dateRange.startDate, endDate: endOfEndDate };
+        }
+
         const qb = this.usersRepository.createQueryBuilder('user')
             .where(whereCondition)
             .leftJoinAndSelect('user.userRelationToGroups', 'userRelationToGroups')
             .leftJoinAndSelect('user.daysOff', 'daysOff')
-            .leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers', 'eventsByUsers.approved != -1')
+            .leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers', eventsByUsersCondition, eventsByUsersParams)
             .leftJoinAndSelect('eventsByUsers.attendees', 'eventsAttendees')
             .leftJoinAndSelect('user.eventsByUsersRequest', 'eventsByUsersRequest', 'eventsByUsersRequest.isRequest = true')
             .leftJoinAndSelect('user.userChiefRelations', 'userChiefRelations')

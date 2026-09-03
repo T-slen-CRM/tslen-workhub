@@ -18,6 +18,7 @@ import { User } from './decorators/user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DatesRangeDto } from '../../common/dto/dates-range.dto';
+import { OptionalDatesRangeDto } from '../../common/dto/optional-dates-range.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Request } from 'express';
@@ -38,8 +39,8 @@ export class UsersController {
         return this.usersService.findAll(user);
     }
     @Get(':id([0-9]+)')
-    findOne (@User() user: Users, @Param('id', ParseIntPipe) id: number): Promise<Users> {
-        return this.usersService.findOneById(id, user);
+    findOne (@User() user: Users, @Param('id', ParseIntPipe) id: number, @Query() dateRange?: OptionalDatesRangeDto): Promise<Users> {
+        return this.usersService.findOneById(id, user, dateRange);
     }
     @Patch(':id')
     update (

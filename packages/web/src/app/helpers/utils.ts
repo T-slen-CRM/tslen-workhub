@@ -38,6 +38,21 @@ export function getWeekDays() {
     6: 'weekdays.saturday'
   };
 }
+export function getMonthDateRange(year: number, month: number): { startDate: string; endDate: string } {
+  const paddedMonth = month < 10 ? '0' + month : String(month);
+  const startDate = `${year}-${paddedMonth}-01`;
+  // startDate is a zero-padded ISO date-only string, which the spec parses
+  // as UTC - computing the month's end via date-fns' endOfMonth (which uses
+  // local getters) on that UTC instant lands on the wrong month for any
+  // timezone behind UTC (UTC midnight of the 1st is still the last day of
+  // the PREVIOUS month there). Date.UTC keeps this consistently UTC end to
+  // end: day 0 of next month is the last day of `month` (JS Date months are
+  // 0-indexed, so passing the 1-indexed `month` as the "next month" argument
+  // is intentional).
+  const endDate = new Date(Date.UTC(year, month, 0));
+  const formattedEndDate = endDate.toISOString().slice(0, 10);
+  return { startDate, endDate: formattedEndDate };
+}
 export function getDaysArray(start, end) {
   // UTC getters/setters throughout - start/end are calendar-day boundaries
   // (a day-off's start/end), not viewer-relative instants, so walking them

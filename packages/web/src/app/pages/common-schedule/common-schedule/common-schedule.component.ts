@@ -8,6 +8,7 @@ import {
   dayByWeek,
   daysInMonth,
   getDaysArray,
+  getMonthDateRange,
 } from '../../../helpers/utils';
 import { DaysHeaderComponent } from '../../../tslen-components/ag-grid/days-header/days-header.component';
 import { map, Observable, Subject } from 'rxjs';
@@ -438,19 +439,7 @@ export class CommonScheduleComponent implements OnInit {
     }
   }
   getDatesForRequest() {
-    const month = this.month < 10 ? '0' + this.month : this.month;
-    const startDate = `${this.year}-${month}-01`;
-    // startDate is a zero-padded ISO date-only string, which the spec
-    // parses as UTC - computing the month's end via date-fns' endOfMonth
-    // (which uses local getters) on that UTC instant lands on the wrong
-    // month for any timezone behind UTC (UTC midnight of the 1st is still
-    // the last day of the PREVIOUS month there). Date.UTC keeps this
-    // consistently UTC end to end: day 0 of next month is the last day of
-    // this.month (JS Date months are 0-indexed, so passing the 1-indexed
-    // this.month as the "next month" argument is intentional).
-    const endDate = new Date(Date.UTC(this.year, this.month, 0));
-    const formattedEndDate = endDate.toISOString().slice(0, 10);
-    return { startDate, endDate: formattedEndDate };
+    return getMonthDateRange(this.year, this.month);
   }
   setTotalStaticIconList() {
     const daysOffList: IDaysOffStaticList = Object.assign(

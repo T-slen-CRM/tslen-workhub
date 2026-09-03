@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import {
     CompanyDaysOffRules
 } from '../../../../src/resources/company-days-off-rules/entities/company-days-off-rules.entity';
@@ -7,6 +7,23 @@ import { UsersRepository } from '../../../../src/resources/users/users.repositor
 import { TestBed } from '@automock/jest';
 import { mockUser } from '../../../shared/users';
 import { DaysOffEntity } from '../../../../src/resources/company-days-off-rules/entities/days-off.entity';
+
+/**
+ * Minimal in-memory stand-in for TypeORM's SelectQueryBuilder, recording
+ * which `leftJoinAndSelect` calls getOneWithRelations makes so tests can
+ * assert on the eventsByUsers join condition/params without a real DB -
+ * same spirit as the FakeEntityManager in google-calendar.repository.unit.spec.ts,
+ * adapted to the createQueryBuilder chain this method actually uses.
+ */
+function createFakeQueryBuilder (result: Partial<Users>) {
+    const calls: { method: string; args: unknown[] }[] = [];
+    const qb = {
+        where (...args: unknown[]) { calls.push({ method: 'where', args }); return qb; },
+        leftJoinAndSelect (...args: unknown[]) { calls.push({ method: 'leftJoinAndSelect', args }); return qb; },
+        getOne: async () => result as Users,
+    };
+    return { qb, calls };
+}
 
 describe('UsersRepository', () => {
     let repository: UsersRepository;
@@ -92,5 +109,46 @@ describe('UsersRepository', () => {
         const result = await repository.getBirthdayAnniversary(mockUser as unknown as Users);
         expect(repository.getBirthdayAnniversary).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
+    });
+
+    describe('getOneWithRelations date filtering', () => {
+        it('leaves the eventsByUsers join condition unchanged when no date range is given', async () => {
+            const { qb, calls } = createFakeQueryBuilder({ ...mockUser, eventsByUsers: [] } as unknown as Users);
+            const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+            const testRepository = new UsersRepository(
+                fakeUsersOrmRepository,
+                {} as EntityManager,
+                {} as Repository<CompanyDaysOffRules>,
+            );
+
+            await testRepository.getOneWithRelations(1, mockUser as unknown as Users);
+
+            const eventsJoinCall = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'eventsByUsers');
+            expect(eventsJoinCall.args[2]).toBe('eventsByUsers.approved != -1');
+            expect(eventsJoinCall.args[3]).toBeUndefined();
+        });
+
+        it('scopes the eventsByUsers join to the given date range, normalizing endDate to end-of-day', async () => {
+            const { qb, calls } = createFakeQueryBuilder({ ...mockUser, eventsByUsers: [] } as unknown as Users);
+            const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+            const testRepository = new UsersRepository(
+                fakeUsersOrmRepository,
+                {} as EntityManager,
+                {} as Repository<CompanyDaysOffRules>,
+            );
+            const startDate = new Date('2026-06-01T00:00:00.000Z');
+            const endDate = new Date('2026-06-30T00:00:00.000Z');
+
+            await testRepository.getOneWithRelations(1, mockUser as unknown as Users, { startDate, endDate });
+
+            const eventsJoinCall = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'eventsByUsers');
+            expect(eventsJoinCall.args[2]).toBe(
+                'eventsByUsers.approved != -1 AND (eventsByUsers.start BETWEEN :startDate AND :endDate OR eventsByUsers.end BETWEEN :startDate AND :endDate)',
+            );
+            expect(eventsJoinCall.args[3]).toEqual({
+                startDate,
+                endDate: new Date('2026-06-30T23:59:59.999Z'),
+            });
+        });
     });
 });

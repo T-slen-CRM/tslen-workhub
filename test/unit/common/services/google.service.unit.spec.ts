@@ -112,10 +112,28 @@ describe('GoogleService', () => {
     });
 
     describe('getGoogleDate', () => {
-        it('preserves the actual instant of a dateTime with a non-zero UTC offset', () => {
+        // EventsByUser.start/end is a "timestamp without time zone" column and every other
+        // producer (the create/edit event dialog) stores the literal wall-clock digits the
+        // user picked, with no UTC conversion — see AGENTS.md's TZ=UTC note. Google's API
+        // returns an offset-aware string, so converting it to a true UTC instant here (the
+        // old behavior) shifts the stored digits and makes synced events render in the wrong
+        // timezone downstream. Keep the literal digits instead, matching manually created events.
+        it('keeps the literal wall-clock digits of a dateTime with a non-zero UTC offset', () => {
             const result = service.getGoogleDate({ dateTime: '2026-08-17T15:00:00+02:00' as unknown as Date, date: undefined });
 
-            expect(result.toISOString()).toBe('2026-08-17T13:00:00.000Z');
+            expect(result.toISOString()).toBe('2026-08-17T15:00:00.000Z');
+        });
+
+        it('keeps the literal wall-clock digits of a dateTime with a Z suffix', () => {
+            const result = service.getGoogleDate({ dateTime: '2026-08-17T15:00:00Z' as unknown as Date, date: undefined });
+
+            expect(result.toISOString()).toBe('2026-08-17T15:00:00.000Z');
+        });
+
+        it('keeps the literal wall-clock digits of a dateTime with a negative UTC offset', () => {
+            const result = service.getGoogleDate({ dateTime: '2026-08-17T09:00:00-04:00' as unknown as Date, date: undefined });
+
+            expect(result.toISOString()).toBe('2026-08-17T09:00:00.000Z');
         });
     });
 });

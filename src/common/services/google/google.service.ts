@@ -223,7 +223,14 @@ export class GoogleService {
     }
     getGoogleDate (date: { dateTime: Date, date: Date }): Date {
         if (date.dateTime) {
-            return new Date(date.dateTime.toString());
+            // Google returns an offset-aware ISO string (e.g. "...T15:00:00+02:00"), but
+            // EventsByUser.start/end is a "timestamp without time zone" column that every
+            // other producer fills with literal wall-clock digits (no conversion, see
+            // AGENTS.md's TZ=UTC note). Strip the offset instead of converting through it,
+            // so a synced Google event lands on the same literal digits as a manually
+            // created one and renders in the same place downstream.
+            const naiveDateTime = date.dateTime.toString().replace(/(?:Z|[+-]\d{2}:?\d{2})$/, '');
+            return new Date(naiveDateTime);
         } else if (date.date) {
             return date.date;
         }

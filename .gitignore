@@ -49,3 +49,4 @@ docs/*
 !docs/superpowers/
 !docs/api/
 !docs/archive/
+!docs/demo/

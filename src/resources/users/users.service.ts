@@ -58,6 +58,15 @@ export class UsersService extends BaseAbstractService<Users> implements BaseInte
             await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
         }
     }
+    public async findLookupList (user: Users): Promise<Pick<Users, 'id' | 'firstName' | 'lastName' | 'avatar'>[]> {
+        try {
+            return await this.currentRepository.getLookupList(user);
+        } catch (err) {
+            const errorMessage = `findLookupList: ${user.id}, class: ${this.constructor.name}. Message: ${err.message}`;
+            const throwError = { method: ErrorExceptionMethod.NotFound, message: `Cannot get user lookup list for company: ${user.companyId}` };
+            await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
+        }
+    }
     public getProfileAvatar (user: Users, fileName: string): {file: string, settings: { root: string }} {
         const userId = user.id;
         const fileUserId = +(fileName.split('_')[0]);

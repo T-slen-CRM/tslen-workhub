@@ -63,6 +63,16 @@ describe('Users Service Unit Test', () => {
         expect(usersRepository.getOneWithRelations).toHaveBeenCalledWith(1, mockUser, { startDate, endDate });
     });
 
+    it('forwards to the repository when finding the lookup list', async () => {
+        const result = [{ id: 1, firstName: 'A', lastName: 'B', avatar: '' }];
+        jest.spyOn(usersRepository, 'getLookupList').mockResolvedValue(result as unknown as Users[]);
+
+        const res = await userService.findLookupList(mockUser as unknown as Users);
+
+        expect(usersRepository.getLookupList).toHaveBeenCalledWith(mockUser);
+        expect(res).toEqual(result);
+    });
+
     it('should get profile avatar path', () => {
         const fileName = '1_avatar.jpg';
         const result = 'http://localhost:3000/api/v1/profile-avatar/1_avatar.jpg';

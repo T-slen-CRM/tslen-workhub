@@ -1,4 +1,9 @@
-<div>
+<div class="user-profile-content">
+  @if (isLoading()) {
+  <div class="loading-div">
+    <app-loading-logo [isLoading]="true"></app-loading-logo>
+  </div>
+  }
   @if (this.routerId) {
   <div>
     <app-custom-header-page

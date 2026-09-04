@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -23,7 +24,7 @@ import {
   AuthenticationService,
 } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
+import { BehaviorSubject, finalize, forkJoin, Subscription } from 'rxjs';
 import { decrypt, encrypt } from '../../../helpers/crypto';
 import { IDaysOffValue } from '../../../interfaces/daysOff';
 import { IUploadService } from '../../../services/upload/upload';
@@ -52,7 +53,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   changePasswordForm: FormGroup;
   submitted: boolean;
   loading: boolean;
-  loadingBeforeData: boolean;
+  public isLoading = signal(false);
   message: string;
   defaultUserAvatar = '';
   headerRoutes = [
@@ -187,32 +188,35 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     });
   }
   getDateForNewUser() {
-    this.loadingBeforeData = true;
+    this.isLoading.set(true);
     const getUser: Subscription = forkJoin([
       this.dataService.getObservableData('/groups'),
-      this.dataService.getObservableData('/users'),
+      this.dataService.getObservableData('/users/lookup'),
       this.dataService.getObservableData('/job-position'),
-    ]).subscribe((response) => {
-      const allGroups: object = response[0];
-      this.usersByCompany = response[1];
-      this.jobPositions = response[2];
-      if (Array.isArray(allGroups)) {
-        this.userGroups = allGroups;
-      } else {
-        this.userGroups = [allGroups];
-      }
-      this.loadingBeforeData = false;
-    });
+    ])
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe((response) => {
+        const allGroups: object = response[0];
+        this.usersByCompany = response[1];
+        this.jobPositions = response[2];
+        if (Array.isArray(allGroups)) {
+          this.userGroups = allGroups;
+        } else {
+          this.userGroups = [allGroups];
+        }
+      });
     this.subscription$.add(getUser);
   }
   getUserData(id: number) {
-    this.loadingBeforeData = true;
+    this.isLoading.set(true);
     const getUser: Subscription = forkJoin([
       this.dataService.getObservableData('/users/' + id),
       this.dataService.getObservableData('/groups'),
-      this.dataService.getObservableData('/users'),
+      this.dataService.getObservableData('/users/lookup'),
       this.dataService.getObservableData('/job-position'),
-    ]).subscribe((response) => {
+    ])
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe((response) => {
       const userData: any = response[0];
       this.userDaysOff = userData?.daysOff;
       const userGroupId: any = userData?.userRelationToGroups[0]?.groupId;
@@ -243,7 +247,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           }
         });
       // this.passwordCryptoConvert('decrypt');
-      this.loadingBeforeData = false;
       // google calendar
       if (userData?.googleCalendars?.calendarId) {
         this.googleCalendarData$.next(userData.googleCalendars);

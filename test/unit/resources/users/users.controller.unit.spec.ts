@@ -106,4 +106,13 @@ describe('UsersController', () => {
         expect(userService.create).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
+    it('should call userService.findLookupList', async () => {
+        const mockResponse = [{ id: 1, firstName: 'John', lastName: 'Doe', avatar: '' }];
+
+        jest.spyOn(userService, 'findLookupList').mockResolvedValue(mockResponse as unknown as Users[]);
+
+        const result = await controller.getLookupList(mockUser as unknown as Users);
+        expect(userService.findLookupList).toHaveBeenCalledWith(mockUser);
+        expect(result).toEqual(mockResponse);
+    });
 });

@@ -22,6 +22,7 @@ import {UserDayoffHistoryComponent} from "../../feature/users/user-dayoff-histor
 import {MatIconModule} from "@angular/material/icon";
 import {GooglePermissionsComponent} from "../../tslen-components/google-permissions/google-permissions.component";
 import { TranslateModule } from '@ngx-translate/core';
+import { HelpersModule } from '../../helpers/helpers.module';
 
 
 
@@ -53,7 +54,8 @@ import { TranslateModule } from '@ngx-translate/core';
         UserDayoffHistoryComponent,
         NgOptimizedImage,
         MatIconModule,
-        GooglePermissionsComponent
+        GooglePermissionsComponent,
+        HelpersModule
     ]
 })
 export class UsersModule { }

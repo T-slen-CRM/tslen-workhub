@@ -84,6 +84,7 @@ describe('UsersController (e2e)', () => {
                 findAll: jest.fn(() => mockedUsers),
                 getBirthdayAnniversary: jest.fn(() => mockedUsers[0]),
                 getUsersWithRelationsByDateRange: jest.fn(() => mockedUsers),
+                findLookupList: jest.fn(() => mockedUsers),
                 getProfileAvatarPath: jest.fn(() => 'test/shared/1_test.jpg'),
                 update: jest.fn(() => mockedUsers[0]),
                 validateUserIdByRole: jest.fn(),
@@ -135,6 +136,15 @@ describe('UsersController (e2e)', () => {
             .expect(200)
             .expect(({ body }) => {
                 expect(body).toEqual(mockUsers);
+            });
+    });
+    it('/users/lookup (GET)', async () => {
+        await request(app.getHttpServer())
+            .get('/users/lookup')
+            .set('Authorization', 'Bearer ' + ACCESS_TOKEN)
+            .expect(200)
+            .expect(({ body }) => {
+                expect(body).toEqual(mockedUsers);
             });
     });
     it('/users/:id (GET)', async () => {

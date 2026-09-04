@@ -49,6 +49,10 @@ export class UsersController {
     ): Promise<Users> {
         return this.usersService.update(id, updateUserDto);
     }
+    @Get('/lookup')
+    async getLookupList (@User() user: Users): Promise<Pick<Users, 'id' | 'firstName' | 'lastName' | 'avatar'>[]> {
+        return await this.usersService.findLookupList(user);
+    }
     @Get('/birthday-anniversary')
     async getBirthdayAnniversary (@User() user: Users): Promise<Users> {
         return await this.usersService.getBirthdayAnniversary(user);

@@ -31,33 +31,36 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
         }
         whereCondition.id = userId;
 
-        let eventsByUsersCondition = 'eventsByUsers.approved != -1';
-        let eventsByUsersParams: { startDate: Date, endDate: Date };
-        if (dateRange?.startDate && dateRange?.endDate) {
-            // endDate arrives as a date-only value (midnight UTC) - normalize to
-            // end-of-day so the last calendar day of the range isn't silently
-            // excluded, unlike the sibling getUsersWithRelationsByDateRange below.
-            const endOfEndDate = new Date(dateRange.endDate);
-            endOfEndDate.setUTCHours(23, 59, 59, 999);
-            eventsByUsersCondition += ' AND (eventsByUsers.start BETWEEN :startDate AND :endDate OR eventsByUsers.end BETWEEN :startDate AND :endDate)';
-            eventsByUsersParams = { startDate: dateRange.startDate, endDate: endOfEndDate };
-        }
-
         const qb = this.usersRepository.createQueryBuilder('user')
             .where(whereCondition)
             .leftJoinAndSelect('user.userRelationToGroups', 'userRelationToGroups')
             .leftJoinAndSelect('user.daysOff', 'daysOff')
-            .leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers', eventsByUsersCondition, eventsByUsersParams)
-            .leftJoinAndSelect('eventsByUsers.attendees', 'eventsAttendees')
             .leftJoinAndSelect('user.eventsByUsersRequest', 'eventsByUsersRequest', 'eventsByUsersRequest.isRequest = true')
             .leftJoinAndSelect('user.userChiefRelations', 'userChiefRelations')
             .leftJoinAndSelect('user.googleCalendars', 'googleCalendars')
             .leftJoinAndSelect('user.userProbation', 'userProbation')
             .leftJoinAndSelect('user.googlePermissions', 'googlePermissions')
 
+        // eventsByUsers (+ its attendees) is a heavy, per-event join - only
+        // fetch it when the caller actually wants a bounded window of events
+        // (the personal calendar, which always passes a date range). Every
+        // other caller (user-profile, the user card) never reads this
+        // relation at all, so skip the join entirely rather than eagerly
+        // loading every event + attendee the user has ever had.
+        if (dateRange?.startDate && dateRange?.endDate) {
+            // endDate arrives as a date-only value (midnight UTC) - normalize to
+            // end-of-day so the last calendar day of the range isn't silently
+            // excluded, unlike the sibling getUsersWithRelationsByDateRange below.
+            const endOfEndDate = new Date(dateRange.endDate);
+            endOfEndDate.setUTCHours(23, 59, 59, 999);
+            const eventsByUsersCondition = 'eventsByUsers.approved != -1 AND (eventsByUsers.start BETWEEN :startDate AND :endDate OR eventsByUsers.end BETWEEN :startDate AND :endDate)';
+            qb.leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers', eventsByUsersCondition, { startDate: dateRange.startDate, endDate: endOfEndDate })
+                .leftJoinAndSelect('eventsByUsers.attendees', 'eventsAttendees');
+        }
+
         const result = await qb.getOne();
 
-        for (let i = 0; i < result.eventsByUsers.length; i++){
+        for (let i = 0; i < (result.eventsByUsers?.length ?? 0); i++){
             result.eventsByUsers[i].start = this.convertDateWithoutTimezoneOffset(result.eventsByUsers[i].start);
             result.eventsByUsers[i].end = this.convertDateWithoutTimezoneOffset(result.eventsByUsers[i].end);
         }
@@ -84,6 +87,20 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
         }
         qb.orderBy('user.id', "DESC")
         return await qb.getMany();
+    }
+    // A lightweight "reference" list for pickers (chief/mentor dropdowns and
+    // the like) that only ever display a name - no relations, unlike
+    // getByRole, which eager-loads events/probation/job-position/chief
+    // relations for every company user and is overkill when all a caller
+    // wants is id/name/avatar to populate a <mat-select>.
+    public getLookupList (user: Users): Promise<Pick<Users, 'id' | 'firstName' | 'lastName' | 'avatar'>[]> {
+        const companyId: number = user.companyId;
+        const qb = this.usersRepository.createQueryBuilder('user')
+            .select(['user.id', 'user.firstName', 'user.lastName', 'user.avatar'])
+            .where('user.companyId = :companyId', { companyId })
+            .andWhere(activeUserCondition('user'))
+            .orderBy('user.firstName', 'ASC');
+        return qb.getMany();
     }
     async createOneWithRelations (creteUserDto: CreateUserDto): Promise<Users> {
         return await this.entityManager.transaction(async transactionalEntityManager => {

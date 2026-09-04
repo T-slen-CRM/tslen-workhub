@@ -345,7 +345,10 @@
   "requestApprov": "Запрос на утверждение",
   "model_transltate": {
     "Absent": "Отсутствует",
-    "Probation": "Испытательный срок"
+    "Probation": "Испытательный срок",
+    "New employee": "Новый сотрудник",
+    "Birthdays": "Дни рождения",
+    "Anniversary": "Годовщина"
   },
   "auth_signin": {
     "sign_google": "Войти через Google",

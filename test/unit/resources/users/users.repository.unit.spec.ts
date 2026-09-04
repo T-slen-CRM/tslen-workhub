@@ -165,9 +165,14 @@ describe('UsersRepository', () => {
         expect(activeConditionCalls.length).toBe(2); // once for the birthday query, once for the anniversary query
     });
 
-    describe('getOneWithRelations date filtering', () => {
-        it('leaves the eventsByUsers join condition unchanged when no date range is given', async () => {
-            const { qb, calls } = createFakeQueryBuilder({ ...mockUser, eventsByUsers: [] } as unknown as Users);
+    describe('getLookupList', () => {
+        it('selects only id/firstName/lastName/avatar, scoped to the company and active users, ordered by first name', async () => {
+            const calls: { method: string; args: unknown[] }[] = [];
+            const qb: Record<string, (...args: unknown[]) => unknown> = {};
+            ['select', 'where', 'andWhere', 'orderBy'].forEach((method) => {
+                qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
+            });
+            qb.getMany = async () => [];
             const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
             const testRepository = new UsersRepository(
                 fakeUsersOrmRepository,
@@ -175,11 +180,37 @@ describe('UsersRepository', () => {
                 {} as Repository<CompanyDaysOffRules>,
             );
 
-            await testRepository.getOneWithRelations(1, mockUser as unknown as Users);
+            await testRepository.getLookupList(mockUser as unknown as Users);
 
-            const eventsJoinCall = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'eventsByUsers');
-            expect(eventsJoinCall.args[2]).toBe('eventsByUsers.approved != -1');
-            expect(eventsJoinCall.args[3]).toBeUndefined();
+            expect(calls.find((c) => c.method === 'select' && Array.isArray(c.args[0]) &&
+                (c.args[0] as string[]).some((s) => s.includes('eventsByUsers') || s.includes('daysOff')))).toBeUndefined();
+            expect(calls.find((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('user'))).toBeDefined();
+            expect(calls.find((c) => c.method === 'orderBy')).toBeDefined();
+        });
+    });
+
+    describe('getOneWithRelations date filtering', () => {
+        it('skips the eventsByUsers/attendees join entirely when no date range is given, rather than fetching every event unbounded', async () => {
+            // Deliberately omits eventsByUsers, simulating what TypeORM
+            // actually returns for a relation that was never joined - proves
+            // the length-guard below the join doesn't blow up on that shape.
+            const mockUserWithoutEvents = { ...mockUser } as unknown as Record<string, unknown>;
+            delete mockUserWithoutEvents.eventsByUsers;
+            const { qb, calls } = createFakeQueryBuilder(mockUserWithoutEvents as unknown as Users);
+            const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+            const testRepository = new UsersRepository(
+                fakeUsersOrmRepository,
+                {} as EntityManager,
+                {} as Repository<CompanyDaysOffRules>,
+            );
+
+            const result = await testRepository.getOneWithRelations(1, mockUser as unknown as Users);
+
+            expect(calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'eventsByUsers')).toBeUndefined();
+            expect(calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'eventsAttendees')).toBeUndefined();
+            // other relations the profile/card pages do need still get joined
+            expect(calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'daysOff')).toBeDefined();
+            expect(result.eventsByUsers).toBeUndefined();
         });
 
         it('scopes the eventsByUsers join to the given date range, normalizing endDate to end-of-day', async () => {

@@ -343,7 +343,10 @@
     "requestApprov":"Request for approving",
     "model_transltate":{
       "Absent": "Absent",
-      "Probation": "Probation"
+      "Probation": "Probation",
+      "New employee": "New employee",
+      "Birthdays": "Birthdays",
+      "Anniversary": "Anniversary"
     },
     "auth_signin":{
       "sign_google": "Sign in with Google",

@@ -345,7 +345,10 @@
   "requestApprov": "Solicitud de aprobación",
   "model_transltate": {
     "Absent": "Ausente",
-    "Probation": "Período de prueba"
+    "Probation": "Período de prueba",
+    "New employee": "Nuevo empleado",
+    "Birthdays": "Cumpleaños",
+    "Anniversary": "Aniversario laboral"
   },
   "auth_signin": {
     "sign_google": "Iniciar sesión con Google",

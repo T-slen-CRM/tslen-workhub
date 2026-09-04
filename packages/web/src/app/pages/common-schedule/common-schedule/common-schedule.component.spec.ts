@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
+import * as fs from 'fs';
+import * as path from 'path';
 import { CommonScheduleComponent } from './common-schedule.component';
 import { DataService } from '../../../services/data.service';
 import { AuthenticationService } from '../../../services/auth.service';
@@ -93,5 +95,26 @@ describe('CommonScheduleComponent', () => {
       expect(result.length).toBe(1);
       expect(result[0].monthDay).toBe(1);
     });
+  });
+
+  describe('day-off calendar event category translations', () => {
+    // These are the literal `category` values the calendar-day-off window
+    // looks up as `'model_transltate.' + category` (calendar-dayoff-window.component.html) -
+    // every one of them needs a matching key under model_transltate in every
+    // locale file, or the UI shows the raw, untranslated key string.
+    const categories = ['Absent', 'Probation', 'New employee', 'Birthdays', 'Anniversary'];
+    const locales = ['en', 'ru', 'uk', 'fr', 'es'];
+
+    for (const locale of locales) {
+      it(`has a model_transltate.<category> key for every event category in ${locale}.json`, () => {
+        const translations = JSON.parse(
+          fs.readFileSync(path.join(__dirname, `../../../../assets/i18n/${locale}.json`), 'utf8'),
+        );
+
+        for (const category of categories) {
+          expect(translations.model_transltate?.[category]).toBeDefined();
+        }
+      });
+    }
   });
 });

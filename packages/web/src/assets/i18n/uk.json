@@ -345,7 +345,10 @@
   "requestApprov": "Запит на затвердження",
   "model_transltate": {
       "Absent": "Відсутній",
-      "Probation": "Випробувальний термін"
+      "Probation": "Випробувальний термін",
+      "New employee": "Новий співробітник",
+      "Birthdays": "Дні народження",
+      "Anniversary": "Річниця"
   },
   "auth_signin": {
     "sign_google": "Увійти через Google",

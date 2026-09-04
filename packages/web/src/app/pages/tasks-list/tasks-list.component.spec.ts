@@ -9,7 +9,7 @@ import { DataService } from '../../services/data.service';
 import { TaskWebSocketService } from './taskWebSocket.service';
 import { AuthenticationService } from '../../services/auth.service';
 import { TasksListService } from './service/tasks-list.service';
-import { ITask } from '../../interfaces/tasks';
+import { ITask, ITaskProject } from '../../interfaces/tasks';
 
 describe('TasksListComponent', () => {
     let component: TasksListComponent;
@@ -20,13 +20,13 @@ describe('TasksListComponent', () => {
     beforeEach(async () => {
         taskWebSocketServiceSpy = jasmine.createSpyObj('TaskWebSocketService', ['sendMessage', 'getMessages']);
         taskWebSocketServiceSpy.getMessages.and.returnValue(new Subject<{ user: string; message: string }>().asObservable());
-        dataServiceSpy = jasmine.createSpyObj('DataService', ['postData']);
+        dataServiceSpy = jasmine.createSpyObj('DataService', ['postData', 'getObservableData']);
 
         await TestBed.configureTestingModule({
             imports: [TasksListComponent, TranslateModule.forRoot()],
             providers: [
                 { provide: DataService, useValue: dataServiceSpy },
-                { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate'], { url: '/pages/tasks-list/1' }) },
+                { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate'], { url: '/pages/tasks-list/1;title=Test%20Project' }) },
                 { provide: MatDialog, useValue: jasmine.createSpyObj('MatDialog', ['open']) },
                 { provide: ActivatedRoute, useValue: { params: of({}) } },
                 { provide: TaskWebSocketService, useValue: taskWebSocketServiceSpy },
@@ -60,5 +60,18 @@ describe('TasksListComponent', () => {
         component.updateTask(task);
 
         expect(taskWebSocketServiceSpy.sendMessage).toHaveBeenCalledWith('update', jasmine.objectContaining({ actorUserId: 42 }));
+    });
+
+    it('sets isLoadingProject while the project fetch is in flight and clears it once it settles', () => {
+        const subject = new Subject<ITaskProject>();
+        dataServiceSpy.getObservableData.and.returnValue(subject.asObservable());
+
+        component.ngOnInit();
+        expect(component.isLoadingProject()).toBe(true);
+
+        subject.next({ projectPhasesRelations: [], taskProjectPermissions: [] } as unknown as ITaskProject);
+        subject.complete();
+
+        expect(component.isLoadingProject()).toBe(false);
     });
 });

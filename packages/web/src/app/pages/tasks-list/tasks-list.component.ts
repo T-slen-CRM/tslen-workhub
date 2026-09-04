@@ -3,11 +3,12 @@ import {
   OnDestroy,
   OnInit,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { map, Subscription } from 'rxjs';
+import { finalize, map, Subscription } from 'rxjs';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -40,6 +41,7 @@ import { MatCardModule } from '@angular/material/card';
 import { TaskPhaseSortComponent } from './task-phase/task-phase-sort/task-phase-sort.component';
 import { HttpResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
+import { HelpersModule } from '../../helpers/helpers.module';
 
 const enum TasksEvents {
   FIND_ALL = 'findAll',
@@ -63,6 +65,7 @@ const enum TasksEvents {
     MatMenuModule,
     MatCardModule,
     TranslateModule,
+    HelpersModule,
   ],
   providers: [TasksListService],
   templateUrl: './tasks-list.component.html',
@@ -79,6 +82,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   public tasksList: ITask[] = [];
   public taskProject: ITaskProject;
   public projectPermissions: IProjectPermission[];
+  public isLoadingProject = signal(false);
   private view = false;
   public globalTask = null;
   private readonly subscriptions$: Subscription;
@@ -214,6 +218,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     this.projectTitle = this.router.url.split(';')[1].split('=')[1];
     this.projectId = parseInt(this.router.url.split('/').pop(), 10);
+    this.isLoadingProject.set(true);
     const projectData: Subscription = this.dataService
       .getObservableData('/task-project/' + this.projectId)
       .pipe(
@@ -235,6 +240,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           return this.phases;
           // return this.concatTaskPhase(this.phases, this.tasksList);
         }),
+        finalize(() => this.isLoadingProject.set(false)),
       )
       .subscribe((_result: ITaskList[]) => {
         this.addTooltipToTask(this.phases);

@@ -1,6 +1,11 @@
 <br/>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 schedule-content">
+        @if (isLoadingEvents()) {
+        <div class="loading-div">
+            <app-loading-logo [isLoading]="true"></app-loading-logo>
+        </div>
+        }
         <mwl-demo-component
                 [setEventsByUser]="userData$ | async"
                 [setUsersList]="usersList$ | async"

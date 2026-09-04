@@ -1,4 +1,9 @@
 <div cdkDropListGroup class="list-drop-group">
+  @if (isLoadingProject()) {
+  <div class="loading-div">
+    <app-loading-logo [isLoading]="true"></app-loading-logo>
+  </div>
+  }
   @for (list of phases; track list; let first = $first) {
   <div class="list-container">
     <div class="list-container">

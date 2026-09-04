@@ -1,5 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
+import { Observable, finalize } from 'rxjs';
 import { IDaysOffObject } from '../../../interfaces/dashboard';
 import {
   AuthData,
@@ -20,6 +25,7 @@ export class PersonalScheduleComponent implements OnInit {
   public userId: number; // for test
   public isDarkTheme: boolean;
   public userData$: Observable<any>;
+  public isLoadingEvents = signal(false);
   public usersList$: Observable<any>;
   public daysOffItems: IDaysOffObject;
   public daysOffKeys: string[];
@@ -68,9 +74,12 @@ export class PersonalScheduleComponent implements OnInit {
       date.getFullYear(),
       date.getMonth() + 1,
     );
-    this.userData$ = this.dataService.getObservableData(
-      `/users/${this.userId}?startDate=${startDate}&endDate=${endDate}`,
-    );
+    this.isLoadingEvents.set(true);
+    this.userData$ = this.dataService
+      .getObservableData(
+        `/users/${this.userId}?startDate=${startDate}&endDate=${endDate}`,
+      )
+      .pipe(finalize(() => this.isLoadingEvents.set(false)));
   }
 
   onMonthChanged(date: Date) {

@@ -1,4 +1,4 @@
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Subject } from 'rxjs';
 import { PersonalScheduleComponent } from './personal-schedule.component';
 import { DataService } from '../../../services/data.service';
 import { AuthenticationService } from '../../../services/auth.service';
@@ -48,5 +48,20 @@ describe('PersonalScheduleComponent', () => {
     expect(dataService.getObservableData).toHaveBeenCalledWith(
       '/users/42?startDate=2026-07-01&endDate=2026-07-31',
     );
+  });
+
+  it('sets isLoadingEvents while the request is in flight and clears it once it settles', () => {
+    const subject = new Subject<unknown>();
+    dataService.getObservableData.and.returnValue(subject.asObservable());
+
+    component.fetchUserData(new Date('2026-06-15T00:00:00.000Z'));
+    expect(component.isLoadingEvents()).toBe(true);
+
+    const subscription = component.userData$.subscribe();
+    subject.next({});
+    subject.complete();
+    subscription.unsubscribe();
+
+    expect(component.isLoadingEvents()).toBe(false);
   });
 });

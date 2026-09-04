@@ -12,10 +12,13 @@ export class TaskWebSocketService {
     const jwtToken = localStorage.getItem("jwtToken");
     const url = this.configService.getApiHost(false);
     const socketOptions = {
-      extraHeaders: {
-        authorization: 'Bearer ' + jwtToken,
+      // extraHeaders can't reach the server reliably: browsers' native
+      // WebSocket API has no way to set custom headers, so a token sent that
+      // way can silently disappear once the transport upgrades from polling.
+      // auth rides in the handshake payload itself and works over both.
+      auth: {
+        token: jwtToken,
       },
-      //withCredentials: true,
     };
     this.socket = io(url + '/tasks', socketOptions);
   }

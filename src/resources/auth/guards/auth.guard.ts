@@ -43,13 +43,23 @@ export class AuthGuard implements CanActivate {
     }
 
     private extractTokenFromHeader (request: Request): string | undefined {
-        // find instance of request
-        let authHeader = '';
         if (request instanceof Socket) {
-            authHeader = request?.handshake?.headers?.authorization;
-        } else {
-            authHeader = request.headers?.authorization;
+            // Browsers' native WebSocket API has no way to set custom headers on
+            // the connection, so extraHeaders-style auth (a plain Authorization
+            // header on the handshake) is unreliable once the transport upgrades
+            // from polling - socket.io's own `auth` handshake payload is the
+            // browser-safe mechanism, and takes priority. The header is still
+            // checked as a fallback for any other client that does set it.
+            const authToken = request.handshake?.auth?.['token'];
+            if (typeof authToken === 'string' && authToken) {
+                return authToken;
+            }
+            return this.parseBearerToken(request.handshake?.headers?.authorization);
         }
+        return this.parseBearerToken(request.headers?.authorization);
+    }
+
+    private parseBearerToken (authHeader?: string): string | undefined {
         if (!authHeader) {
             return undefined;
         }

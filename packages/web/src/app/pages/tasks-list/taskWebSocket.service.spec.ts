@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { io } from 'socket.io-client';
 import { TaskWebSocketService } from './taskWebSocket.service';
 import { ConfigurationService } from '../../services/ConfigurationService';
+
+jest.mock('socket.io-client');
 
 describe('TaskWebSocketService', () => {
   let service: TaskWebSocketService;
   let fakeSocket: { on: jasmine.Spy; off: jasmine.Spy; emit: jasmine.Spy; disconnect: jasmine.Spy; connected: boolean };
+  let ioMock: jest.Mock;
 
   beforeEach(() => {
     fakeSocket = {
@@ -14,6 +18,9 @@ describe('TaskWebSocketService', () => {
       disconnect: jasmine.createSpy('disconnect'),
       connected: true,
     };
+    ioMock = io as unknown as jest.Mock;
+    ioMock.mockReturnValue(fakeSocket);
+    localStorage.setItem('jwtToken', 'a-jwt-token');
 
     TestBed.configureTestingModule({
       providers: [
@@ -22,9 +29,22 @@ describe('TaskWebSocketService', () => {
     });
 
     service = TestBed.inject(TaskWebSocketService);
-    // Swap in a fake after construction — the real constructor opens a real socket.io
-    // connection, which this test has no interest in exercising.
-    (service as any).socket = fakeSocket;
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('jwtToken');
+  });
+
+  it('authenticates the connection via the socket.io auth handshake payload, not a custom header', () => {
+    // extraHeaders is unreliable for this: browsers' native WebSocket API has no
+    // way to set custom headers once the transport upgrades from polling, so a
+    // token sent that way can silently never reach the server. auth.token rides
+    // in the handshake payload itself and works over both transports.
+    expect(ioMock).toHaveBeenCalledWith('http://localhost:4004/tasks', jasmine.objectContaining({
+      auth: { token: jasmine.any(String) },
+    }));
+    const options = ioMock.mock.calls[0][1];
+    expect(options.extraHeaders).toBeUndefined();
   });
 
   it('does not disconnect the shared socket when one listener unsubscribes (regression: it used to kill every other subscriber\'s connection)', () => {

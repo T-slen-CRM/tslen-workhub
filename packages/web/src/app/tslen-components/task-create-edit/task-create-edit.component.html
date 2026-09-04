@@ -148,9 +148,7 @@
             @if (taskId) { @if (activeActivityTab() !== 'history') {
             <app-task-comments [taskId]="taskId"></app-task-comments>
             } @else {
-            <div class="activity-empty-state">
-              {{ 'task.form.activity_history_empty' | translate }}
-            </div>
+            <app-task-history [taskId]="taskId"></app-task-history>
             } } @else {
             <div class="activity-empty-state">
               {{ 'task.form.activity_new_task' | translate }}

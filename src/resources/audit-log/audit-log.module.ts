@@ -30,6 +30,6 @@ import { TaskProjectModule } from '../task-project/task-project.module';
         AuditLogService,
         AuditLogWsInterceptor,
     ],
-    exports: [AuditLogMiddleware, AuditLogBufferService, AuditLogWsInterceptor],
+    exports: [AuditLogMiddleware, AuditLogBufferService, AuditLogWsInterceptor, AuditLogService],
 })
 export class AuditLogModule {}

@@ -588,6 +588,11 @@
         "post": "Publicar",
         "placeholder": "Escribe un comentario..."
     },
+    "task_history": {
+        "empty": "Aún no hay historial.",
+        "system": "Sistema",
+        "delay_hint": "Los cambios pueden tardar hasta un minuto en aparecer aquí."
+    },
     "common_schedule": {
         "name_column": "Nombre"
     }

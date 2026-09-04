@@ -93,3 +93,18 @@ export interface ITaskComment {
         lastName: string;
     };
 }
+export interface ITaskHistoryEntry {
+    id: string;
+    createdAt: string;
+    action: 'insert' | 'update' | 'delete';
+    field: string;
+    from: unknown;
+    fromLabel: string | null;
+    to: unknown;
+    toLabel: string | null;
+    user: {
+        id: number;
+        firstName: string;
+        lastName: string;
+    } | null;
+}

@@ -591,6 +591,11 @@
         "post": "Post",
         "placeholder": "Write a comment..."
     },
+    "task_history": {
+        "empty": "No history yet.",
+        "system": "System",
+        "delay_hint": "Changes may take up to a minute to appear here."
+    },
     "common_schedule": {
         "name_column": "Name"
     },

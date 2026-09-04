@@ -1,0 +1,27 @@
+<div class="task-history">
+  @if (entries.length) {
+  <ul class="task-history-list">
+    @for (entry of entries; track entry.id) {
+    <li>
+      <strong>{{
+        entry.user
+          ? entry.user.firstName + ' ' + entry.user.lastName
+          : ('task_history.system' | translate)
+      }}</strong>
+      <span class="task-history-timestamp">{{
+        entry.createdAt | date : 'short'
+      }}</span>
+      <p>
+        {{ formatField(entry.field) }}:
+        {{ formatValue(entry.from, entry.fromLabel) }}
+        →
+        {{ formatValue(entry.to, entry.toLabel) }}
+      </p>
+    </li>
+    }
+  </ul>
+  <p class="task-history-hint">{{ 'task_history.delay_hint' | translate }}</p>
+  } @else {
+  <p class="task-history-empty">{{ 'task_history.empty' | translate }}</p>
+  }
+</div>

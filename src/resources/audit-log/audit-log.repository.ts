@@ -34,4 +34,25 @@ export class AuditLogRepository extends BaseAbstractRepository<AuditLog> {
             take: limit,
         });
     }
+
+    // A row's top-level resourceType/resourceId only capture the first
+    // non-secondary entity touched by its request (see audit-log.middleware.ts) -
+    // a bulk action can bury changes to this entity deeper in the `changes`
+    // JSONB array, so this has to query into it rather than the top-level
+    // columns to find every row that touched the given entity.
+    findEntityChanges (entityName: string, entityId: number, limit = 200): Promise<AuditLog[]> {
+        return this.auditLogRepository
+            .createQueryBuilder('al')
+            .where(
+                `EXISTS (
+                    SELECT 1 FROM jsonb_array_elements(al.changes) AS change
+                    WHERE change->>'entityName' = :entityName
+                      AND change->>'entityId' = :entityId
+                )`,
+                { entityName, entityId: String(entityId) },
+            )
+            .orderBy('al."createdAt"', 'DESC')
+            .limit(limit)
+            .getMany();
+    }
 }

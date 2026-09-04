@@ -1,0 +1,19 @@
+.task-history {
+  margin-top: 16px;
+}
+.task-history-list {
+  list-style: none;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.task-history-timestamp {
+  margin-left: 8px;
+  font-size: 0.8em;
+  opacity: 0.6;
+}
+.task-history-hint,
+.task-history-empty {
+  font-size: 0.8em;
+  opacity: 0.6;
+}

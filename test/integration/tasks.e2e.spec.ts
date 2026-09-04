@@ -16,10 +16,16 @@ import { UsersRepository } from '../../src/resources/users/users.repository';
 import { TaskNotificationsService } from '../../src/resources/tasks/task-notifications.service';
 import { TaskPhaseRepository } from '../../src/resources/task-phase/task-phase.repository';
 import { ErrorService } from '../../src/common/services/error/error.service';
+import { AuditLogService, ITaskHistoryEntry } from '../../src/resources/audit-log/audit-log.service';
 
 describe('TasksController (e2e)', () => {
     let app: INestApplication;
     const mockedTask: Partial<Tasks> = { id: 1, title: 'test1' };
+    const mockedTaskHistory: ITaskHistoryEntry[] = [{
+        id: '1:title', createdAt: new Date('2026-08-17T10:00:00.000Z'), action: 'update',
+        field: 'title', from: 'Old', fromLabel: null, to: 'New', toLabel: null,
+        user: { id: 9, firstName: 'Jane', lastName: 'Doe' },
+    }];
     const mockedUserObject = mockUser;
     const mockedAuthGuard = { canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
@@ -79,6 +85,12 @@ describe('TasksController (e2e)', () => {
                             findOne: jest.fn(() => null)
                         }
                     },
+                    {
+                        provide: AuditLogService,
+                        useValue: {
+                            findTaskHistory: jest.fn(() => mockedTaskHistory)
+                        }
+                    },
                     ErrorService
                 ],
             })
@@ -110,6 +122,14 @@ describe('TasksController (e2e)', () => {
             .expect(200)
             .expect(({ body }) => {
                 expect(body).toEqual(mockedTask);
+            });
+    });
+    it('/tasks/:id/history (GET) - accessible to a plain authenticated user, no admin role required', async () => {
+        await request(app.getHttpServer())
+            .get('/tasks/1/history')
+            .expect(200)
+            .expect(({ body }) => {
+                expect(body).toEqual(JSON.parse(JSON.stringify(mockedTaskHistory)));
             });
     });
     it('should upload attachments POST /upload-attachments', () => {

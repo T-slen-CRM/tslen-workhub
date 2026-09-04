@@ -45,6 +45,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
 import { TaskCommentsComponent } from '../task-comments/task-comments.component';
+import { TaskHistoryComponent } from '../task-history/task-history.component';
 
 @Component({
   selector: 'app-task-create-edit',
@@ -67,6 +68,7 @@ import { TaskCommentsComponent } from '../task-comments/task-comments.component'
     TranslateModule,
     TextEditorComponent,
     TaskCommentsComponent,
+    TaskHistoryComponent,
   ],
   templateUrl: './task-create-edit.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

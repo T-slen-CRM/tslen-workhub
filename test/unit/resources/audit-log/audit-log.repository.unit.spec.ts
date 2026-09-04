@@ -2,6 +2,22 @@ import { In, Repository } from 'typeorm';
 import { AuditLogRepository } from '../../../../src/resources/audit-log/audit-log.repository';
 import { AuditLog } from '../../../../src/resources/audit-log/entities/audit-log.entity';
 
+/**
+ * Minimal chainable stand-in for TypeORM's SelectQueryBuilder, recording
+ * calls so tests can assert on the where condition/params without a real
+ * DB - same technique used for UsersRepository.getOneWithRelations.
+ */
+function createFakeQueryBuilder (result: AuditLog[]) {
+    const calls: { method: string; args: unknown[] }[] = [];
+    const qb = {
+        where (...args: unknown[]) { calls.push({ method: 'where', args }); return qb; },
+        orderBy (...args: unknown[]) { calls.push({ method: 'orderBy', args }); return qb; },
+        limit (...args: unknown[]) { calls.push({ method: 'limit', args }); return qb; },
+        getMany: async () => result,
+    };
+    return { qb, calls };
+}
+
 describe('AuditLogRepository', () => {
     describe('insertMany', () => {
         it('inserts the given entries via a single call', async () => {
@@ -74,6 +90,35 @@ describe('AuditLogRepository', () => {
             await repository.findRecent(30, 1000, { userIds: [] });
 
             expect(find.mock.calls[0][0].where.userId).toBeUndefined();
+        });
+    });
+
+    describe('findEntityChanges', () => {
+        it('queries via a JSONB EXISTS condition on changes, ordered newest first, capped at the given limit', async () => {
+            const rows = [{ id: 1 }] as AuditLog[];
+            const { qb, calls } = createFakeQueryBuilder(rows);
+            const createQueryBuilder = jest.fn().mockReturnValue(qb);
+            const repository = new AuditLogRepository({ createQueryBuilder } as unknown as Repository<AuditLog>);
+
+            const result = await repository.findEntityChanges('Tasks', 7, 200);
+
+            expect(createQueryBuilder).toHaveBeenCalledWith('al');
+            const whereCall = calls.find((c) => c.method === 'where');
+            expect(whereCall.args[0]).toContain('jsonb_array_elements');
+            expect(whereCall.args[1]).toEqual({ entityName: 'Tasks', entityId: '7' });
+            expect(calls.find((c) => c.method === 'orderBy').args).toEqual(['al."createdAt"', 'DESC']);
+            expect(calls.find((c) => c.method === 'limit').args).toEqual([200]);
+            expect(result).toBe(rows);
+        });
+
+        it('defaults the limit to 200 when not given', async () => {
+            const { qb, calls } = createFakeQueryBuilder([]);
+            const createQueryBuilder = jest.fn().mockReturnValue(qb);
+            const repository = new AuditLogRepository({ createQueryBuilder } as unknown as Repository<AuditLog>);
+
+            await repository.findEntityChanges('Tasks', 7);
+
+            expect(calls.find((c) => c.method === 'limit').args).toEqual([200]);
         });
     });
 });

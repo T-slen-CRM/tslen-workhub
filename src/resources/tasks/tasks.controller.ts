@@ -17,11 +17,13 @@ import { FilesExtensionValidatorPipe } from '../../common/pipes/files-extension-
 import { diskStorage } from 'multer';
 import { Request } from 'express';
 import { TaskAttachments } from './entities/task-attachments.entity';
+import { AuditLogService, ITaskHistoryEntry } from '../audit-log/audit-log.service';
 
 @Controller('tasks')
 export class TasksController {
     constructor (
       private readonly tasksService: TasksService,
+      private readonly auditLogService: AuditLogService,
     ) {}
 
     @Get()
@@ -32,6 +34,11 @@ export class TasksController {
     @Get(':id')
     findOne (@User() user: Users, @Param('id', ParseIntPipe) id: number): Promise<Tasks> {
         return this.tasksService.findOneById(id, user);
+    }
+
+    @Get(':id/history')
+    getHistory (@Param('id', ParseIntPipe) id: number): Promise<ITaskHistoryEntry[]> {
+        return this.auditLogService.findTaskHistory(id);
     }
     @Post('/upload-attachments')
     @UseInterceptors(FilesInterceptor('attachments', 10, {

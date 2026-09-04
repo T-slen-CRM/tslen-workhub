@@ -4,13 +4,16 @@ import { mockUser } from '../../../shared/users';
 import { mockedTask } from '../../../shared/task';
 import { TaskAttachments } from '../../../../src/resources/tasks/entities/task-attachments.entity';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
+import { AuditLogService, ITaskHistoryEntry } from '../../../../src/resources/audit-log/audit-log.service';
 
 describe('TasksController', () => {
     let controller: TasksController;
+    let auditLogService: AuditLogService;
 
     beforeEach(async () => {
-        const { unit } = TestBed.create(TasksController).compile();
+        const { unit, unitRef } = TestBed.create(TasksController).compile();
         controller = unit;
+        auditLogService = unitRef.get(AuditLogService);
     });
 
     it('should be defined', () => {
@@ -44,5 +47,14 @@ describe('TasksController', () => {
         expect(controller.uploadFile).toHaveBeenCalled();
         expect(result).toEqual(mockedAttachments);
 
+    });
+    it('forwards to AuditLogService.findTaskHistory when getting a task\'s history', async () => {
+        const mockResponse = [{ id: '1:title', field: 'title' }] as unknown as ITaskHistoryEntry[];
+        jest.spyOn(auditLogService, 'findTaskHistory').mockResolvedValue(mockResponse);
+
+        const result = await controller.getHistory(1);
+
+        expect(auditLogService.findTaskHistory).toHaveBeenCalledWith(1);
+        expect(result).toEqual(mockResponse);
     });
 });

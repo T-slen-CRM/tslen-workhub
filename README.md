@@ -2,6 +2,15 @@
 
 Open source, self-hosted CRM and team workspace platform for small and medium businesses — combining CRM, HR, project management, scheduling, and internal communication in one app.
 
+## Demo
+
+![T-Slen Workhub walkthrough](docs/demo/workhub-full-walkthrough.gif)
+
+| | |
+|---|---|
+| **Dashboard & company feed** ![Dashboard](docs/demo/01-dashboard.gif) | **Task boards, comments & phases** ![Task board](docs/demo/02-kanban-task-comment-move.gif) |
+| **Request a day off** ![Request time off](docs/demo/03-personal-schedule-request-vacation.gif) | **Approve requests & track on the company calendar** ![Approve on company calendar](docs/demo/04-approve-request-company-calendar.gif) |
+
 ## Features
 
 - **Company management** — company profiles, company-wide rules, job positions

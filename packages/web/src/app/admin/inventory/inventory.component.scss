@@ -1,7 +1,11 @@
 .inventory-button {
   top: 7px;
 }
-.custom-table {
+.inventory-grid-wrapper {
+  // Was ".custom-table" - that class also matches an unrelated global rule
+  // (_menu-lite.scss) that draws a dashed-border ag-Grid theme; renamed so
+  // this grid uses the same plain ag-theme-material look as every other
+  // page's app-ag-grid-table (e.g. pending), keeping just the spacing.
   margin-top: 15px;
 }
 .upper-panel {

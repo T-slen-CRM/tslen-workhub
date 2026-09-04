@@ -10,6 +10,7 @@
             [components]="components()"
             [context]="context()"
             [headerHeight]="81"
-            [enableCellTextSelection]="true">
+            [enableCellTextSelection]="true"
+            (gridSizeChanged)="onGridSizeChanged()">
     </ag-grid-angular>
 </div>

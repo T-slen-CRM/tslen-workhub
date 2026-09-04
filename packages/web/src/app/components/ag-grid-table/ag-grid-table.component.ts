@@ -39,4 +39,17 @@ export class AgGridTableComponent {
       }
     });
   }
+
+  onGridSizeChanged(): void {
+    // The initial fit above runs once, 200ms after the grid is ready - if
+    // the host container is still mid-layout at that point (e.g. a
+    // sidenav/route transition still animating) the columns get fit to
+    // that transient, too-narrow width and are never revisited, leaving a
+    // permanent gap. gridSizeChanged fires (via ag-Grid's own
+    // ResizeObserver) every time the grid's actual rendered size changes,
+    // so re-fitting here corrects that regardless of when layout settles.
+    if (this.sizeColumnsToFit() && this.agGrid) {
+      this.agGrid.api.sizeColumnsToFit();
+    }
+  }
 }

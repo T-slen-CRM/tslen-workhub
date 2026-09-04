@@ -591,7 +591,17 @@
     "task_history": {
         "empty": "Aucun historique pour le moment.",
         "system": "Système",
-        "delay_hint": "Les modifications peuvent mettre jusqu'à une minute à apparaître ici."
+        "delay_hint": "Les modifications peuvent mettre jusqu'à une minute à apparaître ici.",
+        "created_work_item": "a créé l'élément de travail",
+        "changed_the": "a modifié",
+        "unassigned": "Non assigné",
+        "just_now": "à l'instant",
+        "minute_ago": "il y a {{count}} minute",
+        "minutes_ago": "il y a {{count}} minutes",
+        "hour_ago": "il y a {{count}} heure",
+        "hours_ago": "il y a {{count}} heures",
+        "day_ago": "il y a {{count}} jour",
+        "days_ago": "il y a {{count}} jours"
     },
     "common_schedule": {
         "name_column": "Nom"

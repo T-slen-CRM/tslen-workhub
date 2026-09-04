@@ -591,7 +591,17 @@
     "task_history": {
         "empty": "Історії ще немає.",
         "system": "Система",
-        "delay_hint": "Зміни можуть з'явитися тут із затримкою до хвилини."
+        "delay_hint": "Зміни можуть з'явитися тут із затримкою до хвилини.",
+        "created_work_item": "створив(ла) робочий елемент",
+        "changed_the": "змінив(ла)",
+        "unassigned": "Не призначено",
+        "just_now": "щойно",
+        "minute_ago": "{{count}} хвилину тому",
+        "minutes_ago": "{{count}} хвилин тому",
+        "hour_ago": "{{count}} годину тому",
+        "hours_ago": "{{count}} годин тому",
+        "day_ago": "{{count}} день тому",
+        "days_ago": "{{count}} днів тому"
     },
     "common_schedule": {
         "name_column": "Ім'я"

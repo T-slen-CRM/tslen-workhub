@@ -1,22 +1,65 @@
 <div class="task-history">
-  @if (entries.length) {
+  @if (displayEntries.length) {
   <ul class="task-history-list">
-    @for (entry of entries; track entry.id) {
-    <li>
-      <strong>{{
-        entry.user
-          ? entry.user.firstName + ' ' + entry.user.lastName
-          : ('task_history.system' | translate)
-      }}</strong>
-      <span class="task-history-timestamp">{{
-        entry.createdAt | date : 'short'
-      }}</span>
-      <p>
-        {{ formatField(entry.field) }}:
-        {{ formatValue(entry.from, entry.fromLabel) }}
-        →
-        {{ formatValue(entry.to, entry.toLabel) }}
-      </p>
+    @for (entry of displayEntries; track entry.id) {
+    <li class="task-history-item">
+      <div
+        class="task-history-avatar"
+        [style.background-color]="colorForUser(entry.user)"
+      >
+        {{ initialsForUser(entry.user) }}
+      </div>
+      <div class="task-history-body">
+        <div class="task-history-line">
+          <strong>{{
+            entry.user
+              ? entry.user.firstName + ' ' + entry.user.lastName
+              : ('task_history.system' | translate)
+          }}</strong>
+          @if (entry.kind === 'created') {
+          {{ 'task_history.created_work_item' | translate }}
+          } @else {
+          {{ 'task_history.changed_the' | translate }}
+          {{ formatField(entry.field ?? '') }}
+          }
+        </div>
+        <div class="task-history-timestamp">
+          {{ getRelativeTimeLabel(entry.createdAt) }}
+        </div>
+        @if (entry.kind === 'changed') {
+        <div class="task-history-transition">
+          @if (isUserField(entry.field)) {
+          <div class="task-history-user-chip">
+            <div
+              class="task-history-avatar task-history-avatar-small"
+              [style.background-color]="colorForUser(null, entry.fromLabel ?? null)"
+            >
+              {{ initialsForUser(null, entry.fromLabel ?? null) }}
+            </div>
+            <span>{{ entry.fromLabel || ('task_history.unassigned' | translate) }}</span>
+          </div>
+          <span class="task-history-arrow">→</span>
+          <div class="task-history-user-chip">
+            <div
+              class="task-history-avatar task-history-avatar-small"
+              [style.background-color]="colorForUser(null, entry.toLabel ?? null)"
+            >
+              {{ initialsForUser(null, entry.toLabel ?? null) }}
+            </div>
+            <span>{{ entry.toLabel || ('task_history.unassigned' | translate) }}</span>
+          </div>
+          } @else {
+          <span class="task-history-badge task-history-badge-from">{{
+            formatValue(entry.from, entry.fromLabel ?? null)
+          }}</span>
+          <span class="task-history-arrow">→</span>
+          <span class="task-history-badge task-history-badge-to">{{
+            formatValue(entry.to, entry.toLabel ?? null)
+          }}</span>
+          }
+        </div>
+        }
+      </div>
     </li>
     }
   </ul>

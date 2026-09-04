@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { TaskHistoryComponent } from './task-history.component';
 import { DataService } from '../../services/data.service';
@@ -42,6 +42,55 @@ describe('TaskHistoryComponent', () => {
 
     expect(dataServiceSpy.getObservableData).toHaveBeenCalledWith('/tasks/5/history');
     expect(component.entries).toEqual([entryWithLabels]);
+  });
+
+  it('exposes displayEntries grouped via groupHistoryEntries, not the raw per-field entries', () => {
+    fixture.detectChanges();
+
+    expect(component.displayEntries).toEqual([{
+      id: '1:phaseId', createdAt: entryWithLabels.createdAt, user: entryWithLabels.user, kind: 'changed',
+      field: 'phaseId', from: 1, fromLabel: 'To Do', to: 2, toLabel: 'In Progress',
+    }]);
+  });
+
+  describe('isUserField', () => {
+    it('is true for the assignee/userId fields', () => {
+      expect(component.isUserField('assignee')).toBe(true);
+      expect(component.isUserField('userId')).toBe(true);
+    });
+
+    it('is false for any other field', () => {
+      expect(component.isUserField('status')).toBe(false);
+      expect(component.isUserField(undefined)).toBe(false);
+    });
+  });
+
+  describe('initialsForUser / colorForUser', () => {
+    it('derives initials/color from the user object when present', () => {
+      expect(component.initialsForUser({ id: 9, firstName: 'Jane', lastName: 'Doe' })).toBe('JD');
+    });
+
+    it('falls back to a label string when there is no user object', () => {
+      expect(component.initialsForUser(null, 'To Do')).toBe('TD');
+    });
+  });
+
+  describe('getRelativeTimeLabel', () => {
+    it('asks the translate service for the right relative-time key/count for a recent timestamp', () => {
+      const translateService = TestBed.inject(TranslateService);
+      const instantSpy = spyOn(translateService, 'instant').and.callThrough();
+      const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+
+      component.getRelativeTimeLabel(twoMinutesAgo);
+
+      expect(instantSpy).toHaveBeenCalledWith('task_history.minutes_ago', { count: 2 });
+    });
+
+    it('formats an old timestamp as an absolute date', () => {
+      const label = component.getRelativeTimeLabel('2026-01-01T18:23:00.000Z');
+
+      expect(label).toContain('2026');
+    });
   });
 
   describe('formatField', () => {

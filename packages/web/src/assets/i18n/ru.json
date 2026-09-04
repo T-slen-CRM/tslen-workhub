@@ -591,7 +591,17 @@
     "task_history": {
         "empty": "Пока нет истории.",
         "system": "Система",
-        "delay_hint": "Изменения могут появиться здесь с задержкой до минуты."
+        "delay_hint": "Изменения могут появиться здесь с задержкой до минуты.",
+        "created_work_item": "создал(а) рабочий элемент",
+        "changed_the": "изменил(а)",
+        "unassigned": "Не назначено",
+        "just_now": "только что",
+        "minute_ago": "{{count}} минуту назад",
+        "minutes_ago": "{{count}} минут назад",
+        "hour_ago": "{{count}} час назад",
+        "hours_ago": "{{count}} часов назад",
+        "day_ago": "{{count}} день назад",
+        "days_ago": "{{count}} дней назад"
     },
     "common_schedule": {
         "name_column": "Имя"

@@ -594,7 +594,17 @@
     "task_history": {
         "empty": "No history yet.",
         "system": "System",
-        "delay_hint": "Changes may take up to a minute to appear here."
+        "delay_hint": "Changes may take up to a minute to appear here.",
+        "created_work_item": "created the Work item",
+        "changed_the": "changed the",
+        "unassigned": "Unassigned",
+        "just_now": "just now",
+        "minute_ago": "{{count}} minute ago",
+        "minutes_ago": "{{count}} minutes ago",
+        "hour_ago": "{{count}} hour ago",
+        "hours_ago": "{{count}} hours ago",
+        "day_ago": "{{count}} day ago",
+        "days_ago": "{{count}} days ago"
     },
     "common_schedule": {
         "name_column": "Name"

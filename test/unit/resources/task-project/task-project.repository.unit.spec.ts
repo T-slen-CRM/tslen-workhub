@@ -1,9 +1,27 @@
+import { Repository } from 'typeorm';
 import { TestBed } from '@automock/jest';
 import { mockUser } from '../../../shared/users';
 import { TaskProjectRepository } from '../../../../src/resources/task-project/task-project.repository';
 import { TaskProject } from '../../../../src/resources/task-project/entities/task-project.entity';
 import { mockedTaskProject } from '../../../shared/task-project';
 import { CreateTaskProjectDto } from '../../../../src/resources/task-project/dto/create-task-project.dto';
+import { activeUserCondition } from '../../../../src/resources/users/utils/active-user-condition.util';
+
+/**
+ * Minimal chainable stand-in for TypeORM's SelectQueryBuilder, recording
+ * calls so tests can assert on leftJoinAndSelect/andWhere arguments
+ * without a real DB.
+ */
+function createFakeQueryBuilder (result: unknown) {
+    const calls: { method: string; args: unknown[] }[] = [];
+    const qb: Record<string, (...args: unknown[]) => unknown> = {};
+    ['leftJoinAndSelect', 'where', 'andWhere', 'orderBy'].forEach((method) => {
+        qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
+    });
+    qb.getMany = async () => result;
+    qb.getOne = async () => result;
+    return { qb, calls };
+}
 
 describe('TaskProjectRepository', () => {
     let repository: TaskProjectRepository;
@@ -40,5 +58,31 @@ describe('TaskProjectRepository', () => {
         const result = await repository.findAllWithPhases();
         expect(repository.findAllWithPhases).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
+    });
+
+    describe('excludes inactive/fired users from embedded permission/assignee lists', () => {
+        it('getByRole scopes the taskProjectPermission.user join to active users', async () => {
+            const { qb, calls } = createFakeQueryBuilder([]);
+            const fakeRepository = { createQueryBuilder: () => qb } as unknown as Repository<TaskProject>;
+            const testRepository = new TaskProjectRepository(fakeRepository);
+
+            await testRepository.getByRole(mockUser);
+
+            const userJoin = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'user');
+            expect(userJoin.args[2]).toBe(activeUserCondition('user'));
+        });
+
+        it('getOneWithRelations scopes both the permission and assignee user joins to active users', async () => {
+            const { qb, calls } = createFakeQueryBuilder(mockedTaskProject);
+            const fakeRepository = { createQueryBuilder: () => qb } as unknown as Repository<TaskProject>;
+            const testRepository = new TaskProjectRepository(fakeRepository);
+
+            await testRepository.getOneWithRelations(1, mockUser);
+
+            const userJoin = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'user');
+            const assignmentUserJoin = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'assignmentUser');
+            expect(userJoin.args[2]).toBe(activeUserCondition('user'));
+            expect(assignmentUserJoin.args[2]).toBe(activeUserCondition('assignmentUser'));
+        });
     });
 });

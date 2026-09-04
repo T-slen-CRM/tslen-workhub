@@ -7,6 +7,24 @@ import { UsersRepository } from '../../../../src/resources/users/users.repositor
 import { TestBed } from '@automock/jest';
 import { mockUser } from '../../../shared/users';
 import { DaysOffEntity } from '../../../../src/resources/company-days-off-rules/entities/days-off.entity';
+import { activeUserCondition } from '../../../../src/resources/users/utils/active-user-condition.util';
+
+/**
+ * Minimal chainable stand-in for the parts of TypeORM's SelectQueryBuilder
+ * getUsersWithRelationsByDateRange/getBirthdayAnniversary use, recording
+ * calls so tests can assert on where/andWhere/leftJoinAndSelect arguments
+ * without a real DB.
+ */
+function createFakeListQueryBuilder (result: unknown) {
+    const calls: { method: string; args: unknown[] }[] = [];
+    const qb: Record<string, (...args: unknown[]) => unknown> = {};
+    ['select', 'where', 'andWhere', 'leftJoinAndSelect', 'orderBy'].forEach((method) => {
+        qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
+    });
+    qb.getMany = async () => result;
+    qb.getQuery = () => '';
+    return { qb, calls };
+}
 
 /**
  * Minimal in-memory stand-in for TypeORM's SelectQueryBuilder, recording
@@ -103,12 +121,48 @@ describe('UsersRepository', () => {
         expect(repository.getUsersWithRelationsByDateRange).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
     });
+    it('excludes inactive/fired users from getUsersWithRelationsByDateRange', async () => {
+        const { qb, calls } = createFakeListQueryBuilder([]);
+        const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+        const testRepository = new UsersRepository(
+            fakeUsersOrmRepository,
+            {} as EntityManager,
+            {} as Repository<CompanyDaysOffRules>,
+        );
+        const startDate = new Date('2026-06-01T00:00:00.000Z');
+        const endDate = new Date('2026-06-30T00:00:00.000Z');
+
+        await testRepository.getUsersWithRelationsByDateRange(mockUser as unknown as Users, { startDate, endDate });
+
+        const activeCondition = calls.find((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('user'));
+        expect(activeCondition).toBeDefined();
+    });
     it('should call getBirthdayAnniversary', async () => {
         const mockResponse: Partial<Users> = mockUser as unknown as Users;
         jest.spyOn(repository, 'getBirthdayAnniversary').mockResolvedValue(mockResponse as Users[]);
         const result = await repository.getBirthdayAnniversary(mockUser as unknown as Users);
         expect(repository.getBirthdayAnniversary).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
+    });
+    it('excludes inactive/fired users from getBirthdayAnniversary, not just past lastDayInCompany', async () => {
+        const calls: { method: string; args: unknown[] }[] = [];
+        const qb: Record<string, (...args: unknown[]) => unknown> = {};
+        ['select', 'where', 'andWhere'].forEach((method) => {
+            qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
+        });
+        qb.getQuery = () => 'SELECT 1';
+        const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+        const fakeEntityManager = { query: jest.fn().mockResolvedValue([]) } as unknown as EntityManager;
+        const testRepository = new UsersRepository(
+            fakeUsersOrmRepository,
+            fakeEntityManager,
+            {} as Repository<CompanyDaysOffRules>,
+        );
+
+        await testRepository.getBirthdayAnniversary(mockUser as unknown as Users);
+
+        const activeConditionCalls = calls.filter((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('user'));
+        expect(activeConditionCalls.length).toBe(2); // once for the birthday query, once for the anniversary query
     });
 
     describe('getOneWithRelations date filtering', () => {

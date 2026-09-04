@@ -143,4 +143,50 @@ describe('AuthService signInWithPassword / signInWithGoogle', () => {
     });
 });
 
+describe('AuthService changeUser', () => {
+    let authService: AuthService;
+    let usersService: jest.Mocked<UsersService>;
+    let errorService: jest.Mocked<ErrorService>;
+    let jwtService: jest.Mocked<JwtService>;
+
+    beforeEach(() => {
+        const { unit, unitRef } = TestBed.create(AuthService).compile();
+        authService = unit;
+        usersService = unitRef.get(UsersService);
+        errorService = unitRef.get(ErrorService);
+        jwtService = unitRef.get(JwtService);
+        errorService.aggregateError.mockImplementation(async (_log: string, _slack: string, throwError: IThrowErrorObject) => {
+            if (throwError?.method === ErrorExceptionMethod.NotFound) throw new NotFoundException(throwError.message);
+            if (throwError?.method === ErrorExceptionMethod.Unauthorized) throw new UnauthorizedException(throwError.message);
+        });
+    });
+
+    it('mints a token for an active target user', async () => {
+        const targetUser = { ...mockUser, id: 2, isActive: 1, lastDayInCompany: null } as unknown as Users;
+        usersService.findOneById.mockResolvedValue(targetUser);
+        jwtService.signAsync.mockResolvedValue('signed-jwt');
+
+        const result = await authService.changeUser(2, mockUser as unknown as Users);
+
+        expect(result.accessToken).toBe('signed-jwt');
+    });
+
+    it('refuses to impersonate a deactivated user (isActive = 0), the same way login itself would refuse them', async () => {
+        const targetUser = { ...mockUser, id: 2, isActive: 0, lastDayInCompany: null } as unknown as Users;
+        usersService.findOneById.mockResolvedValue(targetUser);
+
+        await expect(authService.changeUser(2, mockUser as unknown as Users)).rejects.toBeInstanceOf(NotFoundException);
+        expect(jwtService.signAsync).not.toHaveBeenCalled();
+    });
+
+    it('refuses to impersonate a user whose lastDayInCompany has already passed', async () => {
+        const pastDay = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const targetUser = { ...mockUser, id: 2, isActive: 1, lastDayInCompany: pastDay } as unknown as Users;
+        usersService.findOneById.mockResolvedValue(targetUser);
+
+        await expect(authService.changeUser(2, mockUser as unknown as Users)).rejects.toBeInstanceOf(NotFoundException);
+        expect(jwtService.signAsync).not.toHaveBeenCalled();
+    });
+});
+
 

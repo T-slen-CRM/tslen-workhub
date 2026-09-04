@@ -8,6 +8,7 @@ import { DaysOffEntity } from '../company-days-off-rules/entities/days-off.entit
 import { CreateEventsByUserDto } from './dto/create-events-by-user.dto';
 import { UserChiefRelationEntity } from '../users/entities/user-chief-relation.entity';
 import { toSqlSafeInteger } from '../../common/utils/sql-safe-integer';
+import { activeUserCondition } from '../users/utils/active-user-condition.util';
 
 export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>{
     constructor (
@@ -44,6 +45,7 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             .leftJoin(Users, 'u', '"u"."id" = "ebu"."userId"')
             .where(`"ebu"."requestType" != 'own'`)
             .andWhere(`"u"."companyId" = ${companyId}`)
+            .andWhere(activeUserCondition('u'))
             .andWhere(`(
             ("ebu"."start" >= '${firstDay}' AND "ebu"."start" <= '${lastDay}') OR
             ("ebu"."end" >= '${firstDay}' AND "ebu"."end" <= '${lastDay}')
@@ -67,6 +69,7 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
                 `0 AS approved`,
             ])
             .where(`"u"."companyId" = ${companyId}`)
+            .andWhere(activeUserCondition('u'))
             .getQuery();
 
         // Combine and execute the UNION query
@@ -86,6 +89,7 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             .leftJoin(Users, 'u', 'u.id = ebu.userId')
             .where(`ebu.requestType != 'own'`)
             .andWhere(`u.companyId = ${companyId}`)
+            .andWhere(activeUserCondition('u'))
             .andWhere(`ebu.approved = 1`)
             .andWhere(`NOW() BETWEEN ebu.start AND ebu.end`)
         return await q.getRawMany();
@@ -172,6 +176,7 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             .leftJoin(Users, 'user', 'user.id = ebu.userId')
             .where(`ebu.requestType != 'own'`)
             .andWhere(`user.companyId = ${companyId}`)
+            .andWhere(activeUserCondition('user'))
             .andWhere(`ebu.approved = 0`)
         if (userRole === 'user'){
             qb.leftJoin(UserChiefRelationEntity, 'uCR', "u.id = uCR.userId");

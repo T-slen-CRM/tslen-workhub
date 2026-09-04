@@ -9,6 +9,7 @@ import { configDotenv } from 'dotenv';
 import * as path from 'path';
 import { MoreThanOrEqual, IsNull } from 'typeorm';
 import { CurrentUser, GoogleCalendarInfo, GooglePermissions, Role } from '@tslen-workhub/shared';
+import { isUserActive } from '../users/utils/active-user-condition.util';
 configDotenv();
 @Injectable()
 export class AuthService {
@@ -106,6 +107,19 @@ export class AuthService {
             // find user by id
             const user = await this.usersService.findOneById(id, adminUser);
             if (!user) {
+                const errorMessage = `changeUser: ${id}. Class: ${this.constructor.name} Message: User not found`;
+                const throwError: IThrowErrorObject = {
+                    method: ErrorExceptionMethod.NotFound,
+                    message: `Cannot find user: ${id}`
+                };
+                await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
+            }
+            // Same "not found" error as above, deliberately - a caller shouldn't
+            // be able to tell "no such user" apart from "that user is fired",
+            // and this mirrors the exact rule findActiveUserByEmail already
+            // enforces at login: an admin can't mint a session for a user who
+            // couldn't log in themselves.
+            if (!isUserActive(user)) {
                 const errorMessage = `changeUser: ${id}. Class: ${this.constructor.name} Message: User not found`;
                 const throwError: IThrowErrorObject = {
                     method: ErrorExceptionMethod.NotFound,

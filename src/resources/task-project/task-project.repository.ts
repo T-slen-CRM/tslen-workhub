@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskProject } from './entities/task-project.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { activeUserCondition } from '../users/utils/active-user-condition.util';
 
 export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
     constructor (
@@ -16,7 +17,7 @@ export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
         const userId = user.id;
         const qb = this.taskProjectRepository.createQueryBuilder('taskProject')
             .leftJoinAndSelect('taskProject.taskProjectPermissions', 'taskProjectPermission')
-            .leftJoinAndSelect('taskProjectPermission.user', 'user')
+            .leftJoinAndSelect('taskProjectPermission.user', 'user', activeUserCondition('user'))
             .andWhere(`taskProject.companyId = ${companyId}`)
             .andWhere(qb => {
                 const subQuery = qb
@@ -62,12 +63,12 @@ export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
         // TODO: use query builder
         const qb = this.taskProjectRepository.createQueryBuilder('taskProject')
             .leftJoinAndSelect('taskProject.taskProjectPermissions', 'taskProjectPermission')
-            .leftJoinAndSelect('taskProjectPermission.user', 'user')
+            .leftJoinAndSelect('taskProjectPermission.user', 'user', activeUserCondition('user'))
             .leftJoinAndSelect('taskProject.projectPhasesRelations', 'projectPhasesRelation')
             .leftJoinAndSelect('projectPhasesRelation.phase', 'phase')
             .leftJoinAndSelect('phase.tasks', 'task', 'task.projectId = taskProject.id')
             .leftJoinAndSelect('task.taskUserAssignmentRelations', 'taskUserAssignmentRelation')
-            .leftJoinAndSelect('taskUserAssignmentRelation.user', 'assignmentUser')
+            .leftJoinAndSelect('taskUserAssignmentRelation.user', 'assignmentUser', activeUserCondition('assignmentUser'))
             .leftJoinAndSelect('task.taskAttachments', 'taskAttachments')
             .where('taskProject.id = :id', { id })
             .andWhere('taskProject.companyId = :companyId', { companyId })

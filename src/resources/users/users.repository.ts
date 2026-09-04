@@ -7,6 +7,7 @@ import { CompanyDaysOffRules } from '../company-days-off-rules/entities/company-
 import { DaysOffEntity } from '../company-days-off-rules/entities/days-off.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { toSqlSafeInteger } from '../../common/utils/sql-safe-integer';
+import { activeUserCondition } from './utils/active-user-condition.util';
 
 export class UsersRepository extends BaseAbstractRepository<Users>{
     constructor (
@@ -130,7 +131,7 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
             .select(`CONCAT("firstName", ' ', "lastName") as name, avatar, 'birthday' as type, "birthDay" as day`)
             .where(`"companyId" = ${companyId}`)
             .andWhere(`TO_CHAR("birthDay", 'MM-DD') BETWEEN TO_CHAR(NOW(), 'MM-DD') AND TO_CHAR(NOW() + INTERVAL '30 days', 'MM-DD')`)
-            .andWhere(`(user.lastDayInCompany IS NULL OR user.lastDayInCompany >= NOW())`)
+            .andWhere(activeUserCondition('user'))
             .getQuery();
 
         // Query for anniversaries
@@ -139,7 +140,7 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
             .where(`"companyId" = ${companyId}`)
             .andWhere(`TO_CHAR("firstDayInCompany", 'MM-DD') BETWEEN TO_CHAR(NOW(), 'MM-DD') AND TO_CHAR(NOW() + INTERVAL '30 days', 'MM-DD')`)
             .andWhere(`EXTRACT(YEAR FROM "firstDayInCompany") != EXTRACT(YEAR FROM NOW())`)
-            .andWhere(`(user.lastDayInCompany IS NULL OR user.lastDayInCompany >= NOW())`)
+            .andWhere(activeUserCondition('user'))
             .getQuery();
 
         // Combine the two queries with UNION
@@ -152,6 +153,7 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
         endDate = endDate.toISOString();
         qb.select();
         qb.where(`"companyId" = ${companyId}`)
+            .andWhere(activeUserCondition('user'))
             .leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers',
                 `eventsByUsers.approved = 1 
                           and eventsByUsers.isGoogleEvent = false

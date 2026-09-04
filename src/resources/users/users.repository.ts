@@ -180,6 +180,21 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
                 `(userProbation.start BETWEEN '${startDate}' AND '${endDate}'
                           or userProbation.end BETWEEN '${startDate}' AND '${endDate}')`)
         qb.orderBy('user.id', "DESC");
-        return await qb.getMany();
+        const result = await qb.getMany();
+
+        // Same normalization getOneWithRelations applies below - without it,
+        // these raw Date objects serialize with a UTC 'Z' suffix, and the
+        // common-schedule calendar view's mwl-calendar-month-view places an
+        // event by LOCAL day. A day-off's end (23:59 UTC) then lands after
+        // local midnight for any timezone ahead of UTC, badging the event on
+        // the following calendar day too.
+        for (const oneUser of result) {
+            for (let i = 0; i < oneUser.eventsByUsers.length; i++) {
+                oneUser.eventsByUsers[i].start = this.convertDateWithoutTimezoneOffset(oneUser.eventsByUsers[i].start);
+                oneUser.eventsByUsers[i].end = this.convertDateWithoutTimezoneOffset(oneUser.eventsByUsers[i].end);
+            }
+        }
+
+        return result;
     }
 }

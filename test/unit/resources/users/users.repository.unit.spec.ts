@@ -137,6 +137,29 @@ describe('UsersRepository', () => {
         const activeCondition = calls.find((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('user'));
         expect(activeCondition).toBeDefined();
     });
+    it('normalizes eventsByUsers start/end the same way getOneWithRelations does, so a late-day UTC event does not shift into the next local calendar day', async () => {
+        const rawStart = new Date('2026-09-04T00:00:00.000Z');
+        const rawEnd = new Date('2026-09-04T23:59:00.000Z');
+        const mockUserWithEvent = {
+            ...mockUser,
+            eventsByUsers: [{ id: 1, start: rawStart, end: rawEnd }],
+        };
+        const { qb } = createFakeListQueryBuilder([mockUserWithEvent]);
+        const fakeUsersOrmRepository = { createQueryBuilder: () => qb } as unknown as Repository<Users>;
+        const testRepository = new UsersRepository(
+            fakeUsersOrmRepository,
+            {} as EntityManager,
+            {} as Repository<CompanyDaysOffRules>,
+        );
+        const startDate = new Date('2026-09-01T00:00:00.000Z');
+        const endDate = new Date('2026-09-30T00:00:00.000Z');
+
+        const result = await testRepository.getUsersWithRelationsByDateRange(mockUser as unknown as Users, { startDate, endDate });
+
+        expect(result[0].eventsByUsers[0].start).toBe(testRepository.convertDateWithoutTimezoneOffset(rawStart));
+        expect(result[0].eventsByUsers[0].end).toBe(testRepository.convertDateWithoutTimezoneOffset(rawEnd));
+        expect(result[0].eventsByUsers[0].start).not.toBeInstanceOf(Date);
+    });
     it('should call getBirthdayAnniversary', async () => {
         const mockResponse: Partial<Users> = mockUser as unknown as Users;
         jest.spyOn(repository, 'getBirthdayAnniversary').mockResolvedValue(mockResponse as Users[]);

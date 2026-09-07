@@ -5,7 +5,7 @@
 #   git clone <this repo> && cd tslen-workhub
 #   chmod +x provision-vps.sh && sudo ./provision-vps.sh
 #
-# One-time setup for a FRESH Ubuntu VPS: OS hardening basics, Docker, the
+# One-time setup for a FRESH Debian or Ubuntu VPS: OS hardening basics, Docker, the
 # tslen-net network, and (once you've copied the two compose .example files
 # and filled in .env - see README step 7) Postgres and Traefik. It does NOT
 # build or start the app itself - that's still ./start.sh, run manually
@@ -50,11 +50,14 @@ systemctl enable --now fail2ban
 echo "==> [6/7] Docker Engine + Compose plugin"
 if ! command -v docker >/dev/null 2>&1; then
   install -m 0755 -d /etc/apt/keyrings
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-  chmod a+r /etc/apt/keyrings/docker.asc
   # shellcheck source=/etc/os-release
   . /etc/os-release
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu ${VERSION_CODENAME} stable" \
+  # $ID is "debian" or "ubuntu" - Docker publishes separate apt repos per
+  # distro, and they're not interchangeable (Debian's codenames don't
+  # exist in Ubuntu's repo and vice versa).
+  curl -fsSL "https://download.docker.com/linux/${ID}/gpg" -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" \
     > /etc/apt/sources.list.d/docker.list
   apt-get update
   apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin

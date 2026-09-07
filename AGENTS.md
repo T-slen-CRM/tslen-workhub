@@ -193,3 +193,13 @@ rather than pulling in the real providers — see `chat.service.spec.ts` /
 - Parse external date/time strings with their offset intact
   (`new Date(isoStringWithOffset)`); stripping the offset before parsing
   makes `Date` interpret it as server-local time, corrupting the instant.
+- `migrations/initial-schema` builds the entire schema from scratch and
+  must stay the first migration TypeORM runs on an empty database —
+  every migration added after it should be a genuine incremental delta
+  against *that* baseline. Never hand-craft a migration that assumes a
+  table already exists without checking `initial-schema` actually
+  creates it first; regenerate `initial-schema` itself
+  (`npm run migration:generate --name=initial-schema` against a fresh
+  empty DB, then delete the old file) only if you're deliberately
+  re-squashing history, not as a substitute for writing a real
+  incremental migration for a schema change.

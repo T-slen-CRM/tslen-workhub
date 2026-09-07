@@ -250,7 +250,11 @@ export class GoogleService {
     }
     getAuthClient (): OAuth2Client {
         const keys: IGoogleAuthCredentials = this.credentials ? this.credentials : this.readCredentials(this.credentialsPath);
-        const redirectUri = keys.web.redirect_uris[0];
+        // redirect_uris[0] in the credentials JSON is whichever environment happened to be
+        // listed first in Google Cloud Console (usually localhost, added during local dev
+        // setup) - it doesn't track which environment is actually running. CALLBACK_URL is
+        // set per-environment in .env, so use that instead of trusting array order.
+        const redirectUri = this.configService.get('CALLBACK_URL');
         const authClient = new OAuth2Client(
             keys.web.client_id,
             keys.web.client_secret,

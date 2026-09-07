@@ -1,8 +1,7 @@
 # Shared reverse proxy for this VPS - copy this file to
 # docker-compose.traefik.yml (gitignored, same idea as .env.example -> .env)
-# and start it BEFORE running start.sh: start.sh only attaches Traefik
-# *labels* to the app container via Docker's provider, it never starts
-# Traefik itself.
+# and start it BEFORE running start.sh: start.sh only builds/runs the app
+# container, it doesn't start Traefik or configure routing.
 #
 # Run from the repo root so Compose auto-loads ACME_EMAIL from the .env
 # file that's already there (see .env.example) - no separate secrets file
@@ -13,18 +12,28 @@
 #
 # docker-compose.postgres.yml.example should be brought up on the same
 # tslen-net network before you run start.sh for the app itself.
+#
+# Routing is configured via Traefik's static FILE provider
+# (traefik-dynamic/*.yml), not Docker-label auto-discovery. Docker Engine
+# 29.x raised its minimum supported API version to 1.40, but Traefik's
+# Docker provider always probes at a hardcoded v1.24 on its first call
+# regardless of Traefik version or a DOCKER_API_VERSION env var - the
+# daemon rejects that outright before any negotiation can happen, so
+# label-based auto-discovery cannot work against this Engine version.
+# Routing to containers by name over Docker's built-in network DNS (same
+# tslen-net bridge) sidesteps the Docker socket API entirely - also means
+# no docker.sock mount into this container, a smaller attack surface.
+#
+# Copy traefik-dynamic/tslen-workhub.yml.example to
+# traefik-dynamic/tslen-workhub.yml and set your domain there.
 services:
   traefik:
-    image: traefik:v3.1
+    image: traefik:v3.5
     container_name: traefik
     restart: unless-stopped
     command:
-      - --providers.docker=true
-      # start.sh's app container (and anything else you run later) must
-      # opt in with traefik.enable=true - nothing is auto-exposed just by
-      # joining tslen-net.
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=tslen-net
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --providers.file.watch=true
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
@@ -45,7 +54,7 @@ services:
     networks:
       - tslen-net
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik-dynamic:/etc/traefik/dynamic:ro
       - traefik-letsencrypt:/letsencrypt
 
 networks:

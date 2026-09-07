@@ -43,6 +43,7 @@ lerna-debug.log*
 /provision-vps.sh
 /docker-compose.traefik.yml
 /docker-compose.postgres.yml
+/traefik-dynamic/*.yml
 /upload
 #credentials/t-slen-firebase-adminsdk.json
 #/credentials/*.json

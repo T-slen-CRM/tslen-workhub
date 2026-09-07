@@ -76,11 +76,12 @@ full reference.
    ```
    No external accounts and no DB credentials are required to boot. The
    schema is created automatically (TypeORM `synchronize`, since `.env`'s
-   default `MODE=DEV`); for a `MODE=PROD` deployment, migrations run
-   automatically instead (`npm run migration:run` is only needed manually
-   for bare-metal dev, and only once your schema already exists).
+   default `MODE=DEV`); for a `MODE=PROD` deployment, `synchronize` is
+   disabled and `npm run migration:run` runs automatically on boot instead
+   - see the note at the end of step 7 below if you're deploying to a
+   genuinely empty database for the first time.
 7. For a production deployment behind Traefik with automatic HTTPS, on a
-   fresh Ubuntu VPS:
+   fresh Debian or Ubuntu VPS:
    1. Clone this repo on the server, copy `provision-vps.sh.example` to
       `provision-vps.sh` (gitignored, same idea as `.env.example` → `.env`),
       then `chmod +x provision-vps.sh && sudo ./provision-vps.sh`. One-time
@@ -92,19 +93,39 @@ full reference.
       - confirm key-based SSH login works before ever disabling password
       auth.
    2. Point the domain's DNS A/AAAA record at the server's IP.
-   3. Copy `docker-compose.postgres.yml.example` and
-      `docker-compose.traefik.yml.example` to their real (gitignored)
-      names, and `.env.example` to `.env` - fill in real values
-      (`DB_USER`/`DB_PASSWORD`/`DB_SCHEMA`, `ACME_EMAIL`, your domain,
-      LiveKit keys, etc.); set `DB_HOST=tslen-postgres`. Place credential
-      JSON files under `./credentials/`.
+   3. Copy `docker-compose.postgres.yml.example`,
+      `docker-compose.traefik.yml.example`, and
+      `traefik-dynamic/tslen-workhub.yml.example` to their real
+      (gitignored) names, and `.env.example` to `.env` - fill in real
+      values (`DB_USER`/`DB_PASSWORD`/`DB_SCHEMA`, `ACME_EMAIL`, your
+      domain, LiveKit keys, etc.); set `DB_HOST=tslen-postgres`. Set the
+      domain in `traefik-dynamic/tslen-workhub.yml` too (Traefik routes to
+      the app container by name over Docker's network DNS, not via
+      labels - see the comments in `docker-compose.traefik.yml.example`
+      for why). Place credential JSON files under `./credentials/`.
    4. From the repo root (so Compose picks up `.env` automatically):
       ```bash
       docker compose -f docker-compose.postgres.yml up -d
       docker compose -f docker-compose.traefik.yml up -d
       ```
-   5. Copy `start.sh.example` to `start.sh`, set `DOMAIN`, then
+   5. Copy `start.sh.example` to `start.sh`, then
       `chmod +x start.sh && ./start.sh`.
+
+   **First deployment to a brand-new, empty database only:** every
+   existing file under `migrations/` is an incremental delta written
+   against a schema that, until now, was always bootstrapped by
+   `synchronize` (no environment has ever run these migrations against a
+   truly empty database before). On a genuinely fresh `tslen-pgdata`
+   volume, running `migration:run` cold will fail
+   (`relation "posts" does not exist` on the first migration that ALTERs
+   an existing table). To bootstrap: temporarily set `MODE=DEV` in `.env`
+   and restart the app container once (this runs `synchronize` and builds
+   the full schema from the current entities instead), then set
+   `MODE=PROD` back, insert one bookkeeping row per existing file in
+   `migrations/` into Postgres's own `migrations` table (`timestamp` +
+   `name`, matching each file's exported class name) so `migration:run`
+   treats them as already applied, and restart the app again. Only new
+   migrations added after this point need to actually run.
 
 ## CI checks
 

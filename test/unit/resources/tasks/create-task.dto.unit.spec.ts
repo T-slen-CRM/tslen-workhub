@@ -13,7 +13,7 @@ describe('CreateTaskDto', () => {
     });
 
     it('accepts a payload with an integer actorUserId', async () => {
-        const dto = plainToInstance(CreateTaskDto, { title: 'test', actorUserId: 7 });
+        const dto = plainToInstance(CreateTaskDto, { title: 'test', priority: 'medium', actorUserId: 7 });
 
         const errors = await validate(dto);
 
@@ -39,6 +39,19 @@ describe('CreateTaskDto', () => {
 
     it('rejects a priority outside low/medium/high', async () => {
         const dto = plainToInstance(CreateTaskDto, { title: 'test', priority: 'urgent' });
+
+        const errors = await validate(dto);
+
+        expect(errors.some((e) => e.property === 'priority')).toBe(true);
+    });
+
+    // tasks.priority is NOT NULL in Postgres (see task.entity.ts), so a
+    // payload with no priority was always going to fail - either here, with
+    // a clear message, or downstream as a confusing DB constraint
+    // violation ("null value in column priority violates not-null
+    // constraint"). Reject it at the DTO layer instead.
+    it('rejects a payload with no priority at all', async () => {
+        const dto = plainToInstance(CreateTaskDto, { title: 'test' });
 
         const errors = await validate(dto);
 

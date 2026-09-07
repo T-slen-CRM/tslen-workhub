@@ -25,9 +25,11 @@ export class CreateTaskDto {
     @IsString()
         assignessEmail: string | null;
 
-    @IsOptional()
+    // Not @IsOptional(): tasks.priority is NOT NULL in Postgres (see
+    // task.entity.ts), so omitting it always fails - either here with a
+    // clear message, or downstream as a DB constraint violation.
     @IsIn(['low', 'medium', 'high'])
-        priority: TaskPriority | null;
+        priority: TaskPriority;
 
     @IsOptional()
     @Type(() => Date)

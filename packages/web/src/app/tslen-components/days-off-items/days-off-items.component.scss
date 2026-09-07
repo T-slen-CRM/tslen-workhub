@@ -2,7 +2,7 @@
 .chip{
   cursor: pointer;
   color: black !important;
-  width: 65px;
+  min-width: 65px;
   font-size: 13px;
   &:hover{
     cursor: pointer;

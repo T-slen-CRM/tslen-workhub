@@ -114,6 +114,30 @@ full reference.
       builds the entire schema from `migrations/initial-schema` - no
       manual bootstrap needed even on a brand-new, empty database.
 
+## Continuous deployment
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+auto-redeploys the app to production on every merge to `main` (after
+`main-ci` passes) by SSHing into the server and re-running step 7.5's
+`git pull` + `./start.sh` sequence. It's wired to one specific server via
+three repo secrets - `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER` - so
+forking this repo to self-host doesn't turn this workflow on
+automatically; it only runs once those secrets exist.
+
+To wire it up for your own server: generate a dedicated keypair just for
+this (don't reuse your own interactive SSH key - if the GitHub secret
+ever leaks, you want to be able to revoke it without losing your own
+login), and add its public half to `deploy`'s `~/.ssh/authorized_keys`
+with a forced command restricting what it can do over SSH, e.g.:
+
+```
+command="cd ~/tslen-workhub && git fetch origin && git checkout main && git reset --hard origin/main && DOMAIN=your.domain.com ./start.sh",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... github-actions-deploy
+```
+
+Then set the three secrets (`DEPLOY_SSH_KEY` = the private key,
+`DEPLOY_HOST` = your server's IP, `DEPLOY_USER` = `deploy`) under repo
+Settings → Secrets and variables → Actions.
+
 ## CI checks
 
 Every push and pull request against `main` runs via GitHub Actions

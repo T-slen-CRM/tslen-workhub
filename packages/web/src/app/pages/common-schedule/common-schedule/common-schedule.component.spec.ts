@@ -1,11 +1,15 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { of, Subject } from 'rxjs';
 import * as fs from 'fs';
 import * as path from 'path';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonScheduleComponent } from './common-schedule.component';
 import { DataService } from '../../../services/data.service';
 import { AuthenticationService } from '../../../services/auth.service';
 import { LanguageService } from '../../../language/language.service';
+import { AgGridTableComponent } from '../../../components/ag-grid-table/ag-grid-table.component';
 
 describe('CommonScheduleComponent', () => {
   let component: CommonScheduleComponent;
@@ -94,6 +98,54 @@ describe('CommonScheduleComponent', () => {
 
       expect(result.length).toBe(1);
       expect(result[0].monthDay).toBe(1);
+    });
+  });
+
+  describe('day grid responsiveness', () => {
+    // Stubs the real angular-calendar CalendarDatePipe ('calendarDate') so
+    // this test doesn't have to pull in CalendarModule.forRoot() and its
+    // date-adapter factory just to render the ag-grid columns below it.
+    @Pipe({ name: 'calendarDate' })
+    class StubCalendarDatePipe implements PipeTransform {
+      transform(value: unknown): unknown {
+        return value;
+      }
+    }
+
+    let fixture: ComponentFixture<CommonScheduleComponent>;
+
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        declarations: [CommonScheduleComponent, AgGridTableComponent],
+        imports: [TranslateModule.forRoot(), StubCalendarDatePipe],
+        providers: [
+          { provide: DataService, useValue: { getObservableData: () => of([]) } },
+          { provide: AuthenticationService, useValue: { authData: { id: 1 } } },
+          {
+            provide: LanguageService,
+            useValue: { currentLang: 'en', onLangChange: new Subject(), get: () => of({}) },
+          },
+        ],
+        // mwl-calendar-month-view / app-calendar-dayoff-window aren't relevant
+        // to the ag-grid day columns' sizing - stub them out rather than
+        // pulling in the whole angular-calendar module for this test.
+        schemas: [NO_ERRORS_SCHEMA],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(CommonScheduleComponent);
+    });
+
+    // Day columns were fixed at width: 10 with no flex and no
+    // sizeColumnsToFit on the wrapper, so the whole month grid stayed a
+    // few hundred pixels wide regardless of screen size - this is the
+    // "calendar isn't full-width on a large monitor" report.
+    it('sizes the day-off grid columns to fit the container instead of staying fixed-width', () => {
+      fixture.detectChanges();
+
+      const grid = fixture.debugElement.query(By.directive(AgGridTableComponent));
+
+      expect(grid.componentInstance.sizeColumnsToFit()).toBeTrue();
     });
   });
 

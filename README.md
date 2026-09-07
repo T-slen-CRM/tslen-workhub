@@ -77,9 +77,10 @@ full reference.
    No external accounts and no DB credentials are required to boot. The
    schema is created automatically (TypeORM `synchronize`, since `.env`'s
    default `MODE=DEV`); for a `MODE=PROD` deployment, `synchronize` is
-   disabled and `npm run migration:run` runs automatically on boot instead
-   - see the note at the end of step 7 below if you're deploying to a
-   genuinely empty database for the first time.
+   disabled and `npm run migration:run` runs automatically on boot
+   instead - `migrations/initial-schema` builds the full schema from
+   scratch, so this works against a genuinely empty database with no
+   manual bootstrap step.
 7. For a production deployment behind Traefik with automatic HTTPS, on a
    fresh Debian or Ubuntu VPS:
    1. Clone this repo on the server, copy `provision-vps.sh.example` to
@@ -109,23 +110,9 @@ full reference.
       docker compose -f docker-compose.traefik.yml up -d
       ```
    5. Copy `start.sh.example` to `start.sh`, then
-      `chmod +x start.sh && ./start.sh`.
-
-   **First deployment to a brand-new, empty database only:** every
-   existing file under `migrations/` is an incremental delta written
-   against a schema that, until now, was always bootstrapped by
-   `synchronize` (no environment has ever run these migrations against a
-   truly empty database before). On a genuinely fresh `tslen-pgdata`
-   volume, running `migration:run` cold will fail
-   (`relation "posts" does not exist` on the first migration that ALTERs
-   an existing table). To bootstrap: temporarily set `MODE=DEV` in `.env`
-   and restart the app container once (this runs `synchronize` and builds
-   the full schema from the current entities instead), then set
-   `MODE=PROD` back, insert one bookkeeping row per existing file in
-   `migrations/` into Postgres's own `migrations` table (`timestamp` +
-   `name`, matching each file's exported class name) so `migration:run`
-   treats them as already applied, and restart the app again. Only new
-   migrations added after this point need to actually run.
+      `chmod +x start.sh && ./start.sh`. On first boot, `migration:run`
+      builds the entire schema from `migrations/initial-schema` - no
+      manual bootstrap needed even on a brand-new, empty database.
 
 ## CI checks
 

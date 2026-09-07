@@ -78,8 +78,11 @@ export class CompanyRulesComponent
     const companyDaysOffRules = data;
 
     const company: any = this.companyRulesData.company;
-    companyDaysOffRules.useScheduler = this.form.value.useScheduler;
-    companyDaysOffRules.resetYearly = this.form.value.resetYearly;
+    // mat-checkbox's formControlName yields a real boolean, even though this form's
+    // controls are typed FormControl<number | null> - coerce to 0/1 to match the
+    // backend's smallint columns, which reject the string "true".
+    companyDaysOffRules.useScheduler = this.form.value.useScheduler ? 1 : 0;
+    companyDaysOffRules.resetYearly = this.form.value.resetYearly ? 1 : 0;
     company.companyDaysOffRules = [companyDaysOffRules];
     company.daysOffSchedulers = this.setDaysOffSchedulerRules(
       this.daysOffSchedulerData,

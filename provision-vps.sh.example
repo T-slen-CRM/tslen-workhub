@@ -26,28 +26,54 @@ fi
 # out with no way back in except your VPS provider's console.
 HARDEN_SSH="${HARDEN_SSH:-false}"
 SSH_PORT="${SSH_PORT:-22}"
+# ./start.sh's docker build runs `nest build` and `ng build` concurrently
+# (independent Dockerfile stages) - on a small VPS (a netcup 4GB box is
+# what this was tuned against) that's enough to exhaust RAM outright. With
+# no swap, the kernel's OOM killer doesn't just fail the build - it starts
+# killing whatever else is running, which took down Traefik and Postgres
+# mid-deploy the first time this was hit in production. Size in GB;
+# 0 skips this step (e.g. if you're provisioning a box with ample RAM).
+SWAP_SIZE_GB="${SWAP_SIZE_GB:-4}"
 
-echo "==> [1/7] Updating packages"
+echo "==> [1/8] Updating packages"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get upgrade -y
 
-echo "==> [2/7] Installing base tools (ufw, fail2ban, unattended-upgrades, git, curl)"
+echo "==> [2/8] Installing base tools (ufw, fail2ban, unattended-upgrades, git, curl)"
 apt-get install -y ufw fail2ban unattended-upgrades git curl ca-certificates gnupg
 
-echo "==> [3/7] Enabling automatic security updates"
+echo "==> [3/8] Enabling automatic security updates"
 dpkg-reconfigure -f noninteractive unattended-upgrades
 
-echo "==> [4/7] Firewall: allow SSH/HTTP/HTTPS, deny everything else"
+echo "==> [4/8] Firewall: allow SSH/HTTP/HTTPS, deny everything else"
 ufw allow "${SSH_PORT}/tcp"
 ufw allow 80/tcp
 ufw allow 443/tcp
 ufw --force enable
 
-echo "==> [5/7] fail2ban (protects sshd against brute-force login attempts)"
+echo "==> [5/8] fail2ban (protects sshd against brute-force login attempts)"
 systemctl enable --now fail2ban
 
-echo "==> [6/7] Docker Engine + Compose plugin"
+echo "==> [6/8] Swap (protects against the app's docker build exhausting RAM)"
+if [ "${SWAP_SIZE_GB}" = "0" ]; then
+  echo "    SWAP_SIZE_GB=0, skipping"
+elif swapon --show=NAME --noheadings 2>/dev/null | grep -q .; then
+  echo "    swap already active, skipping"
+elif [ -f /swapfile ]; then
+  echo "    /swapfile already exists but isn't active - run 'swapon /swapfile' manually and check /etc/fstab"
+else
+  # fallocate is instant but unsupported on some filesystems (older btrfs) -
+  # fall back to dd, which works everywhere but takes longer.
+  fallocate -l "${SWAP_SIZE_GB}G" /swapfile 2>/dev/null \
+    || dd if=/dev/zero of=/swapfile bs=1M count=$((SWAP_SIZE_GB * 1024)) status=none
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
+echo "==> [7/8] Docker Engine + Compose plugin"
 if ! command -v docker >/dev/null 2>&1; then
   install -m 0755 -d /etc/apt/keyrings
   # shellcheck source=/etc/os-release
@@ -66,7 +92,7 @@ else
 fi
 systemctl enable --now docker
 
-echo "==> [7/7] tslen-net Docker network (shared by Traefik, Postgres and the app)"
+echo "==> [8/8] tslen-net Docker network (shared by Traefik, Postgres and the app)"
 docker network inspect tslen-net >/dev/null 2>&1 || docker network create tslen-net
 
 if [ "${HARDEN_SSH}" = "true" ]; then

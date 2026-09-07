@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AgGridTableComponent } from './ag-grid-table.component';
 
@@ -32,5 +33,39 @@ describe('AgGridTableComponent', () => {
     component.onGridSizeChanged();
 
     expect(sizeColumnsToFitSpy).not.toHaveBeenCalled();
+  });
+
+  describe('rowHeight/headerHeight inputs', () => {
+    // The template hardcoded [rowHeight]="38" and [headerHeight]="81"
+    // instead of binding to these signal inputs, so every consumer passing
+    // a custom value (audit-log/inventory pass rowHeight=43/headerHeight=50)
+    // had it silently ignored.
+    it('passes a custom rowHeight through to the underlying grid', () => {
+      TestBed.configureTestingModule({
+        declarations: [AgGridTableComponent],
+        schemas: [NO_ERRORS_SCHEMA],
+      });
+      const fixture = TestBed.createComponent(AgGridTableComponent);
+      fixture.componentRef.setInput('rowHeight', 43);
+      fixture.detectChanges();
+
+      const grid = fixture.debugElement.query(By.css('ag-grid-angular'));
+
+      expect((grid.nativeElement as { rowHeight?: number }).rowHeight).toBe(43);
+    });
+
+    it('passes a custom headerHeight through to the underlying grid', () => {
+      TestBed.configureTestingModule({
+        declarations: [AgGridTableComponent],
+        schemas: [NO_ERRORS_SCHEMA],
+      });
+      const fixture = TestBed.createComponent(AgGridTableComponent);
+      fixture.componentRef.setInput('headerHeight', 50);
+      fixture.detectChanges();
+
+      const grid = fixture.debugElement.query(By.css('ag-grid-angular'));
+
+      expect((grid.nativeElement as { headerHeight?: number }).headerHeight).toBe(50);
+    });
   });
 });

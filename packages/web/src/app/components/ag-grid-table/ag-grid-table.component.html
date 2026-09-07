@@ -6,10 +6,10 @@
             [animateRows]="true"
             [columnDefs]="columnDefs()"
             [defaultColDef]="defaultColDef"
-            [rowHeight]="38"
+            [rowHeight]="rowHeight()"
             [components]="components()"
             [context]="context()"
-            [headerHeight]="81"
+            [headerHeight]="headerHeight()"
             [enableCellTextSelection]="true"
             (gridSizeChanged)="onGridSizeChanged()">
     </ag-grid-angular>

@@ -152,6 +152,7 @@
       "users": "Пользователи",
       "upload attachments": "Загрузить вложения:",
       "attachments": "Вложения",
+      "allowed_formats": "Разрешённые форматы",
       "add_attachment": "+ Добавить вложение",
       "button": {
         "save": "Сохранить",

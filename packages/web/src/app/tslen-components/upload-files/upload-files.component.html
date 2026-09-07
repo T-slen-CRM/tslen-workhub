@@ -8,6 +8,9 @@
     >
         {{ buttonLabel || ("task.form.button.select"| translate) }}
     </button>
+    @if (formatsHint) {
+        <span class="file-formats-hint">{{ 'task.form.allowed_formats' | translate }}: {{ formatsHint }}</span>
+    }
     <input
             hidden
             type="file"

@@ -152,6 +152,7 @@
         "users": "Users",
         "upload attachments": "Upload attachments:",
         "attachments": "Attachments",
+        "allowed_formats": "Allowed formats",
         "add_attachment": "+ Add attachment",
         "button": {
           "save": "Save",

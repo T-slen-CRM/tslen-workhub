@@ -125,10 +125,12 @@ auto-redeploys the app to production on every merge to `main` (after
    used to OOM-kill Traefik/Postgres mid-deploy) and pushes it to
    [GitHub Container Registry](https://github.com/T-slen-CRM/tslen-workhub/pkgs/container/tslen-workhub)
    as `ghcr.io/t-slen-crm/tslen-workhub:latest` (and `:<commit-sha>`).
-   The image is public, matching this repo - nothing sensitive ends up
-   in it (see the workflow file's comments on why `PROD_ENV_FILE`,
-   needed only to bake public config into the frontend bundle, never
-   reaches the pushed layers).
+   Nothing sensitive ends up in the image either way (see the workflow
+   file's comments on why `PROD_ENV_FILE`, needed only to bake public
+   config into the frontend bundle, never reaches the pushed layers) -
+   it would ideally be public given that, matching this repo, but this
+   org's package-visibility policy blocks that, so it's private. The
+   server authenticates to pull it (see below).
 2. **`deploy`** - SSHes into the server, whose forced command just
    `docker pull`s the new image and restarts the container - no build
    happens there anymore.
@@ -152,10 +154,15 @@ command="cd ~/tslen-workhub && ./deploy-image.sh",no-port-forwarding,no-X11-forw
 step 7.5 above does for `start.sh`.) Then set the four secrets under repo Settings → Secrets and
 variables → Actions: `PROD_ENV_FILE` = your server's full `.env`
 contents, `DEPLOY_SSH_KEY` = the private key, `DEPLOY_HOST` = your
-server's IP, `DEPLOY_USER` = `deploy`. If you'd rather keep building on
-the server itself (no GHCR, no `PROD_ENV_FILE` secret), point the
-forced command at `./start.sh` instead - both scripts exist side by
-side for this reason.
+server's IP, `DEPLOY_USER` = `deploy`. If your GHCR package ends up
+private (either by choice, or because your org blocks public packages
+like this one does), authenticate the server to pull it once, as the
+`deploy` user: `docker login ghcr.io -u <your-github-username> -p
+<a personal access token with read:packages>` - persists in
+`~/.docker/config.json`, so every future automated pull just works. If
+you'd rather keep building on the server itself (no GHCR, no
+`PROD_ENV_FILE` secret), point the forced command at `./start.sh`
+instead - both scripts exist side by side for this reason.
 
 ## CI checks
 

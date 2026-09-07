@@ -146,6 +146,19 @@ describe('TaskCreateEditComponent', () => {
     });
   });
 
+  describe('new task priority default', () => {
+    // The backend's CreateTaskDto validates priority with
+    // @IsOptional() @IsIn(['low','medium','high']) - IsOptional only skips
+    // null/undefined, not '', so leaving priority unset used to send '""'
+    // and fail validation with a generic "Bad Request Exception" on the
+    // create-task websocket event, silently blocking task creation.
+    it('defaults to null, not empty string, so an unset priority passes backend validation', () => {
+      fixture.detectChanges();
+
+      expect(component.form.get('priority').value).toBeNull();
+    });
+  });
+
   describe('Activity tabs', () => {
     it('defaults to the "all" tab', () => {
       fixture.detectChanges();

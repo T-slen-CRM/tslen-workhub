@@ -229,7 +229,7 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       createdAt: [],
       updatedAt: [new Date()],
       orderId: 0,
-      priority: [''],
+      priority: [null],
       taskAttachments: [],
       previousTaskAttachments: [],
       slackChannelAlert: [''],

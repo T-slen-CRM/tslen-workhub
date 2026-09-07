@@ -77,6 +77,9 @@ export class TasksService extends BaseAbstractService<Tasks>{
     async multiReordering (tasks: CreateTaskDto[]): Promise<Tasks[]> {
         return await this.currentRepository.multiReordering(tasks);
     }
+    async deleteAttachment (id: number): Promise<void> {
+        await this.repository.deleteAttachment(id);
+    }
     public async uploadFiles (user: Users, userId: number, files: Express.Multer.File[]): Promise<TaskAttachments[]> {
         try {
             this.usersService.validateUserIdByRole(userId, user);

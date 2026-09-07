@@ -57,4 +57,11 @@ describe('TasksController', () => {
         expect(auditLogService.findTaskHistory).toHaveBeenCalledWith(1);
         expect(result).toEqual(mockResponse);
     });
+    it('should call deleteAttachment', async () => {
+        jest.spyOn(controller, 'deleteAttachment').mockResolvedValue(undefined);
+
+        await controller.deleteAttachment(2);
+
+        expect(controller.deleteAttachment).toHaveBeenCalledWith(2);
+    });
 });

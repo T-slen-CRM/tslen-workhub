@@ -137,4 +137,14 @@ describe('TasksService', () => {
             expect(usersRepository.findOne).toHaveBeenCalledWith(1);
         });
     });
+
+    describe('deleteAttachment', () => {
+        it('forwards to the repository', async () => {
+            repository.deleteAttachment.mockResolvedValue(undefined);
+
+            await service.deleteAttachment(2);
+
+            expect(repository.deleteAttachment).toHaveBeenCalledWith(2);
+        });
+    });
 });

@@ -1,13 +1,17 @@
 import { TestBed } from '@automock/jest';
+import { EntityManager } from 'typeorm';
 import { TasksRepository } from '../../../../src/resources/tasks/tasks.repository';
 import { mockedTask } from '../../../shared/task';
 import { Tasks } from '../../../../src/resources/tasks/entities/task.entity';
+import { TaskAttachments } from '../../../../src/resources/tasks/entities/task-attachments.entity';
 
 describe('TaskRepository', () => {
     let repository: TasksRepository;
+    let entityManager: EntityManager;
     beforeEach(async () => {
-        const { unit } = TestBed.create(TasksRepository).compile();
+        const { unit, unitRef } = TestBed.create(TasksRepository).compile();
         repository = unit;
+        entityManager = unitRef.get(EntityManager);
     });
     it('should be defined', () => {
         expect(repository).toBeDefined();
@@ -18,6 +22,16 @@ describe('TaskRepository', () => {
         const result = await repository.multiReordering([]);
         expect(repository.multiReordering).toHaveBeenCalled();
         expect(result).toEqual(mockResponse);
+    });
+
+    describe('deleteAttachment', () => {
+        it('deletes the TaskAttachments row by id', async () => {
+            const deleteSpy = jest.spyOn(entityManager, 'delete').mockResolvedValue(undefined);
+
+            await repository.deleteAttachment(2);
+
+            expect(deleteSpy).toHaveBeenCalledWith(TaskAttachments, 2);
+        });
     });
 
     describe('findAllFiltered', () => {

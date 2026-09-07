@@ -41,7 +41,8 @@ describe('TasksController (e2e)', () => {
                         provide: TasksRepository,
                         useValue: {
                             findAll: jest.fn(() => [mockedTask]),
-                            findOne: jest.fn(() => mockedTask)
+                            findOne: jest.fn(() => mockedTask),
+                            deleteAttachment: jest.fn(() => undefined)
                         },
                     },
                     {
@@ -138,5 +139,10 @@ describe('TasksController (e2e)', () => {
             .attach('attachments', 'test/shared/1_test.jpg')
             .field('name', 'test')
             .expect(201)
+    });
+    it('/tasks/delete-attachment/:id (DELETE)', async () => {
+        await request(app.getHttpServer())
+            .delete('/tasks/delete-attachment/2')
+            .expect(200);
     });
 });

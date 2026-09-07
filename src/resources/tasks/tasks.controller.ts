@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get, MaxFileSizeValidator,
     Param,
     ParseFilePipe,
@@ -61,6 +62,11 @@ export class TasksController {
       ) files: Array<Express.Multer.File>,
       @Query('userId', ParseIntPipe) userId: number): Promise<TaskAttachments[]> {
         return await this.tasksService.uploadFiles(user, userId, files);
+    }
+
+    @Delete('delete-attachment/:id')
+    deleteAttachment (@Param('id', ParseIntPipe) id: number): Promise<void> {
+        return this.tasksService.deleteAttachment(id);
     }
 
 }

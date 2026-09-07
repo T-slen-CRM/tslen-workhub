@@ -1,4 +1,5 @@
 import { Tasks } from './entities/task.entity';
+import { TaskAttachments } from './entities/task-attachments.entity';
 import { BaseAbstractRepository } from '../../common/repositories/base/base.abstract.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
@@ -26,6 +27,9 @@ export class TasksRepository extends BaseAbstractRepository<Tasks> {
             const task =  await transactionalEntityManager.save(Tasks, updateTaskDto);
             return transactionalEntityManager.findOne(Tasks,{ where: { id: task.id } });
         });
+    }
+    async deleteAttachment (id: number): Promise<void> {
+        await this.entityManager.delete(TaskAttachments, id);
     }
     findAllFiltered (filters: { projectId?: number; phaseId?: number; status?: string }): Promise<Tasks[]> {
         const where: Record<string, number | string> = {};

@@ -229,7 +229,11 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       createdAt: [],
       updatedAt: [new Date()],
       orderId: 0,
-      priority: [''],
+      // tasks.priority is NOT NULL in Postgres - default to a real value
+      // (not '' or null) so a quick "just type a title and save" flow
+      // stays valid, and require it explicitly so the form can't be
+      // cleared into an invalid state.
+      priority: ['medium', Validators.required],
       taskAttachments: [],
       previousTaskAttachments: [],
       slackChannelAlert: [''],

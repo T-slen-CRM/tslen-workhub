@@ -30,7 +30,7 @@ export class Tasks {
       assignessEmail: string | null;
 
   @Column("varchar", { name: "priority", length: 100 })
-      priority: TaskPriority | null;
+      priority: TaskPriority;
 
   @Column("timestamp", { name: "estimate", nullable: true })
       estimate: Date | null;

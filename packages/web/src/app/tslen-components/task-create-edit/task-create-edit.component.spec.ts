@@ -146,6 +146,27 @@ describe('TaskCreateEditComponent', () => {
     });
   });
 
+  describe('new task priority default', () => {
+    // tasks.priority is NOT NULL in Postgres, and CreateTaskDto now
+    // requires it too (see create-task.dto.ts) - '' failed DTO validation,
+    // null passed validation but violated the DB constraint. A real
+    // default keeps the "just type a title and save" flow working while
+    // always sending a value the backend accepts.
+    it('defaults to a valid, non-null priority', () => {
+      fixture.detectChanges();
+
+      expect(component.form.get('priority').value).toBe('medium');
+    });
+
+    it('is required, so the form can\'t be submitted with priority cleared', () => {
+      fixture.detectChanges();
+
+      component.form.get('priority').setValue(null);
+
+      expect(component.form.get('priority').valid).toBeFalse();
+    });
+  });
+
   describe('Activity tabs', () => {
     it('defaults to the "all" tab', () => {
       fixture.detectChanges();

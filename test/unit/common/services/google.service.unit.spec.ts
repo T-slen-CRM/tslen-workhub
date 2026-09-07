@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs/promises';
+import * as fsSync from 'fs';
 import { authenticate } from '@google-cloud/local-auth';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleService, IGoogleCalendarEvent } from '../../../../src/common/services/google/google.service';
@@ -7,6 +8,7 @@ import { CreateEventsByUserDto } from '../../../../src/resources/events-by-user/
 import { mockedEventByUser } from '../../../shared/event-by-user';
 
 jest.mock('fs/promises');
+jest.mock('fs');
 jest.mock('@google-cloud/local-auth');
 jest.mock('google-auth-library');
 const path = {
@@ -109,6 +111,40 @@ describe('GoogleService', () => {
         const result = service.getGooglePermissions(scope);
 
         expect(result).toEqual(expectedPermissions);
+    });
+
+    describe('getAuthClient', () => {
+        it('uses CALLBACK_URL from config as the redirect URI, not redirect_uris[0] from the credentials file', () => {
+            const configValues: Record<string, string> = {
+                GOOGLE_CREDENTIALS_PATH: 'mock/google_credentials.json',
+                CALLBACK_URL: 'https://crm.t-slen.com/api/v1/auth/google-callback',
+                GOOGLE_SCOPES_API: 'scope1,scope2',
+            };
+            const freshConfigService = {
+                get: jest.fn((key: string) => configValues[key]),
+            } as unknown as ConfigService;
+            const freshService = new GoogleService(freshConfigService);
+            (fsSync.readFileSync as jest.Mock).mockReturnValue(JSON.stringify({
+                web: {
+                    client_id: 'client-id',
+                    client_secret: 'client-secret',
+                    // A credentials JSON downloaded from Google Cloud Console lists every
+                    // environment's redirect URI it's registered for - localhost is
+                    // typically first since it's added during local dev setup. Picking
+                    // [0] blindly (the old behavior) sends production users back to their
+                    // own localhost after Google auth completes.
+                    redirect_uris: ['http://localhost:4004/api/v1/auth/google-callback'],
+                },
+            }));
+
+            freshService.getAuthClient();
+
+            expect(OAuth2Client).toHaveBeenCalledWith(
+                'client-id',
+                'client-secret',
+                'https://crm.t-slen.com/api/v1/auth/google-callback',
+            );
+        });
     });
 
     describe('getGoogleDate', () => {

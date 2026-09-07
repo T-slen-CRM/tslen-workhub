@@ -152,6 +152,7 @@
       "users": "Usuarios",
       "upload attachments": "Subir archivos adjuntos:",
       "attachments": "Archivos adjuntos",
+      "allowed_formats": "Formatos permitidos",
       "add_attachment": "+ Añadir archivo adjunto",
       "button": {
         "save": "Guardar",

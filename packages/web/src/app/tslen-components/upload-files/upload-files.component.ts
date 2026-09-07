@@ -47,6 +47,20 @@ export class UploadFilesComponent implements ControlValueAccessor {
     this.subscription = new Subscription();
     this.uploadLimit = 1;
   }
+  // Derived from acceptedFileTypes rather than a separately maintained list,
+  // so the hint can't drift out of sync with what's actually accepted (that
+  // drift - the file picker advertising image/gif while the backend's
+  // allowlist didn't include it - is what caused a confusing 500 on upload).
+  get formatsHint(): string {
+    if (!this.acceptedFileTypes) {
+      return '';
+    }
+    return this.acceptedFileTypes
+      .split(',')
+      .map((mimeType) => mimeType.trim().split('/')[1]?.toUpperCase())
+      .filter(Boolean)
+      .join(', ');
+  }
   writeValue(value: any): void {
     this.value = value;
   }

@@ -152,6 +152,7 @@
       "users": "Utilisateurs",
       "upload attachments": "Téléverser des pièces jointes :",
       "attachments": "Pièces jointes",
+      "allowed_formats": "Formats autorisés",
       "add_attachment": "+ Ajouter une pièce jointe",
       "button": {
         "save": "Enregistrer",

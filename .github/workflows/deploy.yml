@@ -12,6 +12,17 @@ on:
     branches:
       - main
 
+# Each push to main gets its own main-ci run, and each one that succeeds
+# triggers this workflow separately - merging several PRs back-to-back can
+# queue multiple deploy runs within seconds of each other. Every run pulls
+# whatever's currently on main (git reset --hard origin/main) rather than
+# a commit pinned to what triggered it, so an in-progress run has nothing
+# to offer once a newer one starts - cancel it instead of building (and
+# SSHing into the small production VPS) twice for the same end state.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 jobs:
   deploy:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'

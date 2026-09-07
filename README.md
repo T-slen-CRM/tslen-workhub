@@ -118,9 +118,23 @@ full reference.
 
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 auto-redeploys the app to production on every merge to `main` (after
-`main-ci` passes) by SSHing into the server and re-running step 7.5's
-`git pull` + `./start.sh` sequence. It's wired to one specific server via
-three repo secrets - `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER` - so
+`main-ci` passes), in two stages:
+
+1. **`build`** - builds the Docker image on the GitHub-hosted runner
+   (plenty of RAM, unlike a small VPS - building on the server itself
+   used to OOM-kill Traefik/Postgres mid-deploy) and pushes it to
+   [GitHub Container Registry](https://github.com/T-slen-CRM/tslen-workhub/pkgs/container/tslen-workhub)
+   as `ghcr.io/t-slen-crm/tslen-workhub:latest` (and `:<commit-sha>`).
+   The image is public, matching this repo - nothing sensitive ends up
+   in it (see the workflow file's comments on why `PROD_ENV_FILE`,
+   needed only to bake public config into the frontend bundle, never
+   reaches the pushed layers).
+2. **`deploy`** - SSHes into the server, whose forced command just
+   `docker pull`s the new image and restarts the container - no build
+   happens there anymore.
+
+It's wired to one specific server via four repo secrets -
+`PROD_ENV_FILE`, `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER` - so
 forking this repo to self-host doesn't turn this workflow on
 automatically; it only runs once those secrets exist.
 
@@ -131,12 +145,17 @@ login), and add its public half to `deploy`'s `~/.ssh/authorized_keys`
 with a forced command restricting what it can do over SSH, e.g.:
 
 ```
-command="cd ~/tslen-workhub && git fetch origin && git checkout main && git reset --hard origin/main && DOMAIN=your.domain.com ./start.sh",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... github-actions-deploy
+command="cd ~/tslen-workhub && ./deploy-image.sh",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... github-actions-deploy
 ```
 
-Then set the three secrets (`DEPLOY_SSH_KEY` = the private key,
-`DEPLOY_HOST` = your server's IP, `DEPLOY_USER` = `deploy`) under repo
-Settings → Secrets and variables → Actions.
+(copy `deploy-image.sh.example` to `deploy-image.sh` first, the same way
+step 7.5 above does for `start.sh`.) Then set the four secrets under repo Settings → Secrets and
+variables → Actions: `PROD_ENV_FILE` = your server's full `.env`
+contents, `DEPLOY_SSH_KEY` = the private key, `DEPLOY_HOST` = your
+server's IP, `DEPLOY_USER` = `deploy`. If you'd rather keep building on
+the server itself (no GHCR, no `PROD_ENV_FILE` secret), point the
+forced command at `./start.sh` instead - both scripts exist side by
+side for this reason.
 
 ## CI checks
 

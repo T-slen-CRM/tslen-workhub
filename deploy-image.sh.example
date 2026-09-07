@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Copy this file to deploy-image.sh (gitignored, same idea as .env.example
+# -> .env) and customize for your deployment, then: chmod +x deploy-image.sh
+#
+# Pulls a pre-built image from GitHub Container Registry instead of
+# building it locally (start.sh does that) - use this if you've wired up
+# the CI build pipeline (.github/workflows/deploy.yml pushes to GHCR on
+# every merge to main; see the README's Continuous deployment section for
+# the secrets it needs). Otherwise use start.sh, which builds the image
+# on this server directly.
+
+# CONTAINER_NAME must match the service URL in
+# traefik-dynamic/tslen-workhub.yml (Traefik routes to this container by
+# name over Docker's network DNS, not via labels - see
+# docker-compose.traefik.yml.example for why).
+CONTAINER_NAME="${CONTAINER_NAME:-tslen-workhub}"
+ENV_FILE=".env"
+IMAGE="${IMAGE:-ghcr.io/t-slen-crm/tslen-workhub:latest}"
+DOCKER_NETWORK="${DOCKER_NETWORK:-tslen-net}"
+
+if [ ! -f "${ENV_FILE}" ]; then
+    echo "Missing ${ENV_FILE} - copy .env.example to ${ENV_FILE} and fill in this deployment's values, then re-run." >&2
+    exit 1
+fi
+
+docker pull "${IMAGE}"
+docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
+
+docker run -d \
+    --name "${CONTAINER_NAME}" \
+    --restart unless-stopped \
+    --network "${DOCKER_NETWORK}" \
+    --add-host host.docker.internal:host-gateway \
+    --env-file "${ENV_FILE}" \
+    -v "./upload:/app/upload" \
+    -v "./credentials:/app/credentials" \
+    "${IMAGE}"

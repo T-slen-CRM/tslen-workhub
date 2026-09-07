@@ -40,6 +40,7 @@ lerna-debug.log*
 #configs
 .env
 /start.sh
+/deploy-image.sh
 /provision-vps.sh
 /docker-compose.traefik.yml
 /docker-compose.postgres.yml

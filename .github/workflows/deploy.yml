@@ -1,0 +1,34 @@
+name: deploy
+
+# Runs after main-ci succeeds on main (i.e. after a merge lands), not on
+# every push - workflow_run always executes in the base repo's context
+# with secrets available, which is why this pattern is safe for a public
+# repo even though PR builds could otherwise come from untrusted forks.
+on:
+  workflow_run:
+    workflows: ["main-ci"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to production over SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+          # The key on the server side has a forced command
+          # (authorized_keys' command="...") that runs the actual
+          # git pull + rebuild + restart sequence - whatever's passed here
+          # is ignored server-side, this just establishes the session.
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" true

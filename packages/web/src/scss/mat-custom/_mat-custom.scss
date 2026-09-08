@@ -41,10 +41,18 @@
 .mat-stroked-button:not([class*=mat-elevation-z]){
   width: 100%;
 }
-.mat-mdc-icon-button {
-  width: 36px;
-  height: 36px;
-  padding: 6px;
+// Matches Material's own .mat-mdc-icon-button.mat-mdc-button-base selector
+// (same specificity) since the app's compiled bundle order isn't
+// guaranteed to put this after Material's theme - !important guarantees
+// this wins regardless. Overriding the state-layer size tokens (not just
+// width/height) also shrinks the ripple/touch-target box that Material
+// derives from them, not just the visible icon box.
+.mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 36px !important;
+  --mat-icon-button-state-layer-size: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 6px !important;
 }
 /* Tooltip container */
 .custom-tooltip {

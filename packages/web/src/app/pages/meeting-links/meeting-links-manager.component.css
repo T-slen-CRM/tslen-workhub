@@ -16,6 +16,14 @@
   padding-top: 6px;
   padding-bottom: 6px;
 }
+/* subscriptSizing="dynamic" only removes the *minimum* reserved error
+   space - it still renders an empty hint line (~19px) even with no
+   mat-hint/mat-error on either field here, which is the difference
+   between the fields still not quite matching the button's 36px.
+   Neither field uses hints or validation, so it's safe to drop entirely. */
+::ng-deep .create-form mat-form-field.mat-field-standard .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
 .clear-expires-icon {
   cursor: pointer;
 }

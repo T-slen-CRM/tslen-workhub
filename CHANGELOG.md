@@ -4,6 +4,102 @@ All notable changes to this project are documented here. Entries are
 generated automatically by [git-cliff](https://git-cliff.org/) from
 Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
 see `cliff.toml` and `.github/workflows/release.yml`.
+## [0.3.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.2.0...v0.3.0) - 2026-09-08
+
+### Features
+
+- *(shared)* Migrate Role, current-user, Task domain, and chat message types
+
+- *(meeting-room)* Allow changing blur/background image during a call
+
+- *(desktop)* Add Electron macOS shell (bare shell v1)
+
+- *(meet)* Join meet links as your real identity inside the app
+
+- *(personal-schedule)* Scope the personal calendar's fetch to the visible month
+
+- *(loading)* Show a loading overlay while personal calendar/task list data fetch
+
+- *(tasks)* Wire the task card's History tab to the audit log
+
+- *(task-history)* Redesign the History tab to match Jira's activity feed
+
+- *(user-profile)* Add loading overlay, fix why the page was slow, and fix a missing i18n key
+
+- Commit the demo seed script and a re-recording skill
+
+- *(ci)* Auto-deploy to production on merge to main (#18)
+
+- *(call)* Restyle call UI to match Google Meet
+
+- *(ui)* Unify button styling platform-wide
+
+- *(meeting-room)* Google-Meet-style equal-size video grid
+
+
+### Bug Fixes
+
+- *(table-live-kit)* Initialize columnDefs before pushing the actions column
+
+- *(meeting-room)* Fix unreadable selected option in dark device/background selects
+
+- *(days-off)* Stop single-day requests rendering as two days
+
+- *(google-calendar)* Stop converting synced event times to a true UTC instant
+
+- *(meet)* Fix unreadable selected background-effect toggle text
+
+- *(users)* Exclude inactive/fired users from every listing query
+
+- *(auth)* Authenticate task WebSocket connections via handshake.auth, not a header
+
+- *(admin)* Match inventory/audit-log ag-Grid style to pending, fix a column-fit race
+
+- *(users)* Stop common-schedule's calendar view shifting a day-off into the next local day
+
+- *(deploy)* Repair production migration path and Traefik/Docker compatibility (#10)
+
+- *(google)* Use CALLBACK_URL for OAuth redirect instead of credentials file order (#11)
+
+- *(ui)* Align checkbox/chip UI issues and fix ag-grid rowHeight binding (#13)
+
+- *(common-schedule)* Enlarge List/Calendar toggle buttons
+
+- *(meeting-room)* Fix broken pill outline on pre-join device selects
+
+- *(ui)* Fix icon-button size override and meeting-links row height
+
+- *(call)* Stop mirroring screen share, add per-tile fullscreen
+
+
+### Other
+
+- *(meeting-room)* Make video-meet UI responsive on mobile
+
+- *(deploy)* Add VPS provisioning script and Traefik/Postgres compose templates
+
+- *(desktop)* Document the local-backend white-screen gotcha
+
+- *(desktop)* Document the 403-on-static-assets CORS gotcha
+
+- Add demo GIFs to the README
+
+- *(company-rules)* Coerce useScheduler/resetYearly to 0/1 before saving (#12)
+
+- *(tasks)* Require a real priority instead of allowing null or empty string (#15)
+
+- *(ag-grid)* Enable sizeColumnsToFit on 3 tables missing it (#14)
+
+- *(tasks)* Fix attachment upload 500 and show allowed formats in UI (#17)
+
+- *(deploy)* Cancel superseded deploy runs instead of letting them pile up
+
+- *(tasks)* Implement the missing DELETE /tasks/delete-attachment/:id route
+
+- *(deploy)* Build the image in GitHub Actions, ship a prebuilt image to the server
+
+- *(deploy)* Correct README - GHCR package is private, not public
+
 ## [0.2.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.1.0...v0.2.0) - 2026-08-29
 
 ### Features

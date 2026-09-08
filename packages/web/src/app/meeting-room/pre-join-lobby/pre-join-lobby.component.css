@@ -156,7 +156,22 @@
 ::ng-deep .pre-join-device-select .mdc-notched-outline__notch,
 ::ng-deep .pre-join-device-select .mdc-notched-outline__trailing {
   border-color: var(--meet-lobby-border) !important;
-  border-radius: var(--meet-radius-pill) !important;
+}
+/* The notched outline is 3 separate boxes (leading cap / middle notch /
+   trailing cap) that together draw one continuous border. Rounding all
+   three the same way breaks the seam - the leading cap is only ~12px
+   wide, so a full pill radius on all 4 of its corners clips it into a
+   fragment instead of a smooth left cap, and the notch segment (a plain
+   flex-grow box with no label here) shouldn't be rounded at all. Round
+   only the outer corner of each end cap instead. */
+::ng-deep .pre-join-device-select .mdc-notched-outline__leading {
+  border-radius: var(--meet-radius-pill) 0 0 var(--meet-radius-pill) !important;
+}
+::ng-deep .pre-join-device-select .mdc-notched-outline__notch {
+  border-radius: 0 !important;
+}
+::ng-deep .pre-join-device-select .mdc-notched-outline__trailing {
+  border-radius: 0 var(--meet-radius-pill) var(--meet-radius-pill) 0 !important;
 }
 ::ng-deep .pre-join-device-select .mat-mdc-select-value,
 ::ng-deep .pre-join-device-select .mat-mdc-select-arrow,

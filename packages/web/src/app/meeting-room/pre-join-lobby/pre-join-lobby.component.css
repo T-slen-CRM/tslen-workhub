@@ -1,23 +1,32 @@
 .pre-join-lobby {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 24px;
+  /* Google Meet-style lobby: light, regardless of whether this is embedded
+     on the guest page's dark background or the host admin app's light one -
+     same reasoning as the previous always-dark version, just flipped, so
+     the mat-select overrides below never need to guess which context
+     they're in. */
+  background: var(--meet-lobby-bg);
+  color: var(--meet-lobby-fg);
+  border-radius: 8px;
+}
+.pre-join-main {
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 24px;
-  /* Always dark, like every real video app's camera-check screen -
-     regardless of whether this lobby is embedded on the guest page's dark
-     background or the host admin app's light one, so the mat-select
-     overrides below never need to guess which context they're in. */
-  background: #1b1b1f;
-  color: #fff;
-  border-radius: 8px;
 }
 .pre-join-preview {
+  position: relative;
   width: 480px;
   max-width: 90vw;
   aspect-ratio: 16 / 9;
   background: #000;
-  border-radius: 8px;
+  border-radius: var(--meet-radius-video);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -32,57 +41,93 @@
   height: 2.5rem;
   font-size: 2.5rem;
 }
-.pre-join-controls {
+
+/* Camera/mic toggles overlaid on the preview itself, Meet-style, instead
+   of sitting in a row beside it. */
+.pre-join-preview-controls {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 3;
+}
+.pre-join-pill-btn {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: var(--meet-radius-pill) !important;
+  background: var(--meet-control-idle-bg) !important;
+  color: var(--meet-control-idle-fg) !important;
+}
+.pre-join-pill-btn--off {
+  background: var(--meet-control-muted-bg) !important;
+  color: var(--meet-control-muted-fg) !important;
+}
+
+.pre-join-device-row {
   display: flex;
   gap: 16px;
   align-items: flex-start;
   flex-wrap: wrap;
   justify-content: center;
 }
-.pre-join-control mat-button-toggle-group {
-  flex-wrap: wrap;
-  /* Material's default theme (indigo-pink, light) sets the selected-toggle
-     text/background to near-black tokens; on this always-dark card (see
-     .pre-join-lobby above) that reads as unreadable black-on-black. These
-     are theming custom properties, so - unlike the mat-select panel
-     overrides below, which need ::ng-deep + !important because that panel
-     renders into a CDK overlay outside this component's DOM subtree -
-     setting them here is enough: custom properties inherit through the DOM
-     tree into mat-button-toggle's internals regardless of view encapsulation. */
-  --mat-button-toggle-selected-state-text-color: #fff;
-  --mat-button-toggle-selected-state-background-color: #3a3a42;
+.pre-join-device-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
-/* Mobile: narrower gaps and a smaller preview/device-select so the lobby
-   fits a phone-width viewport without any element forcing horizontal
-   overflow. */
+.pre-join-device-group mat-button-toggle-group {
+  flex-wrap: wrap;
+}
+
+.pre-join-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  min-width: 220px;
+}
+.pre-join-side h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--meet-lobby-fg);
+  text-align: center;
+}
+.pre-join-status {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--meet-lobby-fg-secondary);
+}
+
+/* Mobile: stack the side column under the preview, and keep the same
+   narrower gaps/device-select sizing as before so nothing forces
+   horizontal overflow at phone width. */
 @media (max-width: 480px) {
   .pre-join-lobby {
+    flex-direction: column;
     padding: 16px 12px;
-    gap: 12px;
+    gap: 20px;
   }
-  .pre-join-controls {
+  .pre-join-device-row {
     gap: 12px;
   }
   .pre-join-device-select {
     width: 130px;
   }
 }
-.pre-join-control {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
 .pre-join-error {
   font-size: 0.75rem;
-  color: #d9534f;
+  color: #d93025;
   max-width: 140px;
   text-align: center;
 }
 .pre-join-level-meter {
   width: 80px;
   height: 6px;
-  background: #333;
+  background: var(--meet-lobby-border);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -94,13 +139,11 @@
 .pre-join-device-select {
   width: 160px;
 }
-/* Material's default outline/label/value colors assume a light surrounding
-   page; this card is always dark (see .pre-join-lobby above), so these are
-   styled explicitly rather than relying on Material's theme. Sizing matches
-   the compact treatment already used for mat-select fields elsewhere in the
-   app (see task-create-edit.component.scss's .input-mat-select) so this
-   reads consistently, just smaller since it sits inline next to icon
-   buttons rather than in a full form. */
+/* Pill-shaped, light-surface Material overrides - same technique as the
+   previous always-dark version, just flipped to dark-on-white so the
+   dropdowns read as Meet's device-selector pills. Sizing matches the
+   compact treatment already used for mat-select fields elsewhere in the
+   app (see task-create-edit.component.scss's .input-mat-select). */
 ::ng-deep .pre-join-device-select .mat-mdc-form-field-infix {
   min-height: auto;
   padding-top: 6px;
@@ -112,33 +155,39 @@
 ::ng-deep .pre-join-device-select .mdc-notched-outline__leading,
 ::ng-deep .pre-join-device-select .mdc-notched-outline__notch,
 ::ng-deep .pre-join-device-select .mdc-notched-outline__trailing {
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: var(--meet-lobby-border) !important;
+  border-radius: var(--meet-radius-pill) !important;
 }
 ::ng-deep .pre-join-device-select .mat-mdc-select-value,
 ::ng-deep .pre-join-device-select .mat-mdc-select-arrow,
 ::ng-deep .pre-join-device-select .mat-mdc-select-placeholder {
-  color: #fff;
+  color: var(--meet-lobby-fg);
 }
 /* The select's dropdown panel is rendered into a CDK overlay appended to
    <body>, outside this component's DOM - the ancestor-scoped ::ng-deep rules
    above can't reach it, so it needs its own bare (unscoped) ::ng-deep rule
    targeting the panelClass set on each <mat-select> below.
    !important is required throughout this block: Angular's own Material
-   theme CSS targets the same elements at equal specificity
-   (e.g. plain `.mat-mdc-select-panel { background-color: ... }`), so which
-   one wins is purely a function of stylesheet injection order - without
-   !important this panel silently stayed the theme's default white/light
-   background with near-invisible text, which is exactly the "selected
-   option unreadable" bug this was reported for. */
+   theme CSS targets the same elements at equal specificity, so which one
+   wins is purely a function of stylesheet injection order. */
 ::ng-deep .pre-join-device-select-panel {
-  background: #2b2b30 !important;
+  background: #ffffff !important;
 }
 ::ng-deep .pre-join-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
-  color: #fff !important;
+  color: var(--meet-lobby-fg) !important;
 }
 ::ng-deep .pre-join-device-select-panel .mat-mdc-option.mdc-list-item--selected {
-  background-color: #3a3a42 !important;
+  background-color: #e8f0fe !important;
 }
 ::ng-deep .pre-join-device-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
-  background-color: #35353c !important;
+  background-color: #f1f3f4 !important;
+}
+
+.pre-join-join-btn {
+  border-radius: var(--meet-radius-pill) !important;
+  background: var(--meet-accent) !important;
+  color: var(--meet-accent-fg) !important;
+  padding: 0 32px !important;
+  height: 48px;
+  font-size: 0.95rem;
 }

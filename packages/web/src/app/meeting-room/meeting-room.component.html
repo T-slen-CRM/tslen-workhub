@@ -1,72 +1,18 @@
 <div class="meeting-room" appCollapsibleCallWindow #win="appCollapsibleCallWindow" cdkDrag cdkDragBoundary="body">
-  <div class="meeting-header" cdkDragHandle>
+  <div class="meeting-topbar" cdkDragHandle>
     <span class="meeting-room-name">{{ roomName() }}</span>
-    <div class="meeting-controls">
-      <button mat-icon-button type="button" [color]="cameraIsEnable() ? 'primary' : 'warn'" (click)="setCameraEnabled(!cameraIsEnable())">
-        <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
-      </button>
-      @if (!win.collapsed() && videoDevices().length > 0) {
-        <mat-form-field class="meeting-device-select" appearance="outline" subscriptSizing="dynamic">
-          <mat-select panelClass="meeting-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
-            @for (device of videoDevices(); track device.deviceId) {
-              <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_camera' | translate) }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
-      <button mat-icon-button type="button" [color]="microphoneEnabled() ? 'primary' : 'warn'" (click)="setMicrophoneEnabled(!microphoneEnabled())">
-        <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
-      </button>
-      @if (!win.collapsed() && audioDevices().length > 0) {
-        <mat-form-field class="meeting-device-select" appearance="outline" subscriptSizing="dynamic">
-          <mat-select panelClass="meeting-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
-            @for (device of audioDevices(); track device.deviceId) {
-              <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_microphone' | translate) }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
-      @if (!win.collapsed()) {
-        <button mat-icon-button type="button" [color]="screenShareEnabled() ? 'accent' : undefined" (click)="setScreenShareEnabled(!screenShareEnabled())">
-          <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
-        </button>
-        <button
-          mat-icon-button
-          type="button"
-          [disabled]="!localCameraTrack()"
-          [color]="backgroundEffect() !== 'none' ? 'accent' : undefined"
-          (click)="backgroundPanelOpen.set(!backgroundPanelOpen())"
-          [matTooltip]="'meeting_room.background_effect' | translate"
-        >
-          <mat-icon>blur_on</mat-icon>
-        </button>
-      }
-      <button mat-icon-button type="button" [color]="ownHandRaised() ? 'accent' : undefined" (click)="toggleRaiseHand()">
-        <mat-icon>back_hand</mat-icon>
-        @if (handsRaised().length > 0) {
-          <span class="meeting-hand-count">{{ handsRaised().length }}</span>
-        }
-      </button>
-      @if (!win.collapsed()) {
-        <button mat-icon-button type="button" (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())">
-          <mat-icon>format_list_numbered</mat-icon>
-        </button>
-        <button mat-icon-button type="button" (click)="chatOpen.set(!chatOpen())">
-          <mat-icon>chat</mat-icon>
-        </button>
-      }
-      <button mat-icon-button type="button" (click)="win.toggle()">
-        <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
-      </button>
-      <button mat-icon-button type="button" color="warn" (click)="leaveRoom()">
-        <mat-icon>logout</mat-icon>
-      </button>
-    </div>
+    <span class="meeting-participant-count">
+      <mat-icon>person</mat-icon>
+      {{ 1 + remoteTracksMap().size }}
+    </span>
+    <button mat-icon-button type="button" class="meeting-collapse-btn" (click)="win.toggle()">
+      <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
+    </button>
   </div>
 
   <!-- position:relative here (not on .meeting-room) so the absolutely-positioned
        side panels below are constrained to this area only and can never cover
-       .meeting-header's controls above - previously they had no positioned
+       .meeting-topbar's controls above - previously they had no positioned
        ancestor to bound them, stretched to top:0 of the whole page, and sat on
        top of the header in paint order, making their own open/close buttons
        unreachable once a panel was open. -->
@@ -136,6 +82,83 @@
         [messages]="messages()"
         (messageSent)="sendChatMessage($event)"
       ></app-meeting-chat>
+
+      <div class="meeting-controlbar">
+        <div class="meeting-control-group">
+          @if (audioDevices().length > 0) {
+            <button mat-icon-button type="button" class="meeting-caret-btn" (click)="micMenuOpen.set(!micMenuOpen())">
+              <mat-icon>expand_less</mat-icon>
+            </button>
+          }
+          <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--off]="!microphoneEnabled()" (click)="setMicrophoneEnabled(!microphoneEnabled())">
+            <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
+          </button>
+          @if (micMenuOpen() && audioDevices().length > 0) {
+            <mat-form-field class="meeting-device-select meeting-device-menu" appearance="outline" subscriptSizing="dynamic">
+              <mat-select panelClass="meeting-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
+                @for (device of audioDevices(); track device.deviceId) {
+                  <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_microphone' | translate) }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+        </div>
+
+        <div class="meeting-control-group">
+          @if (videoDevices().length > 0) {
+            <button mat-icon-button type="button" class="meeting-caret-btn" (click)="cameraMenuOpen.set(!cameraMenuOpen())">
+              <mat-icon>expand_less</mat-icon>
+            </button>
+          }
+          <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--off]="!cameraIsEnable()" (click)="setCameraEnabled(!cameraIsEnable())">
+            <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
+          </button>
+          @if (cameraMenuOpen() && videoDevices().length > 0) {
+            <mat-form-field class="meeting-device-select meeting-device-menu" appearance="outline" subscriptSizing="dynamic">
+              <mat-select panelClass="meeting-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
+                @for (device of videoDevices(); track device.deviceId) {
+                  <mat-option [value]="device.deviceId">{{ device.label || ('meeting_room.unnamed_camera' | translate) }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+        </div>
+
+        <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--active]="screenShareEnabled()" (click)="setScreenShareEnabled(!screenShareEnabled())">
+          <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          type="button"
+          class="meeting-pill-btn"
+          [class.meeting-pill-btn--active]="backgroundEffect() !== 'none'"
+          [disabled]="!localCameraTrack()"
+          (click)="backgroundPanelOpen.set(!backgroundPanelOpen())"
+          [matTooltip]="'meeting_room.background_effect' | translate"
+        >
+          <mat-icon>blur_on</mat-icon>
+        </button>
+
+        <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--active]="ownHandRaised()" (click)="toggleRaiseHand()">
+          <mat-icon>back_hand</mat-icon>
+          @if (handsRaised().length > 0) {
+            <span class="meeting-hand-count">{{ handsRaised().length }}</span>
+          }
+        </button>
+
+        <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--active]="raisedHandsPanelOpen()" (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())">
+          <mat-icon>format_list_numbered</mat-icon>
+        </button>
+
+        <button mat-icon-button type="button" class="meeting-pill-btn" [class.meeting-pill-btn--active]="chatOpen()" (click)="chatOpen.set(!chatOpen())">
+          <mat-icon>chat</mat-icon>
+        </button>
+
+        <button mat-icon-button type="button" class="meeting-pill-btn meeting-pill-btn--hangup" (click)="leaveRoom()">
+          <mat-icon>call_end</mat-icon>
+        </button>
+      </div>
     }
   </div>
 </div>

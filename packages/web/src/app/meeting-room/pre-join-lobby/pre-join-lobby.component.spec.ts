@@ -394,8 +394,8 @@ describe('PreJoinLobbyComponent', () => {
     });
   });
 
-  describe('rendered controls (Material)', () => {
-    it('the camera button reflects cameraEnabled via the Material color input', async () => {
+  describe('rendered controls', () => {
+    it('the camera button reflects cameraEnabled via the pill--off class', async () => {
       const fakeVideoTrack = {
         stop: jasmine.createSpy('stop'),
         // VideoComponent's ngAfterViewInit/effect attach the track to the
@@ -412,13 +412,13 @@ describe('PreJoinLobbyComponent', () => {
       await component.ngOnInit();
       fixture.detectChanges();
 
-      const cameraButton: HTMLButtonElement = fixture.nativeElement.querySelector('.pre-join-controls button');
-      expect(cameraButton.classList.contains('mat-primary')).toBe(true);
+      const cameraButton: HTMLButtonElement = fixture.nativeElement.querySelector('.pre-join-camera-btn');
+      expect(cameraButton.classList.contains('pre-join-pill-btn--off')).toBe(false);
 
       await component.setCameraEnabled(false);
       fixture.detectChanges();
 
-      expect(cameraButton.classList.contains('mat-warn')).toBe(true);
+      expect(cameraButton.classList.contains('pre-join-pill-btn--off')).toBe(true);
     });
   });
 

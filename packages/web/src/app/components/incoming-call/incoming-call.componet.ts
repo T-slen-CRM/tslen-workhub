@@ -1,5 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -7,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './incoming-call.component.html',
   styleUrls: ['./incoming-call.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [TranslateModule],
+  imports: [TranslateModule, MatIconModule],
 })
 export class IncomingCallComponent {
   constructor(

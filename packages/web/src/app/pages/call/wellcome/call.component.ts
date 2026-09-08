@@ -163,6 +163,11 @@ export class CallComponent implements OnDestroy, OnInit {
   isLocalMainVideo = signal<boolean>(true);
 
   chatOpen = signal<boolean>(false);
+  // UI-only: whether the device-picker popover above the mic/camera
+  // control-bar buttons is open. No effect on which device is actually
+  // selected - that's still selectedVideoDeviceId()/selectedAudioDeviceId().
+  micMenuOpen = signal<boolean>(false);
+  cameraMenuOpen = signal<boolean>(false);
   messages = signal<MeetingChatMessage[]>([]);
   raisedHandsPanelOpen = signal<boolean>(false);
   handsRaised = signal<RaisedHandEntry[]>([]);

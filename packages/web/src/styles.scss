@@ -19,6 +19,49 @@
 @use "angular-calendar/css/angular-calendar.css" as angular-calendar-css;
 @use "flatpickr/dist/flatpickr.css";
 
+// Google Meet-style design tokens for the call UI (pre-join-lobby,
+// meeting-room, the legacy call.component, and the call-request dialogs).
+// Defined once here (the app's one non-view-encapsulated stylesheet) so
+// each component's own scoped CSS can reference var(--meet-*) instead of
+// duplicating literal hex values - custom properties inherit across
+// Angular's emulated encapsulation boundaries for free, unlike structural
+// selector rules (which is why collapsible-call-window.css still has to
+// be duplicated into every consumer's styleUrls).
+:root {
+  /* Light "lobby" surface */
+  --meet-lobby-bg: #ffffff;
+  --meet-lobby-fg: #202124;
+  --meet-lobby-fg-secondary: #5f6368;
+  --meet-lobby-border: #dadce0;
+
+  /* Dark "in-call" surface */
+  --meet-call-bg: #202124;
+  --meet-call-surface: #2b2b30;
+  --meet-call-surface-hover: #35353c;
+  --meet-call-surface-selected: #3a3a42;
+
+  /* Shape */
+  --meet-radius-video: 12px;
+  --meet-radius-pill: 999px;
+  --meet-radius-card: 16px;
+
+  /* Control bar */
+  --meet-controlbar-bg: rgba(32, 33, 36, 0.9);
+  --meet-control-idle-bg: #3c4043;
+  --meet-control-idle-fg: #ffffff;
+  --meet-control-active-bg: #a8c7fa;
+  --meet-control-active-fg: #062e6f;
+  --meet-control-muted-bg: #ea4335;
+  --meet-control-muted-fg: #ffffff;
+  --meet-hangup-bg: #ea4335;
+  --meet-hangup-fg: #ffffff;
+  --meet-accept-green: #34a853;
+
+  /* Accent (Join button, links) */
+  --meet-accent: #0b57d0;
+  --meet-accent-fg: #ffffff;
+}
+
 $auth-text-color: color.adjust(#7a7d87, $lightness: -10%, $space: hsl);
 html, body { height: 100%; }
 body { margin: 0;

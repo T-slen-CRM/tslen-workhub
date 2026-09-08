@@ -3,7 +3,7 @@
       width: 450px;
       height: 300px;
       padding: 20px;
-      border-radius: 15px;
+      border-radius: var(--meet-radius-card, 16px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       text-align: center;
 }
@@ -21,18 +21,27 @@
       object-fit: cover;
       margin-bottom: 15px;
 }
-.cancel-btn {
-      margin-top: 20px;  
-      background-color: #ff4d4f;
-      color: white;
+.call-action-btn {
+      margin-top: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--meet-radius-pill, 999px);
       border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 16px;
+      color: white;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, transform 0.15s ease;
 }
-.cancel-btn:hover {
-      background-color: #e04345;
+.call-action-btn:hover {
+      transform: scale(1.05);
+}
+.call-action-btn--reject {
+      background-color: var(--meet-hangup-bg, #ea4335);
+}
+.call-action-btn--reject:hover {
+      background-color: #d33426;
 }
 
 .call-text {

@@ -115,13 +115,6 @@
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 }
-.video-controls{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
 #room {
     display: flex;
     flex-direction: column;
@@ -130,13 +123,20 @@
 
 #room-header {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
     padding: 0.5rem 1rem;
     /* Matches MeetingRoomComponent's dark header, so the two call windows
        read as the same visual family now that both use Material controls. */
-    background: #1b1b1f;
+    background: var(--meet-call-bg);
     color: #fff;
     cursor: move;
+}
+.call-collapse-btn {
+    color: #fff !important;
+    flex-shrink: 0;
 }
 
 .room-info {
@@ -145,6 +145,7 @@
     gap: 0.5rem;
     overflow: hidden;
     min-width: 0;
+    flex: 1;
 }
 
 .room-link-label {
@@ -182,11 +183,76 @@
     color: #fff;
 }
 
-.video-controls {
+/* Floating Meet-style pill control bar, centered along the bottom of the
+   video area - see .call-body's position:relative below. Hidden in
+   fullscreen the same way #room-header already was, since fullscreen is
+   meant to be an immersive video-only view (just the exit button remains). */
+.call-controlbar {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--meet-controlbar-bg);
+    border-radius: var(--meet-radius-pill);
+    max-width: calc(100% - 16px);
     flex-wrap: wrap;
+    justify-content: center;
+}
+.call-control-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.call-caret-btn {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+.call-caret-btn mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+.call-pill-btn {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: var(--meet-radius-pill) !important;
+    background: var(--meet-control-idle-bg) !important;
+    color: var(--meet-control-idle-fg) !important;
+}
+.call-pill-btn--off {
+    background: var(--meet-control-muted-bg) !important;
+    color: var(--meet-control-muted-fg) !important;
+}
+.call-pill-btn--active {
+    background: var(--meet-control-active-bg) !important;
+    color: var(--meet-control-active-fg) !important;
+}
+.call-pill-btn--hangup {
+    width: 64px !important;
+    border-radius: var(--meet-radius-pill) !important;
+    background: var(--meet-hangup-bg) !important;
+    color: var(--meet-hangup-fg) !important;
+}
+/* The device-picker popover that opens above the mic/camera control-bar
+   buttons - positions the (otherwise inline) mat-select as a small
+   floating panel instead. */
+.call-device-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 13;
+    background: var(--meet-call-surface);
+    border-radius: 8px;
+    padding: 4px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .call-device-select {
@@ -222,16 +288,16 @@
    silently stayed the theme's default white/light background with the
    selected option's text nearly invisible against it. */
 ::ng-deep .call-device-select-panel {
-    background: #2b2b30 !important;
+    background: var(--meet-call-surface) !important;
 }
 ::ng-deep .call-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
     color: #fff !important;
 }
 ::ng-deep .call-device-select-panel .mat-mdc-option.mdc-list-item--selected {
-    background-color: #3a3a42 !important;
+    background-color: var(--meet-call-surface-selected) !important;
 }
 ::ng-deep .call-device-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
-    background-color: #35353c !important;
+    background-color: var(--meet-call-surface-hover) !important;
 }
 .call-hand-count {
     display: inline-block;
@@ -272,9 +338,6 @@
 }
 #room.collapsible-call-window--collapsed .room-info {
     display: none;
-}
-#room.collapsible-call-window--collapsed .video-controls {
-    gap: 0;
 }
 /* Mobile: shrink the device-picker dropdowns so the header's control row
    fits a phone-width viewport without overflowing. */
@@ -392,7 +455,7 @@ app-meeting-chat.meeting-chat-hidden {
   position: relative;
   flex: 1;
   background: #000;
-  border-radius: 8px;
+  border-radius: var(--meet-radius-video, 12px);
   overflow: hidden;
 }
 
@@ -472,7 +535,7 @@ app-meeting-chat.meeting-chat-hidden {
   position: relative;
   width: 300px;
   height: auto;
-  border-radius: 8px;
+  border-radius: var(--meet-radius-video, 12px);
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -541,7 +604,7 @@ app-meeting-chat.meeting-chat-hidden {
   right: 16px;
   width: 160px;
   height: 120px;
-  border-radius: 8px;
+  border-radius: var(--meet-radius-video, 12px);
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);

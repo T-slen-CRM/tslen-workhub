@@ -6,10 +6,10 @@
      not a full-page takeover. */
   width: 100%;
   height: 100%;
-  background: #1b1b1f;
+  background: var(--meet-call-bg);
   color: #fff;
 }
-.meeting-header {
+.meeting-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,6 +24,18 @@
   white-space: nowrap;
   min-width: 0;
 }
+.meeting-participant-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+.meeting-participant-count mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
 /* Collapsed mode is a small 300x220 glance view (see
    collapsible-call-window.css) - both selectors below target the same
    element (this component's own .meeting-room class plus the directive's
@@ -32,11 +44,8 @@
 .meeting-room.collapsible-call-window--collapsed .meeting-room-name {
   display: none;
 }
-.meeting-room.collapsible-call-window--collapsed .meeting-header {
+.meeting-room.collapsible-call-window--collapsed .meeting-topbar {
   padding: 4px 8px;
-}
-.meeting-room.collapsible-call-window--collapsed .meeting-controls {
-  gap: 0;
 }
 app-meeting-chat.meeting-chat-hidden {
   display: none;
@@ -62,6 +71,20 @@ app-meeting-chat.meeting-chat-hidden {
 }
 .meeting-device-select {
   width: 140px;
+}
+/* The device-picker popover that opens above the mic/camera control-bar
+   buttons (see .meeting-caret-btn below) - positions the (otherwise
+   inline) mat-select as a small floating panel instead. */
+.meeting-device-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  background: var(--meet-call-surface);
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 /* Material's default outline/label/value colors assume a light surrounding
    page - this room's background is always dark regardless of the app's own
@@ -98,23 +121,79 @@ app-meeting-chat.meeting-chat-hidden {
    silently stayed the theme's default white/light background with the
    selected option's text nearly invisible against it. */
 ::ng-deep .meeting-device-select-panel {
-  background: #2b2b30 !important;
+  background: var(--meet-call-surface) !important;
 }
 ::ng-deep .meeting-device-select-panel .mat-mdc-option .mdc-list-item__primary-text {
   color: #fff !important;
 }
 ::ng-deep .meeting-device-select-panel .mat-mdc-option.mdc-list-item--selected {
-  background-color: #3a3a42 !important;
+  background-color: var(--meet-call-surface-selected) !important;
 }
 ::ng-deep .meeting-device-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
-  background-color: #35353c !important;
+  background-color: var(--meet-call-surface-hover) !important;
 }
-.meeting-controls {
+
+/* Floating Meet-style pill control bar, centered along the bottom of the
+   video area. Only rendered when the window isn't collapsed (see
+   meeting-room.component.html), matching how collapsed mode already hid
+   non-essential controls before this redesign. */
+.meeting-controlbar {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--meet-controlbar-bg);
+  border-radius: var(--meet-radius-pill);
+  max-width: calc(100% - 16px);
   flex-wrap: wrap;
-  gap: 4px;
+  justify-content: center;
 }
+.meeting-control-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.meeting-caret-btn {
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 24px !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.meeting-caret-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.meeting-pill-btn {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: var(--meet-radius-pill) !important;
+  background: var(--meet-control-idle-bg) !important;
+  color: var(--meet-control-idle-fg) !important;
+}
+.meeting-pill-btn--off {
+  background: var(--meet-control-muted-bg) !important;
+  color: var(--meet-control-muted-fg) !important;
+}
+.meeting-pill-btn--active {
+  background: var(--meet-control-active-bg) !important;
+  color: var(--meet-control-active-fg) !important;
+}
+.meeting-pill-btn--hangup {
+  width: 64px !important;
+  border-radius: var(--meet-radius-pill) !important;
+  background: var(--meet-hangup-bg) !important;
+  color: var(--meet-hangup-fg) !important;
+}
+.meeting-collapse-btn {
+  color: #fff !important;
+}
+
 /* Mobile: shrink the device-picker dropdowns and the video-tile minimum size
    so the header controls and grid both fit a phone-width viewport without
    forcing horizontal overflow. */
@@ -127,13 +206,21 @@ app-meeting-chat.meeting-chat-hidden {
     gap: 4px;
     padding: 4px;
   }
+  .meeting-controlbar {
+    gap: 4px;
+    padding: 6px 8px;
+  }
+  .meeting-pill-btn {
+    width: 38px !important;
+    height: 38px !important;
+  }
 }
 .meeting-background-panel {
   position: absolute;
   top: 8px;
   right: 8px;
   z-index: 5;
-  background: #2b2b30;
+  background: var(--meet-call-surface);
   color: #fff;
   padding: 12px;
   border-radius: 8px;
@@ -153,7 +240,7 @@ app-meeting-chat.meeting-chat-hidden {
    renders into a CDK overlay outside this component's DOM subtree) is enough. */
 .meeting-background-panel mat-button-toggle-group {
   --mat-button-toggle-selected-state-text-color: #fff;
-  --mat-button-toggle-selected-state-background-color: #3a3a42;
+  --mat-button-toggle-selected-state-background-color: var(--meet-call-surface-selected);
 }
 .meeting-background-error {
   font-size: 0.75rem;

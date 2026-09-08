@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { LiveKitRoutingModule } from './live-kit-routing.module';
 import { LiveKitComponent } from './live-kit.component';
 import { CallUsersOnlineComponent } from 'src/app/components/table-live-kit/table-live-kit.component';
@@ -23,7 +24,8 @@ import {CallButtonRendererComponent} from "../../components/callButton/buttonRen
         CallButtonRendererComponent,
         CallUsersOnlineComponent,
         NgOptimizedImage,
-        LiveKitComponent
+        LiveKitComponent,
+        MatIconModule
     ]
 })
 export class LiveKitModule {}

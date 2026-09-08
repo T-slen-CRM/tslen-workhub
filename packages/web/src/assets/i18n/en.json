@@ -636,6 +636,7 @@
       "blur_unavailable": "Background effects aren't supported in this browser",
       "unnamed_camera": "Camera",
       "unnamed_microphone": "Microphone",
+      "ready_to_join": "Ready to join?",
       "join": "Join meeting"
     },
     "guest_meeting": {

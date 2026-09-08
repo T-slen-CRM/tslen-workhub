@@ -14,112 +14,9 @@
                 <mat-icon>content_copy</mat-icon>
             </button>
         </div>
-
-        <!-- Control Buttons -->
-        <div class="video-controls">
-            <button
-                mat-icon-button
-                type="button"
-                [color]="cameraIsEnable() ? 'primary' : 'warn'"
-                (click)="setCameraEnabled(!cameraIsEnable())"
-                [matTooltip]="'call_room.toggle_camera' | translate">
-                <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
-            </button>
-
-            @if (!win.collapsed() && videoDevices().length > 0) {
-                <mat-form-field class="call-device-select" appearance="outline" subscriptSizing="dynamic">
-                    <mat-select panelClass="call-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
-                        @for (device of videoDevices(); track device.deviceId) {
-                            <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_camera' | translate) }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            }
-
-            <button
-                mat-icon-button
-                type="button"
-                [color]="screenShareEnabled() ? 'accent' : undefined"
-                (click)="setScreenShareEnabled(!screenShareEnabled())"
-                [matTooltip]="'call_room.toggle_screen_share' | translate">
-                <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
-            </button>
-
-            <button
-                mat-icon-button
-                type="button"
-                [color]="microphoneEnabled() ? 'primary' : 'warn'"
-                (click)="setMicrophoneEnabled(!microphoneEnabled())"
-                [matTooltip]="'call_room.toggle_microphone' | translate">
-                <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
-            </button>
-
-            @if (!win.collapsed() && audioDevices().length > 0) {
-                <mat-form-field class="call-device-select" appearance="outline" subscriptSizing="dynamic">
-                    <mat-select panelClass="call-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
-                        @for (device of audioDevices(); track device.deviceId) {
-                            <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_microphone' | translate) }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            }
-
-            <button
-                mat-icon-button
-                type="button"
-                [color]="ownHandRaised() ? 'accent' : undefined"
-                (click)="toggleRaiseHand()"
-                [matTooltip]="'call_room.toggle_raise_hand' | translate">
-                <mat-icon>back_hand</mat-icon>
-                @if (handsRaised().length > 0) {
-                    <span class="call-hand-count">{{ handsRaised().length }}</span>
-                }
-            </button>
-
-            @if (!win.collapsed()) {
-                <button
-                    mat-icon-button
-                    type="button"
-                    (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())"
-                    [matTooltip]="'call_room.raised_hands' | translate">
-                    <mat-icon>format_list_numbered</mat-icon>
-                </button>
-                <button
-                    mat-icon-button
-                    type="button"
-                    (click)="chatOpen.set(!chatOpen())"
-                    [matTooltip]="'call_room.toggle_chat' | translate">
-                    <mat-icon>chat</mat-icon>
-                </button>
-            }
-
-            <button
-                mat-icon-button
-                type="button"
-                (click)="win.toggle()"
-                [matTooltip]="'call_room.expand_window' | translate">
-                <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
-            </button>
-
-            @if (pip.isSupported) {
-                <button
-                    mat-icon-button
-                    type="button"
-                    (click)="popOutToPictureInPicture()"
-                    [matTooltip]="'call_room.pop_out' | translate">
-                    <mat-icon>picture_in_picture_alt</mat-icon>
-                </button>
-            }
-
-            <button
-                mat-icon-button
-                type="button"
-                color="warn"
-                (click)="leaveRoom()"
-                [matTooltip]="'call_room.leave_room' | translate">
-                <mat-icon>logout</mat-icon>
-            </button>
-        </div>
+        <button mat-icon-button type="button" class="call-collapse-btn" (click)="win.toggle()" [matTooltip]="'call_room.expand_window' | translate">
+            <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
+        </button>
     </div>
 
     <!-- position:relative here (not on #room) so the absolutely-positioned side
@@ -279,6 +176,77 @@
             [messages]="messages()"
             (messageSent)="sendChatMessage($event)"
         ></app-meeting-chat>
+
+        <div class="call-controlbar" [class.hidden]="isFullscreen()">
+            <div class="call-control-group">
+                @if (audioDevices().length > 0) {
+                    <button mat-icon-button type="button" class="call-caret-btn" (click)="micMenuOpen.set(!micMenuOpen())">
+                        <mat-icon>expand_less</mat-icon>
+                    </button>
+                }
+                <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--off]="!microphoneEnabled()" (click)="setMicrophoneEnabled(!microphoneEnabled())" [matTooltip]="'call_room.toggle_microphone' | translate">
+                    <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
+                </button>
+                @if (micMenuOpen() && audioDevices().length > 0) {
+                    <mat-form-field class="call-device-select call-device-menu" appearance="outline" subscriptSizing="dynamic">
+                        <mat-select panelClass="call-device-select-panel" [value]="selectedAudioDeviceId()" (selectionChange)="switchAudioDevice($event.value)">
+                            @for (device of audioDevices(); track device.deviceId) {
+                                <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_microphone' | translate) }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                }
+            </div>
+
+            <div class="call-control-group">
+                @if (videoDevices().length > 0) {
+                    <button mat-icon-button type="button" class="call-caret-btn" (click)="cameraMenuOpen.set(!cameraMenuOpen())">
+                        <mat-icon>expand_less</mat-icon>
+                    </button>
+                }
+                <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--off]="!cameraIsEnable()" (click)="setCameraEnabled(!cameraIsEnable())" [matTooltip]="'call_room.toggle_camera' | translate">
+                    <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
+                </button>
+                @if (cameraMenuOpen() && videoDevices().length > 0) {
+                    <mat-form-field class="call-device-select call-device-menu" appearance="outline" subscriptSizing="dynamic">
+                        <mat-select panelClass="call-device-select-panel" [value]="selectedVideoDeviceId()" (selectionChange)="switchVideoDevice($event.value)">
+                            @for (device of videoDevices(); track device.deviceId) {
+                                <mat-option [value]="device.deviceId">{{ device.label || ('call_room.unnamed_camera' | translate) }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                }
+            </div>
+
+            <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--active]="screenShareEnabled()" (click)="setScreenShareEnabled(!screenShareEnabled())" [matTooltip]="'call_room.toggle_screen_share' | translate">
+                <mat-icon>{{ screenShareEnabled() ? 'stop_screen_share' : 'screen_share' }}</mat-icon>
+            </button>
+
+            <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--active]="ownHandRaised()" (click)="toggleRaiseHand()" [matTooltip]="'call_room.toggle_raise_hand' | translate">
+                <mat-icon>back_hand</mat-icon>
+                @if (handsRaised().length > 0) {
+                    <span class="call-hand-count">{{ handsRaised().length }}</span>
+                }
+            </button>
+
+            <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--active]="raisedHandsPanelOpen()" (click)="raisedHandsPanelOpen.set(!raisedHandsPanelOpen())" [matTooltip]="'call_room.raised_hands' | translate">
+                <mat-icon>format_list_numbered</mat-icon>
+            </button>
+
+            <button mat-icon-button type="button" class="call-pill-btn" [class.call-pill-btn--active]="chatOpen()" (click)="chatOpen.set(!chatOpen())" [matTooltip]="'call_room.toggle_chat' | translate">
+                <mat-icon>chat</mat-icon>
+            </button>
+
+            @if (pip.isSupported) {
+                <button mat-icon-button type="button" class="call-pill-btn" (click)="popOutToPictureInPicture()" [matTooltip]="'call_room.pop_out' | translate">
+                    <mat-icon>picture_in_picture_alt</mat-icon>
+                </button>
+            }
+
+            <button mat-icon-button type="button" class="call-pill-btn call-pill-btn--hangup" (click)="leaveRoom()" [matTooltip]="'call_room.leave_room' | translate">
+                <mat-icon>call_end</mat-icon>
+            </button>
+        </div>
     }
     </div>
 </div>

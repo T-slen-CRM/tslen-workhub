@@ -4,7 +4,7 @@
      cdkDrag
      cdkDragBoundary="body">
     <!-- Room Header -->
-    <div id="room-header" cdkDragHandle [class.hidden]="isFullscreen()">
+    <div id="room-header" cdkDragHandle>
         <div class="room-info">
             <span class="room-link-label">{{'call_room.room_link' | translate}}</span>
             <mat-form-field class="call-link-field" appearance="outline" subscriptSizing="dynamic">
@@ -24,21 +24,16 @@
          #room-header's controls above. -->
     <div class="call-body">
     <!-- Video Layout -->
-    <div id="layout-container" [ngClass]="getVideoSizeClass()">
+    <div id="layout-container">
         <!-- Main Video Section -->
         <div class="main-video-section">
             @if (getCurrentMainVideoTrack()) {
-                <div class="main-video-container" [ngClass]="getVideoSizeClass()">
-                    <!-- Main video header with participant name and fullscreen button -->
-                    <div class="main-video-header" [class.hidden]="isFullscreen()">
+                <div class="main-video-container">
+                    <!-- Main video header with participant name -->
+                    <div class="main-video-header">
                         <span class="main-video-label">
                             <mat-icon>star</mat-icon> {{ getCurrentMainVideoLabel() }}
                         </span>
-                        <button mat-icon-button class="fullscreen-btn"
-                                (click)="toggleMainVideoFullscreen()"
-                                [matTooltip]="'call_room.toggle_fullscreen' | translate">
-                            <mat-icon>{{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-                        </button>
                     </div>
 
                     <!-- Main video component -->
@@ -54,7 +49,7 @@
 
                     <!-- Camera preview overlay when screen sharing (Picture-in-Picture) -->
                     @if (screenShareEnabled() && localCameraTrack() && getCurrentMainVideoTrack() !== localCameraTrack()) {
-                        <div class="camera-pip-overlay" [class.fullscreen-pip]="isFullscreen()">
+                        <div class="camera-pip-overlay">
                             <video-component
                                 [track]="localCameraTrack()!"
                                 [participantIdentity]="'call_room.you' | translate"
@@ -77,12 +72,6 @@
                         </div>
                     }
 
-                    <!-- Fullscreen exit button (only visible in fullscreen) -->
-                    @if (isFullscreen()) {
-                        <button mat-raised-button class="fullscreen-exit-btn" (click)="exitFullscreen()">
-                            <mat-icon>close</mat-icon> {{'call_room.exit_fullscreen' | translate}}
-                        </button>
-                    }
                 </div>
             } @else {
                 <!-- Placeholder when no video is available -->
@@ -94,7 +83,7 @@
         </div>
 
         <!-- Thumbnail Videos Grid -->
-        <div class="thumbnail-videos-section" [ngClass]="{'fullscreen-hidden': isFullscreen()}">
+        <div class="thumbnail-videos-section">
             <!-- Local camera thumbnail (when not main video) -->
             @if (localCameraTrack() && getCurrentMainVideoTrack() !== localCameraTrack()) {
                 <div  class="thumbnail-video-wrapper"
@@ -177,7 +166,7 @@
             (messageSent)="sendChatMessage($event)"
         ></app-meeting-chat>
 
-        <div class="call-controlbar" [class.hidden]="isFullscreen()">
+        <div class="call-controlbar">
             <div class="call-control-group">
                 @if (audioDevices().length > 0) {
                     <button mat-icon-button type="button" class="call-caret-btn" (click)="micMenuOpen.set(!micMenuOpen())">

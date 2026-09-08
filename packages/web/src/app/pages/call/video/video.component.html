@@ -1,9 +1,9 @@
 
-<div [class]="getContainerClasses()">
+<div #videoContainer [class]="getContainerClasses()">
     <video
         #videoElement
         [style.object-fit]="getObjectFit()"
-        [style.transform]="'scaleX(-1)'"
+        [style.transform]="getTransform()"
         autoplay
         muted
         playsinline>
@@ -12,4 +12,14 @@
     <div class="participant-data">
         <p>{{ participantIdentity() }}</p>
     </div>
+
+    @if (!isThumbnail()) {
+        <button
+            mat-icon-button
+            class="video-expand-btn"
+            (click)="toggleFullscreen()"
+        >
+            <mat-icon>{{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+        </button>
+    }
 </div>

@@ -184,9 +184,7 @@
 }
 
 /* Floating Meet-style pill control bar, centered along the bottom of the
-   video area - see .call-body's position:relative below. Hidden in
-   fullscreen the same way #room-header already was, since fullscreen is
-   meant to be an immersive video-only view (just the exit button remains). */
+   video area - see .call-body's position:relative below. */
 .call-controlbar {
     position: absolute;
     bottom: 12px;
@@ -488,15 +486,6 @@ app-meeting-chat.meeting-chat-hidden {
   font-size: 18px;
 }
 
-.fullscreen-btn {
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
-
-.fullscreen-btn:hover {
-  opacity: 1;
-}
-
 .no-main-video {
   flex: 1;
   display: flex;
@@ -618,13 +607,6 @@ app-meeting-chat.meeting-chat-hidden {
   transform: scale(1.05);
 }
 
-.fullscreen-pip {
-  width: 200px;
-  height: 150px;
-  top: 24px;
-  right: 24px;
-}
-
 .pip-controls {
   position: absolute;
   top: 4px;
@@ -668,35 +650,6 @@ app-meeting-chat.meeting-chat-hidden {
 
 .pip-btn:last-child:hover {
   background: rgba(220, 53, 69, 0.8);
-}
-
-/* Fullscreen Styles */
-.fullscreen-mode .main-video-container {
-  border-radius: 0;
-}
-
-.fullscreen-mode .thumbnail-videos-section.fullscreen-hidden {
-  display: none;
-}
-
-.fullscreen-exit-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 20;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-  background: #000;
-  color: #fff;
-}
-
-.fullscreen-exit-btn:hover {
-  opacity: 1;
-}
-
-/* Adjust fullscreen exit button position when PiP is present */
-.fullscreen-mode .camera-pip-overlay ~ .fullscreen-exit-btn {
-  top: 200px; /* Move below the PiP overlay */
 }
 
 /* Responsive Design */

@@ -30,7 +30,6 @@ import {
 import { lastValueFrom } from 'rxjs';
 import { VideoComponent } from '../video/video.component';
 import { AudioComponent } from '../audio/audio.component';
-import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -72,7 +71,6 @@ setLogLevel(LogLevel.warn);
     ReactiveFormsModule,
     VideoComponent,
     AudioComponent,
-    NgClass,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
@@ -155,8 +153,6 @@ export class CallComponent implements OnDestroy, OnInit {
   microphoneEnabled = signal<boolean>(true);
   localCameraTrack = signal<LocalVideoTrack | undefined>(undefined);
   localScreenTrack = signal<LocalVideoTrack | undefined>(undefined);
-  videoSize = signal<'small' | 'medium' | 'large' | 'fullscreen'>('medium');
-  isFullscreen = signal<boolean>(false);
 
   mainVideoTrack = signal<VideoTrack | null>(null);
   mainVideoParticipant = signal<string>('');
@@ -638,70 +634,6 @@ export class CallComponent implements OnDestroy, OnInit {
     return response.token;
   }
 
-  // Method to change video size
-  setVideoSize(size: 'small' | 'medium' | 'large' | 'fullscreen') {
-    this.videoSize.set(size);
-
-    if (size === 'fullscreen') {
-      this.enterFullscreen();
-    } else if (this.isFullscreen()) {
-      this.exitFullscreen();
-    }
-  }
-
-  // Enter fullscreen mode
-  async enterFullscreen() {
-    try {
-      const videoElement = document.querySelector('video') as HTMLVideoElement;
-      if (videoElement && videoElement.requestFullscreen) {
-        await videoElement.requestFullscreen();
-        this.isFullscreen.set(true);
-      }
-    } catch (error) {
-      console.error('Error entering fullscreen:', error);
-      // Fallback to CSS fullscreen
-      this.isFullscreen.set(true);
-    }
-  }
-
-  // Exit fullscreen mode
-  async exitFullscreen() {
-    try {
-      if (document.exitFullscreen && document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
-      this.isFullscreen.set(false);
-      this.videoSize.set('medium');
-    } catch (error) {
-      console.error('Error exiting fullscreen:', error);
-      this.isFullscreen.set(false);
-    }
-  }
-
-  // Toggle fullscreen
-  toggleFullscreen() {
-    if (this.isFullscreen()) {
-      this.exitFullscreen();
-    } else {
-      this.setVideoSize('fullscreen');
-    }
-  }
-
-  // Listen for fullscreen changes
-  @HostListener('document:fullscreenchange', ['$event'])
-  onFullscreenChange() {
-    if (!document.fullscreenElement && this.isFullscreen()) {
-      this.isFullscreen.set(false);
-      this.videoSize.set('medium');
-    }
-  }
-
-  // Get CSS class for current video size
-  getVideoSizeClass(): string {
-    const size = this.videoSize();
-    return `video-${size}`;
-  }
-
   setMainVideo(
     track: VideoTrack,
     participantIdentity: string,
@@ -781,15 +713,6 @@ export class CallComponent implements OnDestroy, OnInit {
     this.mainVideoTrack.set(null);
     this.mainVideoParticipant.set('');
     this.isLocalMainVideo.set(true);
-  }
-
-  // Method to toggle fullscreen for main video
-  toggleMainVideoFullscreen() {
-    if (this.isFullscreen()) {
-      this.exitFullscreen();
-    } else {
-      this.enterFullscreen();
-    }
   }
 
   updateQueryParam(id: string) {

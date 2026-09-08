@@ -2,60 +2,29 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   input,
+  signal,
   viewChild,
   effect,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import { NgClass } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'video-component',
-  imports: [NgClass],
+  imports: [NgClass, MatIconButton, MatIcon],
   templateUrl: './video.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [
-    `
-      .participant-data {
-        position: absolute;
-        bottom: 8px;
-        left: 8px;
-        z-index: 2;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-      }
-
-      /* Smaller text for thumbnails */
-      .thumbnail-video .participant-data {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        /*bottom: 4px;*/
-        left: 4px;
-      }
-
-      .participant-data p {
-        margin: 0;
-      }
-
-      video {
-        width: 100%;
-        height: 100%;
-      }
-
-      /* Ensure video covers thumbnail area properly */
-      .thumbnail-video video {
-        object-fit: cover;
-      }
-    `,
-  ],
+  styleUrl: './video.component.css',
 })
 export class VideoComponent implements AfterViewInit, OnDestroy {
   videoElement = viewChild<ElementRef<HTMLVideoElement>>('videoElement');
+  videoContainer = viewChild<ElementRef<HTMLDivElement>>('videoContainer');
 
   track = input.required<LocalVideoTrack | RemoteVideoTrack>();
   participantIdentity = input.required<string>();
@@ -63,6 +32,8 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
   isMainVideo = input(false);
   isPreview = input(false);
   isThumbnail = input(false); // New input property
+
+  isFullscreen = signal(false);
 
   constructor() {
     // Watch for track changes and reattach
@@ -100,6 +71,32 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
         // console.warn('Video play failed:', err);
       });
     }
+  }
+
+  // Only the local camera preview should ever be mirrored (a selfie-view
+  // convention) - a remote participant's camera and any screen share
+  // must render as-is, or shared text/UI would read backwards.
+  getTransform(): string {
+    return this.local() && this.track().source !== 'screen_share'
+      ? 'scaleX(-1)'
+      : 'none';
+  }
+
+  async toggleFullscreen(): Promise<void> {
+    const el = this.videoContainer()?.nativeElement;
+    if (!el) {
+      return;
+    }
+    if (document.fullscreenElement === el) {
+      await document.exitFullscreen();
+    } else {
+      await el.requestFullscreen();
+    }
+  }
+
+  @HostListener('document:fullscreenchange')
+  onFullscreenChange(): void {
+    this.isFullscreen.set(document.fullscreenElement === this.videoContainer()?.nativeElement);
   }
 
   getObjectFit(): string {

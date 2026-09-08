@@ -2,8 +2,12 @@
   justify-content: center;
 }
 .btn-toggle-control{
-  height: 20px;
+  height: 36px;
   align-items: center;
+}
+::ng-deep .btn-toggle-control .mat-button-toggle-label-content {
+  line-height: 34px;
+  padding: 0 16px;
 }
 .event-icon-container{
   display: flex;

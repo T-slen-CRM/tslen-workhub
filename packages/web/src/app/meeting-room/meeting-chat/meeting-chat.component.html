@@ -13,6 +13,13 @@
       (keydown.enter)="send()"
       [placeholder]="'meeting_room.chat_placeholder' | translate"
     />
-    <button class="btn btn-sm btn-primary" (click)="send()">{{ 'meeting_room.send' | translate }}</button>
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="send()"
+      [attr.aria-label]="'meeting_room.send' | translate"
+    >
+      <mat-icon>send</mat-icon>
+    </button>
   </div>
 </div>

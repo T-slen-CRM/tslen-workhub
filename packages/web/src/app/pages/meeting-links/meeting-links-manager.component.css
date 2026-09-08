@@ -3,10 +3,18 @@
 }
 .create-form {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
+}
+/* Height-match the outlined mat-form-fields to the 36px button beside
+   them - the outline appearance otherwise reserves more vertical space
+   than this toolbar-style row needs. */
+::ng-deep .create-form mat-form-field.mat-field-standard .mat-mdc-form-field-infix {
+  min-height: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 .clear-expires-icon {
   cursor: pointer;

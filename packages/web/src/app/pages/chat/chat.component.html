@@ -44,10 +44,13 @@
       [disabled]="!isConnected"
     />
     <button
+      mat-icon-button
+      color="primary"
       (click)="sendMessage()"
       [disabled]="!isConnected || !newMessageContent.trim()"
+      [attr.aria-label]="'chat.send' | translate"
     >
-      {{ 'chat.send' | translate }}
+      <mat-icon>send</mat-icon>
     </button>
   </div>
 </div>

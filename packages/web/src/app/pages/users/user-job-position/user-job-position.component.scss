@@ -1,0 +1,10 @@
+.form-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+::ng-deep .form-container mat-form-field.mat-text-field .mat-mdc-form-field-infix {
+  min-height: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}

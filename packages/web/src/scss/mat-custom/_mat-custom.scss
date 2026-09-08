@@ -27,10 +27,24 @@
   line-height: 38px !important;
   height: 38px !important;
 }
+// Unified button design system, based on the "Make a request" button
+// (main-wall.component's .make-request-btn): every basic/stroked/raised/
+// flat button gets the same height, radius and subtle shadow, so buttons
+// look consistent across the app regardless of which page/component adds
+// them. .mat-mdc-button-base is the shared MDC host class every one of
+// those variants carries alongside its own legacy alias class.
+.mat-mdc-button-base:not(.mat-mdc-icon-button):not([class*=mat-elevation-z]){
+  height: 36px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+}
 .mat-stroked-button:not([class*=mat-elevation-z]){
   width: 100%;
-  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+}
+.mat-mdc-icon-button {
+  width: 36px;
   height: 36px;
+  padding: 6px;
 }
 /* Tooltip container */
 .custom-tooltip {

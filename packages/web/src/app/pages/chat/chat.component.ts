@@ -14,6 +14,8 @@ import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChatMessage } from '@tslen-workhub/shared';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 const MESSAGE_PREVIEW_LENGTH = 60;
 
@@ -28,7 +30,7 @@ interface DisplayMessage extends Omit<ChatMessage, 'timestamp'> {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule, DatePipe, TranslateModule],
+  imports: [FormsModule, DatePipe, TranslateModule, MatButtonModule, MatIconModule],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: DisplayMessage[] = [];

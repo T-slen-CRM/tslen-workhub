@@ -1,6 +1,8 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface MeetingChatMessage {
   senderName: string;
@@ -17,7 +19,7 @@ export interface MeetingChatMessage {
 @Component({
   selector: 'app-meeting-chat',
   standalone: true,
-  imports: [FormsModule, TranslateModule],
+  imports: [FormsModule, TranslateModule, MatButtonModule, MatIconModule],
   templateUrl: './meeting-chat.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './meeting-chat.component.css',

@@ -112,6 +112,7 @@
                   >
                   <span class="created-span">{{ item.viewDateCreate }}</span>
                 </div>
+                @if (item.viewDateUpdate) {
                 <div class="super-customing">
                   <mat-icon
                     matTooltip="{{ item.tooltipUpdate }}"
@@ -120,6 +121,7 @@
                   >
                   <span class="updated-span">{{ item.viewDateUpdate }}</span>
                 </div>
+                }
               </div>
               @if (item.taskUserAssignmentRelations.length) {
               <div class="viewer">

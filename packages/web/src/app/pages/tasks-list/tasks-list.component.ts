@@ -540,6 +540,12 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   checkInterval(lastSendReportDate: Date, type?: string): string {
+    // A falsy date (e.g. a task's updatedAt before it's ever been edited)
+    // must not fall through to `new Date(null)`, which resolves to the
+    // Unix epoch and reports the task as "updated" ~20,000+ days ago.
+    if (!lastSendReportDate) {
+      return '';
+    }
     const date = new Date(lastSendReportDate);
     // date must be 2024-10-10 format
     const year = date.getFullYear();

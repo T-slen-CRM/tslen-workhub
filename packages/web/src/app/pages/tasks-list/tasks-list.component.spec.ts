@@ -62,6 +62,34 @@ describe('TasksListComponent', () => {
         expect(taskWebSocketServiceSpy.sendMessage).toHaveBeenCalledWith('update', jasmine.objectContaining({ actorUserId: 42 }));
     });
 
+    it('checkInterval returns an empty string for a falsy date instead of computing from the Unix epoch', () => {
+        expect(component.checkInterval(null as unknown as Date, 'updated')).toBe('');
+        expect(component.checkInterval(undefined as unknown as Date, 'updated')).toBe('');
+    });
+
+    it('checkInterval still reports a real date normally', () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        expect(component.checkInterval(yesterday, 'updated')).toBe('Updated 1 days ago');
+    });
+
+    it('addTooltipToTask leaves viewDateUpdate/tooltipUpdate empty for a task that has never been updated', () => {
+        const tasks = [
+            {
+                tasks: [
+                    { createdAt: new Date(), updatedAt: null } as unknown as ITask,
+                ],
+            },
+        ] as never;
+
+        const [result] = component.addTooltipToTask(tasks);
+
+        expect(result.tasks[0].viewDateUpdate).toBe('');
+        expect(result.tasks[0].tooltipUpdate).toBe('');
+        expect(result.tasks[0].viewDateCreate).not.toBe('');
+    });
+
     it('sets isLoadingProject while the project fetch is in flight and clears it once it settles', () => {
         const subject = new Subject<ITaskProject>();
         dataServiceSpy.getObservableData.and.returnValue(subject.asObservable());

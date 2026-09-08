@@ -60,7 +60,12 @@ app-meeting-chat.meeting-chat-hidden {
 .meeting-video-grid {
   flex: 1;
   display: grid;
+  /* Fallback for the brief moment before gridColumns()/JS binds in - the
+     real column count is set inline per current participant count so
+     every tile in a 2+ person call is the same size (Meet-style), instead
+     of auto-fit's uneven last-row stretching. */
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  justify-content: center;
   gap: 8px;
   padding: 8px;
 }

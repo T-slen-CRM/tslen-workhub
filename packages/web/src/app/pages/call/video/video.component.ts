@@ -32,6 +32,11 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
   isMainVideo = input(false);
   isPreview = input(false);
   isThumbnail = input(false); // New input property
+  // Grid tiles (e.g. meeting-room's Meet-style equal-size grid) want the
+  // camera feed to fill the cell edge-to-edge like isPreview does, without
+  // taking on isPreview's other semantics (it also changes the container's
+  // CSS class, which grid tiles don't want).
+  fitCover = input(false);
 
   isFullscreen = signal(false);
 
@@ -113,7 +118,7 @@ export class VideoComponent implements AfterViewInit, OnDestroy {
     }
 
     // Use 'cover' for camera feeds
-    return this.isPreview() ? 'cover' : 'contain';
+    return (this.isPreview() || this.fitCover()) ? 'cover' : 'contain';
   }
 
   // New method to get CSS classes for the container

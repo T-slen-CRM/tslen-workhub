@@ -113,6 +113,47 @@ describe('MeetingRoomComponent', () => {
     expect(component.chatOpen()).toBe(true);
   });
 
+  describe('Meet-style grid sizing', () => {
+    function subscribeRemote(room: FakeRoom, sid: string, identity: string): void {
+      room.handlers.get(RoomEvent.TrackSubscribed)!(
+        {},
+        { trackSid: sid, kind: 'video' },
+        { identity },
+      );
+    }
+
+    it('is solo (1 column) with just the local participant', () => {
+      expect(component.totalParticipants()).toBe(1);
+      expect(component.gridColumns()).toBe(1);
+    });
+
+    it('splits into a 2-column grid once a second participant joins', () => {
+      const room = attachFakeRoom();
+
+      subscribeRemote(room, 'sid-1', 'bob');
+
+      expect(component.totalParticipants()).toBe(2);
+      expect(component.gridColumns()).toBe(2);
+    });
+
+    it('uses a near-square grid (not one big + stragglers) as more participants join', () => {
+      const room = attachFakeRoom();
+
+      subscribeRemote(room, 'sid-1', 'bob');
+      subscribeRemote(room, 'sid-2', 'carol');
+      expect(component.totalParticipants()).toBe(3);
+      expect(component.gridColumns()).toBe(2); // 2x2 grid, last cell empty
+
+      subscribeRemote(room, 'sid-3', 'dave');
+      expect(component.totalParticipants()).toBe(4);
+      expect(component.gridColumns()).toBe(2); // full 2x2 grid
+
+      subscribeRemote(room, 'sid-4', 'erin');
+      expect(component.totalParticipants()).toBe(5);
+      expect(component.gridColumns()).toBe(3); // 3x2 grid, one empty cell
+    });
+  });
+
   describe('remote track map immutability', () => {
     it('hands out a NEW Map reference when a remote track is subscribed', () => {
       const room = attachFakeRoom();

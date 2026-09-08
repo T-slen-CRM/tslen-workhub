@@ -57,6 +57,31 @@ describe('VideoComponent', () => {
     });
   });
 
+  describe('getObjectFit with fitCover (Meet-style grid tiles)', () => {
+    it('covers a camera feed when fitCover is set', () => {
+      fixture.componentRef.setInput('track', makeTrack('camera'));
+      fixture.componentRef.setInput('fitCover', true);
+      fixture.detectChanges();
+
+      expect(component.getObjectFit()).toBe('cover');
+    });
+
+    it('still contains a screen share even when fitCover is set', () => {
+      fixture.componentRef.setInput('track', makeTrack('screen_share'));
+      fixture.componentRef.setInput('fitCover', true);
+      fixture.detectChanges();
+
+      expect(component.getObjectFit()).toBe('contain');
+    });
+
+    it('contains a camera feed by default (fitCover unset)', () => {
+      fixture.componentRef.setInput('track', makeTrack('camera'));
+      fixture.detectChanges();
+
+      expect(component.getObjectFit()).toBe('contain');
+    });
+  });
+
   describe('fullscreen toggle', () => {
     // jsdom doesn't implement the Fullscreen API - document.fullscreenElement
     // isn't a real property to spy on, so it's stubbed directly per test and

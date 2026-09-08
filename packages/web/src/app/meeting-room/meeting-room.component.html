@@ -3,7 +3,7 @@
     <span class="meeting-room-name">{{ roomName() }}</span>
     <span class="meeting-participant-count">
       <mat-icon>person</mat-icon>
-      {{ 1 + remoteTracksMap().size }}
+      {{ totalParticipants() }}
     </span>
     <button mat-icon-button type="button" class="meeting-collapse-btn" (click)="win.toggle()">
       <mat-icon>{{ win.collapsed() ? 'open_in_full' : 'close_fullscreen' }}</mat-icon>
@@ -17,13 +17,19 @@
        top of the header in paint order, making their own open/close buttons
        unreachable once a panel was open. -->
   <div class="meeting-body">
-    <div class="meeting-video-grid" [class.meeting-video-grid--collapsed]="win.collapsed()">
+    <div
+      class="meeting-video-grid"
+      [class.meeting-video-grid--collapsed]="win.collapsed()"
+      [style.grid-template-columns]="win.collapsed() ? null : ('repeat(' + gridColumns() + ', 1fr)')"
+      [style.grid-auto-rows]="win.collapsed() ? null : '1fr'"
+    >
       @if (localTrack()) {
         <div class="meeting-video-tile">
           <video-component
             [track]="localTrack()!"
             [participantIdentity]="displayName() + ' ' + ('meeting_room.you_suffix' | translate)"
             [local]="true"
+            [fitCover]="true"
           ></video-component>
           @if (ownHandRaised()) {
             <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
@@ -37,6 +43,7 @@
               [track]="remoteTrack.trackPublication.videoTrack!"
               [participantIdentity]="remoteTrack.participantIdentity"
               [local]="false"
+              [fitCover]="true"
             ></video-component>
             @if (isHandRaised(remoteTrack.participantIdentity)) {
               <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -68,6 +68,15 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   micMenuOpen = signal<boolean>(false);
   cameraMenuOpen = signal<boolean>(false);
   messages = signal<MeetingChatMessage[]>([]);
+
+  // Google-Meet-style grid: solo fills the whole area (1 column, 1 row);
+  // 2+ tiles split into a near-square grid of equal-sized cells instead of
+  // one tile stretching larger than the rest.
+  totalParticipants = computed(() => 1 + this.remoteTracksMap().size);
+  gridColumns = computed(() => {
+    const total = this.totalParticipants();
+    return total <= 1 ? 1 : Math.ceil(Math.sqrt(total));
+  });
   raisedHandsPanelOpen = signal<boolean>(false);
   handsRaised = signal<RaisedHandEntry[]>([]);
   ownHandRaised = signal<boolean>(false);

@@ -15,9 +15,13 @@
             height: 100%;
         }
 
+        /* Default class for a tile that's none of main/preview/thumbnail -
+           today that's every meeting-room grid tile (local and remote
+           alike, since neither sets those other inputs there). Fill the
+           cell like .preview-video already does, rather than the old
+           fixed 200px this carried from an earlier, non-grid layout. */
         .remote-video {
-            height: 200px;
-            margin-bottom: 1rem;
+            height: 100%;
         }
 
         .participant-data {

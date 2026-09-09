@@ -19,6 +19,7 @@ import { ErrorService } from '../../common/services/error/error.service';
 import { TaskNotificationsModule } from './task-notifications.module';
 import { TaskPhaseModule } from '../task-phase/task-phase.module';
 import { AuditLogModule } from '../audit-log/audit-log.module';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Module({
     imports: [
@@ -48,6 +49,7 @@ import { AuditLogModule } from '../audit-log/audit-log.module';
         SlackService,
         TasksGateway,
         JwtService,
+        AuthGuard,
         {
             provide: UploadAbstractService,
             useExisting: FirebaseService

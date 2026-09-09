@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuditLogWsInterceptor } from '../../../../src/common/interceptors/audit-log-ws.interceptor';
 import { AuditLogBufferService } from '../../../../src/resources/audit-log/audit-log-buffer.service';
+import { AuthGuard } from '../../../../src/resources/auth/guards/auth.guard';
 
 describe('TasksGateway', () => {
     let gateway: TasksGateway;
@@ -85,5 +86,19 @@ describe('TasksGateway', () => {
 
         expect(tasksService.multiReordering).toHaveBeenCalledWith(tasks);
         expect(server.emit).toHaveBeenCalledWith('multi-reordering', tasks);
+    });
+
+    // Nest's global AuthGuard (APP_GUARD in AuthModule) only reaches HTTP
+    // controllers, never @SubscribeMessage handlers - confirmed live: every
+    // WS-originated task change reached the audit log with userId always
+    // null, because AuthGuard never ran to populate client.user in the
+    // first place (AuditLogWsInterceptor reading client.user was never the
+    // problem). AuthGuard must be applied to this gateway explicitly so it
+    // runs per-message like the HTTP case and sets client.user before
+    // AuditLogWsInterceptor records the change.
+    it('applies AuthGuard directly, since the global guard registration does not reach this gateway', () => {
+        const guards = Reflect.getMetadata('__guards__', TasksGateway) ?? [];
+
+        expect(guards).toContain(AuthGuard);
     });
 });

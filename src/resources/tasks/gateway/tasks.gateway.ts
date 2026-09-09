@@ -11,8 +11,9 @@ import { UpdateTaskDto } from '../dto/update-task.dto';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UsePipes } from '@nestjs/common/decorators/core/use-pipes.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
-import { UseInterceptors } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuditLogWsInterceptor } from '../../../common/interceptors/audit-log-ws.interceptor';
+import { AuthGuard } from '../../auth/guards/auth.guard';
 export const enum TasksEvents {
   UPDATE = 'update',
   CREATE = 'create',
@@ -21,6 +22,17 @@ export const enum TasksEvents {
   COMMENT_CREATED = 'comment-created',
 }
 
+// AuthGuard is registered globally (APP_GUARD in AuthModule), but Nest's
+// global guards only reach HTTP controllers, not WebSocket
+// @SubscribeMessage handlers - confirmed live (see this gateway's history):
+// every WS-originated task change reached the DB with the audit log's
+// userId always null, because AuthGuard never ran to set client.user in
+// the first place, regardless of what AuditLogWsInterceptor reads.
+// Applying it explicitly here makes it run per-message like the HTTP
+// case, verifying the JWT the frontend already sends via the socket.io
+// handshake's `auth.token` (see TaskWebSocketService) and setting
+// client.user before AuditLogWsInterceptor records the change.
+@UseGuards(AuthGuard)
 @UseInterceptors(AuditLogWsInterceptor)
 @WebSocketGateway({
     namespace: 'tasks',

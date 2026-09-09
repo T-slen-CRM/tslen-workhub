@@ -127,7 +127,14 @@ describe('ExternalTasksService', () => {
 
             await service.create({ title: 'New task', phaseId: 5, assigneeEmail: 'assignee@example.com' } as never, user);
 
-            expect(usersRepository.findOneByCondition).toHaveBeenCalledWith({ email: 'assignee@example.com' });
+            // findOneByCondition forwards its argument straight to TypeORM's
+            // repository.findOne(), which requires a { where: {...} } shape -
+            // a bare conditions object resolves to no where-clause at all and
+            // throws at runtime (this test previously asserted the old, bare
+            // shape, which is exactly why the underlying 500 bug went
+            // unnoticed - the mock let it pass but the real TypeORM call
+            // never worked).
+            expect(usersRepository.findOneByCondition).toHaveBeenCalledWith({ where: { email: 'assignee@example.com' } });
             expect(tasksService.create).toHaveBeenCalledWith(expect.objectContaining({
                 taskUserAssignmentRelations: [{ userId: 42 }],
             }));

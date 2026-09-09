@@ -38,7 +38,16 @@ export class ExternalTasksService {
 
         let assigneeUserId: number | undefined;
         if (dto.assigneeEmail) {
-            const assignee = await this.usersRepository.findOneByCondition({ email: dto.assigneeEmail });
+            // BaseAbstractRepository.findOneByCondition forwards its argument
+            // straight to TypeORM's repository.findOne(), which needs a full
+            // { where: {...} } shape - despite the method's own type signature
+            // (FindOptionsWhere<T>) suggesting a bare conditions object is
+            // enough. Passing a bare { email } here previously resolved to no
+            // where-clause at all, and TypeORM throws "You must provide
+            // selection conditions..." rather than silently matching nothing.
+            const assignee = await this.usersRepository.findOneByCondition({
+                where: { email: dto.assigneeEmail },
+            } as never);
             if (!assignee) {
                 throw new NotFoundException(`User with email ${dto.assigneeEmail} not found`);
             }

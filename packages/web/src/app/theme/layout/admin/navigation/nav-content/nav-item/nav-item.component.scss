@@ -5,3 +5,27 @@
   padding-right: 3px;
   padding-bottom: 1px;
 }
+
+// The badge (e.g. the "Pending" count) is an empty host span - the
+// visible pill is Material's own absolutely-positioned .mat-badge-content,
+// anchored wherever this wrapper lands in .nav-link's inline flow. With
+// no positioning of our own, that flow position tracks the (variable
+// width) label text next to it, and in the expanded sidebar the badge
+// gets pushed toward the link's right edge, where it's been clipped by
+// the nav list's scroll-container overflow. Anchor it to a fixed offset
+// instead, independent of the label.
+.badge.label {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+}
+
+// The collapsed rail is narrow with no label pushing the badge around -
+// it already sits correctly right after the icon via the default inline
+// flow, so revert to that instead of the fixed right-offset above, which
+// would otherwise collide with the icon in the cramped 70px rail.
+:host-context(.navbar-collapsed) .badge.label {
+  position: static;
+  transform: none;
+}

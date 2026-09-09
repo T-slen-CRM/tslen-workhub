@@ -19,7 +19,6 @@ import { LanguageService } from '../../language/language.service';
 export class ManageUsersAggridComponent implements OnInit {
   lastLang;
   columnDefs;
-  defaultColDef;
   rowSelection;
   gridApi;
 
@@ -64,7 +63,7 @@ export class ManageUsersAggridComponent implements OnInit {
           {
             headerName: translations['manage_users.name'],
             field: 'username',
-            minWidth: 230,
+            minWidth: 130,
             cellRenderer: (params) => {
               return `<a href="/pages/user-card-info/${params.data.id}">${
                 params.data.firstName + ' ' + params.data.lastName
@@ -75,27 +74,27 @@ export class ManageUsersAggridComponent implements OnInit {
           {
             headerName: translations['manage_users.id'],
             field: 'id',
-            minWidth: 230,
+            minWidth: 130,
           },
           {
             headerName: translations['manage_users.email'],
             field: 'email',
-            minWidth: 230,
+            minWidth: 130,
           },
           {
             headerName: translations['manage_users.phone'],
             field: 'phone',
-            minWidth: 230,
+            minWidth: 130,
           },
           {
             headerName: translations['manage_users.birthday'],
             field: 'birthDay',
-            minWidth: 230,
+            minWidth: 130,
           },
           {
             headerName: translations['manage_users.position'],
             field: 'jobPositionDetails',
-            minWidth: 230,
+            minWidth: 130,
             valueFormatter: (params) =>
               params.value ? params.value.title : '',
           },
@@ -109,15 +108,6 @@ export class ManageUsersAggridComponent implements OnInit {
           });
         }
       });
-    this.defaultColDef = {
-      minWidth: 120,
-      editable: false,
-      sortable: true,
-      resizable: true,
-      flex: 1,
-      suppressSizeToFit: true,
-      filter: true,
-    };
     this.rowSelection = 'single';
 
     this.rowData = this.dataService.getAgGridData('/users');

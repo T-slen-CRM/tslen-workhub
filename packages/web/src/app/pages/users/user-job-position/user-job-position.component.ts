@@ -78,12 +78,14 @@ export class UserJobPositionComponent extends UnsubscribeOnDestroyAdapter implem
           {
             field: 'id',
             headerName: translations['people.job_position.data.id'],
-            width: 657,
+            flex: 1,
+            minWidth: 100,
           },
           {
             field: 'title',
             headerName: translations['people.job_position.data.title'],
-            width: 657,
+            flex: 1,
+            minWidth: 100,
           },
         ];
       });

@@ -75,18 +75,21 @@ export class UserGroupComponent implements OnInit, OnDestroy {
           {
             field: 'id',
             headerName: translations['people.user_group.data.id'],
-            width: 386,
+            flex: 1,
+            minWidth: 100,
           },
           {
             field: 'name',
             headerName: translations['people.user_group.data.name'],
-            width: 387,
+            flex: 1,
+            minWidth: 100,
           },
           {
             field: 'createdAt',
             headerName: translations['people.user_group.data.created'],
             cellRenderer: 'pendingDateRendererComponent',
-            width: 387,
+            flex: 1,
+            minWidth: 100,
           },
         ];
       });

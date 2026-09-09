@@ -25,7 +25,13 @@
 // it already sits correctly right after the icon via the default inline
 // flow, so revert to that instead of the fixed right-offset above, which
 // would otherwise collide with the icon in the cramped 70px rail.
-:host-context(.navbar-collapsed) .badge.label {
+//
+// BUT .navbar-collapsed:hover is its own real state (see _menu-lite.scss)
+// - the rail widens and the label fades back in via pure CSS, with no
+// class change. :not(:hover) excludes that case so the badge keeps the
+// same right-offset treatment as the fully expanded sidebar whenever the
+// label is actually visible, instead of overlapping it.
+:host-context(.navbar-collapsed:not(:hover)) .badge.label {
   position: static;
   transform: none;
 }

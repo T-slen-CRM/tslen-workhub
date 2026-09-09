@@ -58,4 +58,47 @@ describe('TaskPhaseCreateEditComponent', () => {
     expect(action).toBe('edit');
     expect(result.isMuted).toBe(false);
   });
+
+  it('does not send projectPhasesRelations when editing, so the board position is untouched', () => {
+    createComponent({
+      projectId: 1,
+      phase: { id: 5, name: 'Done', isMuted: true },
+      projectPhasesRelations: [{ projectId: 1, phaseId: 5, orderId: 2 }],
+    });
+
+    component.onSubmit();
+
+    const [{ result }] = dialogRefSpy.close.calls.mostRecent().args;
+    expect(result.projectPhasesRelations).toBeUndefined();
+  });
+
+  it('assigns a new phase the next orderId after the existing ones, not a hardcoded 1', () => {
+    createComponent({
+      projectId: 1,
+      projectPhasesRelations: [
+        { projectId: 1, phaseId: 10, orderId: 1 },
+        { projectId: 1, phaseId: 11, orderId: 2 },
+      ],
+    });
+    component.title.setValue('New phase');
+
+    component.onSubmit();
+
+    const [{ result }] = dialogRefSpy.close.calls.mostRecent().args;
+    expect(result.projectPhasesRelations).toEqual([
+      { projectId: 1, orderId: 3 },
+    ]);
+  });
+
+  it('assigns orderId 1 to the first phase of a project with none yet', () => {
+    createComponent({ projectId: 1 });
+    component.title.setValue('First phase');
+
+    component.onSubmit();
+
+    const [{ result }] = dialogRefSpy.close.calls.mostRecent().args;
+    expect(result.projectPhasesRelations).toEqual([
+      { projectId: 1, orderId: 1 },
+    ]);
+  });
 });

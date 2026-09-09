@@ -46,17 +46,29 @@ export class TaskPhaseCreateEditComponent {
       id: null,
       name: this.title.value,
       isMuted: this.isMuted.value,
-      projectPhasesRelations: [
-        {
-          projectId: this.data.projectId,
-          orderId: 1,
-        },
-      ],
     };
     let action = 'create';
     if (this.data && this.data.phase) {
+      // Editing only changes the phase's own name/isMuted - it must not
+      // touch projectPhasesRelations. Sending a relation object here (even
+      // with the phase's real orderId) makes the backend's cascade save
+      // replace the existing relation row with a brand new one, which is
+      // exactly what caused phases to jump to the wrong board position on
+      // every edit (see Workhub task history for the reported bug).
       action = 'edit';
       result.id = this.data.phase.id;
+    } else {
+      const existingOrderIds: number[] = (
+        this.data.projectPhasesRelations || []
+      ).map((relation) => relation.orderId ?? 0);
+      const nextOrderId =
+        existingOrderIds.length > 0 ? Math.max(...existingOrderIds) + 1 : 1;
+      result.projectPhasesRelations = [
+        {
+          projectId: this.data.projectId,
+          orderId: nextOrderId,
+        },
+      ];
     }
     this.matDialogRef.close({ result, action });
   }

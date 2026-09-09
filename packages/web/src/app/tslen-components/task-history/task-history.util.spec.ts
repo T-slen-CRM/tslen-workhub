@@ -89,6 +89,30 @@ describe('groupHistoryEntries', () => {
     expect(result.map((e) => e.field)).toEqual(['status']);
   });
 
+  it('drops "createdAt" changes - noise, since it never meaningfully "changes" after insert', () => {
+    const user = { id: 1, firstName: 'oleksii', lastName: 'bulakh' };
+    const entries: ITaskHistoryEntry[] = [
+      { id: '10:status', createdAt: '2026-09-02T10:00:00.000Z', action: 'update', field: 'status', from: 'backlog', fromLabel: null, to: 'inProgress', toLabel: null, user },
+      { id: '10:createdAt', createdAt: '2026-09-02T10:00:00.000Z', action: 'update', field: 'createdAt', from: '2026-09-01T10:00:00.000Z', fromLabel: null, to: '2026-09-01T10:00:00.000Z', toLabel: null, user },
+    ];
+
+    const result = groupHistoryEntries(entries);
+
+    expect(result.map((e) => e.field)).toEqual(['status']);
+  });
+
+  it('drops "orderId" changes - the task\'s drag-and-drop position, not meaningful history', () => {
+    const user = { id: 1, firstName: 'oleksii', lastName: 'bulakh' };
+    const entries: ITaskHistoryEntry[] = [
+      { id: '10:status', createdAt: '2026-09-02T10:00:00.000Z', action: 'update', field: 'status', from: 'backlog', fromLabel: null, to: 'inProgress', toLabel: null, user },
+      { id: '10:orderId', createdAt: '2026-09-02T10:00:00.000Z', action: 'update', field: 'orderId', from: 0, fromLabel: null, to: 1, toLabel: null, user },
+    ];
+
+    const result = groupHistoryEntries(entries);
+
+    expect(result.map((e) => e.field)).toEqual(['status']);
+  });
+
   it('drops an update entry that only touched "updatedAt", leaving no entry for that row at all', () => {
     const user = { id: 1, firstName: 'oleksii', lastName: 'bulakh' };
     const entries: ITaskHistoryEntry[] = [

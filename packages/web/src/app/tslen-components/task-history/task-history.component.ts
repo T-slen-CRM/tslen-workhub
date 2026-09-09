@@ -25,6 +25,12 @@ const FIELD_LABELS: Record<string, string> = {
   userId: 'Assignee',
 };
 
+// Fields whose raw from/to value is a timestamp, so formatValue renders
+// it as a date instead of the raw ISO string a person shouldn't have to
+// read (createdAt/updatedAt/orderId never reach here - they're hidden
+// entirely in groupHistoryEntries).
+const DATE_FIELDS = new Set(['estimate']);
+
 type HistoryUser = { id: number; firstName: string; lastName: string } | null;
 
 @Component({
@@ -65,12 +71,15 @@ export class TaskHistoryComponent implements OnInit {
       .trim();
   }
 
-  formatValue(raw: unknown, label: string | null): string {
+  formatValue(raw: unknown, label: string | null, field?: string): string {
     if (label) {
       return label;
     }
     if (raw === null || raw === undefined) {
       return '—';
+    }
+    if (field && DATE_FIELDS.has(field) && typeof raw === 'string') {
+      return this.datePipe.transform(raw, 'MMMM d, y') ?? String(raw);
     }
     return String(raw);
   }

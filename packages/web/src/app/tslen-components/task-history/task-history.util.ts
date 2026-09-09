@@ -75,8 +75,13 @@ export interface HistoryDisplayEntry {
 }
 
 // Bookkeeping columns that change on every save but aren't a meaningful
-// field for a person to see in the history feed.
-const HIDDEN_FIELDS = new Set(['updatedAt']);
+// field for a person to see in the history feed: updatedAt is a pure
+// timestamp of "something happened", createdAt has no business ever
+// showing up as "changed" (it's set once at insert, and a spurious entry
+// for it - even one showing the identical value on both sides - is just
+// audit-log noise), and orderId is the task's drag-and-drop position
+// within its column, not something a reviewer cares about.
+const HIDDEN_FIELDS = new Set(['updatedAt', 'createdAt', 'orderId']);
 
 // A task creation audits one row per column captured at insert time (title,
 // phaseId, projectId, ...), all sharing the same audit-log row id prefix

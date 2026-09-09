@@ -118,5 +118,16 @@ describe('TaskHistoryComponent', () => {
       expect(component.formatValue(null, null)).toBe('—');
       expect(component.formatValue(undefined, null)).toBe('—');
     });
+
+    it('renders a date field\'s raw ISO string as a human-readable date, not the raw string', () => {
+      const formatted = component.formatValue('2026-09-18T00:00:00.000Z', null, 'estimate');
+
+      expect(formatted).not.toContain('T00:00:00');
+      expect(formatted).toContain('2026');
+    });
+
+    it('leaves a non-date field\'s raw string value as-is', () => {
+      expect(component.formatValue('New title', null, 'title')).toBe('New title');
+    });
   });
 });

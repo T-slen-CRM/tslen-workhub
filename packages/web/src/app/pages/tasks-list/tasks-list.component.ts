@@ -409,59 +409,17 @@ export class TasksListComponent implements OnInit, OnDestroy {
   saveTask(task: ITask) {
     task.url = this.router.url;
     task.actorUserId = this.authData.id;
-
-    if (task.taskAttachments instanceof FormData) {
-      const sendAttachments: Subscription = this.dataService
-        .postData(
-          '/tasks/upload-attachments?userId=' + this.authData.id,
-          task.taskAttachments,
-        )
-        .subscribe((result: any) => {
-          if (
-            Array.isArray(task.previousTaskAttachments) &&
-            Array.isArray(result.body)
-          ) {
-            task.taskAttachments = [
-              ...task.previousTaskAttachments,
-              ...result.body,
-            ];
-          } else {
-            task.taskAttachments = result.body;
-          }
-          this.taskWebSocketService.sendMessage(TasksEvents.CREATE, task);
-        });
-      this.subscriptions$.add(sendAttachments);
-    } else {
-      this.taskWebSocketService.sendMessage(TasksEvents.CREATE, task);
-    }
+    // Attachments are now uploaded immediately on selection (see
+    // task-create-edit's onFilesSelected) - task.taskAttachments already
+    // holds the real, persisted attachment rows by the time a task reaches
+    // here, so this just needs to link them via the normal save/update
+    // message (TasksRepository's cascade save sets each attachment's
+    // taskId), not upload anything itself.
+    this.taskWebSocketService.sendMessage(TasksEvents.CREATE, task);
   }
   updateTask(task: ITask) {
     task.actorUserId = this.authData.id;
-
-    if (task.taskAttachments instanceof FormData) {
-      const sendAttachments: Subscription = this.dataService
-        .postData(
-          '/tasks/upload-attachments?userId=' + this.authData.id,
-          task.taskAttachments,
-        )
-        .subscribe((result: any) => {
-          if (
-            Array.isArray(task.previousTaskAttachments) &&
-            Array.isArray(result.body)
-          ) {
-            task.taskAttachments = [
-              ...task.previousTaskAttachments,
-              ...result.body,
-            ];
-          } else {
-            task.taskAttachments = result.body;
-          }
-          this.taskWebSocketService.sendMessage(TasksEvents.UPDATE, task);
-        });
-      this.subscriptions$.add(sendAttachments);
-    } else {
-      this.taskWebSocketService.sendMessage(TasksEvents.UPDATE, task);
-    }
+    this.taskWebSocketService.sendMessage(TasksEvents.UPDATE, task);
   }
   updateTaskArray(tasks: ITask[]) {
     this.taskWebSocketService.sendMessage('multi-reordering', tasks);

@@ -254,15 +254,29 @@
               }
             </div>
             }
-            <app-upload-files
-              formControlName="taskAttachments"
-              [uploadLabel]=""
-              [buttonLabel]="'task.form.add_attachment' | translate"
-              [params]="{ id: null }"
-              [multipleSelection]="true"
-              [acceptedFileTypes]="acceptedFileTypes"
-              [uploadLimit]="uploadLimit"
-            ></app-upload-files>
+            @if (isUploadingAttachments()) {
+            <app-progressbar-bootstrap
+              [progressInfos]="uploadProgressInfos"
+            ></app-progressbar-bootstrap>
+            }
+            <input
+              #attachmentInput
+              type="file"
+              multiple
+              hidden
+              [accept]="acceptedFileTypes"
+              (change)="onFilesSelected($event)"
+            />
+            <button
+              type="button"
+              mat-stroked-button
+              [disabled]="isUploadingAttachments()"
+              (click)="attachmentInput.click()"
+            >
+              <app-loading-button [loading]="isUploadingAttachments()">
+                {{ 'task.form.add_attachment' | translate }}
+              </app-loading-button>
+            </button>
           </div>
         </div>
       </div>

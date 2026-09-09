@@ -33,7 +33,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ComponentsModule } from '../../components/components.module';
 import { AuthData, AuthenticationService } from '../../services/auth.service';
 import { MatSelectModule } from '@angular/material/select';
-import { UploadFilesComponent } from '../upload-files/upload-files.component';
+import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { TaskAttachment } from '@tslen-workhub/shared';
+import { ProgressbarBootstrapComponent } from '../progressbar-bootstrap/progressbar-bootstrap.component';
+import { IProgressInfo } from '../progressbar-bootstrap/interface/progressbar';
 import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PreviewModalComponent } from '../../components/preview-modal/preview-modal.component';
@@ -46,6 +49,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
 import { TaskCommentsComponent } from '../task-comments/task-comments.component';
 import { TaskHistoryComponent } from '../task-history/task-history.component';
+import { LoadingButtonComponent } from '../../helpers/loading-button/loading-button.component';
 
 @Component({
   selector: 'app-task-create-edit',
@@ -60,7 +64,7 @@ import { TaskHistoryComponent } from '../task-history/task-history.component';
     MatTooltipModule,
     ComponentsModule,
     MatSelectModule,
-    UploadFilesComponent,
+    ProgressbarBootstrapComponent,
     MatListModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -69,6 +73,7 @@ import { TaskHistoryComponent } from '../task-history/task-history.component';
     TextEditorComponent,
     TaskCommentsComponent,
     TaskHistoryComponent,
+    LoadingButtonComponent,
   ],
   templateUrl: './task-create-edit.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -98,6 +103,12 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
   public uploadLimit = 5;
   public taskId = null;
   public attachments = [];
+  // Uploads fire immediately on file selection (not deferred to Save) - see
+  // onFilesSelected(). Progress is tracked per upload batch, not per file,
+  // since the backend endpoint already accepts a whole FileList in one
+  // request (FilesInterceptor('attachments', 10, ...)).
+  public uploadProgressInfos: IProgressInfo[] = [];
+  public isUploadingAttachments = signal<boolean>(false);
   public textEditorConfig: ITextEditor = {
     minHeight: '400px',
     showToolbar: true,
@@ -201,7 +212,9 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       } else {
         action = 'save';
       }
-      // concat attachments
+      // Attachments are already uploaded/persisted by now (see
+      // onFilesSelected) - this.attachments is the full, current list.
+      this.form.patchValue({ taskAttachments: this.attachments });
       this.closeDialog(action, this.form.value);
     }
   }
@@ -235,7 +248,6 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       // cleared into an invalid state.
       priority: ['medium', Validators.required],
       taskAttachments: [],
-      previousTaskAttachments: [],
       slackChannelAlert: [''],
       taskUserAssignmentRelations: [[]],
       createMeetingSpace: false,
@@ -250,7 +262,6 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
   }
   patchAdditionalFormValues(isNewTask: boolean) {
     this.form.patchValue({ updatedAt: new Date() });
-    this.form.patchValue({ previousTaskAttachments: this.attachments });
     if (isNewTask) {
       this.form.patchValue({ createdAt: new Date() });
       this.form.patchValue({ createdBy: this.authData.email });
@@ -264,6 +275,75 @@ export class TaskCreateEditComponent implements OnInit, AfterViewChecked {
       const user = item.user;
       return { value: user.id, group: user.firstName + ' ' + user.lastName };
     });
+  }
+
+  // Uploads on selection instead of waiting for Save, so an attachment
+  // shows up in the chip list (and is safe from a lost/crashed dialog)
+  // immediately - see this repo's Workhub task history for why. The
+  // backend endpoint already accepts a whole file batch in one request
+  // (FilesInterceptor('attachments', 10, ...)), so this uploads the whole
+  // selection together rather than one request per file.
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+    if (files.length > this.uploadLimit) {
+      this.toastr.error(
+        `You can only upload up to ${this.uploadLimit} files.`,
+      );
+      input.value = '';
+      return;
+    }
+    // Matches the backend's own limits (FilesExtensionValidatorPipe /
+    // MaxFileSizeValidator in tasks.controller.ts) so a rejection shows up
+    // here instead of as a failed upload after the fact.
+    const maxSizeBytes = 2 * 1024 * 1024;
+    const oversized = [...files].filter((file) => file.size > maxSizeBytes);
+    if (oversized.length > 0) {
+      this.toastr.error(
+        `${oversized.map((file) => file.name).join(', ')} exceed the 2MB limit.`,
+      );
+      input.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('attachments', file);
+    }
+
+    this.uploadProgressInfos = [
+      { value: 0, name: `${files.length} file${files.length > 1 ? 's' : ''}` },
+    ];
+    this.isUploadingAttachments.set(true);
+    this.dataService
+      .uploadPostData(
+        '/tasks/upload-attachments?userId=' + this.authData.id,
+        formData,
+      )
+      .subscribe({
+        next: (uploadEvent: HttpEvent<TaskAttachment[]>) => {
+          if (uploadEvent.type === HttpEventType.UploadProgress) {
+            this.uploadProgressInfos[0].value = Math.round(
+              (100 * uploadEvent.loaded) / (uploadEvent.total ?? uploadEvent.loaded),
+            );
+          } else if (uploadEvent instanceof HttpResponse) {
+            this.attachments = [...this.attachments, ...(uploadEvent.body ?? [])];
+            this.isUploadingAttachments.set(false);
+            this.uploadProgressInfos = [];
+            this.toastr.success('Files uploaded successfully');
+            input.value = '';
+          }
+        },
+        error: () => {
+          this.isUploadingAttachments.set(false);
+          this.uploadProgressInfos = [];
+          this.toastr.error('Could not upload the file(s)');
+          input.value = '';
+        },
+      });
   }
 
   getAttachmentIcon(fileName: string): string {

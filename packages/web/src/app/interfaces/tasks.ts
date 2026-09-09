@@ -60,7 +60,6 @@ export interface ITask{
     estimateColor?: string;
     url?: string;
     taskUserAssignmentRelations?: TaskUserAssignmentRelation[];
-    previousTaskAttachments?: TaskAttachment[];
     priority?: TaskPriority;
 }
 export interface ITaskList {

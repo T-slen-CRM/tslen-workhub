@@ -31,6 +31,9 @@ export class TasksRepository extends BaseAbstractRepository<Tasks> {
     async deleteAttachment (id: number): Promise<void> {
         await this.entityManager.delete(TaskAttachments, id);
     }
+    async saveAttachments (attachments: TaskAttachments[]): Promise<TaskAttachments[]> {
+        return await this.entityManager.save(TaskAttachments, attachments);
+    }
     findAllFiltered (filters: { projectId?: number; phaseId?: number; status?: string }): Promise<Tasks[]> {
         const where: Record<string, number | string> = {};
         if (filters.projectId !== undefined) {

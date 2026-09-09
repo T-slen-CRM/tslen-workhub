@@ -10,6 +10,8 @@ import { Tasks } from '../../../../src/resources/tasks/entities/task.entity';
 import { Users } from '../../../../src/resources/users/entities/users.entity';
 import { TaskPhase } from '../../../../src/resources/task-phase/entities/task-phase.entity';
 import { UpdateTaskDto } from '../../../../src/resources/tasks/dto/update-task.dto';
+import { UploadAbstractService } from '../../../../src/common/services/upload/upload.abstract.service';
+import { TaskAttachments } from '../../../../src/resources/tasks/entities/task-attachments.entity';
 
 describe('TasksService', () => {
     let service: TasksService;
@@ -18,6 +20,7 @@ describe('TasksService', () => {
     let taskPhaseRepository: jest.Mocked<TaskPhaseRepository>;
     let usersService: jest.Mocked<UsersService>;
     let usersRepository: jest.Mocked<UsersRepository>;
+    let uploadService: jest.Mocked<UploadAbstractService>;
 
     const actor = { id: 1, firstName: 'Ann', lastName: 'Actor' } as Users;
     const existingAssignee = { id: 2 } as Users;
@@ -32,6 +35,7 @@ describe('TasksService', () => {
         taskPhaseRepository = unitRef.get(TaskPhaseRepository);
         usersService = unitRef.get(UsersService);
         usersRepository = unitRef.get(UsersRepository);
+        uploadService = unitRef.get(UploadAbstractService as never);
         usersRepository.findOne.mockResolvedValue(actor);
     });
 
@@ -145,6 +149,29 @@ describe('TasksService', () => {
             await service.deleteAttachment(2);
 
             expect(repository.deleteAttachment).toHaveBeenCalledWith(2);
+        });
+    });
+
+    describe('uploadFiles', () => {
+        // Regression: uploadFiles used to build TaskAttachments objects in
+        // memory without saving them, so the frontend's immediate-upload
+        // chip list got attachments with no id - deleting one before the
+        // task was saved (DELETE /tasks/delete-attachment/:id) shipped
+        // "undefined" as the id. Persisting here means every returned row
+        // already has a real id, taskId null until the task itself is saved.
+        it('persists each uploaded file as a TaskAttachments row and returns the saved (real-id) rows', async () => {
+            usersService.validateUserIdByRole.mockReturnValue(undefined);
+            uploadService.uploadImage.mockResolvedValue(['/uploads/a.png']);
+            const saved = [{ id: 5, url: '/uploads/a.png', originName: 'a.png' }] as TaskAttachments[];
+            repository.saveAttachments.mockResolvedValue(saved);
+            const file = { filename: 'a', mimetype: 'image/png', originalname: 'a.png' } as Express.Multer.File;
+
+            const result = await service.uploadFiles(actor, 1, [file]);
+
+            expect(repository.saveAttachments).toHaveBeenCalledWith([
+                expect.objectContaining({ url: '/uploads/a.png', originName: 'a.png', name: 'a', type: 'image/png' }),
+            ]);
+            expect(result).toBe(saved);
         });
     });
 });

@@ -34,6 +34,19 @@ describe('TaskRepository', () => {
         });
     });
 
+    describe('saveAttachments', () => {
+        it('persists the given attachments and returns the saved rows (with real ids)', async () => {
+            const toSave = [{ url: '/x', originName: 'a.png' }] as TaskAttachments[];
+            const saved = [{ id: 9, url: '/x', originName: 'a.png' }] as TaskAttachments[];
+            const saveSpy = jest.spyOn(entityManager, 'save').mockResolvedValue(saved as never);
+
+            const result = await repository.saveAttachments(toSave);
+
+            expect(saveSpy).toHaveBeenCalledWith(TaskAttachments, toSave);
+            expect(result).toBe(saved);
+        });
+    });
+
     describe('findAllFiltered', () => {
         it('applies projectId, phaseId, and status as an AND-combined where clause', async () => {
             const tasks = [mockedTask] as unknown as Tasks[];

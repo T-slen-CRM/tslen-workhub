@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import { TaskCreateEditComponent } from './task-create-edit.component';
 import { AuthenticationService } from '../../services/auth.service';
@@ -16,9 +16,10 @@ import { AutocompleteComponent } from '../../components/autocomplete/autocomplet
 describe('TaskCreateEditComponent', () => {
   let component: TaskCreateEditComponent;
   let fixture: ComponentFixture<TaskCreateEditComponent>;
+  let dataServiceSpy: jasmine.SpyObj<DataService>;
 
   function configure(data: any) {
-    const dataServiceSpy = jasmine.createSpyObj('DataService', ['getObservableData', 'postData', 'postImage', 'deleteData']);
+    dataServiceSpy = jasmine.createSpyObj('DataService', ['getObservableData', 'postData', 'postImage', 'deleteData', 'uploadPostData']);
     dataServiceSpy.getObservableData.and.returnValue(of([]));
     return TestBed.configureTestingModule({
       imports: [TaskCreateEditComponent, TranslateModule.forRoot()],
@@ -181,6 +182,106 @@ describe('TaskCreateEditComponent', () => {
 
       expect(component.activeActivityTab()).toBe('history');
       expect(component.form.get('title').value).toBe('');
+    });
+  });
+
+  describe('onFilesSelected (immediate attachment upload)', () => {
+    function fileInputEvent(files: File[]): Event {
+      const input = document.createElement('input');
+      input.type = 'file';
+      Object.defineProperty(input, 'files', { value: files });
+      return { target: input } as unknown as Event;
+    }
+
+    beforeEach(() => {
+      fixture.detectChanges();
+    });
+
+    it('uploads the selection immediately, without waiting for Save', () => {
+      const upload$ = new Subject<HttpEvent<unknown>>();
+      dataServiceSpy.uploadPostData.and.returnValue(upload$);
+      const file = new File(['content'], 'photo.png', { type: 'image/png' });
+
+      component.onFilesSelected(fileInputEvent([file]));
+
+      expect(dataServiceSpy.uploadPostData).toHaveBeenCalled();
+      const [path, formData] = dataServiceSpy.uploadPostData.calls.mostRecent().args;
+      expect(path).toContain('/tasks/upload-attachments');
+      expect(formData.getAll('attachments')).toEqual([file]);
+      expect(component.isUploadingAttachments()).toBeTrue();
+    });
+
+    it('merges the returned attachment rows into the chip list on success, without needing Save', () => {
+      const upload$ = new Subject<HttpEvent<unknown>>();
+      dataServiceSpy.uploadPostData.and.returnValue(upload$);
+      const file = new File(['content'], 'photo.png', { type: 'image/png' });
+      component.attachments = [];
+
+      component.onFilesSelected(fileInputEvent([file]));
+      upload$.next(new HttpResponse({ body: [{ id: 1, originName: 'photo.png', url: '/x' }] }));
+
+      expect(component.attachments).toEqual([{ id: 1, originName: 'photo.png', url: '/x' }]);
+      expect(component.isUploadingAttachments()).toBeFalse();
+    });
+
+    it('shows a spinner on the Add attachment button while the upload is in flight', () => {
+      const upload$ = new Subject<HttpEvent<unknown>>();
+      dataServiceSpy.uploadPostData.and.returnValue(upload$);
+      const file = new File(['content'], 'photo.png', { type: 'image/png' });
+
+      component.onFilesSelected(fileInputEvent([file]));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('mat-spinner')).not.toBeNull();
+
+      upload$.next(new HttpResponse({ body: [] }));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('mat-spinner')).toBeNull();
+    });
+
+    it('tracks upload progress while the request is in flight', () => {
+      const upload$ = new Subject<HttpEvent<unknown>>();
+      dataServiceSpy.uploadPostData.and.returnValue(upload$);
+      const file = new File(['content'], 'photo.png', { type: 'image/png' });
+
+      component.onFilesSelected(fileInputEvent([file]));
+      upload$.next({ type: HttpEventType.UploadProgress, loaded: 50, total: 100 });
+
+      expect(component.uploadProgressInfos[0].value).toBe(50);
+    });
+
+    it('shows an error and resets uploading state when the upload fails', () => {
+      const upload$ = new Subject<HttpEvent<unknown>>();
+      dataServiceSpy.uploadPostData.and.returnValue(upload$);
+      const toastrSpy = TestBed.inject(ToastrService) as unknown as jasmine.SpyObj<ToastrService>;
+      const file = new File(['content'], 'photo.png', { type: 'image/png' });
+
+      component.onFilesSelected(fileInputEvent([file]));
+      upload$.error(new Error('network down'));
+
+      expect(component.isUploadingAttachments()).toBeFalse();
+      expect(toastrSpy.error).toHaveBeenCalled();
+    });
+
+    it('rejects a file over the 2MB backend limit client-side, without calling the upload endpoint', () => {
+      const bigContent = new Uint8Array(2 * 1024 * 1024 + 1);
+      const file = new File([bigContent], 'huge.png', { type: 'image/png' });
+
+      component.onFilesSelected(fileInputEvent([file]));
+
+      expect(dataServiceSpy.uploadPostData).not.toHaveBeenCalled();
+    });
+
+    it('rejects a selection larger than the upload limit, without calling the upload endpoint', () => {
+      const files = Array.from(
+        { length: component.uploadLimit + 1 },
+        (_, i) => new File(['x'], `f${i}.png`, { type: 'image/png' }),
+      );
+
+      component.onFilesSelected(fileInputEvent(files));
+
+      expect(dataServiceSpy.uploadPostData).not.toHaveBeenCalled();
     });
   });
 });

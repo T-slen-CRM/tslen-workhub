@@ -83,7 +83,7 @@ export class TasksService extends BaseAbstractService<Tasks>{
     public async uploadFiles (user: Users, userId: number, files: Express.Multer.File[]): Promise<TaskAttachments[]> {
         try {
             this.usersService.validateUserIdByRole(userId, user);
-            const result = [];
+            const attachments: TaskAttachments[] = [];
             for (const file of files) {
                 if (!file) {
                     const errorMessage = `uploadFiles: ${this.constructor.name}. Message: File is empty`;
@@ -91,16 +91,19 @@ export class TasksService extends BaseAbstractService<Tasks>{
                     await this.errorService.aggregateError(errorMessage, errorMessage, throwError);
                 }
                 const imageUrl: string[] = await this.uploadService.uploadImage(file, 'taskAttachments/');
-                const attachment = Object.assign(new TaskAttachments({}), {
+                attachments.push(Object.assign(new TaskAttachments({}), {
                     url: imageUrl[0],
                     name: file.filename,
                     extension: file.mimetype,
                     originName: file.originalname,
                     type: file.mimetype
-                });
-                result.push(attachment);
+                }));
             }
-            return result;
+            // Persist immediately (taskId stays null until the task itself is
+            // saved) so the returned rows already have real ids - the
+            // frontend's immediate-upload chip list can delete-by-id right
+            // away, before the task is ever saved. See TasksRepository.saveAttachments.
+            return await this.repository.saveAttachments(attachments);
         } catch (e) {
             const errorMessage = `uploadFiles: ${this.constructor.name}. Message: ${e.message}`;
             const throwError = { method: ErrorExceptionMethod.NotFound, message: `Cannot upload files` };

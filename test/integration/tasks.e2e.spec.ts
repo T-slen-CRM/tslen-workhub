@@ -42,7 +42,8 @@ describe('TasksController (e2e)', () => {
                         useValue: {
                             findAll: jest.fn(() => [mockedTask]),
                             findOne: jest.fn(() => mockedTask),
-                            deleteAttachment: jest.fn(() => undefined)
+                            deleteAttachment: jest.fn(() => undefined),
+                            saveAttachments: jest.fn((attachments) => attachments)
                         },
                     },
                     {

@@ -8,6 +8,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ITaskPhase } from '../../../../interfaces/tasks';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -18,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDialogModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatSlideToggleModule,
     TranslateModule,
   ],
   templateUrl: './task-phase-create-edit.component.html',
@@ -27,6 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class TaskPhaseCreateEditComponent {
   // form control title
   public title: FormControl = new FormControl('', Validators.required);
+  // Renders this phase's task cards greyed-out/inactive on the board.
+  public isMuted: FormControl = new FormControl(false);
   constructor(
     public dialog: MatDialog,
     public matDialogRef: MatDialogRef<TaskPhaseCreateEditComponent>,
@@ -34,12 +38,14 @@ export class TaskPhaseCreateEditComponent {
   ) {
     if (data.phase) {
       this.title.setValue(data.phase.name);
+      this.isMuted.setValue(!!data.phase.isMuted);
     }
   }
   onSubmit() {
     const result: ITaskPhase = {
       id: null,
       name: this.title.value,
+      isMuted: this.isMuted.value,
       projectPhasesRelations: [
         {
           projectId: this.data.projectId,

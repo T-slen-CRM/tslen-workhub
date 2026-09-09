@@ -12,6 +12,12 @@ export class TaskPhase {
   @Column("varchar", { name: "name", nullable: true, length: 250 })
       name: string | null;
 
+  // Renders this phase's task cards in a muted/greyed-out style, so e.g. a
+  // "Done" phase visually reads as inactive at a glance. Any phase can be
+  // marked this way - not tied to the phase's name.
+  @Column("boolean", { name: "isMuted", default: false })
+      isMuted: boolean;
+
   @Column("timestamp", { name: "createdAt", nullable: true })
       createdAt: Date | null;
 

@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, IsDate } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderInPhaseDto } from './orderInPhase.dto';
 import { CreateTaskDto } from 'src/resources/tasks/dto/create-task.dto';
@@ -14,6 +14,10 @@ export class CreateTaskPhaseDto {
     @IsOptional()
     @IsString()
         name: string | null;
+
+    @IsOptional()
+    @IsBoolean()
+        isMuted?: boolean;
 
     @IsOptional()
     @IsDate()

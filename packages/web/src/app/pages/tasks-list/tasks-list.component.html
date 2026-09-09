@@ -74,7 +74,7 @@
       >
         <div>
           @for (item of list.tasks; track item.id){
-          <div class="list-box" cdkDrag>
+          <div class="list-box" [class.list-box--muted]="list.isMuted" cdkDrag>
             @if (item.priority) {
             <div class="tags">
               <span id="{{ item.priority }}" class="tag">{{

@@ -1,10 +1,14 @@
 
 .task-phase-card {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 
   .input-mat-select {
     width: 100%;
+  }
+
+  .muted-toggle-row {
+    margin-bottom: 16px;
   }
 
   .dialog-action-button {

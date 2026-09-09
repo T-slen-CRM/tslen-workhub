@@ -165,6 +165,7 @@
            "name": "Create phase",
            "label": "Name",
            "placeholder": "Name",
+           "muted_label": "Show this phase's tasks as inactive (greyed out)",
            "button": {
               "save":"Save",
               "cancel":"Cancel"

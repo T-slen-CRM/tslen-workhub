@@ -109,6 +109,22 @@ div.list-drop-group {
   }
 }
 
+// A phase marked "muted" in its settings (see task-phase-create-edit)
+// renders its cards dimmed/inactive-looking - e.g. for a "Done" column.
+// Dims the background and title text directly rather than the whole
+// card's opacity - CSS opacity on a parent can't be selectively undone
+// on a child (it composites the whole subtree as one group), which
+// washed out the priority/estimate tags' own background colors along
+// with everything else. This keeps those tags fully legible.
+.list-box--muted {
+  background: #eee;
+  box-shadow: none;
+
+  .task-text {
+    color: rgba(0, 0, 0, 0.45);
+  }
+}
+
 .created-icon {
   color: #28bb04;
   transform: scale(0.8);

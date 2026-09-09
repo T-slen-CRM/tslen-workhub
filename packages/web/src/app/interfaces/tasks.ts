@@ -22,6 +22,7 @@ export interface ITaskProject {
 export interface ITaskPhase {
     id: number;
     name: string;
+    isMuted?: boolean;
     slackChannel?: string;
     data?: ITask[];
     createdAt?: Date;

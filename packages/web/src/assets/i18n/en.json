@@ -510,7 +510,16 @@
         "send": "Send"
     },
     "user_card_info": {
-        "no_user_found": "no user found"
+        "no_user_found": "no user found",
+        "email": "Email",
+        "phone": "Phone",
+        "birthday": "Birthday",
+        "address": "Address",
+        "company": "Company",
+        "role": "Role",
+        "first_day": "First day in company",
+        "last_day": "Last day in company",
+        "not_specified": "Not specified"
     },
     "dark_mode_button": {
         "change_mode": "Change mode"

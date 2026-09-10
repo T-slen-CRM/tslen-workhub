@@ -1,0 +1,22 @@
+.main-card-container {
+  max-width: 420px;
+  margin: 20px auto;
+
+  .card-header-image {
+    position: relative;
+    img {
+      border-radius: inherit;
+    }
+  }
+
+  .card-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+
+    .info-row {
+      font-size: 14px;
+    }
+  }
+}

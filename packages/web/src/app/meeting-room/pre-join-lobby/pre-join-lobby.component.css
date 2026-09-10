@@ -53,6 +53,19 @@
   gap: 12px;
   z-index: 3;
 }
+/* Same fix as meeting-room.component.css's identical rule: the app-wide
+   .mat-mdc-icon-button override forces a fixed size + 6px padding but no
+   flex centering, so the mic/camera pill buttons render with their icon
+   glyph visibly off-center - Material's own line-height math doesn't
+   perfectly center it. Extra class in the selector (not just
+   .mat-mdc-icon-button) matches that rule's specificity so this reliably
+   wins regardless of stylesheet load order. */
+.pre-join-lobby .mat-mdc-icon-button.mat-mdc-button-base {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
 .pre-join-pill-btn {
   width: 48px !important;
   height: 48px !important;

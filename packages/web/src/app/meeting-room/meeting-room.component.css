@@ -308,6 +308,34 @@ app-meeting-chat.meeting-chat-hidden {
   font-size: 18px;
 }
 
+/* Meet-style layout while someone is screen-sharing: one enlarged tile for
+   the shared screen, everyone else (presenter's own camera included) in a
+   small horizontally-scrollable strip below it - see .meeting-video-tile
+   above for why an explicit height is required on every tile in here (its
+   video-component child resolves its own 100% height against this tile). */
+.meeting-screenshare-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+.meeting-screenshare-main {
+  flex: 1;
+  min-height: 0;
+}
+.meeting-screenshare-sidebar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.meeting-video-tile--thumb {
+  flex: 0 0 140px;
+  height: 90px;
+}
+
 .meeting-custom-backgrounds {
   display: flex;
   flex-direction: column;

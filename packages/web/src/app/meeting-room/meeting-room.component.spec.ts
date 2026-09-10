@@ -1004,4 +1004,53 @@ describe('MeetingRoomComponent', () => {
       expect(component.myBackgroundImages().map((img) => img.id)).toEqual([2]);
     });
   });
+
+  describe('Meet-style screen-share layout', () => {
+    function subscribeRemoteScreenShare (room: FakeRoom, sid: string, identity: string, videoTrack: unknown = {}): void {
+      room.handlers.get(RoomEvent.TrackSubscribed)!(
+        {},
+        { trackSid: sid, kind: 'video', source: 'screen_share', videoTrack },
+        { identity },
+      );
+    }
+
+    it('has no active screen share before anyone starts sharing', () => {
+      expect(component.activeScreenShareTrack()).toBeUndefined();
+      expect(component.activeScreenSharePresenterName()).toBe('');
+    });
+
+    it('reports the local screen track once the local user starts sharing', () => {
+      const screenTrack = {} as unknown as LocalVideoTrack;
+      component.screenShareEnabled.set(true);
+      component.localScreenTrack.set(screenTrack);
+
+      expect(component.activeScreenShareTrack()).toBe(screenTrack);
+      expect(component.activeScreenSharePresenterName()).toBe('Ada');
+    });
+
+    it('reports a remote participant\'s screen track once they start sharing', () => {
+      const room = attachFakeRoom();
+      const remoteScreenTrack = {};
+      subscribeRemoteScreenShare(room, 'sid-1', 'bob', remoteScreenTrack);
+
+      expect(component.activeScreenShareTrack()).toBe(remoteScreenTrack as never);
+      expect(component.activeScreenSharePresenterName()).toBe('bob');
+    });
+
+    it('ignores a remote participant\'s ordinary camera track - only screen_share counts', () => {
+      const room = attachFakeRoom();
+      room.handlers.get(RoomEvent.TrackSubscribed)!({}, { trackSid: 'sid-1', kind: 'video', source: 'camera', videoTrack: {} }, { identity: 'bob' });
+
+      expect(component.activeScreenShareTrack()).toBeUndefined();
+    });
+
+    it('clears once the local screen share stops', () => {
+      component.screenShareEnabled.set(true);
+      component.localScreenTrack.set({} as unknown as LocalVideoTrack);
+      component.screenShareEnabled.set(false);
+      component.localScreenTrack.set(undefined);
+
+      expect(component.activeScreenShareTrack()).toBeUndefined();
+    });
+  });
 });

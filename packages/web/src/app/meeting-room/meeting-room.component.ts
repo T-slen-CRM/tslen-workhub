@@ -17,6 +17,7 @@ import {
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
+  RemoteVideoTrack,
   Room,
   RoomEvent,
   VideoPresets,
@@ -102,6 +103,34 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   gridColumns = computed(() => {
     const total = this.totalParticipants();
     return total <= 1 ? 1 : Math.ceil(Math.sqrt(total));
+  });
+  // Whoever is currently sharing their screen (local or remote), Meet-style:
+  // while set, the grid switches to one enlarged screen-share tile with
+  // everyone else (presenter's own camera included) in a small edge strip.
+  // Local is checked first - if both happen at once (edge case), the local
+  // user's own screen share wins deterministically rather than flip-flopping
+  // on remoteTracksMap iteration order.
+  activeScreenShareTrack = computed<LocalVideoTrack | RemoteVideoTrack | undefined>(() => {
+    if (this.screenShareEnabled() && this.localScreenTrack()) {
+      return this.localScreenTrack();
+    }
+    for (const info of this.remoteTracksMap().values()) {
+      if (info.trackPublication.source === 'screen_share' && info.trackPublication.videoTrack) {
+        return info.trackPublication.videoTrack;
+      }
+    }
+    return undefined;
+  });
+  activeScreenSharePresenterName = computed<string>(() => {
+    if (this.screenShareEnabled() && this.localScreenTrack()) {
+      return this.displayName();
+    }
+    for (const info of this.remoteTracksMap().values()) {
+      if (info.trackPublication.source === 'screen_share') {
+        return info.participantIdentity;
+      }
+    }
+    return '';
   });
   raisedHandsPanelOpen = signal<boolean>(false);
   handsRaised = signal<RaisedHandEntry[]>([]);

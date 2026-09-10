@@ -40,6 +40,7 @@ export interface IAuditLogRow {
     userId: number | null;
     userName: string;
     ip: string;
+    userAgent: string | null;
     method: string;
     resourceType: string | null;
     resourceId: string | null;

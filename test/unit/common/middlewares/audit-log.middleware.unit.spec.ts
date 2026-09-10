@@ -70,6 +70,44 @@ describe('AuditLogMiddleware', () => {
         });
     });
 
+    it('prefers X-Forwarded-For (the real client, behind the Traefik reverse proxy) over req.ip', () => {
+        const { middleware, enqueue } = buildMiddleware();
+        const req: any = {
+            method: 'POST',
+            ip: '10.0.0.5', // Traefik's own address
+            headers: { 'x-forwarded-for': '203.0.113.7', 'user-agent': 'jest' },
+            route: { path: '/api/v1/tasks' },
+            originalUrl: '/api/v1/tasks',
+            params: {},
+            body: {},
+        };
+        const res = buildRes(201);
+
+        middleware.use(req, res as any, jest.fn());
+        (res as unknown as EventEmitter).emit('finish');
+
+        expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({ ip: '203.0.113.7' }));
+    });
+
+    it('strips the ::ffff: IPv4-mapped-IPv6 prefix from req.ip when there is no proxy in front (local dev)', () => {
+        const { middleware, enqueue } = buildMiddleware();
+        const req: any = {
+            method: 'POST',
+            ip: '::ffff:127.0.0.1',
+            headers: {},
+            route: { path: '/api/v1/tasks' },
+            originalUrl: '/api/v1/tasks',
+            params: {},
+            body: {},
+        };
+        const res = buildRes(201);
+
+        middleware.use(req, res as any, jest.fn());
+        (res as unknown as EventEmitter).emit('finish');
+
+        expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({ ip: '127.0.0.1' }));
+    });
+
     it('records a null userId for an unauthenticated request', () => {
         const { middleware, enqueue } = buildMiddleware();
         const req: any = {

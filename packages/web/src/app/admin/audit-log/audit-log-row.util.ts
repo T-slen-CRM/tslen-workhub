@@ -9,6 +9,7 @@ export function flattenAuditLogRows (logs: IAuditLog[], userNames: Map<number, s
             userId: log.userId,
             userName: log.userId === null ? '' : (userNames.get(log.userId) ?? String(log.userId)),
             ip: log.ip,
+            userAgent: log.userAgent,
             method: log.method,
             resourceType: log.resourceType,
             resourceId: log.resourceId,

@@ -4,6 +4,7 @@ import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffe
 import { sanitizeRequestBody } from '../../resources/audit-log/audit-log-sanitize.util';
 import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
 import { captureAuditContext, finalizeAuditChanges, runWithAuditContext, AuditEntityChange } from '../audit-context.storage';
+import { extractClientIp } from '../../resources/audit-log/audit-log-ip.util';
 
 const LOGGED_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 // Entities that are always a side effect of an operation, never its subject -
@@ -36,7 +37,7 @@ export class AuditLogMiddleware implements NestMiddleware {
 
                 this.auditLogBufferService.enqueue({
                     userId: user?.id ?? null,
-                    ip: req.ip,
+                    ip: extractClientIp(req.headers['x-forwarded-for'], req.ip) ?? '',
                     userAgent: (req.headers['user-agent'] as string | undefined) ?? null,
                     method: req.method,
                     route,

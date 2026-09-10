@@ -36,6 +36,26 @@ describe('AuditLogWsInterceptor', () => {
         });
     });
 
+    it('prefers X-Forwarded-For over the socket\'s direct address, and captures the user-agent', (done) => {
+        const { interceptor, enqueue } = build();
+        const client = {
+            user: { id: 7 },
+            handshake: {
+                address: '10.0.0.5',
+                headers: { 'x-forwarded-for': '203.0.113.7', 'user-agent': 'okhttp/4.9' },
+            },
+        };
+        const handler: CallHandler = { handle: () => of(undefined) };
+
+        interceptor.intercept(buildContext(client), handler).subscribe(() => {
+            expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({
+                ip: '203.0.113.7',
+                userAgent: 'okhttp/4.9',
+            }));
+            done();
+        });
+    });
+
     it('records userId: null for an unauthenticated socket', (done) => {
         const { interceptor, enqueue } = build();
         const client = { handshake: { address: '9.9.9.9' } };

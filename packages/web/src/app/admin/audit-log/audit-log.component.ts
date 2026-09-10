@@ -46,6 +46,7 @@ export class AuditLogComponent implements OnInit {
     },
     { field: 'userName', headerName: 'User', sortable: true, filter: true },
     { field: 'ip', headerName: 'IP', sortable: true, filter: true },
+    { field: 'userAgent', headerName: 'Device', sortable: true, filter: true },
     { field: 'method', headerName: 'Method', sortable: true, filter: true },
     {
       field: 'resourceType',

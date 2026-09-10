@@ -4,10 +4,11 @@ import { catchError, tap } from 'rxjs/operators';
 import { AuditLogBufferService } from '../../resources/audit-log/audit-log-buffer.service';
 import { collapseRelationPairs } from '../../resources/audit-log/audit-log-diff.util';
 import { AuditEntityChange, captureAuditContext, finalizeAuditChanges, runWithAuditContext } from '../audit-context.storage';
+import { extractClientIp } from '../../resources/audit-log/audit-log-ip.util';
 
 interface AuditableSocket {
     user?: { id?: number };
-    handshake?: { address?: string };
+    handshake?: { address?: string; headers?: Record<string, string | string[] | undefined> };
 }
 
 // Entities that are always a side effect of an operation, never its subject -
@@ -47,8 +48,8 @@ export class AuditLogWsInterceptor implements NestInterceptor {
 
         this.auditLogBufferService.enqueue({
             userId: client.user?.id ?? null,
-            ip: client.handshake?.address ?? '',
-            userAgent: null,
+            ip: extractClientIp(client.handshake?.headers?.['x-forwarded-for'], client.handshake?.address) ?? '',
+            userAgent: (client.handshake?.headers?.['user-agent'] as string | undefined) ?? null,
             method: 'WS',
             route: eventName,
             resourceType: primaryChange?.entityName ?? null,

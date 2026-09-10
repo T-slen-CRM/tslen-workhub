@@ -30,9 +30,22 @@ describe('flattenAuditLogRows', () => {
         const rows = flattenAuditLogRows(logs, new Map([[6, 'Oleh Teslenko']]));
 
         expect(rows).toEqual([
-            { logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: 'Oleh Teslenko', ip: '1.2.3.4', method: 'PATCH', resourceType: 'Tasks', resourceId: '16', statusCode: 200, entityName: 'Tasks', field: 'title', oldValue: 'NEW TASK', newValue: 'NEW TASK 1 1' },
-            { logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: 'Oleh Teslenko', ip: '1.2.3.4', method: 'PATCH', resourceType: 'Tasks', resourceId: '16', statusCode: 200, entityName: 'Tasks', field: 'description', oldValue: 'old', newValue: 'new' },
+            { logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: 'Oleh Teslenko', ip: '1.2.3.4', userAgent: null, method: 'PATCH', resourceType: 'Tasks', resourceId: '16', statusCode: 200, entityName: 'Tasks', field: 'title', oldValue: 'NEW TASK', newValue: 'NEW TASK 1 1' },
+            { logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: 'Oleh Teslenko', ip: '1.2.3.4', userAgent: null, method: 'PATCH', resourceType: 'Tasks', resourceId: '16', statusCode: 200, entityName: 'Tasks', field: 'description', oldValue: 'old', newValue: 'new' },
         ]);
+    });
+
+    it('carries the userAgent (device) through to each row', () => {
+        const logs: IAuditLog[] = [{
+            ...baseLog,
+            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+            id: 1,
+            changes: null,
+        }];
+
+        const rows = flattenAuditLogRows(logs, new Map());
+
+        expect(rows[0].userAgent).toBe('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)');
     });
 
     it('flattens fields across multiple entity changes in one log entry, in order', () => {
@@ -103,7 +116,7 @@ describe('flattenAuditLogRows', () => {
         const rows = flattenAuditLogRows(logs, new Map());
 
         expect(rows).toEqual([{
-            logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: '6', ip: '1.2.3.4', method: 'PATCH',
+            logId: 1, createdAt: baseLog.createdAt, userId: 6, userName: '6', ip: '1.2.3.4', userAgent: null, method: 'PATCH',
             resourceType: 'Tasks', resourceId: '16', statusCode: 200, entityName: null, field: null, oldValue: null, newValue: null,
         }]);
     });

@@ -1,0 +1,55 @@
+.today-meetings {
+  padding: 16px;
+}
+
+.today-meetings-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.today-meetings-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.today-meetings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.today-meetings-time {
+  flex: 0 0 auto;
+  min-width: 64px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.today-meetings-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.today-meetings-join {
+  flex: 0 0 auto;
+  color: #3f51b5;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.today-meetings-empty {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}

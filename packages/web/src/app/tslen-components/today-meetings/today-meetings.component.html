@@ -1,0 +1,27 @@
+<div class="today-meetings">
+  <span class="today-meetings-title">{{
+    'today_meetings.title' | translate
+  }}</span>
+
+  @if (events$ | async; as events) { @if (events.length) {
+  <ul class="today-meetings-list">
+    @for (event of events; track event.id) {
+    <li class="today-meetings-item">
+      <span class="today-meetings-time">{{ event.start | date: 'shortTime' }}</span>
+      <span class="today-meetings-name">{{ event.title }}</span>
+      @if (event.googleMeetLink) {
+      <a
+        class="today-meetings-join"
+        [href]="event.googleMeetLink"
+        target="_blank"
+        rel="noopener"
+        >{{ 'today_meetings.join' | translate }}</a
+      >
+      }
+    </li>
+    }
+  </ul>
+  } @else {
+  <p class="today-meetings-empty">{{ 'today_meetings.no_meetings' | translate }}</p>
+  } }
+</div>

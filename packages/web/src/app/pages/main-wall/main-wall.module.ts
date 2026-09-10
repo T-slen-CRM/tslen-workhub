@@ -5,6 +5,7 @@ import {MainWallRoutingModule} from "./main-wall-routing.module";
 import {TslenComponentsModule} from "../../tslen-components/tslen-components.module";
 import {BirthdayListComponent} from "../../tslen-components/birthday-list/birthday-list.component";
 import {AbsentUserComponent} from "../../tslen-components/absent-user/absent-user.component";
+import {TodayMeetingsComponent} from "../../tslen-components/today-meetings/today-meetings.component";
 import {MatButtonModule} from "@angular/material/button";
 import { TranslateModule } from '@ngx-translate/core';
 import { LiveKitRoutingModule } from '../live-kit/live-kit-routing.module';
@@ -20,6 +21,7 @@ import { LiveKitRoutingModule } from '../live-kit/live-kit-routing.module';
         TslenComponentsModule,
         BirthdayListComponent,
         AbsentUserComponent,
+        TodayMeetingsComponent,
         MatButtonModule,
         LiveKitRoutingModule
     ]

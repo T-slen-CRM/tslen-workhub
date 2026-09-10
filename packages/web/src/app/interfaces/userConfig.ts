@@ -26,7 +26,7 @@ export interface UserGeneralData {
     lastDayInCompany: string;
     emailSpare: string;
     daysOff: object;
-    eventsByUsers: object;
+    eventsByUsers: IEventByUser[];
     eventsByUsersRequest: object;
     userChiefRelations: object;
     userRelationToGroups: object;
@@ -34,6 +34,25 @@ export interface UserGeneralData {
     group: string;
     value: number;
     userProbation: IUserProbation;
+}
+
+// A row in the "eventsByUser" table, scoped to a date range via
+// GET /users/:id?startDate&endDate (see UsersRepository.getOneWithRelations -
+// this relation is only joined at all when both query params are given).
+// Covers both real calendar events/meetings (isRequest false) and day-off
+// requests (isRequest true, e.g. vacation/sick leave) - the two share this
+// one table, so a consumer that only wants meetings must filter on
+// isRequest itself.
+export interface IEventByUser {
+    id: number;
+    title: string | null;
+    start: string;
+    end: string;
+    isRequest: boolean;
+    approved: number;
+    requestType: string | null;
+    isGoogleEvent: boolean;
+    googleMeetLink: string | null;
 }
 
 interface IUserProbation {

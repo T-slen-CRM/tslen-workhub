@@ -523,6 +523,11 @@
     "dark_mode_button": {
         "change_mode": "Change mode"
     },
+    "today_meetings": {
+        "title": "Today's meetings",
+        "no_meetings": "No meetings today",
+        "join": "Join"
+    },
     "notification_form": {
         "title": "Create notification",
         "title_placeholder": "Title",

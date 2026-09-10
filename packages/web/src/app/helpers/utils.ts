@@ -53,6 +53,18 @@ export function getMonthDateRange(year: number, month: number): { startDate: str
   const formattedEndDate = endDate.toISOString().slice(0, 10);
   return { startDate, endDate: formattedEndDate };
 }
+// Deliberately built from local getters, not toISOString() (which converts
+// through UTC first and can land on the wrong calendar day for a viewer
+// behind UTC near midnight) - "today" here means the viewer's own local
+// today, matching what someone means by "my meetings today".
+export function getTodayDateRange(): { startDate: string; endDate: string } {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const today = `${year}-${month}-${day}`;
+  return { startDate: today, endDate: today };
+}
 export function getDaysArray(start, end) {
   // UTC getters/setters throughout - start/end are calendar-day boundaries
   // (a day-off's start/end), not viewer-relative instants, so walking them

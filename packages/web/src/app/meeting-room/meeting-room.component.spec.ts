@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { of, throwError } from 'rxjs';
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
 import * as trackProcessors from '@livekit/track-processors';
 import { MeetingRoomComponent } from './meeting-room.component';
 import { BACKGROUND_IMAGE_PRESETS } from './pre-join-lobby/pre-join-lobby.component';
+import { DataService } from '../services/data.service';
 
 jest.mock('@livekit/track-processors', () => ({
   ...jest.requireActual('@livekit/track-processors'),
@@ -52,10 +54,19 @@ function fireData (room: FakeRoom, payload: unknown, participant?: { name?: stri
 describe('MeetingRoomComponent', () => {
   let component: MeetingRoomComponent;
   let fixture: ComponentFixture<MeetingRoomComponent>;
+  let dataServiceSpy: jasmine.SpyObj<DataService>;
 
   beforeEach(() => {
+    dataServiceSpy = jasmine.createSpyObj('DataService', [
+      'listMeetingBackgroundImages',
+      'uploadMeetingBackgroundImage',
+      'deleteMeetingBackgroundImage',
+    ]);
+    dataServiceSpy.listMeetingBackgroundImages.and.returnValue(of([]));
+
     TestBed.configureTestingModule({
       imports: [MeetingRoomComponent, TranslateModule.forRoot()],
+      providers: [{ provide: DataService, useValue: dataServiceSpy }],
     });
 
     fixture = TestBed.createComponent(MeetingRoomComponent);
@@ -878,6 +889,119 @@ describe('MeetingRoomComponent', () => {
 
       expect(component.backgroundEffect()).toBe('none');
       expect(component.selectedBackgroundImage()).toBeUndefined();
+    });
+  });
+
+  describe('custom background images', () => {
+    function fileSelectEvent (file: File | undefined): Event {
+      const input = document.createElement('input');
+      input.type = 'file';
+      if (file) {
+        Object.defineProperty(input, 'files', { value: [file] });
+      }
+      return { target: input } as unknown as Event;
+    }
+
+    it('loads the caller\'s own custom background images on init', () => {
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      dataServiceSpy.listMeetingBackgroundImages.and.returnValue(of(images));
+
+      component.ngOnInit();
+
+      expect(component.myBackgroundImages()).toEqual(images);
+    });
+
+    it('leaves the list empty, without throwing, when loading custom backgrounds fails', () => {
+      dataServiceSpy.listMeetingBackgroundImages.and.returnValue(throwError(() => new Error('network down')));
+
+      component.ngOnInit();
+
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('uploads a selected file, adds it to the list, and selects it as the active background', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+      const uploaded = { id: 5, url: 'https://x/mine.png', originName: 'mine.png', type: 'image/png', createdAt: '2026-01-01' };
+      dataServiceSpy.uploadMeetingBackgroundImage.and.returnValue(of(uploaded));
+      const file = new File(['a'], 'mine.png', { type: 'image/png' });
+
+      component.onCustomBackgroundFileSelected(fileSelectEvent(file));
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(dataServiceSpy.uploadMeetingBackgroundImage).toHaveBeenCalledWith(file);
+      expect(component.myBackgroundImages()).toContain(uploaded);
+      expect(component.backgroundImageUploading()).toBe(false);
+      expect(component.selectedBackgroundImage()).toBe(uploaded.url);
+    });
+
+    it('is a no-op when the file input change fires with no file selected', () => {
+      component.onCustomBackgroundFileSelected(fileSelectEvent(undefined));
+
+      expect(dataServiceSpy.uploadMeetingBackgroundImage).not.toHaveBeenCalled();
+    });
+
+    it('surfaces an upload error instead of silently failing', () => {
+      dataServiceSpy.uploadMeetingBackgroundImage.and.returnValue(throwError(() => new Error('too big')));
+      const file = new File(['a'], 'mine.png', { type: 'image/png' });
+
+      component.onCustomBackgroundFileSelected(fileSelectEvent(file));
+
+      expect(component.backgroundImageUploading()).toBe(false);
+      expect(component.backgroundImageUploadError()).toBe(true);
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('deletes a custom background image and removes it from the list', () => {
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      component.myBackgroundImages.set(images);
+      dataServiceSpy.deleteMeetingBackgroundImage.and.returnValue(of(undefined));
+      const stopPropagation = jasmine.createSpy('stopPropagation');
+
+      component.deleteMyBackgroundImage(1, { stopPropagation } as unknown as Event);
+
+      expect(dataServiceSpy.deleteMeetingBackgroundImage).toHaveBeenCalledWith(1);
+      expect(stopPropagation).toHaveBeenCalled();
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('resets the background to none when deleting the image currently in use', async () => {
+      attachFakeRoom();
+      const cameraTrack = {
+        stopProcessor: jasmine.createSpy('stopProcessor').and.resolveTo(undefined),
+      } as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      component.myBackgroundImages.set(images);
+      component.backgroundEffect.set('image');
+      component.selectedBackgroundImage.set('https://x/a.png');
+      dataServiceSpy.deleteMeetingBackgroundImage.and.returnValue(of(undefined));
+
+      component.deleteMyBackgroundImage(1, { stopPropagation: () => undefined } as unknown as Event);
+      await Promise.resolve();
+
+      expect(component.backgroundEffect()).toBe('none');
+      expect(component.selectedBackgroundImage()).toBeUndefined();
+    });
+
+    it('leaves the active background alone when deleting a different, unused image', () => {
+      const images = [
+        { id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' },
+        { id: 2, url: 'https://x/b.png', originName: 'b.png', type: 'image/png', createdAt: '2026-01-01' },
+      ];
+      component.myBackgroundImages.set(images);
+      component.selectedBackgroundImage.set('https://x/b.png');
+      dataServiceSpy.deleteMeetingBackgroundImage.and.returnValue(of(undefined));
+
+      component.deleteMyBackgroundImage(1, { stopPropagation: () => undefined } as unknown as Event);
+
+      expect(component.selectedBackgroundImage()).toBe('https://x/b.png');
+      expect(component.myBackgroundImages().map((img) => img.id)).toEqual([2]);
     });
   });
 });

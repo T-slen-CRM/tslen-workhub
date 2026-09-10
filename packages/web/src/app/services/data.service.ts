@@ -45,6 +45,22 @@ export class DataService {
     revokeMeetingLink(id: number) {
         return this.http.delete<void>(this.apiHost + '/meeting-links/' + id);
     }
+    listMeetingBackgroundImages() {
+        return this.http.get<{ id: number; url: string; originName: string; type: string | null; createdAt: string }[]>(
+            this.apiHost + '/meeting-background-images',
+        );
+    }
+    uploadMeetingBackgroundImage(file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<{ id: number; url: string; originName: string; type: string | null; createdAt: string }>(
+            this.apiHost + '/meeting-background-images',
+            formData,
+        );
+    }
+    deleteMeetingBackgroundImage(id: number) {
+        return this.http.delete<void>(this.apiHost + '/meeting-background-images/' + id);
+    }
     deleteSsp(id: number) {
         return this.http.delete(this.apiHost + `/ssp/${id}`)
     }

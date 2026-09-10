@@ -77,6 +77,49 @@
                 }
               </mat-select>
             </mat-form-field>
+
+            <div class="meeting-custom-backgrounds">
+              <span class="meeting-custom-backgrounds-label">{{ 'meeting_room.my_backgrounds' | translate }}</span>
+              <div class="meeting-custom-backgrounds-list">
+                @for (image of myBackgroundImages(); track image.id) {
+                  <div
+                    class="meeting-custom-background-thumb"
+                    [class.meeting-custom-background-thumb--selected]="selectedBackgroundImage() === image.url"
+                  >
+                    <button
+                      type="button"
+                      class="meeting-custom-background-select"
+                      [attr.aria-label]="image.originName"
+                      (click)="selectBackgroundImage(image.url)"
+                    >
+                      <img [src]="image.url" [alt]="image.originName" />
+                    </button>
+                    <button
+                      type="button"
+                      class="meeting-custom-background-remove"
+                      [attr.aria-label]="'meeting_room.remove_background' | translate"
+                      [matTooltip]="'meeting_room.remove_background' | translate"
+                      (click)="deleteMyBackgroundImage(image.id, $event)"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="meeting-custom-background-upload"
+                  [disabled]="backgroundImageUploading()"
+                  [matTooltip]="'meeting_room.upload_background' | translate"
+                  (click)="customBackgroundFileInput.click()"
+                >
+                  <mat-icon>{{ backgroundImageUploading() ? 'hourglass_empty' : 'add_photo_alternate' }}</mat-icon>
+                </button>
+                <input #customBackgroundFileInput type="file" accept="image/*" hidden (change)="onCustomBackgroundFileSelected($event)" />
+              </div>
+              @if (backgroundImageUploadError()) {
+                <span class="meeting-background-error">{{ 'meeting_room.background_upload_error' | translate }}</span>
+              }
+            </div>
           }
           @if (backgroundUnavailable()) {
             <span class="meeting-background-error">{{ 'pre_join_lobby.blur_unavailable' | translate }}</span>

@@ -28,6 +28,7 @@ import { ExternalTasksModule } from './resources/external-tasks/external-tasks.m
 import { MeetingLinksModule } from './resources/meeting-links/meeting-links.module';
 import { NotificationsModule } from './resources/notifications/notifications.module';
 import { AuditLogModule } from './resources/audit-log/audit-log.module';
+import { MeetingBackgroundImagesModule } from './resources/meeting-background-images/meeting-background-images.module';
 import { AuditLogMiddleware } from './common/middlewares/audit-log.middleware';
 @Module({
     imports: [
@@ -61,7 +62,8 @@ import { AuditLogMiddleware } from './common/middlewares/audit-log.middleware';
         ChatModule,
         InventoryModule,
         AppThrottlerModule,
-        AuditLogModule
+        AuditLogModule,
+        MeetingBackgroundImagesModule
     ]
 })
 export class AppModule implements NestModule {

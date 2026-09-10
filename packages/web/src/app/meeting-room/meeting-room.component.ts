@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -28,10 +28,19 @@ import { MeetingChatComponent, MeetingChatMessage } from './meeting-chat/meeting
 import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel/raised-hands-panel.component';
 import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect } from './pre-join-lobby/pre-join-lobby.component';
 import { environment } from '../../environments/environment';
+import { DataService } from '../services/data.service';
 
 interface TrackInfo {
   trackPublication: RemoteTrackPublication;
   participantIdentity: string;
+}
+
+export interface MeetingBackgroundImageRow {
+  id: number;
+  url: string;
+  originName: string;
+  type: string | null;
+  createdAt: string;
 }
 
 @Component({
@@ -43,6 +52,8 @@ interface TrackInfo {
   styleUrls: ['./meeting-room.component.css', '../pages/live-kit/collapsible-call-window.css'],
 })
 export class MeetingRoomComponent implements OnInit, OnDestroy {
+  private dataService = inject(DataService);
+
   livekitToken = input.required<string>();
   roomName = input.required<string>();
   displayName = input.required<string>();
@@ -108,6 +119,11 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   selectedBackgroundImage = signal<string | undefined>(undefined);
   backgroundUnavailable = signal<boolean>(false);
   backgroundImagePresets = BACKGROUND_IMAGE_PRESETS;
+  // Private to the signed-in user - populated from GET /meeting-background-images,
+  // which is scoped to the caller by the backend (never takes a userId param).
+  myBackgroundImages = signal<MeetingBackgroundImageRow[]>([]);
+  backgroundImageUploading = signal<boolean>(false);
+  backgroundImageUploadError = signal<boolean>(false);
 
   private destroyed = false;
   private encoder = new TextEncoder();
@@ -179,6 +195,15 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.joinRoom();
+    this.loadMyBackgroundImages();
+  }
+
+  loadMyBackgroundImages (): void {
+    this.dataService.listMeetingBackgroundImages().subscribe({
+      next: (images) => this.myBackgroundImages.set(images),
+      // Best-effort only - the built-in presets still work if this fails.
+      error: () => this.myBackgroundImages.set([]),
+    });
   }
 
   async joinRoom(): Promise<void> {
@@ -432,6 +457,42 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   selectBackgroundImage (path: string): void {
     void this.setBackgroundEffect('image', path);
+  }
+
+  onCustomBackgroundFileSelected (event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // allow re-selecting the same file later
+    if (!file) {
+      return;
+    }
+    this.backgroundImageUploadError.set(false);
+    this.backgroundImageUploading.set(true);
+    this.dataService.uploadMeetingBackgroundImage(file).subscribe({
+      next: (image) => {
+        this.backgroundImageUploading.set(false);
+        this.myBackgroundImages.update((list) => [image, ...list]);
+        this.selectBackgroundImage(image.url);
+      },
+      error: () => {
+        this.backgroundImageUploading.set(false);
+        this.backgroundImageUploadError.set(true);
+      },
+    });
+  }
+
+  deleteMyBackgroundImage (id: number, event: Event): void {
+    event.stopPropagation(); // the thumbnail itself is also the select button
+    this.dataService.deleteMeetingBackgroundImage(id).subscribe({
+      next: () => {
+        const removed = this.myBackgroundImages().find((image) => image.id === id);
+        this.myBackgroundImages.update((list) => list.filter((image) => image.id !== id));
+        if (removed && this.selectedBackgroundImage() === removed.url) {
+          void this.setBackgroundEffect('none');
+        }
+      },
+      error: () => undefined,
+    });
   }
 
   async setBackgroundEffect (effect: BackgroundEffect, imagePath?: string): Promise<void> {

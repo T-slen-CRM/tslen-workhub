@@ -636,7 +636,11 @@
       "unnamed_microphone": "Microphone",
       "raised_hands_title": "Raised hands",
       "no_raised_hands": "No one has raised their hand yet.",
-      "background_effect": "Background effect"
+      "background_effect": "Background effect",
+      "my_backgrounds": "My backgrounds",
+      "upload_background": "Upload a custom background",
+      "remove_background": "Remove",
+      "background_upload_error": "Could not upload the image"
     },
     "pre_join_lobby": {
       "camera_unavailable": "Camera unavailable",

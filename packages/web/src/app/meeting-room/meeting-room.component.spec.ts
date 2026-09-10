@@ -1121,4 +1121,91 @@ describe('MeetingRoomComponent', () => {
       expect(component.pinnedMainTrack()).toBeUndefined();
     });
   });
+
+  describe('automatic Picture-in-Picture on tab switch', () => {
+    function subscribeRemoteCamera (room: FakeRoom, sid: string, identity: string, videoTrack: unknown = {}): void {
+      room.handlers.get(RoomEvent.TrackSubscribed)!(
+        {},
+        { trackSid: sid, kind: 'video', source: 'camera', videoTrack },
+        { identity },
+      );
+    }
+
+    it('registers a visibilitychange listener on init and tears it down on destroy', () => {
+      const addSpy = spyOn(document, 'addEventListener').and.callThrough();
+      const removeSpy = spyOn(document, 'removeEventListener').and.callThrough();
+
+      component.ngOnInit();
+      expect(addSpy).toHaveBeenCalledWith('visibilitychange', jasmine.any(Function));
+
+      component.ngOnDestroy();
+      expect(removeSpy).toHaveBeenCalledWith('visibilitychange', jasmine.any(Function));
+    });
+
+    it('opens the PiP window when the tab is hidden while in a room, and closes it when it becomes visible again', () => {
+      attachFakeRoom();
+      const openSpy = spyOn((component as unknown as { pip: { open: () => void } }).pip, 'open');
+      const closeSpy = spyOn((component as unknown as { pip: { close: () => void } }).pip, 'close');
+      const visibilitySpy = spyOnProperty(document, 'visibilityState', 'get');
+      const onVisibilityChange = (component as unknown as { onVisibilityChange: () => void }).onVisibilityChange;
+
+      visibilitySpy.and.returnValue('hidden');
+      onVisibilityChange();
+      expect(openSpy).toHaveBeenCalledTimes(1);
+
+      visibilitySpy.and.returnValue('visible');
+      onVisibilityChange();
+      expect(closeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not open the PiP window when the tab hides with no room joined yet', () => {
+      const openSpy = spyOn((component as unknown as { pip: { open: () => void } }).pip, 'open');
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue('hidden');
+
+      (component as unknown as { onVisibilityChange: () => void }).onVisibilityChange();
+
+      expect(openSpy).not.toHaveBeenCalled();
+    });
+
+    it('PiP handles report the spotlighted screen-share track as the main video when one is active', () => {
+      attachFakeRoom();
+      component.screenShareEnabled.set(true);
+      const screenTrack = {} as unknown as LocalVideoTrack;
+      component.localScreenTrack.set(screenTrack);
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue('hidden');
+      const openSpy = spyOn((component as unknown as { pip: { open: (h: unknown) => void } }).pip, 'open');
+
+      (component as unknown as { onVisibilityChange: () => void }).onVisibilityChange();
+
+      const handles = openSpy.calls.mostRecent().args[0] as { getMainVideoTrack: () => unknown };
+      expect(handles.getMainVideoTrack()).toBe(screenTrack);
+    });
+
+    it('PiP handles fall back to the first remote camera track when nothing is spotlighted', () => {
+      const room = attachFakeRoom();
+      const bobTrack = {};
+      subscribeRemoteCamera(room, 'sid-1', 'bob', bobTrack);
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue('hidden');
+      const openSpy = spyOn((component as unknown as { pip: { open: (h: unknown) => void } }).pip, 'open');
+
+      (component as unknown as { onVisibilityChange: () => void }).onVisibilityChange();
+
+      const handles = openSpy.calls.mostRecent().args[0] as { getMainVideoTrack: () => unknown };
+      expect(handles.getMainVideoTrack()).toBe(bobTrack);
+    });
+
+    it('PiP handles fall back to the local camera when no one else has published video', () => {
+      attachFakeRoom();
+      const cameraTrack = {} as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue('hidden');
+      const openSpy = spyOn((component as unknown as { pip: { open: (h: unknown) => void } }).pip, 'open');
+
+      (component as unknown as { onVisibilityChange: () => void }).onVisibilityChange();
+
+      const handles = openSpy.calls.mostRecent().args[0] as { getMainVideoTrack: () => unknown; getSelfVideoTrack: () => unknown };
+      expect(handles.getMainVideoTrack()).toBe(cameraTrack);
+      expect(handles.getSelfVideoTrack()).toBe(cameraTrack);
+    });
+  });
 });

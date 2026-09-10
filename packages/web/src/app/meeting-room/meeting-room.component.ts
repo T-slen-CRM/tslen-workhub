@@ -30,6 +30,7 @@ import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel
 import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect } from './pre-join-lobby/pre-join-lobby.component';
 import { environment } from '../../environments/environment';
 import { DataService } from '../services/data.service';
+import { PictureInPictureHandles, PictureInPictureService } from '../pages/live-kit/picture-in-picture.service';
 
 interface TrackInfo {
   trackPublication: RemoteTrackPublication;
@@ -60,6 +61,7 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   readonly LOCAL_PIN = MeetingRoomComponent.LOCAL_PIN;
 
   private dataService = inject(DataService);
+  private pip = inject(PictureInPictureService);
 
   livekitToken = input.required<string>();
   roomName = input.required<string>();
@@ -262,7 +264,45 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.joinRoom();
     this.loadMyBackgroundImages();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
+
+  // Automatic cross-tab floating window (Picture-in-Picture), matching the
+  // 1-on-1 call's own behavior - no separate "pop out" button, it just
+  // follows the tab's visibility. Priority for what to show as the main
+  // video mirrors the in-room spotlight: an active screen share or manual
+  // pin first, then whichever remote camera happens to be first, then the
+  // local camera as a last resort for a solo call.
+  private getPipMainVideoTrack (): LocalVideoTrack | RemoteVideoTrack | null {
+    const spotlighted = this.activeScreenShareTrack() ?? this.pinnedMainTrack();
+    if (spotlighted) {
+      return spotlighted;
+    }
+    for (const info of this.remoteTracksMap().values()) {
+      if (info.trackPublication.kind === 'video' && info.trackPublication.videoTrack) {
+        return info.trackPublication.videoTrack;
+      }
+    }
+    return this.localCameraTrack() ?? null;
+  }
+
+  private buildPipHandles (): PictureInPictureHandles {
+    return {
+      getMainVideoTrack: () => this.getPipMainVideoTrack(),
+      getSelfVideoTrack: () => this.localCameraTrack() ?? null,
+      isMicEnabled: () => this.microphoneEnabled(),
+      onToggleMic: () => this.setMicrophoneEnabled(!this.microphoneEnabled()),
+      onLeave: () => this.leaveRoom(),
+    };
+  }
+
+  private onVisibilityChange = (): void => {
+    if (document.visibilityState === 'hidden' && this.room()) {
+      this.pip.open(this.buildPipHandles());
+    } else if (document.visibilityState === 'visible') {
+      this.pip.close();
+    }
+  };
 
   loadMyBackgroundImages (): void {
     this.dataService.listMeetingBackgroundImages().subscribe({
@@ -667,6 +707,8 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed = true;
     navigator.mediaDevices.removeEventListener('devicechange', this.handleDeviceChange);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.pip.close();
     this.leaveRoom();
   }
 }

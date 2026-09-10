@@ -53,6 +53,12 @@ export interface MeetingBackgroundImageRow {
   styleUrls: ['./meeting-room.component.css', '../pages/live-kit/collapsible-call-window.css'],
 })
 export class MeetingRoomComponent implements OnInit, OnDestroy {
+  static readonly LOCAL_PIN = '__local__';
+  // Instance alias so the template can reference the sentinel without a
+  // static-member binding (`MeetingRoomComponent.LOCAL_PIN` isn't reachable
+  // from an Angular template expression).
+  readonly LOCAL_PIN = MeetingRoomComponent.LOCAL_PIN;
+
   private dataService = inject(DataService);
 
   livekitToken = input.required<string>();
@@ -132,6 +138,29 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     }
     return '';
   });
+  // Manually spotlighting one participant's camera (Meet's "pin" feature) -
+  // '__local__' stands in for the local participant, who has no `identity`
+  // string of their own in remoteTracksMap. A screen share always overrides
+  // a pin, same priority order as everywhere else in this component.
+  pinnedIdentity = signal<string | undefined>(undefined);
+  pinnedMainTrack = computed<LocalVideoTrack | RemoteVideoTrack | undefined>(() => {
+    if (this.activeScreenShareTrack()) {
+      return undefined;
+    }
+    const identity = this.pinnedIdentity();
+    if (!identity) {
+      return undefined;
+    }
+    if (identity === MeetingRoomComponent.LOCAL_PIN) {
+      return this.localCameraTrack();
+    }
+    for (const info of this.remoteTracksMap().values()) {
+      if (info.participantIdentity === identity && info.trackPublication.kind === 'video' && info.trackPublication.source !== 'screen_share') {
+        return info.trackPublication.videoTrack;
+      }
+    }
+    return undefined;
+  });
   raisedHandsPanelOpen = signal<boolean>(false);
   handsRaised = signal<RaisedHandEntry[]>([]);
   ownHandRaised = signal<boolean>(false);
@@ -204,6 +233,14 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   isMicMuted (identity: string): boolean {
     return this.mutedParticipants().has(identity);
+  }
+
+  isPinned (identity: string): boolean {
+    return this.pinnedIdentity() === identity;
+  }
+
+  togglePin (identity: string): void {
+    this.pinnedIdentity.update((current) => (current === identity ? undefined : identity));
   }
 
   private applyHandRaiseEvent (type: 'hand-raised' | 'hand-lowered', participant?: RemoteParticipant): void {

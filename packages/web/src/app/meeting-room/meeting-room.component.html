@@ -73,6 +73,77 @@
           }
         </div>
       </div>
+    } @else if (pinnedMainTrack(); as pinnedTrack) {
+      <div class="meeting-screenshare-layout">
+        <div class="meeting-video-tile meeting-screenshare-main">
+          <video-component
+            [track]="pinnedTrack"
+            [participantIdentity]="isPinned(LOCAL_PIN) ? displayName() : pinnedIdentity()!"
+            [local]="isPinned(LOCAL_PIN)"
+            [isMainVideo]="true"
+            [fitCover]="true"
+          ></video-component>
+          @if (isPinned(LOCAL_PIN) ? ownHandRaised() : isHandRaised(pinnedIdentity()!)) {
+            <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+          }
+          @if (isPinned(LOCAL_PIN) ? !microphoneEnabled() : isMicMuted(pinnedIdentity()!)) {
+            <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
+          }
+          <button
+            mat-icon-button
+            type="button"
+            class="meeting-pin-badge meeting-pin-badge--active"
+            [matTooltip]="'meeting_room.unpin' | translate"
+            (click)="togglePin(pinnedIdentity()!)"
+          >
+            <mat-icon>push_pin</mat-icon>
+          </button>
+        </div>
+        <div class="meeting-screenshare-sidebar">
+          @if (localCameraTrack(); as cameraTrack) {
+            @if (!isPinned(LOCAL_PIN)) {
+              <div class="meeting-video-tile meeting-video-tile--thumb">
+                <video-component
+                  [track]="cameraTrack"
+                  [participantIdentity]="displayName() + ' ' + ('meeting_room.you_suffix' | translate)"
+                  [local]="true"
+                  [isThumbnail]="true"
+                ></video-component>
+                @if (ownHandRaised()) {
+                  <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+                }
+                @if (!microphoneEnabled()) {
+                  <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
+                }
+                <button mat-icon-button type="button" class="meeting-pin-badge" [matTooltip]="'meeting_room.pin' | translate" (click)="togglePin(LOCAL_PIN)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              </div>
+            }
+          }
+          @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
+            @if (remoteTrack.trackPublication.kind === 'video' && remoteTrack.trackPublication.source !== 'screen_share' && !isPinned(remoteTrack.participantIdentity)) {
+              <div class="meeting-video-tile meeting-video-tile--thumb">
+                <video-component
+                  [track]="remoteTrack.trackPublication.videoTrack!"
+                  [participantIdentity]="remoteTrack.participantIdentity"
+                  [local]="false"
+                  [isThumbnail]="true"
+                ></video-component>
+                @if (isHandRaised(remoteTrack.participantIdentity)) {
+                  <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+                }
+                @if (isMicMuted(remoteTrack.participantIdentity)) {
+                  <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
+                }
+                <button mat-icon-button type="button" class="meeting-pin-badge" [matTooltip]="'meeting_room.pin' | translate" (click)="togglePin(remoteTrack.participantIdentity)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              </div>
+            }
+          }
+        </div>
+      </div>
     } @else {
       <div
         class="meeting-video-grid"
@@ -94,6 +165,11 @@
             @if (!microphoneEnabled()) {
               <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
             }
+            @if (!win.collapsed()) {
+              <button mat-icon-button type="button" class="meeting-pin-badge" [matTooltip]="'meeting_room.pin' | translate" (click)="togglePin(LOCAL_PIN)">
+                <mat-icon>push_pin</mat-icon>
+              </button>
+            }
           </div>
         }
         @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
@@ -110,6 +186,11 @@
               }
               @if (isMicMuted(remoteTrack.participantIdentity)) {
                 <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
+              }
+              @if (!win.collapsed()) {
+                <button mat-icon-button type="button" class="meeting-pin-badge" [matTooltip]="'meeting_room.pin' | translate" (click)="togglePin(remoteTrack.participantIdentity)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
               }
             </div>
           }

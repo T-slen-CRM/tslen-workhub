@@ -1053,4 +1053,72 @@ describe('MeetingRoomComponent', () => {
       expect(component.activeScreenShareTrack()).toBeUndefined();
     });
   });
+
+  describe('pin a participant', () => {
+    function subscribeRemoteCamera (room: FakeRoom, sid: string, identity: string, videoTrack: unknown = {}): void {
+      room.handlers.get(RoomEvent.TrackSubscribed)!(
+        {},
+        { trackSid: sid, kind: 'video', source: 'camera', videoTrack },
+        { identity },
+      );
+    }
+
+    it('has no pinned main view by default', () => {
+      expect(component.pinnedMainTrack()).toBeUndefined();
+    });
+
+    it('togglePin pins the local user\'s own camera', () => {
+      const cameraTrack = {} as unknown as LocalVideoTrack;
+      component.localCameraTrack.set(cameraTrack);
+
+      component.togglePin('__local__');
+
+      expect(component.isPinned('__local__')).toBe(true);
+      expect(component.pinnedMainTrack()).toBe(cameraTrack);
+    });
+
+    it('togglePin pins a remote participant\'s camera', () => {
+      const room = attachFakeRoom();
+      const bobTrack = {};
+      subscribeRemoteCamera(room, 'sid-1', 'bob', bobTrack);
+
+      component.togglePin('bob');
+
+      expect(component.isPinned('bob')).toBe(true);
+      expect(component.pinnedMainTrack()).toBe(bobTrack as never);
+    });
+
+    it('togglePin on an already-pinned identity unpins - back to the equal grid', () => {
+      const room = attachFakeRoom();
+      subscribeRemoteCamera(room, 'sid-1', 'bob', {});
+      component.togglePin('bob');
+
+      component.togglePin('bob');
+
+      expect(component.isPinned('bob')).toBe(false);
+      expect(component.pinnedMainTrack()).toBeUndefined();
+    });
+
+    it('pinning a different participant replaces the previous pin', () => {
+      const room = attachFakeRoom();
+      subscribeRemoteCamera(room, 'sid-1', 'bob', {});
+      subscribeRemoteCamera(room, 'sid-2', 'carol', {});
+      component.togglePin('bob');
+
+      component.togglePin('carol');
+
+      expect(component.isPinned('bob')).toBe(false);
+      expect(component.isPinned('carol')).toBe(true);
+    });
+
+    it('a screen share always wins over a manual pin', () => {
+      const room = attachFakeRoom();
+      subscribeRemoteCamera(room, 'sid-1', 'bob', {});
+      component.togglePin('bob');
+      component.screenShareEnabled.set(true);
+      component.localScreenTrack.set({} as unknown as LocalVideoTrack);
+
+      expect(component.pinnedMainTrack()).toBeUndefined();
+    });
+  });
 });

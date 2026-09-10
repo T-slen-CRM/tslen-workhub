@@ -640,7 +640,9 @@
       "my_backgrounds": "My backgrounds",
       "upload_background": "Upload a custom background",
       "remove_background": "Remove",
-      "background_upload_error": "Could not upload the image"
+      "background_upload_error": "Could not upload the image",
+      "pin": "Pin",
+      "unpin": "Unpin"
     },
     "pre_join_lobby": {
       "camera_unavailable": "Camera unavailable",

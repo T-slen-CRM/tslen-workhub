@@ -335,6 +335,28 @@ app-meeting-chat.meeting-chat-hidden {
   flex: 0 0 140px;
   height: 90px;
 }
+/* Same corner on every tile (equal grid, screenshare sidebar, or the
+   pinned-main tile) - opposite side from the hand/mic badges so a
+   muted, hand-raised, pinned tile never collides all three. */
+.meeting-pin-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #fff !important;
+}
+.meeting-pin-badge mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+.meeting-pin-badge--active {
+  background: var(--meet-control-active-bg, #1a73e8) !important;
+}
 
 .meeting-custom-backgrounds {
   display: flex;

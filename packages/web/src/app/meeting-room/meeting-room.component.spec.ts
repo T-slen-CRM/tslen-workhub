@@ -114,10 +114,10 @@ describe('MeetingRoomComponent', () => {
   });
 
   describe('Meet-style grid sizing', () => {
-    function subscribeRemote(room: FakeRoom, sid: string, identity: string): void {
+    function subscribeRemote(room: FakeRoom, sid: string, identity: string, kind: 'video' | 'audio' = 'video'): void {
       room.handlers.get(RoomEvent.TrackSubscribed)!(
         {},
-        { trackSid: sid, kind: 'video' },
+        { trackSid: sid, kind },
         { identity },
       );
     }
@@ -151,6 +151,34 @@ describe('MeetingRoomComponent', () => {
       subscribeRemote(room, 'sid-4', 'erin');
       expect(component.totalParticipants()).toBe(5);
       expect(component.gridColumns()).toBe(3); // 3x2 grid, one empty cell
+    });
+
+    it('counts each remote participant once, not once per track - a participant with both audio and video subscribed is still one person', () => {
+      const room = attachFakeRoom();
+
+      // bob: camera video + microphone audio, both subscribed separately.
+      subscribeRemote(room, 'sid-1-video', 'bob', 'video');
+      subscribeRemote(room, 'sid-1-audio', 'bob', 'audio');
+      // carol: same.
+      subscribeRemote(room, 'sid-2-video', 'carol', 'video');
+      subscribeRemote(room, 'sid-2-audio', 'carol', 'audio');
+
+      // 4 tracks subscribed, but only 2 distinct remote people + self = 3,
+      // not 5 (the bug: counting remoteTracksMap.size directly).
+      expect(component.totalParticipants()).toBe(3);
+    });
+
+    it('drops a participant from the count only once their last track unsubscribes', () => {
+      const room = attachFakeRoom();
+      subscribeRemote(room, 'sid-1-video', 'bob', 'video');
+      subscribeRemote(room, 'sid-1-audio', 'bob', 'audio');
+      expect(component.totalParticipants()).toBe(2);
+
+      room.handlers.get(RoomEvent.TrackUnsubscribed)!({}, { trackSid: 'sid-1-video' });
+      expect(component.totalParticipants()).toBe(2); // bob's audio track is still there
+
+      room.handlers.get(RoomEvent.TrackUnsubscribed)!({}, { trackSid: 'sid-1-audio' });
+      expect(component.totalParticipants()).toBe(1); // bob has no tracks left
     });
   });
 

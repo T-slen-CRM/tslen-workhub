@@ -72,7 +72,20 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   // Google-Meet-style grid: solo fills the whole area (1 column, 1 row);
   // 2+ tiles split into a near-square grid of equal-sized cells instead of
   // one tile stretching larger than the rest.
-  totalParticipants = computed(() => 1 + this.remoteTracksMap().size);
+  //
+  // Counts distinct participants, not raw map entries - remoteTracksMap is
+  // keyed by trackSid, and a single remote participant typically publishes
+  // both a video AND an audio track (more if they're also screen-sharing),
+  // each landing in this same map. Counting entries directly overcounted
+  // the header's participant badge (e.g. showing 5 for 3 real people, two
+  // of whom had both tracks subscribed).
+  totalParticipants = computed(() => {
+    const remoteIdentities = new Set<string>();
+    for (const track of this.remoteTracksMap().values()) {
+      remoteIdentities.add(track.participantIdentity);
+    }
+    return 1 + remoteIdentities.size;
+  });
   gridColumns = computed(() => {
     const total = this.totalParticipants();
     return total <= 1 ? 1 : Math.ceil(Math.sqrt(total));

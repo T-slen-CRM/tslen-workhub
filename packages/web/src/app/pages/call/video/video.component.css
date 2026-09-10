@@ -48,6 +48,16 @@
             left: 4px;
         }
 
+        /* In the minimized/mini call window (CollapsibleCallWindowDirective's
+           collapsed state, shared by MeetingRoomComponent and CallComponent),
+           tiles shrink down to a glance-sized thumbnail - the name label at
+           that size just overlaps/obscures the participant's face instead of
+           being useful. :host-context reaches past this component's own view
+           encapsulation to check the ancestor call-window element's class. */
+        :host-context(.collapsible-call-window--collapsed) .participant-data {
+            display: none;
+        }
+
         /* Sized/positioned here; the 36px icon-button box itself comes
            from the app-wide .mat-mdc-icon-button rule in _mat-custom.scss
            (same size as every other icon button in the app). */

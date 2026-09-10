@@ -163,6 +163,21 @@ app-meeting-chat.meeting-chat-hidden {
   display: flex;
   align-items: center;
 }
+/* The app-wide .mat-mdc-icon-button override (_mat-custom.scss) forces a
+   fixed size + 6px padding but no flex centering, leaving the icon glyph
+   positioned by Material's own line-height math - consistently a couple
+   pixels off vertically for every custom size used in this room (pill
+   control-bar buttons, caret buttons, the collapse button, the pin badge).
+   Force real flex centering and drop the padding so every icon lands dead
+   center regardless of the button's own size. Extra class in the selector
+   (not just .mat-mdc-icon-button) matches that rule's specificity so this
+   reliably wins regardless of stylesheet load order. */
+.meeting-room .mat-mdc-icon-button.mat-mdc-button-base {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
 .meeting-caret-btn {
   width: 24px !important;
   height: 24px !important;
@@ -293,7 +308,7 @@ app-meeting-chat.meeting-chat-hidden {
   top: 8px;
   right: 44px;
   z-index: 2;
-  background: rgba(217, 48, 37, 0.9);
+  background: rgba(95, 99, 104, 0.9);
   color: #fff;
   border-radius: 50%;
   width: 28px;

@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { of, throwError } from 'rxjs';
 import * as livekitClient from 'livekit-client';
 import * as trackProcessors from '@livekit/track-processors';
 import { BACKGROUND_IMAGE_PRESETS, PreJoinLobbyComponent } from './pre-join-lobby.component';
+import { AuthenticationService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 
 jest.mock('livekit-client', () => ({
   ...jest.requireActual('livekit-client'),
@@ -23,11 +26,28 @@ jest.mock('@livekit/track-processors', () => ({
 describe('PreJoinLobbyComponent', () => {
   let component: PreJoinLobbyComponent;
   let fixture: ComponentFixture<PreJoinLobbyComponent>;
+  let dataServiceSpy: jasmine.SpyObj<DataService>;
+  let authDataSignalValue: { id?: number };
 
   beforeEach(async () => {
     localStorage.clear();
+    // Not logged in by default (matches the guest-meeting-landing flow) -
+    // individual tests below opt into a logged-in identity to exercise the
+    // custom-background gating.
+    authDataSignalValue = {};
+    dataServiceSpy = jasmine.createSpyObj('DataService', [
+      'listMeetingBackgroundImages',
+      'uploadMeetingBackgroundImage',
+      'deleteMeetingBackgroundImage',
+    ]);
+    dataServiceSpy.listMeetingBackgroundImages.and.returnValue(of([]));
+
     await TestBed.configureTestingModule({
       imports: [PreJoinLobbyComponent, TranslateModule.forRoot()],
+      providers: [
+        { provide: DataService, useValue: dataServiceSpy },
+        { provide: AuthenticationService, useValue: { authDataSignal: () => authDataSignalValue } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreJoinLobbyComponent);
@@ -772,4 +792,113 @@ describe('PreJoinLobbyComponent', () => {
       expect(component.audioLevel()).toBe(0.5);
     });
   });
+
+  describe('custom backgrounds (logged-in users only)', () => {
+    function fileSelectEvent (file: File | undefined): Event {
+      const input = document.createElement('input');
+      input.type = 'file';
+      if (file) {
+        Object.defineProperty(input, 'files', { value: [file] });
+      }
+      return { target: input } as unknown as Event;
+    }
+
+    it('never fetches custom backgrounds for a guest (not logged in)', async () => {
+      spyOn(livekitClient, 'createLocalVideoTrack').and.rejectWith(new Error('no camera in this test'));
+      spyOn(livekitClient, 'createLocalAudioTrack').and.rejectWith(new Error('no mic in this test'));
+
+      await component.ngOnInit();
+
+      expect(dataServiceSpy.listMeetingBackgroundImages).not.toHaveBeenCalled();
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('loads the caller\'s own custom background images on init when logged in', async () => {
+      authDataSignalValue = { id: 7 };
+      spyOn(livekitClient, 'createLocalVideoTrack').and.rejectWith(new Error('no camera in this test'));
+      spyOn(livekitClient, 'createLocalAudioTrack').and.rejectWith(new Error('no mic in this test'));
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      dataServiceSpy.listMeetingBackgroundImages.and.returnValue(of(images));
+
+      await component.ngOnInit();
+
+      expect(component.myBackgroundImages()).toEqual(images);
+    });
+
+    it('uploads a selected file, adds it to the list, and selects it as the active background', async () => {
+      authDataSignalValue = { id: 7 };
+      const fakeVideoTrack = fakeVideoTrackWithProcessor();
+      spyOn(livekitClient, 'createLocalVideoTrack').and.resolveTo(fakeVideoTrack);
+      spyOn(livekitClient, 'createLocalAudioTrack').and.rejectWith(new Error('no mic in this test'));
+      spyOn(trackProcessors, 'BackgroundProcessor').and.returnValue({} as trackProcessors.BackgroundProcessorWrapper);
+      await component.ngOnInit();
+      const uploaded = { id: 5, url: 'https://x/mine.png', originName: 'mine.png', type: 'image/png', createdAt: '2026-01-01' };
+      dataServiceSpy.uploadMeetingBackgroundImage.and.returnValue(of(uploaded));
+      const file = new File(['a'], 'mine.png', { type: 'image/png' });
+
+      component.onCustomBackgroundFileSelected(fileSelectEvent(file));
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(dataServiceSpy.uploadMeetingBackgroundImage).toHaveBeenCalledWith(file);
+      expect(component.myBackgroundImages()).toContain(uploaded);
+      expect(component.backgroundImageUploading()).toBe(false);
+      expect(component.selectedBackgroundImage()).toBe(uploaded.url);
+    });
+
+    it('is a no-op when the file input change fires with no file selected', () => {
+      component.onCustomBackgroundFileSelected(fileSelectEvent(undefined));
+
+      expect(dataServiceSpy.uploadMeetingBackgroundImage).not.toHaveBeenCalled();
+    });
+
+    it('surfaces an upload error instead of silently failing', () => {
+      dataServiceSpy.uploadMeetingBackgroundImage.and.returnValue(throwError(() => new Error('too big')));
+      const file = new File(['a'], 'mine.png', { type: 'image/png' });
+
+      component.onCustomBackgroundFileSelected(fileSelectEvent(file));
+
+      expect(component.backgroundImageUploading()).toBe(false);
+      expect(component.backgroundImageUploadError()).toBe(true);
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('deletes a custom background image and removes it from the list', () => {
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      component.myBackgroundImages.set(images);
+      dataServiceSpy.deleteMeetingBackgroundImage.and.returnValue(of(undefined));
+      const stopPropagation = jasmine.createSpy('stopPropagation');
+
+      component.deleteMyBackgroundImage(1, { stopPropagation } as unknown as Event);
+
+      expect(dataServiceSpy.deleteMeetingBackgroundImage).toHaveBeenCalledWith(1);
+      expect(stopPropagation).toHaveBeenCalled();
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('resets the background to none when deleting the image currently in use', async () => {
+      const fakeVideoTrack = fakeVideoTrackWithProcessor();
+      component.videoTrack.set(fakeVideoTrack);
+      const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
+      component.myBackgroundImages.set(images);
+      component.backgroundEffect.set('image');
+      component.selectedBackgroundImage.set('https://x/a.png');
+      dataServiceSpy.deleteMeetingBackgroundImage.and.returnValue(of(undefined));
+
+      component.deleteMyBackgroundImage(1, { stopPropagation: () => undefined } as unknown as Event);
+      await Promise.resolve();
+
+      expect(fakeVideoTrack.stopProcessor).toHaveBeenCalled();
+      expect(component.backgroundEffect()).toBe('none');
+      expect(component.selectedBackgroundImage()).toBeUndefined();
+    });
+  });
 });
+
+function fakeVideoTrackWithProcessor (): livekitClient.LocalVideoTrack {
+  return {
+    stop: jasmine.createSpy('stop'),
+    setProcessor: jasmine.createSpy('setProcessor').and.resolveTo(undefined),
+    stopProcessor: jasmine.createSpy('stopProcessor').and.resolveTo(undefined),
+  } as unknown as livekitClient.LocalVideoTrack;
+}

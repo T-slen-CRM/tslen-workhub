@@ -27,7 +27,7 @@ import { VideoComponent } from '../pages/call/video/video.component';
 import { AudioComponent } from '../pages/call/audio/audio.component';
 import { MeetingChatComponent, MeetingChatMessage } from './meeting-chat/meeting-chat.component';
 import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel/raised-hands-panel.component';
-import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect } from './pre-join-lobby/pre-join-lobby.component';
+import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect, MeetingBackgroundImageRow } from './pre-join-lobby/pre-join-lobby.component';
 import { environment } from '../../environments/environment';
 import { DataService } from '../services/data.service';
 import { PictureInPictureHandles, PictureInPictureService } from '../pages/live-kit/picture-in-picture.service';
@@ -35,14 +35,6 @@ import { PictureInPictureHandles, PictureInPictureService } from '../pages/live-
 interface TrackInfo {
   trackPublication: RemoteTrackPublication;
   participantIdentity: string;
-}
-
-export interface MeetingBackgroundImageRow {
-  id: number;
-  url: string;
-  originName: string;
-  type: string | null;
-  createdAt: string;
 }
 
 @Component({

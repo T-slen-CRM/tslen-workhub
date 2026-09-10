@@ -1,13 +1,16 @@
-import { Component, OnDestroy, OnInit, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalAudioTrack, LocalVideoTrack, Room, createAudioAnalyser, createLocalAudioTrack, createLocalVideoTrack } from 'livekit-client';
 import { BackgroundProcessor, BackgroundProcessorWrapper } from '@livekit/track-processors';
 import { VideoComponent } from '../../pages/call/video/video.component';
+import { AuthenticationService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 
 const STORAGE_KEY = 'preJoinLobbyPrefs';
 
@@ -24,6 +27,14 @@ export const BACKGROUND_IMAGE_PRESETS: BackgroundImagePreset[] = [
   { id: 'gradient', labelKey: 'pre_join_lobby.background_gradient', path: 'assets/backgrounds/gradient-blue.svg' },
   { id: 'solid', labelKey: 'pre_join_lobby.background_solid', path: 'assets/backgrounds/solid-gray.svg' },
 ];
+
+export interface MeetingBackgroundImageRow {
+  id: number;
+  url: string;
+  originName: string;
+  type: string | null;
+  createdAt: string;
+}
 
 export interface PreJoinResult {
   videoTrack: LocalVideoTrack | undefined;
@@ -48,14 +59,25 @@ interface PreJoinLobbyPrefs {
 @Component({
   selector: 'app-pre-join-lobby',
   standalone: true,
-  imports: [MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatIconModule, MatSelectModule, TranslateModule, VideoComponent],
+  imports: [MatButtonModule, MatButtonToggleModule, MatFormFieldModule, MatIconModule, MatSelectModule, MatTooltipModule, TranslateModule, VideoComponent],
   templateUrl: './pre-join-lobby.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pre-join-lobby.component.css',
 })
 export class PreJoinLobbyComponent implements OnInit, OnDestroy {
+  private auth = inject(AuthenticationService);
+  private dataService = inject(DataService);
+
   displayName = input.required<string>();
   joined = output<PreJoinResult>();
+
+  // Guests reach this same component unauthenticated (see guest-meeting-landing)
+  // - custom backgrounds are private to a signed-in user's own account, so
+  // this gate keeps guests from ever triggering the (auth-scoped) fetch.
+  isLoggedIn = computed(() => !!this.auth.authDataSignal().id);
+  myBackgroundImages = signal<MeetingBackgroundImageRow[]>([]);
+  backgroundImageUploading = signal(false);
+  backgroundImageUploadError = signal(false);
 
   videoTrack = signal<LocalVideoTrack | undefined>(undefined);
   audioTrack = signal<LocalAudioTrack | undefined>(undefined);
@@ -102,6 +124,53 @@ export class PreJoinLobbyComponent implements OnInit, OnDestroy {
     }
     navigator.mediaDevices.addEventListener('devicechange', this.handleDeviceChange);
     this.initializing.set(false);
+    if (this.isLoggedIn()) {
+      this.loadMyBackgroundImages();
+    }
+  }
+
+  loadMyBackgroundImages (): void {
+    this.dataService.listMeetingBackgroundImages().subscribe({
+      next: (images) => this.myBackgroundImages.set(images),
+      // Best-effort only - the built-in presets still work if this fails.
+      error: () => this.myBackgroundImages.set([]),
+    });
+  }
+
+  onCustomBackgroundFileSelected (event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // allow re-selecting the same file later
+    if (!file) {
+      return;
+    }
+    this.backgroundImageUploadError.set(false);
+    this.backgroundImageUploading.set(true);
+    this.dataService.uploadMeetingBackgroundImage(file).subscribe({
+      next: (image) => {
+        this.backgroundImageUploading.set(false);
+        this.myBackgroundImages.update((list) => [image, ...list]);
+        this.selectBackgroundImage(image.url);
+      },
+      error: () => {
+        this.backgroundImageUploading.set(false);
+        this.backgroundImageUploadError.set(true);
+      },
+    });
+  }
+
+  deleteMyBackgroundImage (id: number, event: Event): void {
+    event.stopPropagation(); // the thumbnail itself is also the select button
+    this.dataService.deleteMeetingBackgroundImage(id).subscribe({
+      next: () => {
+        const removed = this.myBackgroundImages().find((image) => image.id === id);
+        this.myBackgroundImages.update((list) => list.filter((image) => image.id !== id));
+        if (removed && this.selectedBackgroundImage() === removed.url) {
+          void this.setBackgroundEffect('none');
+        }
+      },
+      error: () => undefined,
+    });
   }
 
   async setCameraEnabled(value: boolean): Promise<void> {

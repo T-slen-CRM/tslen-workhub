@@ -34,6 +34,9 @@
           @if (ownHandRaised()) {
             <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
           }
+          @if (!microphoneEnabled()) {
+            <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
+          }
         </div>
       }
       @for (remoteTrack of remoteTracksMap().values(); track remoteTrack.trackPublication.trackSid) {
@@ -47,6 +50,9 @@
             ></video-component>
             @if (isHandRaised(remoteTrack.participantIdentity)) {
               <span class="meeting-hand-badge"><mat-icon>back_hand</mat-icon></span>
+            }
+            @if (isMicMuted(remoteTrack.participantIdentity)) {
+              <span class="meeting-mic-badge"><mat-icon>mic_off</mat-icon></span>
             }
           </div>
         } @else if (remoteTrack.trackPublication.kind === 'audio') {

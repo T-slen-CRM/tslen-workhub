@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { LocalAudioTrack, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
+import { LocalAudioTrack, LocalParticipant, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
 import * as trackProcessors from '@livekit/track-processors';
 import { MeetingRoomComponent } from './meeting-room.component';
 import { BACKGROUND_IMAGE_PRESETS } from './pre-join-lobby/pre-join-lobby.component';
@@ -652,6 +652,76 @@ describe('MeetingRoomComponent', () => {
 
       expect(component.handsRaised()).toEqual([]);
       expect(component.ownHandRaised()).toBe(false);
+    });
+  });
+
+  describe('mic-mute indicator', () => {
+    function subscribeAudio(room: FakeRoom, sid: string, identity: string, isMuted = false): void {
+      room.handlers.get(RoomEvent.TrackSubscribed)!(
+        {},
+        { trackSid: sid, kind: 'audio', isMuted },
+        { identity },
+      );
+    }
+
+    it('is not muted before any audio track has ever been subscribed', () => {
+      expect(component.isMicMuted('bob')).toBe(false);
+    });
+
+    it('seeds the muted state from the track\'s isMuted at subscribe time', () => {
+      const room = attachFakeRoom();
+
+      subscribeAudio(room, 'sid-1', 'bob', true);
+
+      expect(component.isMicMuted('bob')).toBe(true);
+    });
+
+    it('is not muted when the subscribed audio track starts unmuted', () => {
+      const room = attachFakeRoom();
+
+      subscribeAudio(room, 'sid-1', 'bob', false);
+
+      expect(component.isMicMuted('bob')).toBe(false);
+    });
+
+    it('marks a participant muted on trackMuted, and clears it on trackUnmuted', () => {
+      const room = attachFakeRoom();
+      subscribeAudio(room, 'sid-1', 'bob', false);
+
+      room.handlers.get(RoomEvent.TrackMuted)!({ kind: 'audio' }, { identity: 'bob' });
+      expect(component.isMicMuted('bob')).toBe(true);
+
+      room.handlers.get(RoomEvent.TrackUnmuted)!({ kind: 'audio' }, { identity: 'bob' });
+      expect(component.isMicMuted('bob')).toBe(false);
+    });
+
+    it('ignores a trackMuted event for a non-audio (video) track', () => {
+      const room = attachFakeRoom();
+
+      room.handlers.get(RoomEvent.TrackMuted)!({ kind: 'video' }, { identity: 'bob' });
+
+      expect(component.isMicMuted('bob')).toBe(false);
+    });
+
+    it('ignores trackMuted for the local participant - the local mic badge already follows microphoneEnabled', () => {
+      const room = attachFakeRoom();
+      // instanceof LocalParticipant, without needing to satisfy its real
+      // (SDK-internal) constructor signature.
+      const localParticipant = Object.assign(Object.create(LocalParticipant.prototype), { identity: 'ada-host' });
+
+      room.handlers.get(RoomEvent.TrackMuted)!({ kind: 'audio' }, localParticipant);
+
+      expect(component.isMicMuted('ada-host')).toBe(false);
+    });
+
+    it('clears a participant\'s muted state when they disconnect', () => {
+      const room = attachFakeRoom();
+      subscribeAudio(room, 'sid-1', 'bob', true);
+      expect(component.isMicMuted('bob')).toBe(true);
+
+      room.handlers.get(RoomEvent.ParticipantDisconnected)!({ identity: 'bob' });
+
+      expect(component.isMicMuted('bob')).toBe(false);
     });
   });
 

@@ -10,8 +10,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CollapsibleCallWindowDirective } from '../pages/live-kit/collapsible-call-window.directive';
 import {
   LocalAudioTrack,
+  LocalParticipant,
   LocalTrackPublication,
   LocalVideoTrack,
+  Participant,
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
@@ -93,6 +95,10 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
   raisedHandsPanelOpen = signal<boolean>(false);
   handsRaised = signal<RaisedHandEntry[]>([]);
   ownHandRaised = signal<boolean>(false);
+  // Remote participant identities whose microphone is currently muted, so
+  // everyone else can see at a glance who's muted and who has their hand
+  // raised - the local participant's own state is microphoneEnabled above.
+  mutedParticipants = signal<Set<string>>(new Set());
   videoDevices = signal<MediaDeviceInfo[]>([]);
   audioDevices = signal<MediaDeviceInfo[]>([]);
   selectedVideoDeviceId = signal<string | undefined>(undefined);
@@ -134,6 +140,26 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     const senderName = participant?.name || participant?.identity || 'Unknown';
     this.messages.update((list) => [...list, { senderName, text, ts: Date.now() }]);
   };
+
+  private setParticipantMuted (identity: string, muted: boolean): void {
+    this.mutedParticipants.update((set) => {
+      const alreadySet = set.has(identity);
+      if (muted === alreadySet) {
+        return set;
+      }
+      const next = new Set(set);
+      if (muted) {
+        next.add(identity);
+      } else {
+        next.delete(identity);
+      }
+      return next;
+    });
+  }
+
+  isMicMuted (identity: string): boolean {
+    return this.mutedParticipants().has(identity);
+  }
 
   private applyHandRaiseEvent (type: 'hand-raised' | 'hand-lowered', participant?: RemoteParticipant): void {
     if (!participant) {
@@ -279,6 +305,12 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
         next.set(publication.trackSid, { trackPublication: publication, participantIdentity: participant.identity });
         return next;
       });
+      // Seed this participant's current mute state at subscribe time -
+      // TrackMuted/TrackUnmuted below only fire on a later CHANGE, not for
+      // whatever state the track already had when we joined/subscribed.
+      if (publication.kind === 'audio') {
+        this.setParticipantMuted(participant.identity, publication.isMuted);
+      }
     });
     room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => {
       this.remoteTracksMap.update((map) => {
@@ -286,6 +318,21 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
         next.delete(publication.trackSid);
         return next;
       });
+    });
+    // Fires for both RemoteParticipants and the LocalParticipant - only the
+    // remote side is relevant here, since the local mic badge already
+    // follows microphoneEnabled directly.
+    room.on(RoomEvent.TrackMuted, (publication: RemoteTrackPublication, participant: Participant) => {
+      if (publication.kind !== 'audio' || participant instanceof LocalParticipant) {
+        return;
+      }
+      this.setParticipantMuted(participant.identity, true);
+    });
+    room.on(RoomEvent.TrackUnmuted, (publication: RemoteTrackPublication, participant: Participant) => {
+      if (publication.kind !== 'audio' || participant instanceof LocalParticipant) {
+        return;
+      }
+      this.setParticipantMuted(participant.identity, false);
     });
 
     // LiveKit replaces the underlying LocalVideoTrack on every enable/disable
@@ -343,6 +390,7 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     });
     room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
       this.handsRaised.update((list) => list.filter((entry) => entry.identity !== participant.identity));
+      this.setParticipantMuted(participant.identity, false);
     });
   }
 

@@ -285,3 +285,25 @@ app-meeting-chat.meeting-chat-hidden {
   height: 18px;
   font-size: 18px;
 }
+/* Same corner as .meeting-hand-badge, offset left of it so both can show
+   at once without overlapping when a participant is both muted and has
+   their hand raised. */
+.meeting-mic-badge {
+  position: absolute;
+  top: 8px;
+  right: 44px;
+  z-index: 2;
+  background: rgba(217, 48, 37, 0.9);
+  color: #fff;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.meeting-mic-badge mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}

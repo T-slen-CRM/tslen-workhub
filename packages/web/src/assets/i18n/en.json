@@ -515,8 +515,6 @@
         "phone": "Phone",
         "birthday": "Birthday",
         "address": "Address",
-        "company": "Company",
-        "role": "Role",
         "first_day": "First day in company",
         "last_day": "Last day in company",
         "not_specified": "Not specified"

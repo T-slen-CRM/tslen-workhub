@@ -10,6 +10,7 @@ import { DataService } from '../../../services/data.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe, DatePipe, NgOptimizedImage } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { TranslateModule } from '@ngx-translate/core';
 
 // Read-only quick-view card (see People's user list, which links here) -
@@ -21,6 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
     AsyncPipe,
     DatePipe,
     MatCardModule,
+    MatDividerModule,
     NgOptimizedImage,
     TranslateModule,
   ],

@@ -74,7 +74,6 @@ describe('UserCardInfoComponent', () => {
     expect(text).toContain('jane.doe@example.com');
     expect(text).toContain('0931865176');
     expect(text).toContain('makarova str');
-    expect(text).toContain('Acme');
     expect(text).toContain('Engineer');
 
     expect(fixture.nativeElement.querySelector('input')).toBeNull();
@@ -82,14 +81,22 @@ describe('UserCardInfoComponent', () => {
     expect(fixture.nativeElement.querySelector('form')).toBeNull();
   });
 
+  it('does not show the company or role - not useful info for this quick-view card', () => {
+    createComponent(of(mockedUser));
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).not.toContain('Acme');
+    expect(text).not.toContain('admin');
+  });
+
   it('falls back to a "not specified" label for missing optional fields', () => {
-    createComponent(of({ ...mockedUser, phone: null, address: null, company: null }));
+    createComponent(of({ ...mockedUser, phone: null, address: null }));
 
     const text = fixture.nativeElement.textContent;
     // No translation loader in this test setup - the pipe renders the raw
     // key, which is fine here since the point under test is that a
-    // fallback renders at all (three times) instead of an empty/"null" row.
-    expect(text.match(/user_card_info\.not_specified/g)?.length).toBe(3);
+    // fallback renders at all (twice) instead of an empty/"null" row.
+    expect(text.match(/user_card_info\.not_specified/g)?.length).toBe(2);
   });
 
   it('shows a "no user found" message when the user stream emits nothing truthy', () => {

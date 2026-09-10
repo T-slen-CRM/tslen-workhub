@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { UserCardInfoComponent } from './user-card-info.component';
 import { DataService } from '../../../services/data.service';
@@ -52,15 +53,17 @@ describe('UserCardInfoComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [UserCardInfoComponent, TranslateModule.forRoot()],
-      providers: [{ provide: DataService, useValue: dataServiceSpy }],
+      providers: [
+        { provide: DataService, useValue: dataServiceSpy },
+        { provide: MAT_DIALOG_DATA, useValue: { id: 5 } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserCardInfoComponent);
-    fixture.componentRef.setInput('id', 5);
     fixture.detectChanges();
   }
 
-  it('fetches the user by the routed id', () => {
+  it('fetches the user by the id passed in as dialog data', () => {
     createComponent(of(mockedUser));
 
     expect(dataServiceSpy.getObservableData).toHaveBeenCalledWith('/users/5');
@@ -103,5 +106,12 @@ describe('UserCardInfoComponent', () => {
     createComponent(of(null));
 
     expect(fixture.nativeElement.textContent).toContain('user_card_info.no_user_found');
+  });
+
+  it('renders as dialog content with a close action, not a routed page', () => {
+    createComponent(of(mockedUser));
+
+    expect(fixture.nativeElement.querySelector('[mat-dialog-content]')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('user_card_info.close');
   });
 });

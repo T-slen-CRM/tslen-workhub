@@ -32,6 +32,7 @@ import { AutocompleteComponent } from './autocomplete/autocomplete/autocomplete.
 
 import { ManageUsersAggridComponent } from './manage-users-aggrid/manage-users-aggrid.component';
 import {ManageUsersActionsRendererComponent} from "./data-grid/manage-users-actions-renderer.component";
+import {UserNameCellRendererComponent} from "./data-grid/user-name-cell-renderer.component";
 import {PendingAggridComponent} from "./pending-aggrid/pending-aggrid.component";
 import {PendingActionsRendererComponent} from "./data-grid/pending-actions-renderer.component";
 
@@ -64,6 +65,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
       ManageUsersAggridComponent,
       ManageUsersActionsRendererComponent,
+      UserNameCellRendererComponent,
       PendingAggridComponent,
       PendingActionsRendererComponent,
       PendingChangeUserLinkRendererComponent,
@@ -110,6 +112,7 @@ import { TranslateModule } from '@ngx-translate/core';
         AutocompleteComponent,
         ManageUsersAggridComponent,
         ManageUsersActionsRendererComponent,
+        UserNameCellRendererComponent,
         PendingAggridComponent,
         PendingActionsRendererComponent,
         PendingChangeUserLinkRendererComponent,

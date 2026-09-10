@@ -2,7 +2,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {UserProfileComponent} from "./users/user-profile/user-profile.component";
 import {NgModule} from "@angular/core";
 import {ManageUsersComponent} from "../admin/manage-users/manage-users.component";
-import {UserCardInfoComponent} from "./users/user-card-info/user-card-info.component";
 import {MeetComponent} from "./meet/meet.component";
 import {ChatComponent} from "./chat/chat.component";
 
@@ -44,9 +43,6 @@ const routes: Routes = [
       },
       {
         path: 'manage-users', component: ManageUsersComponent, data: { animation: 'ManageUsersComponent'}
-      },
-      {
-        path: 'user-card-info/:id', component: UserCardInfoComponent, data: { animation: 'UserCardInfoComponent'}
       },
       {
         path: 'meet', component: MeetComponent, data: { animation: 'MeetComponent'}

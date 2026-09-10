@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { ManageUsersActionsRendererComponent } from '../data-grid/manage-users-actions-renderer.component';
+import { UserNameCellRendererComponent } from '../data-grid/user-name-cell-renderer.component';
 import { AuthenticationService } from '../../services/auth.service';
 import { LanguageService } from '../../language/language.service';
 
@@ -25,6 +26,7 @@ export class ManageUsersAggridComponent implements OnInit {
   rowData: any = [];
   components = {
     manageUsersActionsRendererComponent: ManageUsersActionsRendererComponent,
+    userNameCellRendererComponent: UserNameCellRendererComponent,
   };
 
   private authService = inject(AuthenticationService);
@@ -64,11 +66,7 @@ export class ManageUsersAggridComponent implements OnInit {
             headerName: translations['manage_users.name'],
             field: 'username',
             minWidth: 130,
-            cellRenderer: (params) => {
-              return `<a href="/pages/user-card-info/${params.data.id}">${
-                params.data.firstName + ' ' + params.data.lastName
-              }</a>`;
-            },
+            cellRenderer: 'userNameCellRendererComponent',
             pinned: 'left',
           },
           {

@@ -242,6 +242,14 @@
       "count": 2
     }
   },
+  "src/app/components/data-grid/user-name-cell-renderer.component.ts": {
+    "@angular-eslint/prefer-on-push-component-change-detection": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-standalone": {
+      "count": 1
+    }
+  },
   "src/app/components/delete-confirm-modal/delete-confirm-modal.component.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 2
@@ -458,7 +466,7 @@
   },
   "src/app/interfaces/tasks.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 4
+      "count": 1
     }
   },
   "src/app/json-typings.d.ts": {
@@ -521,9 +529,6 @@
   },
   "src/app/pages/authentication/auth-reset-password/auth-reset-password.component.html": {
     "@angular-eslint/template/elements-content": {
-      "count": 1
-    },
-    "@angular-eslint/template/interactive-supports-focus": {
       "count": 1
     }
   },
@@ -779,7 +784,7 @@
   },
   "src/app/pages/tasks-list/taskWebSocket.service.spec.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 2
+      "count": 1
     }
   },
   "src/app/pages/tasks-list/taskWebSocket.service.ts": {
@@ -798,7 +803,7 @@
       "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
-      "count": 10
+      "count": 8
     }
   },
   "src/app/pages/tasks-manager/tasks-manager.component.html": {
@@ -822,9 +827,6 @@
   },
   "src/app/pages/users/user-card-info/user-card-info.component.ts": {
     "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
       "count": 1
     }
   },
@@ -1800,23 +1802,6 @@
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 1
-    }
-  },
-  "src/app/tslen-components/upload-files/upload-files.component.ts": {
-    "@angular-eslint/prefer-inject": {
-      "count": 1
-    },
-    "@angular-eslint/prefer-on-push-component-change-detection": {
-      "count": 1
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 2
-    },
-    "@typescript-eslint/no-explicit-any": {
-      "count": 7
-    },
-    "@typescript-eslint/prefer-for-of": {
-      "count": 2
     }
   },
   "src/app/tslen-components/upload/upload-files/upload-files.component.ts": {

@@ -1,5 +1,5 @@
 @if (user$ | async; as user) {
-<mat-card class="main-card-container">
+<div mat-dialog-content>
   <div class="card-header-banner">
     <div class="avatar-wrapper">
       <img [ngSrc]="user.avatar || defaultUserAvatar" alt="User avatar" fill />
@@ -16,61 +16,62 @@
 
   <mat-divider></mat-divider>
 
-  <mat-card-content>
-    <div class="info-list">
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.email' | translate
-        }}</span>
-        <span class="info-value">{{ user.email }}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.phone' | translate
-        }}</span>
-        <span class="info-value">{{
-          user.phone || ('user_card_info.not_specified' | translate)
-        }}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.birthday' | translate
-        }}</span>
-        <span class="info-value">{{
-          user.birthDay
-            ? (user.birthDay | date)
-            : ('user_card_info.not_specified' | translate)
-        }}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.address' | translate
-        }}</span>
-        <span class="info-value">{{
-          user.address || ('user_card_info.not_specified' | translate)
-        }}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.first_day' | translate
-        }}</span>
-        <span class="info-value">{{
-          user.firstDayInCompany
-            ? (user.firstDayInCompany | date)
-            : ('user_card_info.not_specified' | translate)
-        }}</span>
-      </div>
-      @if (user.lastDayInCompany) {
-      <div class="info-row">
-        <span class="info-label">{{
-          'user_card_info.last_day' | translate
-        }}</span>
-        <span class="info-value">{{ user.lastDayInCompany | date }}</span>
-      </div>
-      }
+  <div class="info-list">
+    <div class="info-row">
+      <span class="info-label">{{ 'user_card_info.email' | translate }}</span>
+      <span class="info-value">{{ user.email }}</span>
     </div>
-  </mat-card-content>
-</mat-card>
+    <div class="info-row">
+      <span class="info-label">{{ 'user_card_info.phone' | translate }}</span>
+      <span class="info-value">{{
+        user.phone || ('user_card_info.not_specified' | translate)
+      }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">{{
+        'user_card_info.birthday' | translate
+      }}</span>
+      <span class="info-value">{{
+        user.birthDay
+          ? (user.birthDay | date)
+          : ('user_card_info.not_specified' | translate)
+      }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">{{
+        'user_card_info.address' | translate
+      }}</span>
+      <span class="info-value">{{
+        user.address || ('user_card_info.not_specified' | translate)
+      }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">{{
+        'user_card_info.first_day' | translate
+      }}</span>
+      <span class="info-value">{{
+        user.firstDayInCompany
+          ? (user.firstDayInCompany | date)
+          : ('user_card_info.not_specified' | translate)
+      }}</span>
+    </div>
+    @if (user.lastDayInCompany) {
+    <div class="info-row">
+      <span class="info-label">{{
+        'user_card_info.last_day' | translate
+      }}</span>
+      <span class="info-value">{{ user.lastDayInCompany | date }}</span>
+    </div>
+    }
+  </div>
+</div>
 } @else {
-<p>{{ 'user_card_info.no_user_found' | translate }}</p>
+<div mat-dialog-content>
+  <p>{{ 'user_card_info.no_user_found' | translate }}</p>
+</div>
 }
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="true">
+    {{ 'user_card_info.close' | translate }}
+  </button>
+</div>

@@ -517,7 +517,8 @@
         "address": "Address",
         "first_day": "First day in company",
         "last_day": "Last day in company",
-        "not_specified": "Not specified"
+        "not_specified": "Not specified",
+        "close": "Close"
     },
     "dark_mode_button": {
         "change_mode": "Change mode"

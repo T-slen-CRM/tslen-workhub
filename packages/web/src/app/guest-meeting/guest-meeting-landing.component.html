@@ -1,36 +1,49 @@
 <div class="guest-meeting-page">
   @switch (state()) {
     @case ('loading') {
-      <p>{{ 'guest_meeting.loading' | translate }}</p>
+      <mat-card class="guest-status-card" appearance="outlined">
+        <mat-card-content>{{ 'guest_meeting.loading' | translate }}</mat-card-content>
+      </mat-card>
     }
     @case ('invalid') {
-      <p>{{ 'guest_meeting.invalid_link' | translate }}</p>
+      <mat-card class="guest-status-card" appearance="outlined">
+        <mat-card-content>{{ 'guest_meeting.invalid_link' | translate }}</mat-card-content>
+      </mat-card>
     }
     @case ('choose') {
-      <div class="guest-join-card">
-        <h2>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</h2>
-        <p>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</p>
-        <button class="btn btn-primary" (click)="chooseLogin()">
-          {{ 'guest_meeting.login_to_join' | translate }}
-        </button>
-        <button class="btn btn-secondary" (click)="continueAsGuest()">
-          {{ 'guest_meeting.continue_as_guest' | translate }}
-        </button>
-      </div>
+      <mat-card class="guest-join-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</mat-card-title>
+          <mat-card-subtitle>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions class="guest-card-actions">
+          <button mat-raised-button color="primary" (click)="chooseLogin()">
+            {{ 'guest_meeting.login_to_join' | translate }}
+          </button>
+          <button mat-stroked-button (click)="continueAsGuest()">
+            {{ 'guest_meeting.continue_as_guest' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
     }
     @case ('ready') {
-      <div class="guest-join-card">
-        <h2>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</h2>
-        <p>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</p>
-        <input
-          type="text"
-          [formControl]="displayNameControl"
-          [placeholder]="'guest_meeting.your_name' | translate"
-        />
-        <button class="btn btn-primary" [disabled]="displayNameControl.invalid" (click)="continueToLobby()">
-          {{ 'guest_meeting.join' | translate }}
-        </button>
-      </div>
+      <mat-card class="guest-join-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>{{ meetingInfo()?.title || ('guest_meeting.untitled' | translate) }}</mat-card-title>
+          <mat-card-subtitle>{{ 'guest_meeting.hosted_by' | translate: { name: meetingInfo()?.hostName } }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="guest-name-field">
+            <mat-label>{{ 'guest_meeting.your_name' | translate }}</mat-label>
+            <input matInput [formControl]="displayNameControl" />
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions class="guest-card-actions">
+          <button mat-raised-button color="primary" [disabled]="displayNameControl.invalid" (click)="continueToLobby()">
+            {{ 'guest_meeting.join' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
     }
     @case ('lobby') {
       <div class="guest-lobby-wrap">

@@ -2,6 +2,10 @@ import { Component, OnInit, inject, input, signal, ChangeDetectionStrategy } fro
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 import { DataService } from '../services/data.service';
 import { MeetingRoomComponent } from '../meeting-room/meeting-room.component';
@@ -28,7 +32,7 @@ interface GuestConnection {
 @Component({
   selector: 'app-guest-meeting-landing',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule, MeetingRoomComponent, PreJoinLobbyComponent],
+  imports: [ReactiveFormsModule, TranslateModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MeetingRoomComponent, PreJoinLobbyComponent],
   templateUrl: './guest-meeting-landing.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './guest-meeting-landing.component.css',

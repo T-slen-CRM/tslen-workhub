@@ -237,8 +237,25 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Muted covers two distinct cases: an explicit LiveKit mute on a live
+  // track (tracked via mutedParticipants, seeded/updated by
+  // TrackSubscribed/TrackMuted/TrackUnmuted below), and a participant who
+  // simply never published an audio track at all - the common case for
+  // anyone who joined with their mic off (the pre-join lobby's default
+  // starting state). The latter has no track to carry an isMuted flag, but
+  // is exactly as silent, so it counts as muted too - otherwise their mic
+  // badge just never appears, no matter how long they stay silent.
   isMicMuted (identity: string): boolean {
-    return this.mutedParticipants().has(identity);
+    return !this.hasAudioTrack(identity) || this.mutedParticipants().has(identity);
+  }
+
+  private hasAudioTrack (identity: string): boolean {
+    for (const info of this.remoteTracksMap().values()) {
+      if (info.participantIdentity === identity && info.trackPublication.kind === 'audio') {
+        return true;
+      }
+    }
+    return false;
   }
 
   isPinned (identity: string): boolean {

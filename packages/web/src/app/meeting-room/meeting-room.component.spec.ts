@@ -686,8 +686,8 @@ describe('MeetingRoomComponent', () => {
       );
     }
 
-    it('is not muted before any audio track has ever been subscribed', () => {
-      expect(component.isMicMuted('bob')).toBe(false);
+    it('is muted before any audio track has ever been subscribed - a participant who joined with their mic off (the lobby default) never publishes an audio track at all, so there is no track to carry a "muted" flag, but they are just as silent', () => {
+      expect(component.isMicMuted('bob')).toBe(true);
     });
 
     it('seeds the muted state from the track\'s isMuted at subscribe time', () => {
@@ -719,6 +719,7 @@ describe('MeetingRoomComponent', () => {
 
     it('ignores a trackMuted event for a non-audio (video) track', () => {
       const room = attachFakeRoom();
+      subscribeAudio(room, 'sid-1', 'bob', false); // bob has a live, unmuted audio track
 
       room.handlers.get(RoomEvent.TrackMuted)!({ kind: 'video' }, { identity: 'bob' });
 
@@ -733,7 +734,34 @@ describe('MeetingRoomComponent', () => {
 
       room.handlers.get(RoomEvent.TrackMuted)!({ kind: 'audio' }, localParticipant);
 
-      expect(component.isMicMuted('ada-host')).toBe(false);
+      expect(component.mutedParticipants().has('ada-host')).toBe(false);
+    });
+
+    it('shows muted for a remote participant who has a video track but never published audio at all (joined with mic off, the common case)', () => {
+      const room = attachFakeRoom();
+      room.handlers.get(RoomEvent.TrackSubscribed)!({}, { trackSid: 'sid-1', kind: 'video' }, { identity: 'bob' });
+
+      expect(component.isMicMuted('bob')).toBe(true);
+    });
+
+    it('clears muted once the participant later enables their mic and publishes an audio track', () => {
+      const room = attachFakeRoom();
+      room.handlers.get(RoomEvent.TrackSubscribed)!({}, { trackSid: 'sid-1', kind: 'video' }, { identity: 'bob' });
+      expect(component.isMicMuted('bob')).toBe(true);
+
+      subscribeAudio(room, 'sid-2', 'bob', false);
+
+      expect(component.isMicMuted('bob')).toBe(false);
+    });
+
+    it('shows muted again once a live audio track is unsubscribed (mic turned all the way off, not just platform-muted)', () => {
+      const room = attachFakeRoom();
+      subscribeAudio(room, 'sid-1', 'bob', false);
+      expect(component.isMicMuted('bob')).toBe(false);
+
+      room.handlers.get(RoomEvent.TrackUnsubscribed)!({}, { trackSid: 'sid-1' });
+
+      expect(component.isMicMuted('bob')).toBe(true);
     });
 
     it('clears a participant\'s muted state when they disconnect', () => {

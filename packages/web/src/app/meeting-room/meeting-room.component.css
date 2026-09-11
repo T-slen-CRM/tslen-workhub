@@ -158,6 +158,24 @@ app-meeting-chat.meeting-chat-hidden {
   flex-wrap: wrap;
   justify-content: center;
 }
+/* With a full sidebar strip of thumbnails (screen-share/pin layout, many
+   participants), this bar sits right on top of them - fade it out until
+   the pointer is actually over the call, Meet-style, instead of
+   permanently covering the bottom row of tiles. Scoped to devices that
+   truly support hover (a real mouse) so touch-only devices, which have no
+   reliable way to "hover" first, keep the controls visible at all times. */
+@media (hover: hover) and (pointer: fine) {
+  .meeting-controlbar {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .meeting-body:hover .meeting-controlbar,
+  .meeting-controlbar:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
 .meeting-control-group {
   position: relative;
   display: flex;

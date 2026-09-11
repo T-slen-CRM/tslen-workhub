@@ -258,6 +258,15 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  playSound (name: 'join' | 'screenshare'): void {
+    const audio = new Audio(`assets/audio/${name}.mp3`);
+    audio.play().catch(() => {
+      // Autoplay can be blocked by the browser (no prior user gesture, a
+      // muted-by-default tab policy, etc.) - a missed notification sound
+      // must never break the call.
+    });
+  }
+
   isPinned (identity: string): boolean {
     return this.pinnedIdentity() === identity;
   }
@@ -465,6 +474,13 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
       if (publication.kind === 'audio') {
         this.setParticipantMuted(participant.identity, publication.isMuted);
       }
+      // Like ParticipantConnected above, this is the remote-only track
+      // event - the local participant's own screen share goes through
+      // LocalTrackPublished instead, so starting your own share never
+      // plays this for you, only for everyone already in the room.
+      if (publication.source === 'screen_share') {
+        this.playSound('screenshare');
+      }
     });
     room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => {
       this.remoteTracksMap.update((map) => {
@@ -537,6 +553,10 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
     // currently has a hand raised re-sends their own state once per new
     // arrival, keeping every client's queue consistent for latecomers.
     room.on(RoomEvent.ParticipantConnected, () => {
+      // Only ever fires for a REMOTE participant joining, never for the
+      // local participant's own connection - so whoever is already in the
+      // room hears this, but nobody hears their own "you joined" sound.
+      this.playSound('join');
       if (!this.ownHandRaised()) {
         return;
       }

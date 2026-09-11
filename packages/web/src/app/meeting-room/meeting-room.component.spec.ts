@@ -775,6 +775,56 @@ describe('MeetingRoomComponent', () => {
     });
   });
 
+  describe('sound notifications', () => {
+    it('playSound plays the named asset', () => {
+      let playedSrc: string | undefined;
+      spyOn(window.HTMLMediaElement.prototype, 'play').and.callFake(function (this: HTMLAudioElement) {
+        playedSrc = this.src;
+        return Promise.resolve();
+      });
+
+      component.playSound('join');
+
+      expect(playedSrc).toContain('assets/audio/join.mp3');
+    });
+
+    it('plays the join sound when a remote participant connects - never fires for the local participant\'s own connection, since RoomEvent.ParticipantConnected is remote-only by LiveKit\'s own design', () => {
+      const room = attachFakeRoom();
+      const playSoundSpy = spyOn(component, 'playSound');
+
+      room.handlers.get(RoomEvent.ParticipantConnected)!();
+
+      expect(playSoundSpy).toHaveBeenCalledWith('join');
+    });
+
+    it('plays the screenshare sound when a remote participant starts screen sharing', () => {
+      const room = attachFakeRoom();
+      const playSoundSpy = spyOn(component, 'playSound');
+
+      room.handlers.get(RoomEvent.TrackSubscribed)!({}, { trackSid: 'sid-1', kind: 'video', source: 'screen_share' }, { identity: 'bob' });
+
+      expect(playSoundSpy).toHaveBeenCalledWith('screenshare');
+    });
+
+    it('does not play the screenshare sound for an ordinary remote camera track', () => {
+      const room = attachFakeRoom();
+      const playSoundSpy = spyOn(component, 'playSound');
+
+      room.handlers.get(RoomEvent.TrackSubscribed)!({}, { trackSid: 'sid-1', kind: 'video', source: 'camera' }, { identity: 'bob' });
+
+      expect(playSoundSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not play the screenshare sound for the local participant\'s own screen share - LocalTrackPublished is a separate event from the remote TrackSubscribed this listens on', async () => {
+      const room = attachFakeRoom();
+      const playSoundSpy = spyOn(component, 'playSound');
+
+      room.handlers.get(RoomEvent.LocalTrackPublished)!({ kind: 'video', source: 'screen_share', videoTrack: {} });
+
+      expect(playSoundSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('in-call background effect', () => {
     it('setBackgroundEffect(blur) applies a BackgroundProcessor to the local camera track', async () => {
       attachFakeRoom();

@@ -73,6 +73,14 @@ export class AuthenticationService {
         //remove jwt token from local storage
         localStorage.removeItem('jwtToken');
         this.authData$.next(new AuthData({}));
+        // Without this, authDataSignal() keeps reporting the just-logged-out
+        // user as still logged in for the rest of this SPA session - any
+        // code gated on it (e.g. PreJoinLobbyComponent.isLoggedIn(), reached
+        // via a client-side nav straight to a guest meeting link with no
+        // full page reload to reset this singleton) fires an authenticated
+        // request with no token, 401s, and gets bounced to /auth/login by
+        // ErrorInterceptor.
+        this._authDataSignal.set(new AuthData({}));
     }
 
     login(data: Record<string, unknown>): Observable<HttpResponse<unknown>> {

@@ -6,6 +6,7 @@ import * as trackProcessors from '@livekit/track-processors';
 import { MeetingRoomComponent } from './meeting-room.component';
 import { BACKGROUND_IMAGE_PRESETS } from './pre-join-lobby/pre-join-lobby.component';
 import { DataService } from '../services/data.service';
+import { AuthenticationService } from '../services/auth.service';
 
 jest.mock('@livekit/track-processors', () => ({
   ...jest.requireActual('@livekit/track-processors'),
@@ -55,8 +56,15 @@ describe('MeetingRoomComponent', () => {
   let component: MeetingRoomComponent;
   let fixture: ComponentFixture<MeetingRoomComponent>;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
+  let authDataSignalValue: { id?: number };
 
   beforeEach(() => {
+    localStorage.removeItem('jwtToken');
+    // Not logged in by default (matches the guest-meeting-landing flow,
+    // where this component is also mounted for a guest's in-call view) -
+    // individual tests below opt into a logged-in identity to exercise the
+    // custom-background gating.
+    authDataSignalValue = {};
     dataServiceSpy = jasmine.createSpyObj('DataService', [
       'listMeetingBackgroundImages',
       'uploadMeetingBackgroundImage',
@@ -66,7 +74,10 @@ describe('MeetingRoomComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [MeetingRoomComponent, TranslateModule.forRoot()],
-      providers: [{ provide: DataService, useValue: dataServiceSpy }],
+      providers: [
+        { provide: DataService, useValue: dataServiceSpy },
+        { provide: AuthenticationService, useValue: { authDataSignal: () => authDataSignalValue } },
+      ],
     });
 
     fixture = TestBed.createComponent(MeetingRoomComponent);
@@ -902,7 +913,9 @@ describe('MeetingRoomComponent', () => {
       return { target: input } as unknown as Event;
     }
 
-    it('loads the caller\'s own custom background images on init', () => {
+    it('loads the caller\'s own custom background images on init when logged in', () => {
+      authDataSignalValue = { id: 7 };
+      localStorage.setItem('jwtToken', 'real-jwt');
       const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
       dataServiceSpy.listMeetingBackgroundImages.and.returnValue(of(images));
 
@@ -912,11 +925,28 @@ describe('MeetingRoomComponent', () => {
     });
 
     it('leaves the list empty, without throwing, when loading custom backgrounds fails', () => {
+      authDataSignalValue = { id: 7 };
+      localStorage.setItem('jwtToken', 'real-jwt');
       dataServiceSpy.listMeetingBackgroundImages.and.returnValue(throwError(() => new Error('network down')));
 
       component.ngOnInit();
 
       expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('never fetches custom backgrounds for a guest (not logged in) - this is also mounted for a guest\'s in-call view via guest-meeting-landing', () => {
+      component.ngOnInit();
+
+      expect(dataServiceSpy.listMeetingBackgroundImages).not.toHaveBeenCalled();
+      expect(component.myBackgroundImages()).toEqual([]);
+    });
+
+    it('never fetches custom backgrounds when authDataSignal is stale but the JWT is gone (a real logout without a full page reload)', () => {
+      authDataSignalValue = { id: 7 };
+
+      component.ngOnInit();
+
+      expect(dataServiceSpy.listMeetingBackgroundImages).not.toHaveBeenCalled();
     });
 
     it('uploads a selected file, adds it to the list, and selects it as the active background', async () => {

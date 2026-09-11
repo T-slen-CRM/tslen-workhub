@@ -30,6 +30,7 @@ import { RaisedHandEntry, RaisedHandsPanelComponent } from './raised-hands-panel
 import { BACKGROUND_IMAGE_PRESETS, BackgroundEffect, MeetingBackgroundImageRow } from './pre-join-lobby/pre-join-lobby.component';
 import { environment } from '../../environments/environment';
 import { DataService } from '../services/data.service';
+import { AuthenticationService } from '../services/auth.service';
 import { PictureInPictureHandles, PictureInPictureService } from '../pages/live-kit/picture-in-picture.service';
 
 interface TrackInfo {
@@ -54,6 +55,17 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   private dataService = inject(DataService);
   private pip = inject(PictureInPictureService);
+  private auth = inject(AuthenticationService);
+
+  // This component is also mounted for a guest's in-call view (see
+  // guest-meeting-landing.component.html's 'in-call' case) - custom
+  // backgrounds are private to a signed-in user's own account, so this
+  // gate keeps a guest from ever triggering the (auth-scoped) fetch. Both
+  // checks matter: authDataSignal() alone can go stale after a real logout
+  // with no full page reload to reset this root-provided singleton - a
+  // request fired without a real jwtToken 401s and gets the whole guest
+  // bounced to /auth/login by the global error interceptor.
+  isLoggedIn = computed(() => !!this.auth.authDataSignal().id && !!localStorage.getItem('jwtToken'));
 
   livekitToken = input.required<string>();
   roomName = input.required<string>();
@@ -255,7 +267,9 @@ export class MeetingRoomComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.joinRoom();
-    this.loadMyBackgroundImages();
+    if (this.isLoggedIn()) {
+      this.loadMyBackgroundImages();
+    }
     document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 

@@ -74,7 +74,11 @@ export class PreJoinLobbyComponent implements OnInit, OnDestroy {
   // Guests reach this same component unauthenticated (see guest-meeting-landing)
   // - custom backgrounds are private to a signed-in user's own account, so
   // this gate keeps guests from ever triggering the (auth-scoped) fetch.
-  isLoggedIn = computed(() => !!this.auth.authDataSignal().id);
+  // Both checks matter: authDataSignal() alone can go stale (fixed at the
+  // source in AuthenticationService.logout(), but this is cheap insurance
+  // against the same class of bug anywhere else) - a request fired without
+  // a real jwtToken 401s and gets the whole guest bounced to /auth/login.
+  isLoggedIn = computed(() => !!this.auth.authDataSignal().id && !!localStorage.getItem('jwtToken'));
   myBackgroundImages = signal<MeetingBackgroundImageRow[]>([]);
   backgroundImageUploading = signal(false);
   backgroundImageUploadError = signal(false);

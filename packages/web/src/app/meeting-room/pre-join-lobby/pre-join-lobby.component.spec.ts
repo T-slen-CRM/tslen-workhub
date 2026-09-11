@@ -815,6 +815,7 @@ describe('PreJoinLobbyComponent', () => {
 
     it('loads the caller\'s own custom background images on init when logged in', async () => {
       authDataSignalValue = { id: 7 };
+      localStorage.setItem('jwtToken', 'real-jwt');
       spyOn(livekitClient, 'createLocalVideoTrack').and.rejectWith(new Error('no camera in this test'));
       spyOn(livekitClient, 'createLocalAudioTrack').and.rejectWith(new Error('no mic in this test'));
       const images = [{ id: 1, url: 'https://x/a.png', originName: 'a.png', type: 'image/png', createdAt: '2026-01-01' }];
@@ -823,6 +824,21 @@ describe('PreJoinLobbyComponent', () => {
       await component.ngOnInit();
 
       expect(component.myBackgroundImages()).toEqual(images);
+    });
+
+    it('never fetches custom backgrounds when authDataSignal is stale but the JWT is gone (a real logout without a full page reload)', async () => {
+      // Exactly the bug this guards against: AuthenticationService is a
+      // root-provided singleton, so a client-side navigation straight to a
+      // guest meeting link after an in-app logout never re-creates it - a
+      // caller relying on authDataSignal() alone would see the previous
+      // user's identity and wrongly think they're still logged in.
+      authDataSignalValue = { id: 7 };
+      spyOn(livekitClient, 'createLocalVideoTrack').and.rejectWith(new Error('no camera in this test'));
+      spyOn(livekitClient, 'createLocalAudioTrack').and.rejectWith(new Error('no mic in this test'));
+
+      await component.ngOnInit();
+
+      expect(dataServiceSpy.listMeetingBackgroundImages).not.toHaveBeenCalled();
     });
 
     it('uploads a selected file, adds it to the list, and selects it as the active background', async () => {

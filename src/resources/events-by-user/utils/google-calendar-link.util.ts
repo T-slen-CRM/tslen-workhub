@@ -1,9 +1,27 @@
 import { EventsByUser } from '../entities/events-by-user.entity';
 
-// UTC "basic" ISO 8601 format Google Calendar's render endpoint expects for
-// `dates` (YYYYMMDDTHHMMSSZ - no dashes/colons/milliseconds).
+// `eventsByUser.start`/`.end` are naive wall-clock values with no real
+// timezone attached (the app never records which IANA zone a "17:00"
+// means) - the whole codebase's convention for round-tripping them without
+// corruption is to read them back with LOCAL Date getters rather than a
+// real UTC conversion (see UsersRepository.convertDateWithoutTimezoneOffset,
+// which does the same thing for the same reason). `.toISOString()` here
+// would instead perform a genuine UTC conversion and label the result "Z",
+// which Google Calendar then "correctly" converts again to the viewer's own
+// timezone - double-shifting an event created at 17:00 to display at 20:00
+// for a UTC+3 viewer. Formatting as a bare `YYYYMMDDTHHMMSS` (no trailing Z)
+// instead gives Google a "floating" time, which it anchors to the viewer's
+// own calendar timezone - the same non-corrupting, zone-agnostic contract
+// the rest of this codebase already relies on for these fields.
 function toGoogleCalendarDate (date: Date): string {
-    return new Date(date).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
 }
 
 // A one-click "Add to Google Calendar" link for T-slen meet invite/reminder/

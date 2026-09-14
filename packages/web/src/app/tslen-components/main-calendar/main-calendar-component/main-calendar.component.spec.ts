@@ -35,4 +35,23 @@ describe('MainCalendarComponent', () => {
       expect(component.activeDayIsOpen).toBe(false);
     });
   });
+
+  describe('generateCalendarEvents', () => {
+    it('carries the TSLen meet link through, same as googleMeetLink', () => {
+      const meetingLink = { id: 5, roomName: 'meeting-abc', title: null, expiresAt: null, revokedAt: null };
+      const [event] = component.generateCalendarEvents([
+        { id: 1, start: '2026-09-10T09:00:00.000Z', end: '2026-09-10T09:15:00.000Z', title: 'Standup', meetingLink },
+      ]);
+
+      expect(event.meetingLink).toEqual(meetingLink);
+    });
+
+    it('carries a null TSLen meet link through for events without one', () => {
+      const [event] = component.generateCalendarEvents([
+        { id: 1, start: '2026-09-10T09:00:00.000Z', end: '2026-09-10T09:15:00.000Z', title: 'Standup', meetingLink: null },
+      ]);
+
+      expect(event.meetingLink).toBeNull();
+    });
+  });
 });

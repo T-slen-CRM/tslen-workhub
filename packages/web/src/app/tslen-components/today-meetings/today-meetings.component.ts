@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
 import { DataService } from '../../services/data.service';
 import { AuthenticationService } from '../../services/auth.service';
-import { getTodayDateRange } from '../../helpers/utils';
+import { JoinOwnMeetingService } from '../../pages/live-kit/join-own-meeting.service';
+import { getTodayDateRange, isMeetingLinkActive } from '../../helpers/utils';
 import { IEventByUser, UserGeneralData } from '../../interfaces/userConfig';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -22,6 +23,19 @@ export class TodayMeetingsComponent implements OnInit {
 
   private dataService = inject(DataService);
   private authService = inject(AuthenticationService);
+  private joinOwnMeetingService = inject(JoinOwnMeetingService);
+
+  isTslenMeetJoinable(event: IEventByUser): boolean {
+    return isMeetingLinkActive(event.meetingLink);
+  }
+
+  isPastMeeting(event: IEventByUser): boolean {
+    return new Date(event.end).getTime() < Date.now();
+  }
+
+  joinTslenMeet(event: IEventByUser): void {
+    this.joinOwnMeetingService.join(event.meetingLink.roomName);
+  }
 
   ngOnInit(): void {
     const userId = this.authService.authDataSignal().id;

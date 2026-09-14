@@ -1,4 +1,17 @@
 import {format} from 'date-fns';
+import { IEventMeetingLink } from '../interfaces/userConfig';
+
+// A tslen-meet link (eventsByUser.meetingLink, or a standalone meeting-links
+// row) stops being joinable once it's revoked, or once its optional expiry
+// has passed - shared by TodayMeetingsComponent and
+// CreateOneEventDialogComponent so the "hide when expired/revoked" rule
+// can't drift between the two places it's checked.
+export function isMeetingLinkActive(link: IEventMeetingLink | null | undefined): boolean {
+  if (!link || link.revokedAt) {
+    return false;
+  }
+  return !link.expiresAt || new Date(link.expiresAt) > new Date();
+}
 
 export function setDayHours(numOfHours, date, op) {
   if (op === '+'){

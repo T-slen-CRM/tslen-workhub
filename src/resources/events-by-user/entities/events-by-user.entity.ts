@@ -2,6 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm
 import { Users } from '../../users/entities/users.entity';
 import { BaseAbstractEntity } from '../../../common/entities/base/base.abstract.entity';
 import { EventAttendees } from './event-attendees.entity';
+import { MeetingLink } from '../../meeting-links/entities/meeting-link.entity';
 
 @Index("eventsByUser_users_null_fk", ["userId"], {})
 @Entity("eventsByUser")
@@ -71,6 +72,20 @@ export class EventsByUser extends BaseAbstractEntity<EventsByUser>{
 
   @Column("varchar", { name: "secretToken", length: 250, nullable: true })
       secretToken: string;
+
+  @Column("int", { name: "meetingLinkId", nullable: true })
+      meetingLinkId: number | null;
+
+  @ManyToOne(() => MeetingLink, {
+      eager: true,
+      onDelete: "SET NULL",
+      onUpdate: "NO ACTION",
+  })
+  @JoinColumn([{ name: "meetingLinkId", referencedColumnName: "id" }])
+      meetingLink: MeetingLink;
+
+  @Column("timestamp", { name: "reminderSentAt", nullable: true })
+      reminderSentAt: Date | null;
 
   @ManyToOne(() => Users, (users) => users.eventsByUsers, {
       onDelete: "NO ACTION",

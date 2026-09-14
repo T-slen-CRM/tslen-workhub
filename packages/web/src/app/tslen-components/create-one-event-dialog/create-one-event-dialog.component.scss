@@ -53,9 +53,13 @@ input[type="color"]::-webkit-color-swatch {
 .days-off-container{
   margin-bottom: 10px;
 }
+.tslen-meet-section{
+  margin-bottom: 16px;
+}
 .google-meet-container{
   display: flex;
   flex-direction: column;
+  margin-top: 4px;
   .meet-label{
     font-size: 12px;
   }

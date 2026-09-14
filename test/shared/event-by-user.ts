@@ -19,6 +19,8 @@ export const mockedEventByUser: CreateEventsByUserDto = {
     googleId: 'Test',
     isGoogleEvent: true,
     googleMeetLink: 'Test',
+    createTslenMeet: false,
+    meetingLinkId: null,
     user: mockUser,
     googleCalendarId: '1',
     secretToken: 'Test',

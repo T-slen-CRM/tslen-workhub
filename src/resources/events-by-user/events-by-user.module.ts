@@ -16,6 +16,8 @@ import { GoogleModule } from '../../common/services/google/google.module';
 import { MailService } from '../../common/services/mail/mail.service';
 import { CryptoService } from '../../common/services/crypto/crypto.service';
 import { EventAttendees } from './entities/event-attendees.entity';
+import { MeetingLinksModule } from '../meeting-links/meeting-links.module';
+import { EventsByUserCron } from './events-by-user.cron';
 
 @Module({
     imports: [
@@ -25,7 +27,8 @@ import { EventAttendees } from './entities/event-attendees.entity';
             DaysOffEntity,
             EventAttendees
         ]),
-        GoogleModule
+        GoogleModule,
+        MeetingLinksModule
     ],
     controllers: [EventsByUserController],
     providers: [
@@ -43,7 +46,8 @@ import { EventAttendees } from './entities/event-attendees.entity';
             useExisting: GoogleService
         },
         MailService,
-        CryptoService
+        CryptoService,
+        EventsByUserCron
     ],
 })
 export class EventsByUserModule {}

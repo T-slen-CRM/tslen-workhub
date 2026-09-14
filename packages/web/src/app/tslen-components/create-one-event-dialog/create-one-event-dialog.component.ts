@@ -11,7 +11,7 @@ import {
 } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import { Subject } from 'rxjs';
-import { customFormatDate } from '../../helpers/utils';
+import { customFormatDate, isMeetingLinkActive } from '../../helpers/utils';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LibsService } from '../../services/libs.service';
 import { IDaysOffObject } from '../../interfaces/dashboard';
@@ -22,6 +22,10 @@ import {
 } from '../../../animations/animations';
 import { ValidatorFormGroupService } from '../../services/validatorFormGroup.service';
 import { LanguageService } from 'src/app/language/language.service';
+import { JoinOwnMeetingService } from '../../pages/live-kit/join-own-meeting.service';
+import { IEventMeetingLink } from '../../interfaces/userConfig';
+
+const DEFAULT_MEETING_DURATION_MS = 30 * 60 * 1000;
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -57,6 +61,7 @@ export class CreateOneEventDialogComponent implements OnInit {
   public userListByEmail: any;
   public allPossibleAttendees: any;
   public selectedAttendees: any;
+  public meetingLink: IEventMeetingLink | null;
 
   constructor(
     public dialog: MatDialog,
@@ -66,6 +71,7 @@ export class CreateOneEventDialogComponent implements OnInit {
     private libsService: LibsService,
     private validatorService: ValidatorFormGroupService,
     public translateService: LanguageService,
+    private joinOwnMeetingService: JoinOwnMeetingService,
   ) {
     this.requestTypes = this.libsService.requestTypeList;
     this.iconsListByRequestTypes = this.libsService.daysOffList;
@@ -76,6 +82,7 @@ export class CreateOneEventDialogComponent implements OnInit {
     this.googleCalendarId = this.data.googleCalendarData?.calendarId;
     this.googleTimezone = this.data.googleCalendarData?.timezone;
     this.usersList = this.data.usersList;
+    this.meetingLink = this.data.events?.meetingLink ?? null;
     if (this.usersList) {
       this.userListByEmail = Object.fromEntries(
         this.usersList.map((user) => [user.email, user]),
@@ -100,6 +107,7 @@ export class CreateOneEventDialogComponent implements OnInit {
       event.end = customFormatDate(event.end, 'yyyy-MM-dd HH:mm:ss');
       this.form.patchValue(event);
     }
+    this.syncTslenMeetCheckbox();
     this.form.get('isRequest').valueChanges.subscribe((isRequest) => {
       if (isRequest) {
         setTimeout(() => {
@@ -148,6 +156,12 @@ export class CreateOneEventDialogComponent implements OnInit {
     }
     this.form.get('start').valueChanges.subscribe((start) => {
       this.setTimeOffset(start, this.form.value.end);
+      // Only for a brand-new, non-request event: keep the default 30-minute
+      // duration as the user adjusts the start time before saving (editing
+      // an existing event's start must not clobber its real end time).
+      if (Array.isArray(this.incomingEvent) && !this.form.value.isRequest) {
+        this.form.get('end').patchValue(this.addDefaultDuration(start));
+      }
     });
     this.form.get('end').valueChanges.subscribe((end) => {
       this.setTimeOffset(this.form.value.start, end);
@@ -213,11 +227,19 @@ export class CreateOneEventDialogComponent implements OnInit {
   }
 
   createForm() {
+    // A brand-new event (data.events is [] - see the incomingEvent/edit
+    // check below) defaults to a 30-minute meeting instead of the
+    // zero-length start===end the clicked calendar slot would otherwise
+    // produce. Editing an existing event keeps its own start/end untouched
+    // (patched right after, from the real incoming event).
+    const defaultEnd = Array.isArray(this.incomingEvent)
+      ? this.addDefaultDuration(this.selectedDate)
+      : this.selectedDate;
     this.form = this.formBuilder.group({
       id: null,
       title: '',
       start: this.selectedDate,
-      end: this.selectedDate,
+      end: defaultEnd,
       isRequest: 0,
       approved: 0,
       requestType: 'own',
@@ -238,8 +260,44 @@ export class CreateOneEventDialogComponent implements OnInit {
       googleMeetLink: '',
       googleTimezone: this.googleTimezone,
       createMeetingSpace: 0,
+      createTslenMeet: 0,
       attendees: [[]],
     });
+  }
+
+  addDefaultDuration(dateStr: string): string {
+    const start = new Date(dateStr);
+    if (isNaN(start.getTime())) {
+      return dateStr;
+    }
+    return customFormatDate(
+      new Date(start.getTime() + DEFAULT_MEETING_DURATION_MS),
+      'yyyy-MM-dd HH:mm:ss',
+    );
+  }
+
+  joinTslenMeet(): void {
+    if (this.meetingLink) {
+      this.joinOwnMeetingService.join(this.meetingLink.roomName);
+    }
+  }
+
+  isTslenMeetActive(): boolean {
+    return isMeetingLinkActive(this.meetingLink);
+  }
+
+  // The backend never round-trips a createTslenMeet flag (it's a
+  // create-only signal, not persisted state - see
+  // EventsByUserService.create()), so patchValue(event) alone leaves the
+  // checkbox unchecked even when the event already has an active meeting
+  // link. Locking it once checked mirrors isGoogleEvent's own
+  // once-set-it's-frozen behavior in ngOnInit below, since unchecking it
+  // here wouldn't actually revoke anything (update() doesn't act on it).
+  syncTslenMeetCheckbox(): void {
+    if (isMeetingLinkActive(this.meetingLink)) {
+      this.form.get('createTslenMeet').patchValue(1);
+      this.form.get('createTslenMeet').disable();
+    }
   }
 
   setApprovingStatus() {

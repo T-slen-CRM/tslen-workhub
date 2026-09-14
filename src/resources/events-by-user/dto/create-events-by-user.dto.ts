@@ -83,6 +83,20 @@ export class CreateEventsByUserDto {
     @IsBoolean()
         isGoogleEvent: boolean;
 
+    @IsOptional()
+    @Transform(({ value }) => !!value)
+    @IsBoolean()
+        createTslenMeet: boolean;
+
+    // Not client-settable in practice - EventsByUserService.create() always
+    // overwrites this from the server-side MeetingLinksService.createLink()
+    // result (or nulls it out), the same trust model as googleId. Declared
+    // here only so Object.assign in createOneWithRelations can carry the
+    // server-computed id onto the EventsByUser entity before save().
+    @IsOptional()
+    @IsInt()
+        meetingLinkId: number | null;
+
     @Transform(({ value }) => (value ? new Date(value) : null))
     @IsDate()
         createdAt: Date | null;

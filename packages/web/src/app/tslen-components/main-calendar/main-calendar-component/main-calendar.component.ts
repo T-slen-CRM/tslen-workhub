@@ -196,6 +196,7 @@ export class MainCalendarComponent implements OnDestroy, AfterViewInit {
         isGoogleEvent: currentItem.isGoogleEvent,
         googleId: currentItem.googleId,
         googleMeetLink: currentItem.googleMeetLink,
+        meetingLink: currentItem.meetingLink,
         attendees: currentItem.attendees,
       };
       newArr.push(oneEvent);

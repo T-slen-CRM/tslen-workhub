@@ -5,11 +5,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TodayMeetingsComponent } from './today-meetings.component';
 import { DataService } from '../../services/data.service';
 import { AuthenticationService } from '../../services/auth.service';
+import { JoinOwnMeetingService } from '../../pages/live-kit/join-own-meeting.service';
 import { IEventByUser, UserGeneralData } from '../../interfaces/userConfig';
 
 describe('TodayMeetingsComponent', () => {
   let fixture: ComponentFixture<TodayMeetingsComponent>;
   let dataServiceSpy: jasmine.SpyObj<DataService>;
+  let joinOwnMeetingServiceSpy: jasmine.SpyObj<JoinOwnMeetingService>;
 
   function makeEvent(overrides: Partial<IEventByUser>): IEventByUser {
     return {
@@ -22,6 +24,7 @@ describe('TodayMeetingsComponent', () => {
       requestType: null,
       isGoogleEvent: false,
       googleMeetLink: null,
+      meetingLink: null,
       ...overrides,
     };
   }
@@ -31,6 +34,7 @@ describe('TodayMeetingsComponent', () => {
     dataServiceSpy.getObservableData.and.returnValue(
       of({ eventsByUsers } as UserGeneralData),
     );
+    joinOwnMeetingServiceSpy = jasmine.createSpyObj('JoinOwnMeetingService', ['join']);
 
     TestBed.configureTestingModule({
       imports: [TodayMeetingsComponent, TranslateModule.forRoot()],
@@ -40,6 +44,7 @@ describe('TodayMeetingsComponent', () => {
           provide: AuthenticationService,
           useValue: { authDataSignal: () => ({ id: 18 }) },
         },
+        { provide: JoinOwnMeetingService, useValue: joinOwnMeetingServiceSpy },
       ],
     }).compileComponents();
 
@@ -77,6 +82,46 @@ describe('TodayMeetingsComponent', () => {
     expect(links[0].getAttribute('href')).toBe('https://meet.google.com/abc');
   });
 
+  it('shows a Join action for an active TSLen meet link and joins it via JoinOwnMeetingService', () => {
+    createComponent([
+      makeEvent({
+        id: 1,
+        title: 'With tslen meet',
+        meetingLink: { id: 5, roomName: 'meeting-abc', title: null, expiresAt: null, revokedAt: null },
+      }),
+    ]);
+
+    const joinEls = fixture.nativeElement.querySelectorAll('.today-meetings-join');
+    expect(joinEls.length).toBe(1);
+
+    joinEls[0].click();
+    expect(joinOwnMeetingServiceSpy.join).toHaveBeenCalledWith('meeting-abc');
+  });
+
+  it('hides the Join action once the TSLen meet link is expired', () => {
+    createComponent([
+      makeEvent({
+        id: 1,
+        title: 'Expired',
+        meetingLink: { id: 5, roomName: 'meeting-abc', title: null, expiresAt: '2000-01-01T00:00:00.000Z', revokedAt: null },
+      }),
+    ]);
+
+    expect(fixture.nativeElement.querySelectorAll('.today-meetings-join').length).toBe(0);
+  });
+
+  it('hides the Join action once the TSLen meet link is revoked', () => {
+    createComponent([
+      makeEvent({
+        id: 1,
+        title: 'Revoked',
+        meetingLink: { id: 5, roomName: 'meeting-abc', title: null, expiresAt: null, revokedAt: '2026-09-10T00:00:00.000Z' },
+      }),
+    ]);
+
+    expect(fixture.nativeElement.querySelectorAll('.today-meetings-join').length).toBe(0);
+  });
+
   it('excludes day-off requests - they share the same table but are not meetings', () => {
     createComponent([
       makeEvent({ id: 1, title: 'Vacation', isRequest: true }),
@@ -86,6 +131,22 @@ describe('TodayMeetingsComponent', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).not.toContain('Vacation');
     expect(text).toContain('Real meeting');
+  });
+
+  it('crosses out a meeting once its end time has passed, but still shows it', () => {
+    const past = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const future = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    createComponent([
+      makeEvent({ id: 1, title: 'Already over', start: past, end: past }),
+      makeEvent({ id: 2, title: 'Still upcoming', start: future, end: future }),
+    ]);
+
+    const items: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('.today-meetings-item'));
+    const overItem = items.find((el) => el.textContent.includes('Already over'));
+    const upcomingItem = items.find((el) => el.textContent.includes('Still upcoming'));
+
+    expect(overItem.classList.contains('today-meetings-item--past')).toBe(true);
+    expect(upcomingItem.classList.contains('today-meetings-item--past')).toBe(false);
   });
 
   it('shows an empty state when there are no meetings today', () => {

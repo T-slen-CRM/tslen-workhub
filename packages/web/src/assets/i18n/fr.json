@@ -58,6 +58,8 @@
   "makeRequest": {
     "name": "Créer une demande",
     "meet": "Créer un événement Google et une réunion",
+    "tslenMeet": "Ajouter une réunion T-slen",
+    "tslenMeetJoin": "Rejoindre la réunion T-slen",
     "title": "Titre",
     "label": "Couleur de l'étiquette",
     "form": {

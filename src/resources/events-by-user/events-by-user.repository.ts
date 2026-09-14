@@ -155,6 +155,25 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             }
         });
     }
+    // Query-builder relations aren't auto-joined by `eager: true` the way
+    // `findOne`/`find` are - meetingLink and attendees need explicit joins
+    // here for EventsByUserCron to have what it needs (join link + who to
+    // email) without a second round trip per event.
+    async findUpcomingTslenMeetReminders (windowStart: Date, windowEnd: Date): Promise<EventsByUser[]> {
+        return this.eventsByUserRepository.createQueryBuilder('e')
+            .leftJoinAndSelect('e.meetingLink', 'meetingLink')
+            .leftJoinAndSelect('e.attendees', 'attendees')
+            .where('e.meetingLinkId IS NOT NULL')
+            .andWhere('e.reminderSentAt IS NULL')
+            .andWhere('e.start BETWEEN :windowStart AND :windowEnd', { windowStart, windowEnd })
+            .andWhere('meetingLink.revokedAt IS NULL')
+            .getMany();
+    }
+
+    async markReminderSent (id: number): Promise<void> {
+        await this.eventsByUserRepository.update(id, { reminderSentAt: new Date() });
+    }
+
     async getPending (user: Users): Promise<EventsByUser[]> {
         const companyId: number = toSqlSafeInteger(user.companyId, 'companyId');
         const userRole: string = user.role;

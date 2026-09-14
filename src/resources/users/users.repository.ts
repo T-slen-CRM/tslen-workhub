@@ -55,7 +55,8 @@ export class UsersRepository extends BaseAbstractRepository<Users>{
             endOfEndDate.setUTCHours(23, 59, 59, 999);
             const eventsByUsersCondition = 'eventsByUsers.approved != -1 AND (eventsByUsers.start BETWEEN :startDate AND :endDate OR eventsByUsers.end BETWEEN :startDate AND :endDate)';
             qb.leftJoinAndSelect('user.eventsByUsers', 'eventsByUsers', eventsByUsersCondition, { startDate: dateRange.startDate, endDate: endOfEndDate })
-                .leftJoinAndSelect('eventsByUsers.attendees', 'eventsAttendees');
+                .leftJoinAndSelect('eventsByUsers.attendees', 'eventsAttendees')
+                .leftJoinAndSelect('eventsByUsers.meetingLink', 'meetingLink');
         }
 
         const result = await qb.getOne();

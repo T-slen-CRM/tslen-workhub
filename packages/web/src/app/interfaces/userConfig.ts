@@ -53,6 +53,21 @@ export interface IEventByUser {
     requestType: string | null;
     isGoogleEvent: boolean;
     googleMeetLink: string | null;
+    meetingLink: IEventMeetingLink | null;
+}
+
+// The tslen-meet link attached to an event, if any - joined from the
+// `meetingLinks` table via eventsByUser.meetingLinkId (see
+// UsersRepository.getOneWithRelations). The link's token/encryptedToken are
+// never included (MeetingLink has them @Exclude()'d) since joining happens
+// in-app with the host's own LiveKit token, not via the public /meet/:token
+// guest link.
+export interface IEventMeetingLink {
+    id: number;
+    roomName: string;
+    title: string | null;
+    expiresAt: string | null;
+    revokedAt: string | null;
 }
 
 interface IUserProbation {

@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Users } from '../../users/entities/users.entity';
 
 @Index('meetingLinks_hostUserId_fk', ['hostUserId'], {})
@@ -7,6 +8,12 @@ export class MeetingLink {
     @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
         id: number;
 
+    // Excluded from serialized responses (ClassSerializerInterceptor is
+    // global, see main.ts) - same discipline as Users.password. This entity
+    // is now reachable from GET /users/:id (via EventsByUser.meetingLink),
+    // not just meeting-links' own hand-curated DTOs, so the lookup hash and
+    // reversible ciphertext must never leave the server from that path.
+    @Exclude()
     @Column('varchar', { name: 'token', length: 64, unique: true })
         token: string;
 
@@ -15,6 +22,7 @@ export class MeetingLink {
     // still see/copy a link they created earlier via GET /meeting-links -
     // `token` stays hash-based since it's the deterministic lookup key
     // MeetingGuestGuard queries by, and encryption is non-deterministic.
+    @Exclude()
     @Column('varchar', { name: 'encryptedToken', length: 255 })
         encryptedToken: string;
 

@@ -71,7 +71,24 @@
         </div>
         }
       </div>
-      @if (form.value['isGoogleEvent']){
+      <div class="tslen-meet-section">
+        <mat-checkbox
+          [color]="'primary'"
+          class="margin-element"
+          formControlName="createTslenMeet"
+        >
+          {{ 'makeRequest.tslenMeet' | translate }}
+        </mat-checkbox>
+        @if (isTslenMeetActive()) {
+        <div class="google-meet-container">
+          <mat-label class="meet-label">T-slen meet</mat-label>
+          <button mat-button color="primary" type="button" (click)="joinTslenMeet()">
+            {{ 'makeRequest.tslenMeetJoin' | translate }}
+          </button>
+        </div>
+        }
+      </div>
+      @if (form.value['isGoogleEvent'] || form.value['createTslenMeet']){
       <div>
         <app-autocomplete
           (selectedItemsForParent)="getSelectedAttendees($event)"

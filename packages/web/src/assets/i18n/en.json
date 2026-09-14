@@ -58,6 +58,8 @@
     "makeRequest":{
         "name": "Make a request",
         "meet": "Make a Google event & meet",
+        "tslenMeet": "Add T-slen meet",
+        "tslenMeetJoin": "Join T-slen meeting",
         "title": "Title",
         "label": "Label color",
         "form": {

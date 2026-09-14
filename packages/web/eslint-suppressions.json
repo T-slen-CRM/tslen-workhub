@@ -1506,7 +1506,7 @@
   },
   "src/app/tslen-components/create-one-event-dialog/create-one-event-dialog.component.ts": {
     "@angular-eslint/prefer-inject": {
-      "count": 7
+      "count": 8
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1

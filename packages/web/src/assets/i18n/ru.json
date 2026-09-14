@@ -58,6 +58,8 @@
   "makeRequest": {
     "name": "Создать запрос",
     "meet": "Создать событие Google и встречу",
+    "tslenMeet": "Добавить встречу T-slen",
+    "tslenMeetJoin": "Присоединиться к встрече T-slen",
     "title": "Заголовок",
     "label": "Цвет метки",
     "form": {

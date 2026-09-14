@@ -58,6 +58,8 @@
   "makeRequest": {
     "name": "Створити запит",
     "meet": "Створити подію Google та зустріч",
+    "tslenMeet": "Додати зустріч T-slen",
+    "tslenMeetJoin": "Приєднатися до зустрічі T-slen",
     "title": "Заголовок",
     "label": "Колір мітки",
     "form": {

@@ -11,5 +11,6 @@ import { LiveKitModule } from '../live-kit/live-kit.module';
     imports: [TypeOrmModule.forFeature([MeetingLink]), LiveKitModule],
     controllers: [MeetingLinksController],
     providers: [MeetingLinksService, MeetingLinksRepository, MeetingGuestGuard],
+    exports: [MeetingLinksService],
 })
 export class MeetingLinksModule {}

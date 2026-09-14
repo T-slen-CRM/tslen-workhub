@@ -4,6 +4,77 @@ All notable changes to this project are documented here. Entries are
 generated automatically by [git-cliff](https://git-cliff.org/) from
 Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
 see `cliff.toml` and `.github/workflows/release.yml`.
+## [0.4.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.3.0...v0.4.0) - 2026-09-14
+
+### Features
+
+- *(tasks)* Add a phase setting to render its tasks as inactive/muted
+
+- *(tasks)* Upload attachments immediately instead of on Save
+
+- *(people)* Fill in the user info card with read-only labeled fields
+
+- *(people)* Redesign the user info card, drop Company/Role
+
+- *(people)* Open the user info card as a dialog instead of a route
+
+- *(main-wall)* Show today's meetings in a new sidebar section
+
+- *(meeting-room)* Show a mic-off badge for muted participants
+
+- *(meeting-background-images)* Let users upload a private custom call background
+
+- *(meeting-room)* Switch to a Meet-style layout during screen share
+
+- *(meeting-room)* Let a participant be pinned to the main screen
+
+- *(meeting-room)* Reuse the automatic Picture-in-Picture window for group calls
+
+- *(pre-join-lobby)* Show the caller's custom backgrounds when logged in
+
+- *(guest-meeting)* Redesign the guest landing page with Angular Material
+
+- *(meeting-room)* Hover-reveal controls and join/screen-share sounds
+
+- *(events-by-user)* Add T-slen meet with invites, reminders, and reschedule emails
+
+
+### Bug Fixes
+
+- *(tasks)* Stop showing "Updated 20704 days ago" for never-updated tasks
+
+- *(people)* Fix ag-Grid column resize on the People page
+
+- *(nav)* Fix pending badge visibility when the sidebar is expanded
+
+- *(external-tasks)* Fix 500 when assigneeEmail resolves a user
+
+- *(tasks)* Desaturate priority/estimate tag and time-icon colors in muted phases
+
+- *(nav)* Fix pending badge overlapping the label during collapsed-rail hover
+
+- *(tasks)* Stop phase edits from silently reordering the board
+
+- *(tasks)* Make task history human readable
+
+- *(tasks)* Attribute WS task changes to the real user, not "System"
+
+- *(audit-log)* Show the real client IP and device, not the proxy's IP
+
+- *(meeting-room)* Fix inflated participant counter in the call header
+
+- *(call)* Hide participant name labels in the minimized call window
+
+- *(meeting-room)* Center icon buttons and use a neutral grey for the mic badge
+
+- *(pre-join-lobby)* Center the mic/camera pill button icons
+
+- *(guest-meeting)* Stop bouncing guests to /auth/login on join
+
+- *(meeting-room)* Show a remote participant as muted before they ever publish audio
+
+- *(events-by-user)* Stop double-shifting the Google Calendar link's time
+
 ## [0.3.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.2.0...v0.3.0) - 2026-09-08
 
 ### Features

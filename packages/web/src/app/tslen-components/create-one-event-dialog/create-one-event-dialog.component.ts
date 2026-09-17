@@ -317,10 +317,13 @@ export class CreateOneEventDialogComponent implements OnInit {
   changeDateTimeByRequestType(dateWithHours = false) {
     let formattedDate;
     if (dateWithHours) {
-      formattedDate = customFormatDate(
-        this.selectedDate,
-        'yyyy-MM-dd HH:mm:ss',
-      );
+      // Round down to the top of the current hour rather than reusing
+      // selectedDate's exact minutes/seconds (whatever moment the dialog
+      // happened to be opened at, e.g. 14:51:11 -> 14:00:00) - a clean,
+      // whole-hour starting point for the user to adjust from, for
+      // hospital/timeOff requests using the "use hours" option.
+      const hour = customFormatDate(this.selectedDate, 'yyyy-MM-dd HH');
+      formattedDate = `${hour}:00:00`;
       this.form.get('start').patchValue(formattedDate);
       this.form.get('end').patchValue(formattedDate);
     } else {

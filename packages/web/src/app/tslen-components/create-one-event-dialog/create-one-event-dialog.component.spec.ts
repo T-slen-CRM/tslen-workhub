@@ -101,6 +101,28 @@ describe('CreateOneEventDialogComponent', () => {
     });
   });
 
+  describe('changeDateTimeByRequestType', () => {
+    it('rounds down to the top of the current hour in hours mode, not the exact wall-clock time the dialog happened to open at', () => {
+      const component = createComponent();
+      component.selectedDate = '2026-09-16 14:51:11';
+
+      component.changeDateTimeByRequestType(true);
+
+      expect(component.form.value.start).toBe('2026-09-16 14:00:00');
+      expect(component.form.value.end).toBe('2026-09-16 14:00:00');
+    });
+
+    it('strips the time entirely when not in hours mode', () => {
+      const component = createComponent();
+      component.selectedDate = '2026-09-16 14:51:11';
+
+      component.changeDateTimeByRequestType(false);
+
+      expect(component.form.value.start).toBe('2026-09-16');
+      expect(component.form.value.end).toBe('2026-09-16');
+    });
+  });
+
   describe('30-minute default duration for a new event', () => {
     it('defaults the end time to 30 minutes after the clicked start time', () => {
       const component = createNewEventComponentWithInit(new Date('2026-09-14T14:00:00'));

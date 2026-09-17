@@ -79,10 +79,15 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
 
     async getAbsentToday (user: Users): Promise<EventsByUser[]>{
         const companyId: number = toSqlSafeInteger(user.companyId, 'companyId');
+        // Grouped by user with requestType aggregated into an array (`type`),
+        // not selected per-event - a user can have two approved, overlapping
+        // day-off events of different types today (e.g. 'home' and
+        // 'hospital'), and without this they'd show up as two separate rows
+        // for the same person instead of one row listing both types.
         const q = this.eventsByUserRepository.createQueryBuilder('ebu')
             .select([`
                 concat(u.firstName, ' ', u.lastName) as name,
-                ebu.requestType as type,
+                array_agg(DISTINCT ebu.requestType) as type,
                 u.avatar as avatar
                 `
             ])
@@ -92,6 +97,10 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             .andWhere(activeUserCondition('u'))
             .andWhere(`ebu.approved = 1`)
             .andWhere(`NOW() BETWEEN ebu.start AND ebu.end`)
+            .groupBy('u.id')
+            .addGroupBy('u.firstName')
+            .addGroupBy('u.lastName')
+            .addGroupBy('u.avatar')
         return await q.getRawMany();
     }
     async deleteOneWithRelations (id: number, entity: EventsByUser): Promise<DeleteResult> {

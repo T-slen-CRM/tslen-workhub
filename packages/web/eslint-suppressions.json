@@ -1650,7 +1650,7 @@
       "count": 1
     },
     "@angular-eslint/template/prefer-control-flow": {
-      "count": 5
+      "count": 6
     }
   },
   "src/app/tslen-components/mat-table/mat-table.component.ts": {

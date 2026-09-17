@@ -51,6 +51,16 @@ export class MatTableComponent implements OnInit {
   constructor(public translateService: LanguageService) {}
 
   ngOnInit(): void {}
+
+  // The 'type' column's cell value is usually a single string (e.g.
+  // birthday-list's one type per row), but a consumer like absent-user can
+  // legitimately have more than one for the same row (a user absent for two
+  // different reasons today) and sends an array instead - normalize both
+  // shapes so the template can always iterate.
+  typesFor(element: { type: unknown }): unknown[] {
+    return Array.isArray(element.type) ? element.type : [element.type];
+  }
+
   deleteEvent() {
     // this.events = this.events.filter((event) => event !== eventToDelete);
   }

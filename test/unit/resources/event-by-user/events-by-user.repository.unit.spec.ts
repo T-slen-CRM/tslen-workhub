@@ -13,7 +13,7 @@ import { activeUserCondition } from '../../../../src/resources/users/utils/activ
 function createFakeQueryBuilder (result: unknown) {
     const calls: { method: string; args: unknown[] }[] = [];
     const qb: Record<string, (...args: unknown[]) => unknown> = {};
-    ['select', 'where', 'andWhere', 'leftJoin', 'orderBy'].forEach((method) => {
+    ['select', 'where', 'andWhere', 'leftJoin', 'orderBy', 'groupBy', 'addGroupBy'].forEach((method) => {
         qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
     });
     qb.getQuery = () => '';
@@ -61,6 +61,16 @@ describe('EventsByUserRepository', () => {
             await repository.getAbsentToday(mockUser as unknown as Users);
 
             expect(ebuQbCalls.find((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('u'))).toBeDefined();
+        });
+
+        it('groups by user and aggregates types, so someone with two overlapping day-off types (e.g. home + hospital) gets one row, not two', async () => {
+            const { repository, ebuQbCalls } = setup();
+
+            await repository.getAbsentToday(mockUser as unknown as Users);
+
+            expect(ebuQbCalls.some((c) => c.method === 'groupBy' || c.method === 'addGroupBy')).toBe(true);
+            const selectCall = ebuQbCalls.find((c) => c.method === 'select');
+            expect(String(selectCall.args[0])).toMatch(/array_agg/i);
         });
     });
 

@@ -38,6 +38,7 @@
   [isLoading]="loaderService.isLoading()"
   [bar]="true"
 ></app-loading-logo>
+<app-new-version-banner></app-new-version-banner>
 @if (activeCallData()){
 <app-live-kit-call
   [callerId]="$safeNavigationMigration(activeCallData()?.callerId)"

@@ -60,6 +60,7 @@ jobs:
           push: true
           build-args: |
             APP_PORT=4004
+            GIT_SHA=${{ github.event.workflow_run.head_sha }}
           tags: |
             ghcr.io/t-slen-crm/tslen-workhub:latest
             ghcr.io/t-slen-crm/tslen-workhub:${{ github.event.workflow_run.head_sha }}

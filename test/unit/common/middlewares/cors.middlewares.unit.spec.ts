@@ -40,6 +40,15 @@ describe('CorsMiddleware', () => {
         expect(next).toHaveBeenCalled();
     });
 
+    it('exposes X-App-Version to cross-origin JS (e.g. ng serve dev against a separate backend port), not just the CORS-safelisted headers', () => {
+        const { req, res } = fakeReqRes('/api/v1/tasks', 'https://crm.example.com');
+        const next = jest.fn();
+
+        middleware.use(req, res, next);
+
+        expect(res.headers['Access-Control-Expose-Headers']).toBe('X-App-Version');
+    });
+
     it('rejects a non-whitelisted origin on a non-public path', () => {
         const { req, res } = fakeReqRes('/api/v1/tasks', 'https://evil.example.com');
         res.status = jest.fn().mockReturnValue(res);

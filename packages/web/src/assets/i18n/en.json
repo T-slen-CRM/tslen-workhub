@@ -525,6 +525,11 @@
     "dark_mode_button": {
         "change_mode": "Change mode"
     },
+    "newVersionBanner": {
+        "message": "A new version is available.",
+        "refresh": "Refresh",
+        "dismiss": "Dismiss"
+    },
     "today_meetings": {
         "title": "Today's meetings",
         "no_meetings": "No meetings today",

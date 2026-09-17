@@ -55,6 +55,11 @@
       "day": "Начало"
     }
   },
+  "newVersionBanner": {
+    "message": "Доступна новая версия.",
+    "refresh": "Обновить",
+    "dismiss": "Закрыть"
+  },
   "makeRequest": {
     "name": "Создать запрос",
     "meet": "Создать событие Google и встречу",

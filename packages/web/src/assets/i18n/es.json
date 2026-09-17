@@ -55,6 +55,11 @@
       "day": "Inicio"
     }
   },
+  "newVersionBanner": {
+    "message": "Hay una nueva versión disponible.",
+    "refresh": "Actualizar",
+    "dismiss": "Descartar"
+  },
   "makeRequest": {
     "name": "Crear solicitud",
     "meet": "Crear evento y reunión de Google",

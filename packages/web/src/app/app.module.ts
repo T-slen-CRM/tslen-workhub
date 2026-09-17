@@ -41,6 +41,7 @@ import { ErrorInterceptor } from './services/error.interceptor';
 import { MatMenuModule } from '@angular/material/menu';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { VersionCheckInterceptor } from './interceptors/version-check.interceptor';
 import { TimerComponent } from './feature/timer-pomodoro/timer/timer.component';
 import { LanguageConfigurationModule } from './language/languageConfiguration.module';
 import { LanguageService } from './language/language.service';
@@ -49,6 +50,7 @@ import { HelpersModule } from './helpers/helpers.module';
 import { CallComponent } from './pages/call/wellcome/call.component';
 import { MeetingRoomComponent } from './meeting-room/meeting-room.component';
 import { NotificationBellComponent } from './tslen-components/notification-bell/notification-bell.component';
+import { NewVersionBannerComponent } from './components/new-version-banner/new-version-banner.component';
 
 function initLang(langService: LanguageService) {
   return () => langService.setDefaultLangFromBrowser();
@@ -91,6 +93,7 @@ function initLang(langService: LanguageService) {
     CallComponent,
     MeetingRoomComponent,
     NotificationBellComponent,
+    NewVersionBannerComponent,
   ],
   providers: [
     NavigationItem,
@@ -115,6 +118,7 @@ function initLang(langService: LanguageService) {
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: VersionCheckInterceptor, multi: true },
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
 })

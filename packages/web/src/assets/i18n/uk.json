@@ -55,6 +55,11 @@
       "day": "Початок"
     }
   },
+  "newVersionBanner": {
+    "message": "Доступна нова версія.",
+    "refresh": "Оновити",
+    "dismiss": "Закрити"
+  },
   "makeRequest": {
     "name": "Створити запит",
     "meet": "Створити подію Google та зустріч",

@@ -33,6 +33,12 @@ const shared = {
     ipCheckerUrl: process.env.IP_CHECKER_URL || '',
     ftpDomain: process.env.FTP_DOMAIN || '',
     livekitUrl: process.env.LIVEKIT_PUBLIC_URL || '',
+    // Compared against the backend's X-App-Version response header
+    // (AppVersionMiddleware) by VersionCheckInterceptor to detect a
+    // redeploy - set from the Dockerfile's GIT_SHA build-arg/env in prod,
+    // "dev" otherwise (must match AppVersionMiddleware's own "dev"
+    // fallback so local dev never shows a false "new version" banner).
+    buildVersion: process.env.GIT_SHA || 'dev',
 };
 
 interface Target {
@@ -56,6 +62,7 @@ const render = (target: Target): string => `export const environment = {
   ipCheckerUrl: '${shared.ipCheckerUrl}',
   ftpDomain: '${shared.ftpDomain}',
   livekitUrl: '${shared.livekitUrl}',
+  buildVersion: '${shared.buildVersion}',
 };
 `;
 

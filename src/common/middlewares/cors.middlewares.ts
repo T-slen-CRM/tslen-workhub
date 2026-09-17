@@ -29,6 +29,14 @@ export class CorsMiddleware implements NestMiddleware {
             res.setHeader('Access-Control-Allow-Origin', origin);
             res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS, PATCH');
             res.setHeader('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe');
+            // Custom response headers aren't visible to cross-origin JS
+            // unless explicitly exposed (the browser's CORS-safelisted
+            // default only covers a handful of standard ones) - needed so
+            // VersionCheckInterceptor can read X-App-Version when the
+            // frontend runs on a different origin than the API (e.g. local
+            // `ng serve` dev). Not needed in production, where they're
+            // served same-origin and every header is visible regardless.
+            res.setHeader('Access-Control-Expose-Headers', 'X-App-Version');
             // Only reflect credentials for actually-whitelisted origins. Public
             // paths (PUBLIC_PATH) intentionally bypass the origin whitelist for
             // unauthenticated flows (OAuth callback, signup) — they must never

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { LocalAudioTrack, LocalParticipant, LocalVideoTrack, Room, RoomEvent } from 'livekit-client';
@@ -7,6 +8,7 @@ import { MeetingRoomComponent } from './meeting-room.component';
 import { BACKGROUND_IMAGE_PRESETS } from './pre-join-lobby/pre-join-lobby.component';
 import { DataService } from '../services/data.service';
 import { AuthenticationService } from '../services/auth.service';
+import { CollapsibleCallWindowDirective } from '../pages/live-kit/collapsible-call-window.directive';
 
 jest.mock('@livekit/track-processors', () => ({
   ...jest.requireActual('@livekit/track-processors'),
@@ -1314,6 +1316,49 @@ describe('MeetingRoomComponent', () => {
       const handles = openSpy.calls.mostRecent().args[0] as { getMainVideoTrack: () => unknown; getSelfVideoTrack: () => unknown };
       expect(handles.getMainVideoTrack()).toBe(cameraTrack);
       expect(handles.getSelfVideoTrack()).toBe(cameraTrack);
+    });
+  });
+
+  describe('collapsed window compact controls', () => {
+    function collapsedSignal(): { collapsed: () => boolean; toggle: () => void } {
+      return fixture.debugElement
+        .query(By.directive(CollapsibleCallWindowDirective))
+        .injector.get(CollapsibleCallWindowDirective);
+    }
+
+    it('shows the compact mic/camera/leave controls, not the full controlbar, while the window starts collapsed', () => {
+      fixture.detectChanges();
+
+      expect(collapsedSignal().collapsed()).toBe(true);
+      expect(fixture.nativeElement.querySelector('.meeting-controlbar--compact')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.meeting-controlbar:not(.meeting-controlbar--compact)')).toBeNull();
+    });
+
+    it('swaps to the full controlbar, hiding the compact one, once expanded', () => {
+      fixture.detectChanges();
+
+      collapsedSignal().toggle();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.meeting-controlbar--compact')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.meeting-controlbar:not(.meeting-controlbar--compact)')).not.toBeNull();
+    });
+
+    it('the compact mic/camera/leave buttons call the same handlers as the full controlbar', async () => {
+      const room = attachFakeRoom();
+      fixture.detectChanges();
+
+      const [micBtn, cameraBtn, leaveBtn] = fixture.nativeElement.querySelectorAll('.meeting-controlbar--compact button');
+      micBtn.click();
+      await fixture.whenStable();
+      cameraBtn.click();
+      await fixture.whenStable();
+      leaveBtn.click();
+      await fixture.whenStable();
+
+      expect(room.localParticipant.setMicrophoneEnabled).toHaveBeenCalled();
+      expect(room.localParticipant.setCameraEnabled).toHaveBeenCalled();
+      expect(room.disconnect).toHaveBeenCalled();
     });
   });
 });

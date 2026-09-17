@@ -354,6 +354,22 @@
           <mat-icon>call_end</mat-icon>
         </button>
       </div>
+    } @else {
+      <!-- Collapsed window: same mic/camera/leave actions as the expanded
+           controlbar, just the 3 most-used ones (no device pickers,
+           screen-share, background, raise-hand or chat - there's no room
+           for those in a 300x220 box) at a smaller size. -->
+      <div class="meeting-controlbar meeting-controlbar--compact">
+        <button mat-icon-button type="button" class="meeting-pill-btn meeting-pill-btn--compact" [class.meeting-pill-btn--off]="!microphoneEnabled()" (click)="setMicrophoneEnabled(!microphoneEnabled())">
+          <mat-icon>{{ microphoneEnabled() ? 'mic' : 'mic_off' }}</mat-icon>
+        </button>
+        <button mat-icon-button type="button" class="meeting-pill-btn meeting-pill-btn--compact" [class.meeting-pill-btn--off]="!cameraIsEnable()" (click)="setCameraEnabled(!cameraIsEnable())">
+          <mat-icon>{{ cameraIsEnable() ? 'videocam' : 'videocam_off' }}</mat-icon>
+        </button>
+        <button mat-icon-button type="button" class="meeting-pill-btn meeting-pill-btn--compact meeting-pill-btn--hangup" (click)="leaveRoom()">
+          <mat-icon>call_end</mat-icon>
+        </button>
+      </div>
     }
   </div>
 </div>

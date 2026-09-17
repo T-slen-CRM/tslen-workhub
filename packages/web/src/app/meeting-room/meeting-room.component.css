@@ -232,6 +232,26 @@ app-meeting-chat.meeting-chat-hidden {
   color: #fff !important;
 }
 
+/* Collapsed window's control bar (see .meeting-video-grid--collapsed and the
+   300x220 box in collapsible-call-window.css) - same pill styling as the
+   expanded controlbar, just small enough to fit alongside the video without
+   covering most of it. */
+.meeting-controlbar--compact {
+  bottom: 4px;
+  gap: 4px;
+  padding: 4px 6px;
+}
+.meeting-pill-btn--compact.mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 28px !important;
+  --mat-icon-button-state-layer-size: 28px !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 2px !important;
+}
+.meeting-pill-btn--compact.meeting-pill-btn--hangup {
+  width: 40px !important;
+}
+
 /* Mobile: shrink the device-picker dropdowns and the video-tile minimum size
    so the header controls and grid both fit a phone-width viewport without
    forcing horizontal overflow. */

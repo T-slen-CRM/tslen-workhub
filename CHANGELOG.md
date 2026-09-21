@@ -4,6 +4,25 @@ All notable changes to this project are documented here. Entries are
 generated automatically by [git-cliff](https://git-cliff.org/) from
 Conventional Commit history whenever a `vX.Y.Z` release tag is pushed —
 see `cliff.toml` and `.github/workflows/release.yml`.
+## [0.5.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.4.0...v0.5.0) - 2026-09-21
+
+### Features
+
+- *(meeting-room)* Add compact mic/camera/leave controls to the collapsed window
+
+- *(app)* Detect a new release and prompt the user to refresh
+
+
+### Bug Fixes
+
+- *(mail)* Read EMAIL_PORT and set implicit TLS for port 465
+
+- *(main-wall)* Show one row per user in Who's absent today, not one per event
+
+- *(days-off)* Round hour-mode time to the current hour, not the exact minute
+
+- *(posts)* Bound post image size, validate uploads client-side, collapse long posts
+
 ## [0.4.0](https://github.com/T-slen-CRM/tslen-workhub/compare/v0.3.0...v0.4.0) - 2026-09-14
 
 ### Features

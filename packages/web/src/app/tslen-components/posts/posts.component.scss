@@ -7,6 +7,62 @@
   }
   .post-content-container{
     margin: 20px 15px 0 56px;
+    max-height: 300px;
+    overflow: hidden;
+    position: relative;
+
+    // The editor's own "insert image" button embeds a raw <img> straight
+    // into this post's HTML (see text-editor.component.ts's upload()
+    // callback) - with no size rule at all it rendered at native pixel
+    // resolution, filling most of the screen for anything larger than a
+    // thumbnail. ::ng-deep is required (not just a plain scoped selector)
+    // since this content is injected via [innerHTML], not compiled by
+    // Angular's own template - a normal scoped rule's attribute selector
+    // never lands on raw HTML string content.
+    //
+    // Capped to a fixed bounded box (Slack's own attachment-preview size),
+    // not just max-width:100% - on a wide post card, 100% of the container
+    // is still far bigger than a comfortable inline preview.
+    ::ng-deep img {
+      display: block;
+      max-width: 400px;
+      max-height: 400px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    &.post-content-container--expanded {
+      max-height: none;
+    }
+
+    // Fade the cut-off edge instead of a hard crop, Facebook/LinkedIn-style
+    // - only added (via this modifier class, driven by isOverflowing() in
+    // the component) when content actually exceeds the collapsed height,
+    // so a short post that fits within 300px never shows a stray fade over
+    // its own last line.
+    &.post-content-container--overflowing::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+      pointer-events: none;
+    }
+  }
+  .post-collapse-btn {
+    display: block;
+    margin: 4px 15px 0 56px;
+    background: none;
+    border: none;
+    color: #4680ff;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.875rem;
   }
   //box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 10%), 0px 8px 10px 1px rgb(0 0 0 / 4%), 0px 3px 14px 2px rgb(0 0 0 / 2%);
 }

@@ -1,9 +1,13 @@
 import {
+  AfterViewChecked,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
+  QueryList,
   signal,
+  ViewChildren,
   WritableSignal,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -23,7 +27,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
-export class PostsComponent implements OnInit, OnDestroy {
+export class PostsComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructor(
     private dataService: DataService,
     public dialog: MatDialog,
@@ -40,6 +44,80 @@ export class PostsComponent implements OnInit, OnDestroy {
   @Input() public authData: AuthData;
   private staticPostsArr: IPost[] = [];
   public showEditor: WritableSignal<boolean> = signal(false);
+
+  // Collapse/expand for long posts - same technique as
+  // task-create-edit.component.ts's description preview (max-height +
+  // overflow:hidden CSS, scrollHeight vs clientHeight to detect overflow),
+  // generalized from one item to a feed of many, keyed by post id.
+  @ViewChildren('postContentEl') postContentEls!: QueryList<ElementRef<HTMLElement>>;
+  private expandedPostIds = signal<Set<number>>(new Set());
+  private overflowingPostIds = signal<Set<number>>(new Set());
+
+  ngAfterViewChecked(): void {
+    if (!this.postContentEls) {
+      return;
+    }
+    const next = new Set<number>();
+    this.postContentEls.forEach((ref) => {
+      const el = ref.nativeElement;
+      const postId = Number(el.dataset['postId']);
+      if (this.expandedPostIds().has(postId)) {
+        // max-height:none while expanded makes scrollHeight===clientHeight
+        // regardless of real content length - can't re-measure in this
+        // state, so keep whatever was already known before expanding.
+        if (this.overflowingPostIds().has(postId)) {
+          next.add(postId);
+        }
+        return;
+      }
+      if (el.scrollHeight > el.clientHeight) {
+        next.add(postId);
+      }
+    });
+    // Only write when something actually changed - ngAfterViewChecked runs
+    // every change-detection cycle, and writing to a signal read in the
+    // template on every single run (even when nothing changed) would
+    // trigger another cycle indefinitely.
+    if (!this.setsEqual(next, this.overflowingPostIds())) {
+      this.overflowingPostIds.set(next);
+    }
+  }
+
+  private setsEqual(a: Set<number>, b: Set<number>): boolean {
+    if (a.size !== b.size) {
+      return false;
+    }
+    for (const value of a) {
+      if (!b.has(value)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isExpanded(postId: number | undefined): boolean {
+    return postId !== undefined && this.expandedPostIds().has(postId);
+  }
+
+  isOverflowing(postId: number | undefined): boolean {
+    return postId !== undefined && this.overflowingPostIds().has(postId);
+  }
+
+  toggleExpand(postId: number | undefined): void {
+    if (postId === undefined) {
+      return;
+    }
+    this.expandedPostIds.update((set) => {
+      const next = new Set(set);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+      }
+      return next;
+    });
+  }
+
   showMore() {
     this.showCountOfPost += 5;
   }

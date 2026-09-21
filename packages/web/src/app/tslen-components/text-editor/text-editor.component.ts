@@ -18,6 +18,8 @@ import { DataService } from '../../services/data.service';
 import { AuthData } from '../../services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { tap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { MatCardModule } from '@angular/material/card';
 import { IPost } from '../../interfaces/post';
 import { HttpResponse } from '@angular/common/http';
@@ -46,6 +48,15 @@ import { ITextEditor } from '../../interfaces/tasks';
   ],
 })
 export class TextEditorComponent implements OnInit {
+  // Mirrors the backend's own validation exactly (both live in
+  // src/resources/posts/posts.controller.ts's MaxFileSizeValidator and
+  // src/common/utils/file-settings.ts's ALLOWED_FILE_EXTENSIONS) - this is
+  // purely a UX improvement (reject obviously-bad files immediately with a
+  // clear message instead of a confusing failure after upload starts), the
+  // backend remains the actual source of truth/enforcement.
+  private readonly MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
+  private readonly ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
+
   public calendarLocale;
   @Input() public authData: AuthData;
   @Output() public newPost: EventEmitter<any>;
@@ -97,6 +108,12 @@ export class TextEditorComponent implements OnInit {
     ],
     // uploadUrl: 'v1/image',
     upload: (file: File) => {
+      const validationError = this.validateImageFile(file);
+      if (validationError) {
+        this.toastr.warning(validationError);
+        return EMPTY;
+      }
+
       const formData: FormData = new FormData();
       formData.append('file', file);
 
@@ -116,6 +133,7 @@ export class TextEditorComponent implements OnInit {
   constructor(
     private dataService: DataService,
     public translate: LanguageService,
+    private toastr: ToastrService,
   ) {
     this.newPost = new EventEmitter();
     this.calendarLocale = this.translate.calendarLocale;
@@ -134,6 +152,17 @@ export class TextEditorComponent implements OnInit {
       this.companyId = this.authData.companyId;
     }
   }
+  private validateImageFile(file: File): string | null {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (!ext || !this.ALLOWED_IMAGE_EXTENSIONS.includes(ext)) {
+      return `Unsupported image type. Allowed: ${this.ALLOWED_IMAGE_EXTENSIONS.join(', ')}`;
+    }
+    if (file.size > this.MAX_IMAGE_SIZE_BYTES) {
+      return 'Image is too large. Maximum size is 2MB.';
+    }
+    return null;
+  }
+
   writeValue(item: string | null): void {
     this.value = item ?? '';
   }

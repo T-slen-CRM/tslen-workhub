@@ -44,9 +44,20 @@
         </mat-card-header>
       </div>
       <mat-card-content>
-        <div class="post-content-container">
+        <div
+          #postContentEl
+          [attr.data-post-id]="post.id"
+          class="post-content-container"
+          [class.post-content-container--expanded]="isExpanded(post.id)"
+          [class.post-content-container--overflowing]="isOverflowing(post.id) && !isExpanded(post.id)"
+        >
           <div [innerHTML]="safeHtml(post.text)"></div>
         </div>
+        @if (isOverflowing(post.id) || isExpanded(post.id)) {
+        <button type="button" class="post-collapse-btn" (click)="toggleExpand(post.id)">
+          {{ (isExpanded(post.id) ? 'task.form.show_less' : 'task.form.show_more') | translate }}
+        </button>
+        }
         @if (post.image) {
         <div class="post-image-wrapper">
           <img mat-card-image [src]="post.image" alt="Photo" />

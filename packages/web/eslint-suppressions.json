@@ -1792,7 +1792,7 @@
   },
   "src/app/tslen-components/text-editor/text-editor.component.ts": {
     "@angular-eslint/prefer-inject": {
-      "count": 2
+      "count": 3
     },
     "@angular-eslint/prefer-on-push-component-change-detection": {
       "count": 1

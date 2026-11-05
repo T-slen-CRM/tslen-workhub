@@ -18,6 +18,7 @@ import { User } from '../users/decorators/user.decorator';
 import { Users } from '../users/entities/users.entity';
 import { Roles } from '../../common/guards/roles/roles.decorator';
 import { Role } from '@tslen-workhub/shared';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +26,9 @@ export class AuthController {
       private authService: AuthService,
     ) {}
   @SkipAuth()
+  // Tight per-route limit to blunt password brute-forcing: 5 attempts per
+  // minute per IP, far below the global 20/60s default.
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('login')
     signIn (@Body() signInDto: SignInDto): Promise<SignInResponseDto> {

@@ -14,7 +14,7 @@ export class CompanyDaysOffRulesRepository extends BaseAbstractRepository<Compan
         const qb = this.companyDaysOffRulesRepository.createQueryBuilder('companyDaysOffRules');
         qb.leftJoinAndSelect('companyDaysOffRules.company', 'companies');
         qb.leftJoinAndSelect('companies.daysOffSchedulers', 'daysOffSchedulers');
-        qb.where(`companyDaysOffRules.companyId = ${campaignId}`);
+        qb.where('companyDaysOffRules.companyId = :companyId', { companyId: campaignId });
         return await qb.getOne();
 
     }

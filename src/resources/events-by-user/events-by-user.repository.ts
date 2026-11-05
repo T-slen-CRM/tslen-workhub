@@ -208,7 +208,7 @@ export class EventsByUserRepository extends BaseAbstractRepository<EventsByUser>
             .andWhere(`ebu.approved = 0`)
         if (userRole === 'user'){
             qb.leftJoin(UserChiefRelationEntity, 'uCR', "u.id = uCR.userId");
-            qb.andWhere(`uCR.chiefEmail = '${userEmail}'`)
+            qb.andWhere('uCR.chiefEmail = :userEmail', { userEmail })
         }
         qb.orderBy('ebu.createdAt');
         return await qb.getRawMany();

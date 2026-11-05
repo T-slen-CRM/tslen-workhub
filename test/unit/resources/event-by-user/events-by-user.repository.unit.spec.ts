@@ -82,5 +82,22 @@ describe('EventsByUserRepository', () => {
 
             expect(ebuQbCalls.find((c) => c.method === 'andWhere' && c.args[0] === activeUserCondition('user'))).toBeDefined();
         });
+
+        it('binds the chief email as a query parameter instead of interpolating it into SQL (injection-safe)', async () => {
+            const { repository, ebuQbCalls } = setup();
+            const maliciousEmail = "evil' OR '1'='1";
+            const user = { ...mockUser, role: 'user', email: maliciousEmail } as unknown as Users;
+
+            await repository.getPending(user);
+
+            const chiefClause = ebuQbCalls.find(
+                (c) => c.method === 'andWhere' && String(c.args[0]).includes('chiefEmail'),
+            );
+            expect(chiefClause).toBeDefined();
+            // The email must be passed as a bound parameter, never spliced into the SQL text.
+            expect(String(chiefClause.args[0])).toContain(':userEmail');
+            expect(String(chiefClause.args[0])).not.toContain(maliciousEmail);
+            expect(chiefClause.args[1]).toEqual({ userEmail: maliciousEmail });
+        });
     });
 });

@@ -18,17 +18,18 @@ export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
         const qb = this.taskProjectRepository.createQueryBuilder('taskProject')
             .leftJoinAndSelect('taskProject.taskProjectPermissions', 'taskProjectPermission')
             .leftJoinAndSelect('taskProjectPermission.user', 'user', activeUserCondition('user'))
-            .andWhere(`taskProject.companyId = ${companyId}`)
+            .andWhere('taskProject.companyId = :companyId', { companyId })
             .andWhere(qb => {
                 const subQuery = qb
                     .subQuery()
                     .select('1')
                     .from('taskProjectPermission', 'taskProjectPermission')
                     .where('taskProjectPermission.projectId = taskProject.id')
-                    .andWhere(`taskProjectPermission.userId = ${userId}`)
+                    .andWhere('taskProjectPermission.userId = :userId')
                     .getQuery();
                 return `EXISTS ${subQuery}`;
-            });
+            })
+            .setParameter('userId', userId);
 
         return await qb.getMany();
     }
@@ -78,11 +79,12 @@ export class TaskProjectRepository extends BaseAbstractRepository<TaskProject>{
                     .select('1')
                     .from('taskProjectPermission', 'taskProjectPermission')
                     .where('taskProjectPermission.projectId = taskProject.id')
-                    .andWhere(`taskProjectPermission.userId = ${userId}`)
+                    .andWhere('taskProjectPermission.userId = :userId')
                     .getQuery();
                 return `EXISTS ${subQuery}`;
             })
-            .orderBy('projectPhasesRelation.orderId', 'ASC'); // Add this line to order by orderId
+            .orderBy('projectPhasesRelation.orderId', 'ASC') // Add this line to order by orderId
+            .setParameter('userId', userId);
         return await qb.getOne();
     }
     async findByPhaseId (phaseId: number): Promise<TaskProject> {

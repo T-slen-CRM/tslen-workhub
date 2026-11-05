@@ -15,7 +15,7 @@ import { activeUserCondition } from '../../../../src/resources/users/utils/activ
 function createFakeQueryBuilder (result: unknown) {
     const calls: { method: string; args: unknown[] }[] = [];
     const qb: Record<string, (...args: unknown[]) => unknown> = {};
-    ['leftJoinAndSelect', 'where', 'andWhere', 'orderBy'].forEach((method) => {
+    ['leftJoinAndSelect', 'where', 'andWhere', 'orderBy', 'setParameter'].forEach((method) => {
         qb[method] = (...args: unknown[]) => { calls.push({ method, args }); return qb; };
     });
     qb.getMany = async () => result;
@@ -83,6 +83,27 @@ describe('TaskProjectRepository', () => {
             const assignmentUserJoin = calls.find((c) => c.method === 'leftJoinAndSelect' && c.args[1] === 'assignmentUser');
             expect(userJoin.args[2]).toBe(activeUserCondition('user'));
             expect(assignmentUserJoin.args[2]).toBe(activeUserCondition('assignmentUser'));
+        });
+    });
+
+    describe('binds company/user scope as query parameters instead of interpolating them (injection-safe)', () => {
+        it('getByRole parameterizes companyId and userId', async () => {
+            const { qb, calls } = createFakeQueryBuilder([]);
+            const fakeRepository = { createQueryBuilder: () => qb } as unknown as Repository<TaskProject>;
+            const testRepository = new TaskProjectRepository(fakeRepository);
+
+            await testRepository.getByRole(mockUser);
+
+            const companyClause = calls.find(
+                (c) => c.method === 'andWhere' && String(c.args[0]).includes('companyId'),
+            );
+            expect(companyClause).toBeDefined();
+            expect(String(companyClause.args[0])).toContain(':companyId');
+            expect(companyClause.args[1]).toEqual({ companyId: mockUser.companyId });
+            // userId is used inside an EXISTS sub-query, bound via setParameter on the main builder.
+            const userParam = calls.find((c) => c.method === 'setParameter' && c.args[0] === 'userId');
+            expect(userParam).toBeDefined();
+            expect(userParam.args[1]).toBe(mockUser.id);
         });
     });
 });

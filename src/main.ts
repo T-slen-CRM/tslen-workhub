@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { CorsMiddleware } from './common/middlewares/cors.middlewares';
+import { configureSecurity } from './common/security/configure-security';
 import { AppVersionMiddleware } from './common/middlewares/app-version.middleware';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { join } from 'path';
@@ -20,6 +21,7 @@ async function bootstrap () {
         },
     })
     const isProduction = app.get(ConfigService).get('MODE') === 'PROD';
+    configureSecurity(app);
     app.use(new CorsMiddleware().use);
     app.use(new AppVersionMiddleware().use);
     app.setGlobalPrefix('/api/v' + app.get(ConfigService).get('API_VERSION')); // Setting base path

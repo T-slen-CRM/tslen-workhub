@@ -6,9 +6,7 @@ import { MeetingBackgroundImagesController } from './meeting-background-images.c
 import { MeetingBackgroundImagesService } from './meeting-background-images.service';
 import { MeetingBackgroundImagesRepository } from './meeting-background-images.repository';
 import { MeetingBackgroundImage } from './entities/meeting-background-image.entity';
-import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
-import { FirebaseService } from '../../common/services/firebase/firebase.service';
-import { FirebaseModule } from '../../common/services/firebase/firebase.module';
+import { StorageModule } from '../../common/services/storage/storage.module';
 
 @Module({
     imports: [
@@ -20,16 +18,12 @@ import { FirebaseModule } from '../../common/services/firebase/firebase.module';
             }),
             inject: [ConfigService],
         }),
-        FirebaseModule,
+        StorageModule,
     ],
     controllers: [MeetingBackgroundImagesController],
     providers: [
         MeetingBackgroundImagesService,
         MeetingBackgroundImagesRepository,
-        {
-            provide: UploadAbstractService,
-            useExisting: FirebaseService,
-        },
     ],
 })
 export class MeetingBackgroundImagesModule {}

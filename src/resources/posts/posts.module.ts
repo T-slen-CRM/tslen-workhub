@@ -7,14 +7,12 @@ import { PostsRepository } from './posts.repository';
 import { RolesGuard } from '../../common/guards/roles/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
-import { FirebaseService } from '../../common/services/firebase/firebase.service';
-import { FirebaseModule } from '../../common/services/firebase/firebase.module';
+import { StorageModule } from '../../common/services/storage/storage.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Posts]),
-        FirebaseModule
+        StorageModule
     ],
     controllers: [PostsController],
     providers: [
@@ -24,10 +22,6 @@ import { FirebaseModule } from '../../common/services/firebase/firebase.module';
         {
             provide: APP_GUARD,
             useClass: RolesGuard,
-        },
-        {
-            provide: UploadAbstractService,
-            useExisting: FirebaseService
         }
     ],
 })

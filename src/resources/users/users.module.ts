@@ -16,9 +16,7 @@ import { UserGroup } from '../user-group/entities/user-group.entity';
 import { JobPosition } from '../job-position/entities/job-position.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
-import { FirebaseService } from '../../common/services/firebase/firebase.service';
-import { FirebaseModule } from '../../common/services/firebase/firebase.module';
+import { StorageModule } from '../../common/services/storage/storage.module';
 import { ErrorService } from '../../common/services/error/error.service';
 import { UserGooglePermission } from './entities/user-google-permission.entity';
 import { Inventory } from '../inventory/entities/inventory.entity';
@@ -48,7 +46,7 @@ import { InventoryByUserHistory } from '../inventory/entities/inventory-by-user-
             }),
             inject: [ConfigService],
         }),
-        FirebaseModule
+        StorageModule
     ],
     controllers: [UsersController],
     providers: [
@@ -56,11 +54,7 @@ import { InventoryByUserHistory } from '../inventory/entities/inventory-by-user-
         UsersRepository,
         JwtService,
         ErrorService,
-        SlackService,
-        {
-            provide: UploadAbstractService,
-            useExisting: FirebaseService
-        }
+        SlackService
     ],
     exports: [UsersService, UsersRepository]
 })

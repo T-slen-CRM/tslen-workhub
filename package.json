@@ -40,6 +40,7 @@
     "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./typeOrm.config.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1164.0",
     "@google-apps/meet": "^0.3.0",
     "@google-cloud/local-auth": "^2.1.0",
     "@nestjs-modules/mailer": "^2.0.2",

@@ -10,9 +10,7 @@ import { TasksGateway } from './gateway/tasks.gateway';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UploadAbstractService } from '../../common/services/upload/upload.abstract.service';
-import { FirebaseService } from '../../common/services/firebase/firebase.service';
-import { FirebaseModule } from '../../common/services/firebase/firebase.module';
+import { StorageModule } from '../../common/services/storage/storage.module';
 import { UsersModule } from '../users/users.module';
 import { TaskAttachments } from './entities/task-attachments.entity';
 import { ErrorService } from '../../common/services/error/error.service';
@@ -35,7 +33,7 @@ import { AuthGuard } from '../auth/guards/auth.guard';
             }),
             inject: [ConfigService],
         }),
-        FirebaseModule,
+        StorageModule,
         UsersModule,
         TaskNotificationsModule,
         TaskPhaseModule,
@@ -50,10 +48,6 @@ import { AuthGuard } from '../auth/guards/auth.guard';
         TasksGateway,
         JwtService,
         AuthGuard,
-        {
-            provide: UploadAbstractService,
-            useExisting: FirebaseService
-        },
     ],
     exports: [TasksService, TasksRepository, TasksGateway],
 })

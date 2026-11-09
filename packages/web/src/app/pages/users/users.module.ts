@@ -23,6 +23,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {GooglePermissionsComponent} from "../../tslen-components/google-permissions/google-permissions.component";
 import { TranslateModule } from '@ngx-translate/core';
 import { HelpersModule } from '../../helpers/helpers.module';
+import { ApiTokenCardComponent } from './api-token-card/api-token-card.component';
 
 
 
@@ -55,7 +56,8 @@ import { HelpersModule } from '../../helpers/helpers.module';
         NgOptimizedImage,
         MatIconModule,
         GooglePermissionsComponent,
-        HelpersModule
+        HelpersModule,
+        ApiTokenCardComponent
     ]
 })
 export class UsersModule { }

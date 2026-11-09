@@ -1,0 +1,96 @@
+.api-token-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.api-token-intro {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.6);
+
+  code {
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06);
+    font-size: 0.85em;
+  }
+}
+
+.token-reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.token-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #b26a00;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.token-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.token-value {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 6px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.copy-btn mat-icon {
+  margin-right: 4px;
+}
+
+.done-btn {
+  align-self: flex-start;
+}
+
+.token-existing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+}
+
+.token-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.token-name {
+  font-weight: 600;
+}
+
+.token-dates {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.token-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}

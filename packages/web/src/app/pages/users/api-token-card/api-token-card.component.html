@@ -1,0 +1,66 @@
+<div class="api-token-card">
+  <p class="api-token-intro">
+    Use an API token to authenticate programmatic requests to the Workhub API.
+    Send it in the <code>Authorization: Bearer &lt;token&gt;</code> header.
+  </p>
+
+  @if (service.createdPlaintext(); as plaintext) {
+    <div class="token-reveal">
+      <p class="token-warning">
+        <mat-icon>warning</mat-icon>
+        Copy this token now — it is shown only once and cannot be retrieved later.
+      </p>
+      <div class="token-row">
+        <input class="token-value" type="text" readonly [value]="plaintext" />
+        <button
+          mat-raised-button
+          color="primary"
+          class="copy-btn"
+          (click)="copy()"
+        >
+          <mat-icon>content_copy</mat-icon>
+          Copy
+        </button>
+      </div>
+      <button mat-button class="done-btn" (click)="done()">Done</button>
+    </div>
+  } @else if (service.hasToken()) {
+    @for (token of service.tokens(); track token.id) {
+      <div class="token-existing">
+        <div class="token-meta">
+          <span class="token-name">{{ token.name }}</span>
+          <span class="token-dates">
+            created {{ token.createdAt | date: 'mediumDate' }}
+            @if (token.lastUsedAt) {
+              · last used {{ token.lastUsedAt | date: 'mediumDate' }}
+            } @else {
+              · never used
+            }
+          </span>
+        </div>
+        <button
+          mat-stroked-button
+          color="warn"
+          class="revoke-btn"
+          [disabled]="service.loading()"
+          (click)="revoke(token.id)"
+        >
+          <app-loading-button [loading]="service.loading()">Revoke</app-loading-button>
+        </button>
+      </div>
+    }
+    <p class="token-hint">
+      The token value is shown only once. Revoke and generate a new one if you've lost it.
+    </p>
+  } @else {
+    <button
+      mat-raised-button
+      color="primary"
+      class="generate-btn"
+      [disabled]="service.loading()"
+      (click)="generate()"
+    >
+      <app-loading-button [loading]="service.loading()">Generate API token</app-loading-button>
+    </button>
+  }
+</div>

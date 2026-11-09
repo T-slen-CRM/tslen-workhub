@@ -113,6 +113,9 @@ full reference.
       `chmod +x start.sh && ./start.sh`. On first boot, `migration:run`
       builds the entire schema from `migrations/initial-schema` - no
       manual bootstrap needed even on a brand-new, empty database.
+   6. **Optional hardening:** to take the origin off the public internet and
+      serve the app only through Cloudflare's edge (no bypassable origin
+      ports), see [`docs/ops/cloudflare-tunnel.md`](docs/ops/cloudflare-tunnel.md).
 
 ## Continuous deployment
 

@@ -10,6 +10,12 @@ set -euo pipefail
 # every merge to main; see the README's Continuous deployment section for
 # the secrets it needs). Otherwise use start.sh, which builds the image
 # on this server directly.
+#
+# Runtime config comes from Bitwarden Secrets Manager when
+# ~/.config/tslen-workhub/bws.conf exists (see scripts/bws-env.sh and
+# docs/ops/secrets-bitwarden.md) - it's fetched straight into docker's
+# --env-file through a pipe, so no plaintext secrets file is written to
+# disk. Without that config it falls back to a local .env file.
 
 # CONTAINER_NAME must match the service URL in
 # traefik-dynamic/tslen-workhub.yml (Traefik routes to this container by
@@ -17,11 +23,29 @@ set -euo pipefail
 # docker-compose.traefik.yml.example for why).
 CONTAINER_NAME="${CONTAINER_NAME:-tslen-workhub}"
 ENV_FILE=".env"
+BWS_CONFIG="${TSLEN_BWS_CONFIG:-$HOME/.config/tslen-workhub/bws.conf}"
 IMAGE="${IMAGE:-ghcr.io/t-slen-crm/tslen-workhub:latest}"
 DOCKER_NETWORK="${DOCKER_NETWORK:-tslen-net}"
 
-if [ ! -f "${ENV_FILE}" ]; then
-    echo "Missing ${ENV_FILE} - copy .env.example to ${ENV_FILE} and fill in this deployment's values, then re-run." >&2
+# Fetch secrets BEFORE touching the running container: a Bitwarden
+# outage or a revoked token must fail the deploy and leave the current
+# container serving, not take the site down.
+if [ -f "${BWS_CONFIG}" ]; then
+    # Resolved next to this script, not the caller's cwd. It lives in the
+    # repo checkout, so keep the checkout current (git pull) - the GHCR
+    # deploy only pulls the image, never updates these scripts.
+    BWS_ENV="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/bws-env.sh"
+    if [ ! -x "${BWS_ENV}" ]; then
+        echo "${BWS_CONFIG} exists but ${BWS_ENV} is missing - git pull this checkout, then re-run." >&2
+        exit 1
+    fi
+    echo "Loading runtime config from Bitwarden Secrets Manager" >&2
+    ENV_CONTENT="$("${BWS_ENV}")"
+elif [ -f "${ENV_FILE}" ]; then
+    echo "Loading runtime config from ${ENV_FILE}" >&2
+    ENV_CONTENT="$(cat "${ENV_FILE}")"
+else
+    echo "No runtime config: set up ${BWS_CONFIG} (Bitwarden Secrets Manager) or copy .env.example to ${ENV_FILE}, then re-run." >&2
     exit 1
 fi
 
@@ -33,7 +57,7 @@ docker run -d \
     --restart unless-stopped \
     --network "${DOCKER_NETWORK}" \
     --add-host host.docker.internal:host-gateway \
-    --env-file "${ENV_FILE}" \
+    --env-file <(printf '%s\n' "${ENV_CONTENT}") \
     -v "./upload:/app/upload" \
     -v "./credentials:/app/credentials" \
     "${IMAGE}"

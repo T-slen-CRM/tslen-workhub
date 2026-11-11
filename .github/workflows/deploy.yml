@@ -35,16 +35,27 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      # Needed only for the Angular build step (packages/web's set-env.ts
-      # bakes non-secret public config - BACKEND_DOMAIN, LIVEKIT_PUBLIC_URL,
-      # etc. - into the JS bundle at build time). The Dockerfile only COPYs
-      # this into the intermediate web-build stage, never the final one, so
-      # none of it - public config or the real secrets alongside it in this
-      # file - ends up in the pushed image.
-      - name: Write .env for the frontend build
+      # The Angular build (packages/web/set-env.ts) bakes a handful of
+      # public, non-secret values into the JS bundle - anyone loading the
+      # site can read them - so they come from repo *variables*, not
+      # secrets. Runtime secrets never pass through CI: the server fetches
+      # them from Bitwarden Secrets Manager at deploy time (see
+      # deploy-image.sh.example). The Dockerfile only COPYs this .env into
+      # the intermediate web-build stage, never the final image.
+      - name: Write public build config for the frontend
         env:
-          PROD_ENV_FILE: ${{ secrets.PROD_ENV_FILE }}
-        run: echo "$PROD_ENV_FILE" > .env
+          API_VERSION: ${{ vars.API_VERSION }}
+          APP_PORT: ${{ vars.APP_PORT }}
+          BACKEND_DOMAIN: ${{ vars.BACKEND_DOMAIN }}
+          IS_DEMO: ${{ vars.IS_DEMO }}
+          IP_CHECKER_URL: ${{ vars.IP_CHECKER_URL }}
+          FTP_DOMAIN: ${{ vars.FTP_DOMAIN }}
+          LIVEKIT_PUBLIC_URL: ${{ vars.LIVEKIT_PUBLIC_URL }}
+        run: |
+          : "${BACKEND_DOMAIN:?Set the BACKEND_DOMAIN repo variable (Settings → Secrets and variables → Actions → Variables)}"
+          for key in API_VERSION APP_PORT BACKEND_DOMAIN IS_DEMO IP_CHECKER_URL FTP_DOMAIN LIVEKIT_PUBLIC_URL; do
+            printf '%s=%s\n' "$key" "${!key}"
+          done > .env
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
